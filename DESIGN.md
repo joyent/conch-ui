@@ -12,7 +12,7 @@ the Conch UI. It should be updated whenever new decisions impacting the design
 are implemented.
 
 
-Technical Decisions
+Dependency and Library Decisions
 --------------------
 
 * [Yarn](https://yarnpkg.com): Dependency management and build tool. Yarn has
@@ -33,8 +33,8 @@ Technical Decisions
   tutorial](https://mithril.js.org/simple-application.html) and some [quick
   screencasts](https://scrimba.com/playlist/playlist-34) will help bring you up
   to speed.
-* [Pure CSS](https://purecss.io): Lightweight CSS library. This library was
-  chosen early on, but may be too minimal for our needs. Replacement with a
-  more comprehensive CSS library like [Bulma](https://bulma.io) or Bootstrap is
-  likely.
+* [Bulma](https://bulma.io): CSS framework based on flexbox with several
+  helpful built-in components. It provides a good compromise between writing
+  CSS ourselves and not looking like something out of a can (looking at you,
+  Bootstrap).
 

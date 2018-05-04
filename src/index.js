@@ -1,6 +1,9 @@
 import m from "mithril";
 import t from "i18n4v";
 import moment from "moment";
+
+import '../css/app.css';
+
 import Device from "./views/Device";
 import Layout from "./views/Layout";
 import Login from "./views/Login";
