@@ -38,3 +38,11 @@ Dependency and Library Decisions
   CSS ourselves and not looking like something out of a can (looking at you,
   Bootstrap).
 
+
+Mithril
+-------
+
+Learning resources:
+
+* [Start Here! Official Tutorial](https://mithril.js.org/simple-application.html)
+* [How to code x in mithril](https://github.com/osban/mithril-codex/blob/master/how2code.md)
