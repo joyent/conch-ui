@@ -4,6 +4,7 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     entry: { main: "./src/index.js" },
@@ -17,6 +18,10 @@ module.exports = {
         path: path.resolve(__dirname, "dist/"),
     },
     performance: { hints: false },
+    devServer: {
+        contentBase: './dist',
+        hot: true
+    },
     module: {
         rules: [
             {
@@ -44,6 +49,8 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
              title: 'Conch'
-        })
+        }),
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin()
     ],
 };
