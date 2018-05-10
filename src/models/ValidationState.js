@@ -1,4 +1,5 @@
 import m from "mithril";
+import { conchApi } from 'config';
 
 const ValidationState = {
     currentList: [],
@@ -7,7 +8,7 @@ const ValidationState = {
         return m
             .request({
                 method: "get",
-                url: `/workspace/${wId}/validation_state`,
+                url: `${conchApi}/workspace/${wId}/validation_state`,
             })
             .then(validationStates => {
                 ValidationState.currentList = validationStates;
@@ -18,7 +19,7 @@ const ValidationState = {
         return m
             .request({
                 method: "get",
-                url: `/device/${dId}/validation_state`,
+                url: `${conchApi}/device/${dId}/validation_state`,
             })
             .then(validationStates => {
                 ValidationState.currentList = validationStates;

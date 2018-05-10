@@ -1,4 +1,5 @@
 import m from "mithril";
+import { conchApi } from 'config';
 
 import Workspace from "./Workspace";
 
@@ -29,7 +30,7 @@ const Relay = {
         return m
             .request({
                 method: "GET",
-                url: `/workspace/${workspaceId}/relay`,
+                url: `${conchApi}/workspace/${workspaceId}/relay`,
                 withCredentials: true,
             })
             .then(res => {
@@ -47,7 +48,7 @@ const Relay = {
         return m
             .request({
                 method: "GET",
-                url: `/workspace/${workspaceId}/relay?active=1`,
+                url: `${conchApi}/workspace/${workspaceId}/relay?active=1`,
                 withCredentials: true,
             })
             .then(res => {

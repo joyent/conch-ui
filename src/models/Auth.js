@@ -1,4 +1,5 @@
 import m from "mithril";
+import { conchApi } from 'config';
 
 const Auth = {
     loginEmail: "",
@@ -9,7 +10,7 @@ const Auth = {
         m
             .request({
                 method: "GET",
-                url: "/me",
+                url: `${conchApi}/me`,
                 extract(xhr) {
                     return {
                         status: xhr.status,
@@ -40,7 +41,7 @@ const Auth = {
         return m
             .request({
                 method: "POST",
-                url: "/login",
+                url: `${conchApi}/login`,
                 data: { user: Auth.loginEmail, password: Auth.password },
                 extract(xhr) {
                     return {
@@ -65,7 +66,7 @@ const Auth = {
             });
     },
     logout() {
-        return m.request({ method: "POST", url: "/logout" }).then(res => {
+        return m.request({ method: "POST", url: `${conchApi}/logout` }).then(res => {
             Auth._loggedIn = false;
         });
     },

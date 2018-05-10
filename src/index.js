@@ -12,9 +12,11 @@ import Rack from "./views/Rack";
 import Status from "./views/Status";
 import RelayList from "./views/Relay/List";
 import RelayDetail from "./views/Relay/Detail";
+
 import korean from "./languages/ko.js";
+import english from "./languages/en.js";
 const languages = {
-    en: require("./languages/en.js"),
+    en: english,
     ko: korean,
     "ko-KR": korean,
 };

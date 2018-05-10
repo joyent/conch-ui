@@ -1,4 +1,5 @@
 import m from "mithril";
+import { conchApi } from 'config';
 
 const Validation = {
     list: [],
@@ -7,7 +8,7 @@ const Validation = {
         return m
             .request({
                 method: "get",
-                url: "/validation",
+                url: `${conchApi}/validation`,
             })
             .then(validations => {
                 Validation.list = validations;

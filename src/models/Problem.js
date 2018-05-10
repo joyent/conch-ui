@@ -1,4 +1,5 @@
 import m from "mithril";
+import { conchApi } from 'config';
 
 function sortObject(obj) {
     return Object.keys(obj)
@@ -16,7 +17,7 @@ const Problem = {
         return m
             .request({
                 method: "GET",
-                url: `/workspace/${workspaceId}/problem`,
+                url: `${conchApi}/workspace/${workspaceId}/problem`,
                 withCredentials: true,
             })
             .then(res => {

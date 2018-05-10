@@ -1,4 +1,5 @@
 import m from "mithril";
+import { conchApi } from 'config';
 
 import Workspace from "./Workspace";
 
@@ -9,7 +10,7 @@ const Rack = {
         return m
             .request({
                 method: "GET",
-                url: `/workspace/${workspaceId}/rack`,
+                url: `${conchApi}/workspace/${workspaceId}/rack`,
                 withCredentials: true,
             })
             .then(res => {
@@ -35,7 +36,7 @@ const Rack = {
         return m
             .request({
                 method: "GET",
-                url: `/workspace/${workspaceId}/rack/${id}`,
+                url: `${conchApi}/workspace/${workspaceId}/rack/${id}`,
                 withCredentials: true,
             })
             .then(res => {
@@ -63,7 +64,7 @@ const Rack = {
         return m
             .request({
                 method: "POST",
-                url: `/workspace/${workspaceId}/rack/${rack.id}/layout`,
+                url: `${conchApi}/workspace/${workspaceId}/rack/${rack.id}/layout`,
                 data: deviceAssignments,
                 withCredentials: true,
             })

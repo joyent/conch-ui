@@ -1,4 +1,5 @@
 import m from "mithril";
+import { conch_host } from 'config';
 
 const Feedback = {
     text: "",
@@ -6,7 +7,7 @@ const Feedback = {
         return m
             .request({
                 method: "POST",
-                url: "/feedback",
+                url: `${conchApi}/feedback`,
                 data: { subject, message },
             })
             .then(data => {

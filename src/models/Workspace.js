@@ -1,4 +1,5 @@
 import m from "mithril";
+import { conchApi } from 'config';
 
 const Workspace = {
     list: [],
@@ -24,7 +25,7 @@ const Workspace = {
         return m
             .request({
                 method: "GET",
-                url: "/workspace",
+                url: `${conchApi}/workspace`,
             })
             .then(workspaces => {
                 Workspace.list = workspaces;

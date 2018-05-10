@@ -1,5 +1,6 @@
 import m from "mithril";
 import moment from "moment";
+import { conchApi } from 'config';
 
 const Device = {
     deviceIds: [],
@@ -8,7 +9,7 @@ const Device = {
         return m
             .request({
                 method: "GET",
-                url: `/workspace/${workspaceId}/device`,
+                url: `${conchApi}/workspace/${workspaceId}/device`,
                 data: { ids_only: 1 },
                 withCredentials: true,
             })
@@ -28,7 +29,7 @@ const Device = {
         return m
             .request({
                 method: "GET",
-                url: `/workspace/${workspaceId}/device`,
+                url: `${conchApi}/workspace/${workspaceId}/device`,
                 withCredentials: true,
             })
             .then(res => {
@@ -55,7 +56,7 @@ const Device = {
         return m
             .request({
                 method: "GET",
-                url: `/device/${deviceId}`,
+                url: `${conchApi}/device/${deviceId}`,
                 withCredentials: true,
             })
             .then(res => {
@@ -75,7 +76,7 @@ const Device = {
         return m
             .request({
                 method: "GET",
-                url: `/device/${deviceId}/settings/firmware`,
+                url: `${conchApi}/device/${deviceId}/settings/firmware`,
                 withCredentials: true,
                 extract(xhr) {
                     return {
@@ -103,7 +104,7 @@ const Device = {
         return m
             .request({
                 method: "GET",
-                url: `/device/${deviceId}/location`,
+                url: `${conchApi}/device/${deviceId}/location`,
                 withCredentials: true,
                 extract(xhr) {
                     return {
@@ -144,7 +145,7 @@ const Device = {
     setAssetTag(deviceId, assetTag) {
         return m.request({
             method: "POST",
-            url: `/device/${deviceId}/asset_tag`,
+            url: `${conchApi}/device/${deviceId}/asset_tag`,
             data: { asset_tag: assetTag },
             withCredentials: true,
         });
