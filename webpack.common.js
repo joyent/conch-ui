@@ -63,7 +63,8 @@ module.exports = {
     plugins: [
         // render a HTML file that imports all the compiled source files
         new HtmlWebpackPlugin({
-            template: 'src/index.html'
+            template: 'src/index.html',
+            favicon: './src/styles/images/favicon.ico'
         }),
     ],
 };
