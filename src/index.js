@@ -2,7 +2,7 @@ import m from "mithril";
 import t from "i18n4v";
 import moment from "moment";
 
-import '../css/app.css';
+import './styles/main.scss';
 
 import Device from "./views/Device";
 import Layout from "./views/Layout";
