@@ -2,7 +2,6 @@ const merge = require('webpack-merge');
 const path = require("path");
 const webpack = require('webpack');
 
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const common = require('./webpack.common.js');
 
@@ -36,8 +35,7 @@ module.exports = merge(common, {
                 test: /(\.s?css)$/,
                 use: [
                     // this may be unnecessary. Evaluating
-                    "css-hot-loader",
-                    MiniCssExtractPlugin.loader,
+                    "style-loader",
                     "css-loader",
                     "sass-loader",
                 ]
@@ -51,8 +49,5 @@ module.exports = merge(common, {
     plugins: [
         // enables HMR
         new webpack.HotModuleReplacementPlugin(),
-        new MiniCssExtractPlugin({
-            filename: "css/main.css",
-        }),
     ],
 });
