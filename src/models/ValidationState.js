@@ -9,6 +9,7 @@ const ValidationState = {
             .request({
                 method: "get",
                 url: `${conchApi}/workspace/${wId}/validation_state`,
+                withCredentials: true,
             })
             .then(validationStates => {
                 ValidationState.currentList = validationStates;
@@ -20,6 +21,7 @@ const ValidationState = {
             .request({
                 method: "get",
                 url: `${conchApi}/device/${dId}/validation_state`,
+                withCredentials: true,
             })
             .then(validationStates => {
                 ValidationState.currentList = validationStates;

@@ -9,6 +9,7 @@ const Validation = {
             .request({
                 method: "get",
                 url: `${conchApi}/validation`,
+                withCredentials: true,
             })
             .then(validations => {
                 Validation.list = validations;

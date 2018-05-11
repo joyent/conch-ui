@@ -26,6 +26,7 @@ const Workspace = {
             .request({
                 method: "GET",
                 url: `${conchApi}/workspace`,
+                withCredentials: true,
             })
             .then(workspaces => {
                 Workspace.list = workspaces;

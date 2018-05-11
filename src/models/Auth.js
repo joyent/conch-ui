@@ -11,6 +11,7 @@ const Auth = {
             .request({
                 method: "GET",
                 url: `${conchApi}/me`,
+                withCredentials: true,
                 extract(xhr) {
                     return {
                         status: xhr.status,
@@ -42,6 +43,7 @@ const Auth = {
             .request({
                 method: "POST",
                 url: `${conchApi}/login`,
+                withCredentials: true,
                 data: { user: Auth.loginEmail, password: Auth.password },
                 extract(xhr) {
                     return {
@@ -66,7 +68,11 @@ const Auth = {
             });
     },
     logout() {
-        return m.request({ method: "POST", url: `${conchApi}/logout` }).then(res => {
+        return m.request({
+            method: "POST", 
+            url: `${conchApi}/logout`,
+            withCredentials: true,
+        }).then(res => {
             Auth._loggedIn = false;
         });
     },

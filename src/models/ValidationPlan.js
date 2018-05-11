@@ -8,6 +8,7 @@ const ValidationPlan = {
         return m
             .request({
                 method: "get",
+                withCredentials: true,
                 url: `${conchApi}/validation_plan`,
             })
             .then(validations => {

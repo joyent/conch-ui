@@ -8,6 +8,7 @@ const Feedback = {
             .request({
                 method: "POST",
                 url: `${conchApi}/feedback`,
+                withCredentials: true,
                 data: { subject, message },
             })
             .then(data => {
