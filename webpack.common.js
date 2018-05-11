@@ -28,6 +28,11 @@ module.exports = {
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
+                    // configuration for babel. Add configuration here instead
+                    // of a .babelrc file
+                    options: {
+                        presets: ['env']
+                    }
                 },
             },
         ],

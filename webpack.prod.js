@@ -2,6 +2,7 @@
 
 const merge = require('webpack-merge');
 const path = require("path");
+const webpack = require('webpack');
 
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -49,6 +50,8 @@ module.exports = merge(common, {
     plugins: [
         // clean out the dist/ directory for each build
         new CleanWebpackPlugin(['dist']),
+        // remove all but english (US) and korean locales from moment.js
+        new webpack.ContextReplacementPlugin( /moment[\/\\]locale$/, /en-us|ko/),
         new MiniCssExtractPlugin({
             filename: "css/[name].[contenthash:6].css",
         }),
