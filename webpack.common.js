@@ -35,6 +35,15 @@ module.exports = {
                     }
                 },
             },
+            {
+                test: /\.(png|jpg|gif|svg)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]',
+                    outputPath: 'images/',
+                    publicPath: '../images/',
+                },
+            }
         ],
     },
     optimization: {
@@ -54,7 +63,7 @@ module.exports = {
     plugins: [
         // render a HTML file that imports all the compiled source files
         new HtmlWebpackPlugin({
-             title: 'Conch'
+            template: 'src/index.html'
         }),
     ],
 };

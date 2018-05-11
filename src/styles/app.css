@@ -12,7 +12,7 @@ body svg {
     display: inline-block;
     width: 118px;
     height: 20px;
-    background: no-repeat center/80% url('/images/logo-white.svg');
+    background: no-repeat center/80% url('images/logo-white.svg');
 }
 
 .pure-table caption {
