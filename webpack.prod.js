@@ -29,7 +29,6 @@ module.exports = merge(common, {
                 // render and process all SASS and CSS
                 test: /(\.s?css)$/,
                 use: [
-                    "style-loader",
                     MiniCssExtractPlugin.loader,
                     "css-loader",
                     "sass-loader",
