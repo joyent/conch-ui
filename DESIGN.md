@@ -42,7 +42,8 @@ Dependency and Library Decisions
 Mithril
 -------
 
-Learning resources:
+Resources for learning Mithril:
 
-* [Start Here! Official Tutorial](https://mithril.js.org/simple-application.html)
-* [How to code x in mithril](https://github.com/osban/mithril-codex/blob/master/how2code.md)
+* [Start Here--Official Tutorial](https://mithril.js.org/simple-application.html)
+* [How to code X in mithril](https://github.com/osban/mithril-codex/blob/master/how2code.md)
+* [Good Mithril Walkthrough by Auth0](https://auth0.com/blog/build-robust-apps-with-mithril-and-auth0/)
