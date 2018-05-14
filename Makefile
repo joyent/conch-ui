@@ -1,5 +1,5 @@
 .PHONY: build
-build: dist/index.html ## Build web assets for production
+build: node_modules dist/index.html ## Build web assets for production
 
 .PHONY: watch
 watch: ## Watch web assets and re-build for development
@@ -13,7 +13,11 @@ start: ## Start a development web server that watches and hot-reloads code
 analyze: ## Analyze production web asset bundle sizes to find bloat
 	@yarn analyze
 
-dist/index.html: src/**/* config.js webpack.common.js webpack.prod.js yarn.lock
+node_modules: yarn.lock
+	@yarn install
+	@touch node_modules
+
+dist/index.html: src/**/* config.js webpack.common.js webpack.prod.js
 	@yarn build
 
 .PHONY: help
