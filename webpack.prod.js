@@ -7,6 +7,7 @@ const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const CompressionPlugin = require("compression-webpack-plugin")
 
 const common = require('./webpack.common.js');
 
@@ -53,5 +54,9 @@ module.exports = merge(common, {
         new MiniCssExtractPlugin({
             filename: "css/[name].[contenthash:6].css",
         }),
+        // Compress all files with gzip. This allows nginx to serve compressed
+        // responses without dynamically compressing files, saving time and CPU
+        // Keeps original un-compressed files in output
+        new CompressionPlugin(),
     ],
 });
