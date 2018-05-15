@@ -11,6 +11,9 @@ module.exports = {
         // Main Javascript file
         app: "./src/index.js",
     },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+    },
     resolve: {
         alias: {
             // allow `import from 'config'` to be mapped to the config.js file

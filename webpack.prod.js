@@ -19,7 +19,6 @@ module.exports = merge(common, {
     output: {
         filename: 'js/[name].[contenthash:6].js',
         chunkFilename: 'js/[name]-chunk.[contenthash:6].js',
-        path: path.resolve(__dirname, "dist/"),
     },
     // source maps rendered as separate files with full source code
     devtool: "source-map",

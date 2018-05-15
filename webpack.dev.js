@@ -12,7 +12,6 @@ module.exports = merge(common, {
     output: {
         filename: '[name].js',
         chunkFilename: '[name]-chunk.js',
-        path: path.resolve(__dirname, "dist/"),
     },
     // source map contained in source file. Fast for rebuilds but large
     // file-size.
