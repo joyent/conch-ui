@@ -1,3 +1,6 @@
 node_modules
 bin/app.js
 dist/
+
+# Ignore local modifications
+config.js
