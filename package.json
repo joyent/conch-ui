@@ -5,6 +5,7 @@
     "main": "index.js",
     "dependencies": {
         "bulma": "^0.7.1",
+        "bulmaswatch": "^0.6.2",
         "d3": "^4.10.2",
         "d3-relationshipgraph": "^3.0.2",
         "i18n4v": "^0.2.2",

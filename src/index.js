@@ -27,7 +27,6 @@ t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
 });
 
 function requiresLogin(page) {
-    return Promise.resolve(page);
     return m
         .request({
             method: "GET",

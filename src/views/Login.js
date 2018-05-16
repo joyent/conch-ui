@@ -1,62 +1,93 @@
 import m from "mithril";
-import Auth from "../models/Auth";
-import Workspace from "../models/Workspace";
+
+import { conchApi } from "config";
 import t from "i18n4v";
 
-export default {
-    view({ state }) {
-        return m(
-            ".login-view",
-            m("form.pure-form", [
-                m("legend", t("Login to Conch")),
-                state.badLogin &&
-                    m(".pure-u-1", t("Incorrect email address or password")),
-                m("input[type=text]", {
-                    oninput: m.withAttr("value", Auth.setLoginEmail),
-                    placeholder: t("Email Address"),
-                    value: Auth.loginEmail,
-                }),
-                m("input[type=password]", {
-                    oninput: m.withAttr("value", Auth.setPassword),
-                    placeholder: t("Password"),
-                    value: Auth.password,
-                }),
-                m(
-                    "button[type=submit].pure-button.pure-button-primary",
-                    {
-                        onclick(e) {
-                            e.preventDefault();
-                            Auth.login().then(loggedIn => {
-                                if (loggedIn) {
-                                    state.badLogin = false;
-                                    Workspace.loadWorkspaces().then(_ =>
-                                        m.route.set("/")
-                                    );
-                                } else {
-                                    state.badLogin = true;
-                                }
-                            });
-                        },
-                    },
-                    t("Login")
-                ),
-            ]),
-            m(
-                "button.pure-button",
-                {
-                    onclick() {
-                        t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
-                            if (!lang || lang === "en") {
-                                t.setLanguage("ko");
-                            } else {
-                                t.setLanguage("en");
-                            }
-                            location.reload();
-                        });
-                    },
+export default () => {
+    let badLoginAttempt = false;
+    let emailAddress = "";
+    let password = "";
+
+    const login = (email, pass) => m.request({
+                method: "POST",
+                url: `${conchApi}/login`,
+                withCredentials: true,
+                data: { user: email, password: pass },
+                extract(xhr) {
+                    return {
+                        status: xhr.status,
+                        body: xhr.response ? JSON.parse(xhr.response) : null,
+                    };
                 },
-                t("Toggle Language")
-            )
-        );
-    },
+            })
+            .catch(e => {
+                if (e.status === 401) {
+                    this.reject();
+                } else {
+                    throw e;
+                }
+            });
+
+    return {
+        view() {
+            return m(
+                "section.hero.is-fullheight",
+                m(
+                    ".hero-body",
+                    m(
+                        ".container.has-text-centered",
+                        m(".column.is-4.is-offset-4", [
+                            m(".box", [
+                                m("h3.title", t("Login to Conch")),
+                                badLoginAttempt &&
+                                m(
+                                    "p.subtitle.has-text-warning",
+                                    t("Invalid email address or password")
+                                ),
+                                m("form",
+                                    m(".field",
+                                        m(".control",
+                                            m("input.input.is-info.is-fullwidth.is-rounded", {
+                                                value: emailAddress,
+                                                oninput: m.withAttr("value", value => emailAddress = value ),
+                                                type: "email",
+                                                placeholder: t("Email address"),
+                                            })
+                                        )
+                                    ),
+                                    m(".field",
+                                        m(
+                                            ".control",
+                                            m("input.input.is-info.is-fullwidth.is-rounded", {
+                                                value: password,
+                                                oninput: m.withAttr("value", value => password = value),
+                                                type: "password",
+                                                placeholder: t("Password"),
+                                            })
+                                        )
+                                    ),
+                                    m(
+                                        "button[type=submit].button.is-block.is-info.is-fullwidth",
+                                        {
+                                            onclick(e) {
+                                                e.target.classList.add("is-loading");
+                                                e.preventDefault();
+                                                login(emailAddress, password).then(
+                                                    () => { badLoginAttempt = false; m.route.set(m.route.get()) },
+                                                    () => { badLoginAttempt = true; password = "" }
+                                                ).then(
+                                                    () => { e.target.classList.remove("is-loading") }
+                                                );
+                                            },
+                                        },
+                                        t("Login")
+                                    )
+                                ),
+                            ]),
+                        ])
+                    )
+                )
+            );
+        }
+    };
 };
