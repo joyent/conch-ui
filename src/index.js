@@ -2,7 +2,8 @@ import m from "mithril";
 import t from "i18n4v";
 import moment from "moment";
 
-import './styles/main.scss';
+import { conchApi} from '../config';
+import "./styles/main.scss";
 
 import Device from "./views/Device";
 import Layout from "./views/Layout";
@@ -10,8 +11,7 @@ import Login from "./views/Login";
 import Problem from "./views/Problem";
 import Rack from "./views/Rack";
 import Status from "./views/Status";
-import RelayList from "./views/Relay/List";
-import RelayDetail from "./views/Relay/Detail";
+import RelayView from "./views/Relay";
 
 import korean from "./languages/ko.js";
 import english from "./languages/en.js";
@@ -26,90 +26,127 @@ t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
     t.translator.add(languages[lang] ? languages[lang] : languages.en);
 });
 
+function requiresLogin(page) {
+    return Promise.resolve(page);
+    return m
+        .request({
+            method: "GET",
+            url: `${conchApi}/login`,
+            withCredentials: true,
+            extract(xhr) {
+                return { status: xhr.status, body: xhr.response ? JSON.parse(xhr.response) : null, };
+            },
+        })
+        .catch(e => {
+            if (e.status === 401) {
+                this.reject()
+            } else {
+                throw e;
+            }
+        }).then(() => page, () => Login);
+}
+
 m.route(document.body, "/status", {
     "/status": {
-        render() {
-            return m(Layout.twoPane, { active: 1, title: "Status" }, m(Status));
+        onmatch() {
+            return requiresLogin({
+                view: () =>
+                    m(
+                        Layout.twoPane,
+                        { active: 1, title: "Status" },
+                        m(Status)
+                    ),
+            });
         },
     },
     "/rack": {
-        render() {
-            return m(
-                Layout.threePane,
-                { active: 1, title: "Racks" },
-                m(Rack.allRacks),
-                m(Rack.makeSelection)
-            );
+        onmatch() {
+            return requiresLogin({
+                view: () =>
+                    m(
+                        Layout.threePane,
+                        { active: 1, title: "Racks" },
+                        m(Rack.allRacks),
+                        m(Rack.makeSelection)
+                    ),
+            });
         },
     },
     "/rack/:id": {
-        render({ attrs }) {
-            return m(
-                Layout.threePane,
-                { active: 2, title: "Rack" },
-                m(Rack.allRacks),
-                m(Rack.rackLayout, attrs)
-            );
+        onmatch(attrs) {
+            return requiresLogin({
+                view: () =>
+                    m(
+                        Layout.threePane,
+                        { active: 2, title: "Rack" },
+                        m(Rack.allRacks),
+                        m(Rack.rackLayout, attrs)
+                    ),
+            });
         },
     },
     "/problem": {
-        render(vnode) {
-            return m(
-                Layout.threePane,
-                { active: 1, title: "Problems" },
-                m(Problem.selectProblemDevice),
-                m(Problem.makeSelection)
-            );
+        onmatch() {
+            return requiresLogin({
+                view: () =>
+                    m(
+                        Layout.threePane,
+                        { active: 1, title: "Problems" },
+                        m(Problem.selectProblemDevice),
+                        m(Problem.makeSelection)
+                    ),
+            });
         },
     },
     "/problem/:id": {
-        render({ attrs }) {
-            return m(
-                Layout.threePane,
-                { active: 2, title: "Problem" },
-                m(Problem.selectProblemDevice, attrs),
-                m(Problem.showDevice, attrs)
-            );
+        onmatch(attrs) {
+            return requiresLogin({
+                view: () =>
+                    m(
+                        Layout.threePane,
+                        { active: 2, title: "Problem" },
+                        m(Problem.selectProblemDevice, attrs),
+                        m(Problem.showDevice, attrs)
+                    ),
+            });
         },
     },
     "/device": {
-        render(vnode) {
-            return m(
-                Layout.threePane,
-                { active: 1, title: "Device Reports" },
-                m(Device.allDevices),
-                m(Device.makeSelection)
-            );
+        onmatch(attrs) {
+            return requiresLogin({
+                view: () =>
+                    m(
+                        Layout.threePane,
+                        { active: 1, title: "Device Reports" },
+                        m(Device.allDevices),
+                        m(Device.makeSelection)
+                    ),
+            });
         },
     },
     "/device/:id": {
-        render({ attrs }) {
-            return m(
-                Layout.threePane,
-                { active: 2, title: "Report" },
-                m(Device.allDevices),
-                m(Device.deviceReport, attrs)
-            );
+        onmatch(attrs) {
+            return requiresLogin({
+                view: () =>
+                    m(
+                        Layout.threePane,
+                        { active: 2, title: "Report" },
+                        m(Device.allDevices),
+                        m(Device.deviceReport, attrs)
+                    ),
+            });
         },
     },
     "/relay": {
-        render: vnode => {
-            return m(
-                Layout.threePane,
-                { active: 1, title: "Relays" },
-                m(RelayList),
-                m(RelayDetail)
-            );
+        onmatch(attrs) {
+            attrs.active = 1;
+            return requiresLogin(RelayView, attrs);
         },
     },
     "/relay/:id": {
-        render: ({ attrs }) => {
-            return m(
-                Layout.threePane,
-                { active: 2, title: "Relay" },
-                m(RelayList, attrs),
-                m(RelayDetail, attrs)
-            );
+        onmatch(attrs) {
+            attrs.active = 2;
+            return requiresLogin(RelayView, attrs);
         },
     },
     "/login": Login,

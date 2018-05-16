@@ -47,3 +47,7 @@ Resources for learning Mithril:
 * [Start Here--Official Tutorial](https://mithril.js.org/simple-application.html)
 * [How to code X in mithril](https://github.com/osban/mithril-codex/blob/master/how2code.md)
 * [Good Mithril Walkthrough by Auth0](https://auth0.com/blog/build-robust-apps-with-mithril-and-auth0/)
+* [Thinking in React](https://reactjs.org/docs/thinking-in-react.html).
+  React-specific, but good explanation of how to break down a view and structure components
+* [How I use Mithril](https://james-forbes.com/?/posts/how-i-use-mithril). A
+  review of effective practices with Mithril
