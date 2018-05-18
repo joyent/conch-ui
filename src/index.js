@@ -13,6 +13,8 @@ import Rack from "./views/Rack";
 import Status from "./views/Status";
 import RelayView from "./views/Relay";
 
+import Main from "./views/component/Main";
+
 import korean from "./languages/ko.js";
 import english from "./languages/en.js";
 const languages = {
@@ -26,7 +28,7 @@ t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
     t.translator.add(languages[lang] ? languages[lang] : languages.en);
 });
 
-function requiresLogin(page) {
+function requiresLogin(view) {
     return m
         .request({
             method: "GET",
@@ -42,111 +44,136 @@ function requiresLogin(page) {
             } else {
                 throw e;
             }
-        }).then(() => page, () => Login);
+        }).then(() => view, () => Login);
 }
 
-m.route(document.body, "/status", {
-    "/status": {
-        onmatch() {
-            return requiresLogin({
-                view: () =>
-                    m(
-                        Layout.twoPane,
-                        { active: 1, title: "Status" },
-                        m(Status)
-                    ),
-            });
-        },
-    },
-    "/rack": {
-        onmatch() {
-            return requiresLogin({
-                view: () =>
-                    m(
-                        Layout.threePane,
-                        { active: 1, title: "Racks" },
-                        m(Rack.allRacks),
-                        m(Rack.makeSelection)
-                    ),
-            });
-        },
-    },
-    "/rack/:id": {
-        onmatch(attrs) {
-            return requiresLogin({
-                view: () =>
-                    m(
-                        Layout.threePane,
-                        { active: 2, title: "Rack" },
-                        m(Rack.allRacks),
-                        m(Rack.rackLayout, attrs)
-                    ),
-            });
-        },
-    },
-    "/problem": {
-        onmatch() {
-            return requiresLogin({
-                view: () =>
-                    m(
-                        Layout.threePane,
-                        { active: 1, title: "Problems" },
-                        m(Problem.selectProblemDevice),
-                        m(Problem.makeSelection)
-                    ),
-            });
-        },
-    },
-    "/problem/:id": {
-        onmatch(attrs) {
-            return requiresLogin({
-                view: () =>
-                    m(
-                        Layout.threePane,
-                        { active: 2, title: "Problem" },
-                        m(Problem.selectProblemDevice, attrs),
-                        m(Problem.showDevice, attrs)
-                    ),
-            });
-        },
-    },
-    "/device": {
-        onmatch(attrs) {
-            return requiresLogin({
-                view: () =>
-                    m(
-                        Layout.threePane,
-                        { active: 1, title: "Device Reports" },
-                        m(Device.allDevices),
-                        m(Device.makeSelection)
-                    ),
-            });
-        },
-    },
-    "/device/:id": {
-        onmatch(attrs) {
-            return requiresLogin({
-                view: () =>
-                    m(
-                        Layout.threePane,
-                        { active: 2, title: "Report" },
-                        m(Device.allDevices),
-                        m(Device.deviceReport, attrs)
-                    ),
-            });
-        },
-    },
-    "/relay": {
-        onmatch(attrs) {
-            attrs.active = 1;
-            return requiresLogin(RelayView, attrs);
-        },
-    },
-    "/relay/:id": {
-        onmatch(attrs) {
-            attrs.active = 2;
-            return requiresLogin(RelayView, attrs);
-        },
-    },
-    "/login": Login,
+function dispatch(root, defaultRoute, routes) {
+
+    let layout;
+    const table = Object.keys(routes).reduce((accTable, route) => {
+        accTable[route] = {
+            onmatch(args, pendingRoute) {
+                return requiresLogin(routes[route]).then((comp) => {
+                    layout = comp.layout;
+                    return comp.view || comp;
+                });
+
+            },
+            render(vnode) {
+                return (layout)
+                    ? m(Main, vnode)
+                    : vnode;
+            }
+        };
+
+        return accTable;
+    }, {});
+
+  m.route(root, defaultRoute, table);
+}
+
+dispatch(document.body, "/status", {
+    "/status": { layout: Main, view: Status },
+    "/rack": { layout: Main, view: Rack },
 });
+
+//m.route(document.body, "/status", {
+    //"/status": {
+        //onmatch() {
+            //return requiresLogin(Status);
+        //},
+		//render(vnode) {
+            //if (vnode.tag !== "div")
+                //return vnode;
+            //return m(Main, m(Status));
+		//}
+    //},
+    //"/rack": {
+        //onmatch() {
+            //return requiresLogin(Status);
+        //},
+		//render(vnode) {
+            //if (vnode.tag !== "div")
+                //return vnode;
+            //return m(Main, m(Rack));
+		//}
+    //},
+    //"/rack/:id": {
+        //onmatch(attrs) {
+            //return requiresLogin({
+                //view: () =>
+                    //m(
+                        //Layout.threePane,
+                        //{ active: 2, title: "Rack" },
+                        //m(Rack.allRacks),
+                        //m(Rack.rackLayout, attrs)
+                    //),
+            //});
+        //},
+    //},
+    //"/problem": {
+        //onmatch() {
+            //return requiresLogin({
+                //view: () =>
+                    //m(
+                        //Layout.threePane,
+                        //{ active: 1, title: "Problems" },
+                        //m(Problem.selectProblemDevice),
+                        //m(Problem.makeSelection)
+                    //),
+            //});
+        //},
+    //},
+    //"/problem/:id": {
+        //onmatch(attrs) {
+            //return requiresLogin({
+                //view: () =>
+                    //m(
+                        //Layout.threePane,
+                        //{ active: 2, title: "Problem" },
+                        //m(Problem.selectProblemDevice, attrs),
+                        //m(Problem.showDevice, attrs)
+                    //),
+            //});
+        //},
+    //},
+    //"/device": {
+        //onmatch(attrs) {
+            //return requiresLogin({
+                //view: () =>
+                    //m(
+                        //Layout.threePane,
+                        //{ active: 1, title: "Device Reports" },
+                        //m(Device.allDevices),
+                        //m(Device.makeSelection)
+                    //),
+            //});
+        //},
+    //},
+    //"/device/:id": {
+        //onmatch(attrs) {
+            //return requiresLogin({
+                //view: () =>
+                    //m(
+                        //Layout.threePane,
+                        //{ active: 2, title: "Report" },
+                        //m(Device.allDevices),
+                        //m(Device.deviceReport, attrs)
+                    //),
+            //});
+        //},
+    //},
+    //"/relay": {
+        //onmatch(attrs) {
+            //attrs.active = 1;
+            //return requiresLogin(RelayView, attrs);
+        //},
+    //},
+    //"/relay/:id": {
+        //onmatch(attrs) {
+            //attrs.active = 2;
+            //return requiresLogin(RelayView, attrs);
+        //},
+    //},
+    //"/login": Login,
+//});

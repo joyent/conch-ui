@@ -2,15 +2,15 @@ import m from "mithril";
 import t from "i18n4v";
 import R from "ramda";
 
-import Auth from "../models/Auth";
-import Device from "../models/Device";
-import Rack from "../models/Rack";
-import Relay from "../models/Relay";
-import Workspace from "../models/Workspace";
-import Icons from "./component/Icons";
-import Table from "./component/Table";
+import Auth from "../../models/Auth";
+import Device from "../../models/Device";
+import Rack from "../../models/Rack";
+import Relay from "../../models/Relay";
+import Workspace from "../../models/Workspace";
+import Icons from "../component/Icons";
+import Table from "../component/Table";
 
-import RackProgress from "./Status/RackProgress";
+import RackProgress from "./RackProgress";
 
 function deviceList(title, isProblem, devices) {
     const linkPrefix = isProblem ? "/problem/" : "/device/";

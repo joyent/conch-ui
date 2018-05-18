@@ -67,7 +67,7 @@ export default () => {
                                         )
                                     ),
                                     m(
-                                        "button[type=submit].button.is-block.is-info.is-fullwidth",
+                                        "button[type=submit].button.is-primary.is-fullwidth",
                                         {
                                             onclick(e) {
                                                 e.target.classList.add("is-loading");
