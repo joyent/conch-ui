@@ -33,16 +33,12 @@ export default () => {
 						m(Sidebar, {
 							isWorkspaceAdmin: true,
 							isGlobalAdmin: true,
-							workspaces: state.workspaces
+							workspaces: state.workspaces,
 						})
 					),
-					m(
-						".column.is-10",
-						contentView
-					)
+					m(".column.is-10", contentView)
 				)
-			)
-		]
+			),
+		],
 	};
 };
-

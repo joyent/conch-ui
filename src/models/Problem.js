@@ -1,46 +1,46 @@
 import m from "mithril";
-import { conchApi } from 'config';
+import { conchApi } from "config";
 
 function sortObject(obj) {
-    return Object.keys(obj)
-        .sort()
-        .reduce((acc, i) => {
-            acc[i] = obj[i];
-            return acc;
-        }, {});
+	return Object.keys(obj)
+		.sort()
+		.reduce((acc, i) => {
+			acc[i] = obj[i];
+			return acc;
+		}, {});
 }
 
 const Problem = {
-    devices: {},
-    current: null,
-    loadDeviceProblems(workspaceId) {
-        return m
-            .request({
-                method: "GET",
-                url: `${conchApi}/workspace/${workspaceId}/problem`,
-                withCredentials: true,
-            })
-            .then(res => {
-                Problem.devices = {
-                    failing: sortObject(res.failing),
-                    unlocated: sortObject(res.unlocated),
-                    unreported: sortObject(res.unreported),
-                };
-            })
-            .catch(e => {
-                if (e.error === "unauthorized") {
-                    m.route.set("/login");
-                } else {
-                    console.log(`Error in GET /problem: ${e.message}`);
-                }
-            });
-    },
-    deviceHasProblem(deviceId) {
-        // Search through all categories for a matching deviceId
-        return Object.keys(Problem.devices).some(
-            group => Problem.devices[group][deviceId]
-        );
-    },
+	devices: {},
+	current: null,
+	loadDeviceProblems(workspaceId) {
+		return m
+			.request({
+				method: "GET",
+				url: `${conchApi}/workspace/${workspaceId}/problem`,
+				withCredentials: true,
+			})
+			.then(res => {
+				Problem.devices = {
+					failing: sortObject(res.failing),
+					unlocated: sortObject(res.unlocated),
+					unreported: sortObject(res.unreported),
+				};
+			})
+			.catch(e => {
+				if (e.error === "unauthorized") {
+					m.route.set("/login");
+				} else {
+					console.log(`Error in GET /problem: ${e.message}`);
+				}
+			});
+	},
+	deviceHasProblem(deviceId) {
+		// Search through all categories for a matching deviceId
+		return Object.keys(Problem.devices).some(
+			group => Problem.devices[group][deviceId]
+		);
+	},
 };
 
 export default Problem;

@@ -7,7 +7,7 @@ export default model => {
 			m(
 				`a[href=/${link}]`,
 				{
-					oncreate: m.route.link 
+					oncreate: m.route.link,
 					//class:
 					//name.toLowerCase() === model.sidebar.active.toLowerCase() &&
 					//"is-active",

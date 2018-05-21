@@ -13,7 +13,7 @@ export default model => {
 			w
 		);
 	return {
-		view: ({attrs}) =>
+		view: ({ attrs }) =>
 			m(
 				".navbar[role=navigation]",
 				m(

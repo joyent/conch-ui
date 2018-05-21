@@ -4,39 +4,39 @@ import Relay from "../../models/Relay";
 import Workspace from "../../models/Workspace";
 
 export default {
-    loading: true,
+	loading: true,
 
-    oninit: ({ state }) => {
-        Workspace.withWorkspace(workspaceId => {
-            Relay.loadRelays(workspaceId).then(() => {
-                state.loading = false;
-            });
-        });
-    },
+	oninit: ({ state }) => {
+		Workspace.withWorkspace(workspaceId => {
+			Relay.loadRelays(workspaceId).then(() => {
+				state.loading = false;
+			});
+		});
+	},
 
-    view: ({ state, attrs }) => {
-        if (state.loading) return m(".loading", t("Loading..."));
+	view: ({ state, attrs }) => {
+		if (state.loading) return m(".loading", t("Loading..."));
 
-        if (attrs.id)
-            Relay.current = Relay.list.find(({ id }) => id === attrs.id);
-        else Relay.current = null;
+		if (attrs.id)
+			Relay.current = Relay.list.find(({ id }) => id === attrs.id);
+		else Relay.current = null;
 
-        return Relay.list.map(relay => {
-            return m(
-                "a.selection-list-item",
-                {
-                    href: `/relay/${relay.id}`,
-                    onclick: () => {
-                        Relay.current = relay;
-                    },
-                    oncreate: m.route.link,
-                    class:
-                        relay === Relay.current
-                            ? "selection-list-item-active"
-                            : "",
-                },
-                relay.alias || relay.id
-            );
-        });
-    },
+		return Relay.list.map(relay => {
+			return m(
+				"a.selection-list-item",
+				{
+					href: `/relay/${relay.id}`,
+					onclick: () => {
+						Relay.current = relay;
+					},
+					oncreate: m.route.link,
+					class:
+						relay === Relay.current
+							? "selection-list-item-active"
+							: "",
+				},
+				relay.alias || relay.id
+			);
+		});
+	},
 };
