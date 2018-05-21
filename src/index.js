@@ -55,7 +55,7 @@ function dispatch(root, defaultRoute, routes) {
             onmatch(args, pendingRoute) {
                 return requiresLogin(routes[route]).then((comp) => {
                     layout = comp.layout;
-                    return comp.view || comp;
+                    return { view: () => m(comp.view || comp, { currentWorkspaceId: "496f76b4-8245-4d41-8d97-42fe988401c5"}) };
                 });
 
             },
