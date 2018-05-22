@@ -28,7 +28,7 @@ t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
 	t.translator.add(languages[lang] ? languages[lang] : languages.en);
 });
 
-let state = {};
+const state = {};
 
 function loadWorkspaces() {
 	if (state.workspaces != null) return Promise.resolve();
@@ -44,8 +44,8 @@ function loadWorkspaces() {
 		});
 }
 
-function requiresLogin(view) {
-	if (state.loggedIn) return Promise.resolve(view);
+function setupSession() {
+	if (state.loggedIn) return loadWorkspaces();
 	return m
 		.request({
 			method: "GET",
@@ -68,7 +68,7 @@ function requiresLogin(view) {
 		.then(
 			() => {
 				state.loggedIn = true;
-				return loadWorkspaces().then(() => view);
+				return loadWorkspaces();
 			},
 			() => Promise.reject(Login)
 		);
@@ -80,7 +80,8 @@ function dispatch(root, routes) {
 		let workspacePrefixedRoute = "/:wid" + route;
 		accTable[workspacePrefixedRoute] = {
 			onmatch(args, pendingRoute) {
-				return requiresLogin(routes[route]).then(comp => {
+				return setupSession().then(() => {
+					let comp = routes[route];
 					let workspaceId = args.wid;
 					state.currentWorkspace =
 						state.workspaces.find(w => w.id === workspaceId) ||
@@ -101,7 +102,7 @@ function dispatch(root, routes) {
 
 	table["/"] = {
 		onmatch() {
-			return requiresLogin(null).then(comp => {
+			return setupSession().then(comp => {
 				m.route.set(`/${state.currentWorkspace.id}/status`);
 			}, () => Login);
 		},
@@ -114,102 +115,3 @@ dispatch(document.body, {
 	"/status": { layout: Main, view: Status },
 	"/rack": { layout: Main, view: Rack },
 });
-
-//m.route(document.body, "/status", {
-//"/status": {
-//onmatch() {
-//return requiresLogin(Status);
-//},
-//render(vnode) {
-//if (vnode.tag !== "div") return vnode;
-//return m(Main, m(Status));
-//},
-//},
-//"/rack": {
-//onmatch() {
-//return requiresLogin(Status);
-//},
-//render(vnode) {
-//if (vnode.tag !== "div") return vnode;
-//return m(Main, m(Rack));
-//},
-//},
-//"/rack/:id": {
-//onmatch(attrs) {
-//return requiresLogin({
-//view: () =>
-//m(
-//Layout.threePane,
-//{ active: 2, title: "Rack" },
-//m(Rack.allRacks),
-//m(Rack.rackLayout, attrs)
-//),
-//});
-//},
-//},
-//"/problem": {
-//onmatch() {
-//return requiresLogin({
-//view: () =>
-//m(
-//Layout.threePane,
-//{ active: 1, title: "Problems" },
-//m(Problem.selectProblemDevice),
-//m(Problem.makeSelection)
-//),
-//});
-//},
-//},
-//"/problem/:id": {
-//onmatch(attrs) {
-//return requiresLogin({
-//view: () =>
-//m(
-//Layout.threePane,
-//{ active: 2, title: "Problem" },
-//m(Problem.selectProblemDevice, attrs),
-//m(Problem.showDevice, attrs)
-//),
-//});
-//},
-//},
-//"/device": {
-//onmatch(attrs) {
-//return requiresLogin({
-//view: () =>
-//m(
-//Layout.threePane,
-//{ active: 1, title: "Device Reports" },
-//m(Device.allDevices),
-//m(Device.makeSelection)
-//),
-//});
-//},
-//},
-//"/device/:id": {
-//onmatch(attrs) {
-//return requiresLogin({
-//view: () =>
-//m(
-//Layout.threePane,
-//{ active: 2, title: "Report" },
-//m(Device.allDevices),
-//m(Device.deviceReport, attrs)
-//),
-//});
-//},
-//},
-//"/relay": {
-//onmatch(attrs) {
-//attrs.active = 1;
-//return requiresLogin(RelayView, attrs);
-//},
-//},
-//"/relay/:id": {
-//onmatch(attrs) {
-//attrs.active = 2;
-//return requiresLogin(RelayView, attrs);
-//},
-//},
-//"/login": Login,
-//});
