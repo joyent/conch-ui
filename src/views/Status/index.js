@@ -4,6 +4,8 @@ import { conchApi } from "config";
 
 import {  Spinner, ViewTitleHero } from "../component";
 
+import RackProgress from "./RackProgress";
+
 const StatusTile = {
 	view: ({ children }) =>
 		m(".tile.is-parent", m("article.tile.is-child.box", children)),
@@ -60,6 +62,32 @@ export default () => {
 									m("p.title", validationFailCount),
 									m("p.subtitle", "Validation Issues"),
 							  ]
+					)
+				),
+				m(
+					".tile.is-ancestor.has-text-centered",
+					m(
+						StatusTile,
+						m("div.box", { style: "background-color:rgba(28%, 61%, 91%, 0.4)" },
+							rackRooms == null
+								? m(Spinner)
+								: [
+										m("p.subtitle", "Rack Validation Status"),
+									m(RackProgress, { rackRooms, group: "status" } )
+								]
+						)
+					),
+					m(
+						StatusTile,
+						m("div.box", { style: "background-color:rgba(28%, 61%, 91%, 0.4)" },
+							rackRooms == null
+								? m(Spinner)
+								: [
+
+										m("p.subtitle", "Validation Status by Role"),
+									m(RackProgress, { rackRooms, group: "role" } )
+								]
+						)
 					)
 				),
 			),

@@ -32,3 +32,8 @@ progress::-webkit-progress-value {
 		transform: rotate(360deg);
 	}
 }
+
+// overrides for d3.relationshipgraph.min.css
+.relationshipGraph-block {
+	stroke: none;
+}

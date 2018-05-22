@@ -3,7 +3,6 @@ import t from "i18n4v";
 import * as d3 from "d3";
 import RelationshipGraph from "d3-relationshipgraph";
 
-import Rack from "../../models/Rack";
 
 function nodeParent({ device_progress }) {
 	// If there's any failing devices, the whole rack is Failing
@@ -79,8 +78,8 @@ export default () => {
 				selectParent = rack => rack.role;
 			}
 
-			let rackStatus = Object.keys(Rack.rackRooms).reduce((acc, room) => {
-				Rack.rackRooms[room].forEach(rack => {
+			let rackStatus = Object.keys(attrs.rackRooms).reduce((acc, room) => {
+				attrs.rackRooms[room].forEach(rack => {
 					acc.push({
 						Room: room,
 						"Rack Name": rack.name,
