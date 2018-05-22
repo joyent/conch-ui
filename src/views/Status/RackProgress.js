@@ -67,7 +67,7 @@ const sortNodes = sortOrder => nodes =>
 		else return sortOrder[a.parent] > sortOrder[b.parent] ? 1 : -1;
 	});
 
-export default function RackProgress() {
+export default () => {
 	return {
 		view: ({ attrs }) => {
 			let sortFunction, selectParent;

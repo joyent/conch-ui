@@ -5,7 +5,7 @@ export default model => {
 		m(
 			"li",
 			m(
-				`a[href=/${link}]`,
+				`a[href=/${m.route.param("wid")}/${link}]`,
 				{
 					oncreate: m.route.link,
 					//class:

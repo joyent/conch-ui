@@ -5,40 +5,23 @@ import { conchApi } from "config";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
-export default () => {
-	let state = {};
-
-	return {
-		oninit: () => {
-			console.log("foobar");
-			return Promise.all([
-				m.request({
-					method: "GET",
-					url: `${conchApi}/workspace`,
-					withCredentials: true,
-				}),
-			]).then(([workspaces]) => {
-				state.workspace = workspaces;
-			});
-		},
-		view: ({ children: [contentView] }) => [
-			m(Navbar),
+export default {
+	view: ({ attrs, children: [contentView] }) => [
+		m(Navbar, attrs),
+		m(
+			".container",
+			{ style: "margin-top:20px" },
 			m(
-				".container",
-				{ style: "margin-top:20px" },
+				".columns",
 				m(
-					".columns",
-					m(
-						".column.is-2",
-						m(Sidebar, {
-							isWorkspaceAdmin: true,
-							isGlobalAdmin: true,
-							workspaces: state.workspaces,
-						})
-					),
-					m(".column.is-10", contentView)
-				)
-			),
-		],
-	};
+					".column.is-2",
+					m(Sidebar, {
+						isWorkspaceAdmin: true,
+						isGlobalAdmin: true,
+					})
+				),
+				m(".column.is-10", contentView)
+			)
+		),
+	],
 };

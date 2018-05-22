@@ -28,7 +28,24 @@ t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
 	t.translator.add(languages[lang] ? languages[lang] : languages.en);
 });
 
+let state = {};
+
+function loadWorkspaces() {
+	if (state.workspaces != null) return Promise.resolve();
+	return m
+		.request({
+			method: "GET",
+			url: `${conchApi}/workspace`,
+			withCredentials: true,
+		})
+		.then(workspaces => {
+			state.workspaces = workspaces;
+			state.currentWorkspace = state.workspaces[0];
+		});
+}
+
 function requiresLogin(view) {
+	if (state.loggedIn) return Promise.resolve(view);
 	return m
 		.request({
 			method: "GET",
@@ -43,141 +60,156 @@ function requiresLogin(view) {
 		})
 		.catch(e => {
 			if (e.status === 401) {
-				this.reject();
+				Promise.reject();
 			} else {
 				throw e;
 			}
 		})
-		.then(() => view, () => Login);
+		.then(
+			() => {
+				state.loggedIn = true;
+				return loadWorkspaces().then(() => view);
+			},
+			() => Promise.reject(Login)
+		);
 }
 
-function dispatch(root, defaultRoute, routes) {
+function dispatch(root, routes) {
 	let layout;
 	const table = Object.keys(routes).reduce((accTable, route) => {
-		accTable[route] = {
+		let workspacePrefixedRoute = "/:wid" + route;
+		accTable[workspacePrefixedRoute] = {
 			onmatch(args, pendingRoute) {
 				return requiresLogin(routes[route]).then(comp => {
+					let workspaceId = args.wid;
+					state.currentWorkspace =
+						state.workspaces.find(w => w.id === workspaceId) ||
+						state.currentWorkspace;
 					layout = comp.layout;
 					return {
-						view: () =>
-							m(comp.view || comp, {
-								currentWorkspaceId:
-									"496f76b4-8245-4d41-8d97-42fe988401c5",
-							}),
+						view: () => m(comp.view || comp, state),
 					};
-				});
+				}, () => Login);
 			},
 			render(vnode) {
-				return layout ? m(Main, vnode) : vnode;
+				return layout ? m(Main, state, vnode) : vnode;
 			},
 		};
 
 		return accTable;
 	}, {});
 
-	m.route(root, defaultRoute, table);
+	table["/"] = {
+		onmatch() {
+			return requiresLogin(null).then(comp => {
+				m.route.set(`/${state.currentWorkspace.id}/status`);
+			}, () => Login);
+		},
+	};
+
+	m.route(root, "/", table);
 }
 
-dispatch(document.body, "/status", {
+dispatch(document.body, {
 	"/status": { layout: Main, view: Status },
 	"/rack": { layout: Main, view: Rack },
 });
 
 //m.route(document.body, "/status", {
-	//"/status": {
-		//onmatch() {
-			//return requiresLogin(Status);
-		//},
-		//render(vnode) {
-			//if (vnode.tag !== "div") return vnode;
-			//return m(Main, m(Status));
-		//},
-	//},
-	//"/rack": {
-		//onmatch() {
-			//return requiresLogin(Status);
-		//},
-		//render(vnode) {
-			//if (vnode.tag !== "div") return vnode;
-			//return m(Main, m(Rack));
-		//},
-	//},
-	//"/rack/:id": {
-		//onmatch(attrs) {
-			//return requiresLogin({
-				//view: () =>
-					//m(
-						//Layout.threePane,
-						//{ active: 2, title: "Rack" },
-						//m(Rack.allRacks),
-						//m(Rack.rackLayout, attrs)
-					//),
-			//});
-		//},
-	//},
-	//"/problem": {
-		//onmatch() {
-			//return requiresLogin({
-				//view: () =>
-					//m(
-						//Layout.threePane,
-						//{ active: 1, title: "Problems" },
-						//m(Problem.selectProblemDevice),
-						//m(Problem.makeSelection)
-					//),
-			//});
-		//},
-	//},
-	//"/problem/:id": {
-		//onmatch(attrs) {
-			//return requiresLogin({
-				//view: () =>
-					//m(
-						//Layout.threePane,
-						//{ active: 2, title: "Problem" },
-						//m(Problem.selectProblemDevice, attrs),
-						//m(Problem.showDevice, attrs)
-					//),
-			//});
-		//},
-	//},
-	//"/device": {
-		//onmatch(attrs) {
-			//return requiresLogin({
-				//view: () =>
-					//m(
-						//Layout.threePane,
-						//{ active: 1, title: "Device Reports" },
-						//m(Device.allDevices),
-						//m(Device.makeSelection)
-					//),
-			//});
-		//},
-	//},
-	//"/device/:id": {
-		//onmatch(attrs) {
-			//return requiresLogin({
-				//view: () =>
-					//m(
-						//Layout.threePane,
-						//{ active: 2, title: "Report" },
-						//m(Device.allDevices),
-						//m(Device.deviceReport, attrs)
-					//),
-			//});
-		//},
-	//},
-	//"/relay": {
-		//onmatch(attrs) {
-			//attrs.active = 1;
-			//return requiresLogin(RelayView, attrs);
-		//},
-	//},
-	//"/relay/:id": {
-		//onmatch(attrs) {
-			//attrs.active = 2;
-			//return requiresLogin(RelayView, attrs);
-		//},
-	//},
-	//"/login": Login,
+//"/status": {
+//onmatch() {
+//return requiresLogin(Status);
+//},
+//render(vnode) {
+//if (vnode.tag !== "div") return vnode;
+//return m(Main, m(Status));
+//},
+//},
+//"/rack": {
+//onmatch() {
+//return requiresLogin(Status);
+//},
+//render(vnode) {
+//if (vnode.tag !== "div") return vnode;
+//return m(Main, m(Rack));
+//},
+//},
+//"/rack/:id": {
+//onmatch(attrs) {
+//return requiresLogin({
+//view: () =>
+//m(
+//Layout.threePane,
+//{ active: 2, title: "Rack" },
+//m(Rack.allRacks),
+//m(Rack.rackLayout, attrs)
+//),
+//});
+//},
+//},
+//"/problem": {
+//onmatch() {
+//return requiresLogin({
+//view: () =>
+//m(
+//Layout.threePane,
+//{ active: 1, title: "Problems" },
+//m(Problem.selectProblemDevice),
+//m(Problem.makeSelection)
+//),
+//});
+//},
+//},
+//"/problem/:id": {
+//onmatch(attrs) {
+//return requiresLogin({
+//view: () =>
+//m(
+//Layout.threePane,
+//{ active: 2, title: "Problem" },
+//m(Problem.selectProblemDevice, attrs),
+//m(Problem.showDevice, attrs)
+//),
+//});
+//},
+//},
+//"/device": {
+//onmatch(attrs) {
+//return requiresLogin({
+//view: () =>
+//m(
+//Layout.threePane,
+//{ active: 1, title: "Device Reports" },
+//m(Device.allDevices),
+//m(Device.makeSelection)
+//),
+//});
+//},
+//},
+//"/device/:id": {
+//onmatch(attrs) {
+//return requiresLogin({
+//view: () =>
+//m(
+//Layout.threePane,
+//{ active: 2, title: "Report" },
+//m(Device.allDevices),
+//m(Device.deviceReport, attrs)
+//),
+//});
+//},
+//},
+//"/relay": {
+//onmatch(attrs) {
+//attrs.active = 1;
+//return requiresLogin(RelayView, attrs);
+//},
+//},
+//"/relay/:id": {
+//onmatch(attrs) {
+//attrs.active = 2;
+//return requiresLogin(RelayView, attrs);
+//},
+//},
+//"/login": Login,
 //});
