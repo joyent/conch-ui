@@ -9,8 +9,7 @@ export default {
 	view: ({ attrs, children: [contentView] }) => [
 		m(Navbar, attrs),
 		m(
-			".container",
-			{ style: "margin-top:20px" },
+			".section",
 			m(
 				".columns",
 				m(
