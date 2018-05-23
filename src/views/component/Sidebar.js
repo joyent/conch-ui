@@ -25,12 +25,7 @@ export default model => {
 				m(
 					"ul.menu-list",
 					menuItem("Status", "status"),
-					menuItem(
-						"Datacenter",
-						"datacenter",
-						menuItem("Map", "rack"),
-						menuItem("Rack Assignment", "rack")
-					),
+					menuItem( "Rack Assignment", "rack"),
 					menuItem(
 						"Devices",
 						"device",
