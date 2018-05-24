@@ -42,3 +42,8 @@ progress::-webkit-progress-value {
 .relationshipGraph-block {
 	stroke: none;
 }
+
+.panel-block.is-active {
+	border-left-width: 4px;
+	border-left-color: $primary;
+}

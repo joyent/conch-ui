@@ -1,11 +1,14 @@
 import m from "mithril";
 import stream from "mithril/stream";
+import search from "fuzzysearch";
 
 import Spinner from "../component/Spinner";
 
 export default () => {
 	const rackFilterText = stream("");
-	const roomNameFilter = roomName => roomName.indexOf(roomFilterText()) >= 0;
+	const rackFilterTextLC = rackFilterText.map(t => t.toLowerCase());
+	const rackNameFilter = rackName =>
+		search(rackFilterTextLC(), rackName.toLowerCase());
 	const rackProgressFilter = stream(() => true);
 	let rackRoleFilter = () => true;
 	return {
@@ -107,10 +110,7 @@ export default () => {
 					)
 				),
 				activeRacks().reduce((acc, rack) => {
-					if (
-						rack.name.indexOf(rackFilterText()) >= 0 &&
-						rackRoleFilter(rack.role)
-					)
+					if (rackNameFilter(rack.name) && rackRoleFilter(rack.role))
 						acc.push(
 							m(
 								"a.panel-block",

@@ -1,11 +1,14 @@
 import m from "mithril";
 import stream from "mithril/stream";
+import search from "fuzzysearch";
 
 import Spinner from "../component/Spinner";
 
 export default () => {
 	const roomFilterText = stream("");
-	const roomNameFilter = roomName => roomName.indexOf(roomFilterText()) >= 0;
+	const roomFilterTextLC = roomFilterText.map(t => t.toLowerCase());
+	const roomNameFilter = roomName =>
+		search(roomFilterTextLC(), roomName.toLowerCase());
 	const rackProgressFilter = stream(() => true);
 	return {
 		view: ({ attrs: { rackRooms, activeRoomName, activeRacks } }) =>
