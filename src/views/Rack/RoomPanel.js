@@ -1,15 +1,14 @@
 import m from "mithril";
+import stream from "mithril/stream";
 
 import Spinner from "../component/Spinner";
 
-import RackLayout from "./RackLayout";
-
 export default () => {
-	let roomFilterText = "";
-	const roomNameFilter = roomName => roomName.indexOf(roomFilterText) >= 0;
-	let racksFilter = () => true;
+	const roomFilterText = stream("");
+	const roomNameFilter = roomName => roomName.indexOf(roomFilterText()) >= 0;
+	const rackProgressFilter = stream(() => true);
 	return {
-		view: ({ attrs: { state } }) =>
+		view: ({ attrs: { rackRooms, activeRoomName, activeRacks } }) =>
 			m(
 				"nav.panel",
 				m("p.panel-heading", "Datacenter Rooms"),
@@ -20,9 +19,7 @@ export default () => {
 						m(
 							"input.input.is-small[type=text][placeholder=Search Rooms]",
 							{
-								oninput: m.withAttr("value", v => {
-									roomFilterText = v;
-								}),
+								oninput: m.withAttr("value", roomFilterText),
 							}
 						),
 						m("span.icon.is-small.is-left", m("i.fas fa-search"))
@@ -38,13 +35,13 @@ export default () => {
 									e.classList.remove("is-active")
 								);
 								e.target.classList.add("is-active");
-								racksFilter = () => true;
+								rackProgressFilter(() => true);
 							},
 						},
 						"all"
 					),
 					Object.values(
-						state.rackRooms.reduce((acc, room) => {
+						rackRooms().reduce((acc, room) => {
 							if (acc[room.progress]) return acc;
 							acc[room.progress] = m(
 								"a",
@@ -54,8 +51,10 @@ export default () => {
 											e => e.classList.remove("is-active")
 										);
 										e.target.classList.add("is-active");
-										racksFilter = progress =>
-											progress === room.progress;
+										rackProgressFilter(
+											progress =>
+												progress === room.progress
+										);
 									},
 								},
 								room.progress
@@ -64,20 +63,22 @@ export default () => {
 						}, {})
 					)
 				),
-				state.rackRooms.reduce((acc, room) => {
-					if (roomNameFilter(room.name) && racksFilter(room.progress))
+				rackRooms().reduce((acc, room) => {
+					if (
+						roomNameFilter(room.name) &&
+						rackProgressFilter()(room.progress)
+					)
 						acc.push(
 							m(
 								"a.panel-block",
 								{
 									onclick: e => {
-										state.activeRoomName = room.name;
-										state.activeRacks = room.racks;
-										e.target.parentElement.childNodes.forEach(
-											e => e.classList.remove("is-active")
-										);
-										e.target.classList.add("is-active");
+										activeRoomName(room.name);
+										activeRacks(room.racks);
 									},
+									class:
+										activeRoomName() === room.name &&
+										"is-active",
 								},
 								room.name
 							)
