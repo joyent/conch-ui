@@ -82,61 +82,70 @@ export default () => {
 							  ]
 					)
 				),
-				failingValidations &&
-					failingValidations.length > 0 &&
-					validationPlanIdToName &&
+				m(
+					".tile.is-ancestor.has-text-centered",
 					m(
-						".tile.is-ancestor.has-text-centered",
-						m(
-							StatusTile,
-							m(
-								".card",
-								m(
-									"header.card-header",
-									m(
-										"p.card-header-title",
-										"Device Validation Issues"
-									)
-								),
-								m(
-									".card-table",
-									m(
-										"table.table.is-fullwidth.is-striped",
+						StatusTile,
+						failingValidations == null ||
+						validationPlanIdToName == null
+							? m(Spinner)
+							: failingValidations.length == 0
+								? m("p.subtitle", "No Validation Failures")
+								: m(
+										".card",
 										m(
-											"thead",
+											"header.card-header",
 											m(
-												"tr",
-												m("td"),
-												m("td", "Device"),
-												m("td", "Validation Plan"),
-												m("td")
+												"p.card-header-title",
+												"Device Validation Issues"
 											)
 										),
 										m(
-											"tbody",
-											failingValidations
-												.slice(0, validationsToShow)
-												.map(validationToRow)
-										)
-									)
-								),
-								validationsToShow < failingValidations.length &&
-									m(
-										"footer.card-footer",
-										m(
-											"a.card-footer-item",
-											{
-												onclick: () => {
-													validationsToShow =
-														failingValidations.length;
-												},
-											},
-											"View All"
-										)
-									)
-							)
-						)
-					),
+											".card-table",
+											m(
+												"table.table.is-fullwidth.is-striped",
+												m(
+													"thead",
+													m(
+														"tr",
+														m("td"),
+														m("td", "Device"),
+														m(
+															"td",
+															"Validation Plan"
+														),
+														m("td")
+													)
+												),
+												m(
+													"tbody",
+													failingValidations
+														.slice(
+															0,
+															validationsToShow
+														)
+														.map(validationToRow)
+												)
+											)
+										),
+										validationsToShow <
+											failingValidations.length &&
+											m(
+												"footer.card-footer",
+												m(
+													"a.card-footer-item",
+													{
+														onclick: () => {
+															validationsToShow =
+																failingValidations.length;
+														},
+													},
+													"View All"
+												)
+											)
+								  )
+					)
+				),
 				m(
 					".tile.is-ancestor.has-text-centered",
 					m(
@@ -239,7 +248,7 @@ export default () => {
 				validationPlanIdToName = res.reduce((acc, validationPlan) => {
 					acc[validationPlan.id] = validationPlan.name;
 					return acc;
-				});
+				}, {});
 			});
 		},
 		view({ attrs: { currentWorkspace } }) {
