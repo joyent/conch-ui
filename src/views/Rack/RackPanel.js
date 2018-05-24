@@ -4,14 +4,62 @@ import search from "fuzzysearch";
 
 import Spinner from "../component/Spinner";
 
+const rackProgress = rack => {
+	if (rack["device_progress"]["FAIL"]) {
+		return "failing";
+	} else if (rack["device_progress"]["PASS"]) {
+		return "passing";
+	} else if (rack["device_progress"]["VALID"]) {
+		return "validated";
+	} else {
+		return "not started";
+	}
+};
+
 export default () => {
 	const rackFilterText = stream("");
 	const rackFilterTextLC = rackFilterText.map(t => t.toLowerCase());
 	const rackNameFilter = rackName =>
 		search(rackFilterTextLC(), rackName.toLowerCase());
-	const rackProgressFilter = stream(() => true);
-	let rackRoleFilter = () => true;
+
+	const selectedRole = stream("all");
+	const rackRoleFilter = role =>
+		selectedRole() === "all" || selectedRole() === role.toLowerCase();
+	let availableRackRoles;
+
+	const selectedProgress = stream("all");
+	const rackProgressFilter = rack =>
+		selectedProgress() === "all" ||
+		selectedProgress() === rackProgress(rack);
+	let availableRackProgress;
+
 	return {
+		oninit: ({ attrs: { activeRacks, activeRack } }) => {
+			// get the list of available rack roles
+			availableRackRoles = activeRacks.map(racks =>
+				Array.from(
+					racks.reduce((acc, rack) => {
+						acc.add(rack.role.toLowerCase());
+						return acc;
+					}, new Set(["all"]))
+				).sort()
+			);
+
+			availableRackProgress = activeRacks.map(racks =>
+				Array.from(
+					racks.reduce((acc, rack) => {
+						acc.add(rackProgress(rack));
+						return acc;
+					}, new Set(["all"]))
+				).sort()
+			);
+
+			// reset selections to "all" when activeRacks change
+			activeRacks.map(() => {
+				selectedRole("all");
+				selectedProgress("all");
+			});
+		},
 		view: ({ attrs: { activeRoomName, activeRacks, activeRack } }) =>
 			m("nav.panel", m("p.panel-heading", `${activeRoomName()} Racks`), [
 				m(
@@ -29,88 +77,40 @@ export default () => {
 				),
 				m(
 					"p.panel-tabs",
-					m(
-						"a.is-active",
-						{
-							onclick: e => {
-								e.target.parentElement.childNodes.forEach(e =>
-									e.classList.remove("is-active")
-								);
-								e.target.classList.add("is-active");
+					availableRackProgress().map(p =>
+						m(
+							"a",
+							{
+								onclick: e => {
+									selectedProgress(p);
+								},
+								class: selectedProgress() === p && "is-active",
 							},
-						},
-						"all"
-					),
-					m(
-						"a",
-						{
-							onclick: e => {
-								e.target.parentElement.childNodes.forEach(e =>
-									e.classList.remove("is-active")
-								);
-								e.target.classList.add("is-active");
-							},
-						},
-						"validated"
-					),
-					m(
-						"a",
-						{
-							onclick: e => {
-								e.target.parentElement.childNodes.forEach(e =>
-									e.classList.remove("is-active")
-								);
-								e.target.classList.add("is-active");
-							},
-						},
-						"failing"
+							p
+						)
 					)
 				),
 				m(
 					"p.panel-tabs",
-					m(
-						"a.is-active",
-						{
-							onclick: e => {
-								e.target.parentElement.childNodes.forEach(e =>
-									e.classList.remove("is-active")
-								);
-								e.target.classList.add("is-active");
-								rackRoleFilter = () => true;
+					availableRackRoles().map(r =>
+						m(
+							"a",
+							{
+								onclick: e => {
+									selectedRole(r);
+								},
+								class: selectedRole() === r && "is-active",
 							},
-						},
-						"all"
-					),
-					Object.values(
-						activeRacks()
-							.filter(
-								rack => rack.name.indexOf(rackFilterText()) >= 0
-							)
-							.reduce((acc, rack) => {
-								if (acc[rack.role]) return acc;
-								acc[rack.role] = m(
-									"a",
-									{
-										onclick: e => {
-											e.target.parentElement.childNodes.forEach(
-												e =>
-													e.classList.remove(
-														"is-active"
-													)
-											);
-											e.target.classList.add("is-active");
-											rackRoleFilter = role =>
-												role === rack.role;
-										},
-									},
-									rack.role.toLowerCase()
-								);
-								return acc;
-							}, {})
+							r
+						)
 					)
 				),
 				activeRacks().reduce((acc, rack) => {
-					if (rackNameFilter(rack.name) && rackRoleFilter(rack.role))
+					if (
+						rackNameFilter(rack.name) &&
+						rackRoleFilter(rack.role) &&
+						rackProgressFilter(rack)
+					)
 						acc.push(
 							m(
 								"a.panel-block",

@@ -18,13 +18,11 @@ export default () => {
 	const activeRack = stream();
 	const rackLayout = stream();
 	const rackLoading = stream();
-	let loadRack;
-
-	let rackRoleFilter = () => true;
 
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
-			loadRack = activeRack.map(rack => {
+			// load the rack whenever activeRack updates
+			activeRack.map(rack => {
 				rackLoading(true);
 				request({
 					method: "GET",
