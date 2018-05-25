@@ -11,7 +11,7 @@ export default () => {
 			m(
 				`a[href=${route}]`,
 				{
-					oncreate: m.route.link,
+					onupdate: m.route.link,
 					onclick: () => activeItem(link),
 					class: m.route.get().startsWith(route) > 0 && "is-active",
 				},
