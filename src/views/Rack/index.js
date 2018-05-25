@@ -4,7 +4,7 @@ import { request } from "mithril";
 
 import { conchApi } from "config";
 
-import Spinner from "../component/Spinner";
+import { Spinner, ViewTitleHero } from "../component/";
 
 import LayoutPanel from "./LayoutPanel";
 import RackPanel from "./RackPanel";
@@ -113,14 +113,10 @@ export default () => {
 		},
 		view: ({ attrs: { currentWorkspace } }) => {
 			return [
-				m(
-					"section.hero.is-primary.welcome.is-small",
-					m(
-						".hero-body",
-						m("h1.title", "Datacenter Racks"),
-						m("h2.subtitle", `Racks`)
-					)
-				),
+				m(ViewTitleHero, {
+					title: `${currentWorkspace.name} datacenters`,
+					subtitle: `Explore datacenter racks`,
+				}),
 				rackRooms() == null
 					? m("section.section", m(Spinner))
 					: m(

@@ -1,21 +1,25 @@
 import m from "mithril";
+import stream from "mithril/stream";
 
-export default model => {
-	const menuItem = (name, link, ...children) =>
-		m(
+export default () => {
+	const activeItem = stream();
+
+	const menuItem = (name, link, ...children) => {
+		let route = `/${m.route.param("wid")}/${link}`;
+		return m(
 			"li",
 			m(
-				`a[href=/${m.route.param("wid")}/${link}]`,
+				`a[href=${route}]`,
 				{
 					oncreate: m.route.link,
-					//class:
-					//name.toLowerCase() === model.sidebar.active.toLowerCase() &&
-					//"is-active",
+					onclick: () => activeItem(link),
+					class: m.route.get().startsWith(route) > 0 && "is-active",
 				},
 				name
 			),
 			children.length > 0 && m("ul", children)
 		);
+	};
 
 	return {
 		view: ({ attrs }) =>
@@ -25,11 +29,10 @@ export default model => {
 				m(
 					"ul.menu-list",
 					menuItem("Status", "status"),
-					menuItem("Datacenter", "datacenter"),
+					menuItem("Datacenters", "datacenter"),
 					menuItem(
 						"Devices",
 						"device",
-						menuItem("Services"),
 						menuItem("Inventory"),
 						menuItem("Validation Status")
 					),
