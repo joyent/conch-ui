@@ -27,7 +27,7 @@ export default () => {
 				).sort()
 			);
 		},
-		view: ({ attrs: { rackRooms, activeRoomName, activeRacks } }) =>
+		view: ({ attrs: { rackRooms, activeRoomName} }) =>
 			m(
 				"nav.panel",
 				m("p.panel-heading", "Datacenter Rooms"),
@@ -70,12 +70,6 @@ export default () => {
 								{
 									onclick: e => {
 										activeRoomName(room.name);
-										activeRacks(
-											room.racks.sort(
-												(a, b) =>
-													a.name > b.name ? 1 : -1
-											)
-										);
 									},
 									class:
 										activeRoomName() === room.name &&

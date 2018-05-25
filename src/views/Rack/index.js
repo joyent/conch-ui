@@ -14,14 +14,29 @@ export default () => {
 	const rackFilterText = stream("");
 	const rackRooms = stream();
 	const activeRoomName = stream();
-	const activeRacks = stream();
-	const activeRack = stream();
+
+	// find the active racks in the active room with activeRoomName
+	const activeRacks = stream.combine(
+		(rooms, activeName) => {
+			let room = rooms().find(room => room.name === activeName());
+			if (!room) return stream.HALT;
+			return room.racks.sort((a, b) => (a.name > b.name ? 1 : -1));
+		},
+		[rackRooms, activeRoomName]
+	);
+	const activeRackId = stream();
+
+	// finds the active rack in activeRacks with activeRackId
+	const activeRack = stream.combine(
+		(racks, id) => racks().find(rack => rack.id === id()) || stream.HALT,
+		[activeRacks, activeRackId]
+	);
 	const rackLayout = stream();
 	const rackLoading = stream();
 
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
-			// load the rack whenever activeRack updates
+			// side-effect: load the rack whenever activeRack updates
 			activeRack.map(rack => {
 				rackLoading(true);
 				request({
@@ -34,6 +49,24 @@ export default () => {
 					rackLayout(res);
 					rackLoading(false);
 				});
+			});
+
+			m.route.param("roomName") &&
+				activeRoomName(m.route.param("roomName"));
+			m.route.param("rackId") && activeRackId(m.route.param("rackId"));
+
+			activeRoomName.map(name => {
+				const route = m.route.get();
+				const routePrefix = route.substring(
+					0,
+					route.indexOf("/datacenter")
+				);
+				m.route.set(`${routePrefix}/datacenter/${name}/rack`);
+			});
+			activeRack.map(rack => {
+				const route = m.route.get();
+				const routePrefix = route.substring(0, route.indexOf("/rack"));
+				m.route.set(`${routePrefix}/rack/${rack.id}`);
 			});
 			request({
 				method: "GET",
@@ -97,7 +130,6 @@ export default () => {
 								m(RoomPanel, {
 									rackRooms,
 									activeRoomName,
-									activeRacks,
 								})
 							),
 							m(
@@ -106,7 +138,7 @@ export default () => {
 									m(RackPanel, {
 										activeRoomName,
 										activeRacks,
-										activeRack,
+										activeRackId,
 									})
 							),
 							m(

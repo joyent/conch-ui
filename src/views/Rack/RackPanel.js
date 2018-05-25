@@ -34,7 +34,7 @@ export default () => {
 	let availableRackProgress;
 
 	return {
-		oninit: ({ attrs: { activeRacks, activeRack } }) => {
+		oninit: ({ attrs: { activeRacks } }) => {
 			// get the list of available rack roles
 			availableRackRoles = activeRacks.map(racks =>
 				Array.from(
@@ -60,7 +60,7 @@ export default () => {
 				selectedProgress("all");
 			});
 		},
-		view: ({ attrs: { activeRoomName, activeRacks, activeRack } }) =>
+		view: ({ attrs: { activeRoomName, activeRacks, activeRackId } }) =>
 			m("nav.panel", m("p.panel-heading", `${activeRoomName()} Racks`), [
 				m(
 					".panel-block",
@@ -116,11 +116,10 @@ export default () => {
 								"a.panel-block",
 								{
 									onclick: e => {
-										activeRack(rack);
+										activeRackId(rack.id);
 									},
 									class:
-										activeRack() &&
-										activeRack().id === rack.id &&
+										activeRackId() === rack.id &&
 										"is-active",
 								},
 								rack.name

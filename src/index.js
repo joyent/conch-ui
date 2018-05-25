@@ -76,6 +76,7 @@ function setupSession() {
 
 function dispatch(root, routes) {
 	let layout;
+	let view
 	const table = Object.keys(routes).reduce((accTable, route) => {
 		let workspacePrefixedRoute = "/:wid" + route;
 		accTable[workspacePrefixedRoute] = {
@@ -87,13 +88,14 @@ function dispatch(root, routes) {
 						state.workspaces.find(w => w.id === workspaceId) ||
 						state.currentWorkspace;
 					layout = comp.layout;
+					view = comp.view;
 					return {
 						view: () => m(comp.view || comp, state),
 					};
 				}, () => Login);
 			},
 			render(vnode) {
-				return layout ? m(Main, state, vnode) : vnode;
+				return layout && view ? m(layout, state, m(view, state)) : vnode;
 			},
 		};
 
@@ -113,5 +115,8 @@ function dispatch(root, routes) {
 
 dispatch(document.body, {
 	"/status": { layout: Main, view: Status },
-	"/rack": { layout: Main, view: Rack },
+	"/datacenter": { layout: Main, view: Rack },
+	"/datacenter/:roomName/rack": { layout: Main, view: Rack },
+	"/datacenter/:roomName/rack/:rackId": { layout: Main, view: Rack },
+	"/datacenter/:roomName/rack/:rackId/device/:deviceId": { layout: Main, view: Rack },
 });
