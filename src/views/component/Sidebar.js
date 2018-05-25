@@ -11,6 +11,8 @@ export default () => {
 			m(
 				`a[href=${route}]`,
 				{
+					// onupdate instead of oncreate required to update links
+					// when currentWorkspace changes
 					onupdate: m.route.link,
 					onclick: () => activeItem(link),
 					class: m.route.get().startsWith(route) > 0 && "is-active",

@@ -1,4 +1,5 @@
 import m from "mithril";
+import stream from "mithril/stream";
 import { request } from "mithril";
 import { conchApi } from "config";
 
@@ -12,11 +13,11 @@ const StatusTile = {
 };
 
 export default () => {
-	let devices;
+	const devices = stream();
 	let rackRooms;
 	let rackCount;
 	let failingValidations;
-	let validationPlanIdToName;
+	let validationPlanIdToName = {};
 	let validationsToShow = 10;
 	let progress = { pass: 0, total: 0 };
 	const progressPercent = () =>
@@ -65,10 +66,10 @@ export default () => {
 					),
 					m(
 						StatusTile,
-						devices == null
+						devices() == null
 							? m(Spinner)
 							: [
-									m("p.title", devices.length),
+									m("p.title", devices().length),
 									m("p.subtitle", "Devices"),
 							  ]
 					),
@@ -86,8 +87,7 @@ export default () => {
 					".tile.is-ancestor.has-text-centered",
 					m(
 						StatusTile,
-						failingValidations == null ||
-						validationPlanIdToName == null
+						failingValidations == null
 							? m(Spinner)
 							: failingValidations.length == 0
 								? m("p.subtitle", "No Validation Failures")
@@ -198,64 +198,69 @@ export default () => {
 
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
-			request({
-				method: "GET",
-				url: `${conchApi}/workspace/${currentWorkspace().id}/device`,
-				withCredentials: true,
-			}).then(res => {
-				devices = res.sort((a, b) => {
-					if (a.id < b.id) {
-						return -1;
-					}
-					if (a.id > b.id) {
-						return 1;
-					}
+			currentWorkspace.map(({ id }) => {
+				request({
+					method: "GET",
+					url: `${conchApi}/workspace/${id}/device`,
+					withCredentials: true,
+				}).then(res => {
+					devices(
+						res.sort((a, b) => {
+							if (a.id < b.id) {
+								return -1;
+							}
+							if (a.id > b.id) {
+								return 1;
+							}
+						})
+					);
+					devices().forEach(device => {
+						if (device.health === "PASS") progress.pass++;
+						progress.total++;
+					});
 				});
-				devices.forEach(device => {
-					if (device.health === "PASS") progress.pass++;
-					progress.total++;
+				request({
+					method: "GET",
+					url: `${conchApi}/workspace/${id}/rack`,
+					withCredentials: true,
+				}).then(res => {
+					// sort and assign the rack rooms
+					rackCount = 0;
+					rackRooms = Object.keys(res)
+						.sort()
+						.reduce((acc, room) => {
+							acc[room] = res[room];
+							rackCount += res[room].length;
+							return acc;
+						}, {});
 				});
-			});
-			request({
-				method: "GET",
-				url: `${conchApi}/workspace/${currentWorkspace().id}/rack`,
-				withCredentials: true,
-			}).then(res => {
-				// sort and assign the rack rooms
-				rackCount = 0;
-				rackRooms = Object.keys(res)
-					.sort()
-					.reduce((acc, room) => {
-						acc[room] = res[room];
-						rackCount += res[room].length;
-						return acc;
-					}, {});
-			});
-			request({
-				method: "GET",
-				url: `${conchApi}/workspace/${
-					currentWorkspace().id
-				}/validation_state?status=error,fail`,
-				withCredentials: true,
-			}).then(res => {
-				failingValidations = res;
-			});
-			request({
-				method: "GET",
-				url: `${conchApi}/validation_plan`,
-				withCredentials: true,
-			}).then(res => {
-				validationPlanIdToName = res.reduce((acc, validationPlan) => {
-					acc[validationPlan.id] = validationPlan.name;
-					return acc;
-				}, {});
+				request({
+					method: "GET",
+					url: `${conchApi}/workspace/${id}/validation_state?status=error,fail`,
+					withCredentials: true,
+				}).then(res => {
+					failingValidations = res;
+				});
+				request({
+					method: "GET",
+					url: `${conchApi}/validation_plan`,
+					withCredentials: true,
+				}).then(res => {
+					validationPlanIdToName = res.reduce(
+						(acc, validationPlan) => {
+							acc[validationPlan.id] = validationPlan.name;
+							return acc;
+						},
+						{}
+					);
+				});
 			});
 		},
 		view({ attrs: { currentWorkspace } }) {
 			return [
 				m(ViewTitleHero, {
 					title: "Conch Status",
-					subtitle: `Status of current workspace`,
+					subtitle: `Overview of ${currentWorkspace().name}`,
 				}),
 				m(statusTiles),
 			];
