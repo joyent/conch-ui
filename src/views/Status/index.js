@@ -200,7 +200,7 @@ export default () => {
 		oninit({ attrs: { currentWorkspace } }) {
 			request({
 				method: "GET",
-				url: `${conchApi}/workspace/${currentWorkspace.id}/device`,
+				url: `${conchApi}/workspace/${currentWorkspace().id}/device`,
 				withCredentials: true,
 			}).then(res => {
 				devices = res.sort((a, b) => {
@@ -218,7 +218,7 @@ export default () => {
 			});
 			request({
 				method: "GET",
-				url: `${conchApi}/workspace/${currentWorkspace.id}/rack`,
+				url: `${conchApi}/workspace/${currentWorkspace().id}/rack`,
 				withCredentials: true,
 			}).then(res => {
 				// sort and assign the rack rooms
@@ -234,7 +234,7 @@ export default () => {
 			request({
 				method: "GET",
 				url: `${conchApi}/workspace/${
-					currentWorkspace.id
+					currentWorkspace().id
 				}/validation_state?status=error,fail`,
 				withCredentials: true,
 			}).then(res => {

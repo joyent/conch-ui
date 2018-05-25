@@ -1,4 +1,5 @@
 import m from "mithril";
+import stream from "mithril/stream";
 import t from "i18n4v";
 import moment from "moment";
 
@@ -30,6 +31,8 @@ t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
 
 const state = {};
 
+const currentWorkspace = stream();
+
 function loadWorkspaces() {
 	if (state.workspaces != null) return Promise.resolve();
 	return m
@@ -40,7 +43,7 @@ function loadWorkspaces() {
 		})
 		.then(workspaces => {
 			state.workspaces = workspaces;
-			state.currentWorkspace = state.workspaces[0];
+			currentWorkspace(workspaces[0]);
 		});
 }
 
@@ -84,18 +87,21 @@ function dispatch(root, routes) {
 				return setupSession().then(() => {
 					let comp = routes[route];
 					let workspaceId = args.wid;
-					state.currentWorkspace =
-						state.workspaces.find(w => w.id === workspaceId) ||
-						state.currentWorkspace;
+					if ( currentWorkspace().id !== workspaceId ) {
+						currentWorkspace(
+							state.workspaces.find(w => w.id === workspaceId) ||
+							currentWorkspace()
+						);
+					}
 					layout = comp.layout;
 					view = comp.view;
 					return {
-						view: () => m(comp.view || comp, state),
+						view: () => m(comp.view || comp, { currentWorkspace, workspaces: state.workspaces }),
 					};
 				}, () => Login);
 			},
 			render(vnode) {
-				return layout && view ? m(layout, state, m(view, state)) : vnode;
+				return layout && view ? m(layout, { currentWorkspace, workspaces: state.workspaces }, m(view, { currentWorkspace, workspaces: state.workspaces })) : vnode;
 			},
 		};
 
@@ -105,7 +111,7 @@ function dispatch(root, routes) {
 	table["/"] = {
 		onmatch() {
 			return setupSession().then(comp => {
-				m.route.set(`/${state.currentWorkspace.id}/status`);
+				m.route.set(`/${currentWorkspace().id}/status`);
 			}, () => Login);
 		},
 	};

@@ -16,7 +16,7 @@ const asWorkspaceLink = w =>
 	);
 
 export default {
-	view: ({ attrs }) => {
+	view: ({ attrs: { currentWorkspace, workspaces } }) => {
 		return m(
 			".navbar[role=navigation]",
 			m(
@@ -30,10 +30,10 @@ export default {
 					".navbar-end",
 					m(
 						".navbar-item.has-dropdown.is-hoverable",
-						m("a.navbar-link", attrs.currentWorkspace.name),
+						m("a.navbar-link", currentWorkspace().name),
 						m(
 							".navbar-dropdown.is-right",
-							attrs.workspaces.map(asWorkspaceLink)
+							workspaces.map(asWorkspaceLink)
 						)
 					)
 				)

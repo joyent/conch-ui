@@ -14,15 +14,16 @@ export default () => {
 	const rackFilterText = stream("");
 	const rackRooms = stream();
 	const activeRoomName = stream();
-
-	// find the active racks in the active room with activeRoomName
-	const activeRacks = stream.combine(
-		(rooms, activeName) => {
-			let room = rooms().find(room => room.name === activeName());
-			if (!room) return stream.HALT;
-			return room.racks.sort((a, b) => (a.name > b.name ? 1 : -1));
-		},
+	const activeRoom = stream.combine(
+		(rooms, activeName) => rooms().find(room => room.name === activeName()),
 		[rackRooms, activeRoomName]
+	);
+
+	const activeRacks = activeRoom.map(
+		room =>
+			room
+				? room.racks.sort((a, b) => (a.name > b.name ? 1 : -1))
+				: stream.HALT
 	);
 	const activeRackId = stream();
 
@@ -31,8 +32,13 @@ export default () => {
 		(racks, id) => racks().find(rack => rack.id === id()) || stream.HALT,
 		[activeRacks, activeRackId]
 	);
-	const rackLayout = stream();
 	const rackLoading = stream();
+
+	let rackLayout = stream();
+	// if there's no activeRoom, reset layoutRack
+	activeRoom.map(a => {
+		if (a == null) rackLayout = stream();
+	});
 
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
@@ -41,7 +47,7 @@ export default () => {
 				rackLoading(true);
 				request({
 					method: "GET",
-					url: `${conchApi}/workspace/${currentWorkspace.id}/rack/${
+					url: `${conchApi}/workspace/${currentWorkspace().id}/rack/${
 						rack.id
 					}`,
 					withCredentials: true,
@@ -68,53 +74,55 @@ export default () => {
 				const routePrefix = route.substring(0, route.indexOf("/rack"));
 				m.route.set(`${routePrefix}/rack/${rack.id}`);
 			});
-			request({
-				method: "GET",
-				url: `${conchApi}/workspace/${currentWorkspace.id}/rack`,
-				withCredentials: true,
-			}).then(res => {
-				// transform the response in to a list of rack rooms (from than
-				// a tree-like object) and compute the 'progress' of each room.
-				// A room is "failing" if one rack is failing, or "passing" if
-				// one rack is passing, or "validated" if *every* rack is
-				// validated. Otherwise, it's considered "not started".
-				rackRooms(
-					Object.keys(res)
-						.sort()
-						.reduce((acc, name) => {
-							let progress;
-							let racks = res[name];
-							if (
-								racks.some(
-									rack => rack["device_progress"]["FAIL"]
-								)
-							) {
-								progress = "failing";
-							} else if (
-								racks.some(
-									rack => rack["device_progress"]["PASS"]
-								)
-							) {
-								progress = "passing";
-							} else if (
-								racks.every(
-									rack => rack["device_progress"]["VALID"]
-								)
-							) {
-								progress = "validated";
-							} else {
-								progress = "not started";
-							}
-							acc.push({ name, racks, progress });
-							return acc;
-						}, [])
-				);
-			});
+			currentWorkspace.map(({ id }) =>
+				request({
+					method: "GET",
+					url: `${conchApi}/workspace/${id}/rack`,
+					withCredentials: true,
+				}).then(res => {
+					// transform the response in to a list of rack rooms (from than
+					// a tree-like object) and compute the 'progress' of each room.
+					// A room is "failing" if one rack is failing, or "passing" if
+					// one rack is passing, or "validated" if *every* rack is
+					// validated. Otherwise, it's considered "not started".
+					rackRooms(
+						Object.keys(res)
+							.sort()
+							.reduce((acc, name) => {
+								let progress;
+								let racks = res[name];
+								if (
+									racks.some(
+										rack => rack["device_progress"]["FAIL"]
+									)
+								) {
+									progress = "failing";
+								} else if (
+									racks.some(
+										rack => rack["device_progress"]["PASS"]
+									)
+								) {
+									progress = "passing";
+								} else if (
+									racks.every(
+										rack => rack["device_progress"]["VALID"]
+									)
+								) {
+									progress = "validated";
+								} else {
+									progress = "not started";
+								}
+								acc.push({ name, racks, progress });
+								return acc;
+							}, [])
+					);
+				})
+			);
 		},
 		view: ({ attrs: { currentWorkspace } }) => {
 			return [
 				m(ViewTitleHero, {
-					title: `${currentWorkspace.name} datacenters`,
+					title: `${currentWorkspace().name} datacenters`,
 					subtitle: `Explore datacenter racks`,
 				}),
 				rackRooms() == null
@@ -130,7 +138,7 @@ export default () => {
 							),
 							m(
 								".column.is-3",
-								activeRacks() &&
+								activeRoom() &&
 									m(RackPanel, {
 										activeRoomName,
 										activeRacks,
