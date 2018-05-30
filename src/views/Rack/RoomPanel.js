@@ -3,6 +3,7 @@ import stream from "mithril/stream";
 import search from "fuzzysearch";
 
 import Spinner from "../component/Spinner";
+import ProgressIcon from "./ProgressIcon";
 
 export default () => {
 	const roomFilterText = stream("");
@@ -27,7 +28,7 @@ export default () => {
 				).sort()
 			);
 		},
-		view: ({ attrs: { rackRooms, activeRoomName} }) =>
+		view: ({ attrs: { rackRooms, activeRoomName } }) =>
 			m(
 				"nav.panel",
 				m("p.panel-heading", "Datacenter Rooms"),
@@ -53,6 +54,8 @@ export default () => {
 								onclick: e => {
 									selectedProgress(p);
 								},
+								// don't break spaces
+								style: "white-space:pre",
 								class: selectedProgress() === p && "is-active",
 							},
 							p
@@ -75,6 +78,7 @@ export default () => {
 										activeRoomName() === room.name &&
 										"is-active",
 								},
+								m(ProgressIcon, { progress: room.progress }),
 								room.name
 							)
 						);

@@ -3,12 +3,13 @@ import stream from "mithril/stream";
 import search from "fuzzysearch";
 
 import Spinner from "../component/Spinner";
+import ProgressIcon from "./ProgressIcon";
 
 const rackProgress = rack => {
 	if (rack["device_progress"]["FAIL"]) {
 		return "failing";
 	} else if (rack["device_progress"]["PASS"]) {
-		return "passing";
+		return "in progress";
 	} else if (rack["device_progress"]["VALID"]) {
 		return "validated";
 	} else {
@@ -84,6 +85,8 @@ export default () => {
 								onclick: e => {
 									selectedProgress(p);
 								},
+								// don't break spaces
+								style: "white-space:pre",
 								class: selectedProgress() === p && "is-active",
 							},
 							p
@@ -122,6 +125,9 @@ export default () => {
 										activeRackId() === rack.id &&
 										"is-active",
 								},
+								m(ProgressIcon, {
+									progress: rackProgress(rack),
+								}),
 								rack.name
 							)
 						);

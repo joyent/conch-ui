@@ -102,7 +102,7 @@ export default () => {
 										rack => rack["device_progress"]["PASS"]
 									)
 								) {
-									progress = "passing";
+									progress = "in progress";
 								} else if (
 									racks.every(
 										rack => rack["device_progress"]["VALID"]

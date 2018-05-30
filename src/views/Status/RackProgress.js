@@ -3,7 +3,6 @@ import t from "i18n4v";
 import * as d3 from "d3";
 import RelationshipGraph from "d3-relationshipgraph";
 
-
 function nodeParent({ device_progress }) {
 	// If there's any failing devices, the whole rack is Failing
 	if (device_progress.FAIL) return t("Failing");
@@ -78,22 +77,25 @@ export default () => {
 				selectParent = rack => rack.role;
 			}
 
-			let rackStatus = Object.keys(attrs.rackRooms).reduce((acc, room) => {
-				attrs.rackRooms[room].forEach(rack => {
-					acc.push({
-						Room: room,
-						"Rack Name": rack.name,
-						"Rack Role": rack.role,
-						"Rack size": rack.size,
-						parent: selectParent(rack),
-						value: nodeValue(rack),
-						_private_: {
-							id: rack.id,
-						},
+			let rackStatus = Object.keys(attrs.rackRooms).reduce(
+				(acc, room) => {
+					attrs.rackRooms[room].forEach(rack => {
+						acc.push({
+							Room: room,
+							"Rack Name": rack.name,
+							"Rack Role": rack.role,
+							"Rack size": rack.size,
+							parent: selectParent(rack),
+							value: nodeValue(rack),
+							_private_: {
+								id: rack.id,
+							},
+						});
 					});
-				});
-				return acc;
-			}, []);
+					return acc;
+				},
+				[]
+			);
 
 			return m(".rack-progress-graph", {
 				oncreate: ({ dom, state }) => {
@@ -139,4 +141,4 @@ export default () => {
 			});
 		},
 	};
-}
+};
