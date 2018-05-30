@@ -88,8 +88,8 @@ export default () => {
 							parent: selectParent(rack),
 							value: nodeValue(rack),
 							_private_: {
-								id: rack.id,
-							},
+								id: rack.id
+							}
 						});
 					});
 					return acc;
@@ -112,7 +112,7 @@ export default () => {
 							"hsl(225, 80%, 70%)",
 							"hsl(190, 60%, 60%)",
 							"hsl(160, 60%, 60%)",
-							"hsl(130, 60%, 60%)",
+							"hsl(130, 60%, 60%)"
 						],
 						onClick: {
 							child: ({ _private_ }) => {
@@ -123,8 +123,8 @@ export default () => {
 									`${path}/rack/${_private_.id}`,
 									"_blank"
 								);
-							},
-						},
+							}
+						}
 					}).data(rackStatus);
 				},
 				onupdate: ({ dom, state }) => {
@@ -137,8 +137,8 @@ export default () => {
 					// removed, leaving a junk SVG block elemeent that screws
 					// with the layout.
 					d3.selectAll("svg").remove();
-				},
+				}
 			});
-		},
+		}
 	};
 };

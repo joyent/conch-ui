@@ -76,7 +76,7 @@ export default () => {
 									progress: occupant
 										? deviceProgress(occupant)
 										: "unassigned",
-									occupant: occupant,
+									occupant: occupant
 								});
 							return acc;
 						}, []);
@@ -85,11 +85,11 @@ export default () => {
 			);
 		},
 		view: ({
-			attrs: { activeRack, rackLoading, rackLayout, activeDeviceId },
+			attrs: { activeRack, rackLoading, rackLayout, activeDeviceId }
 		}) =>
 			m(
 				"nav.panel",
-				m("p.panel-heading", `Rack ${activeRack().name}`),
+				m(".panel-heading", `Rack ${activeRack().name}`),
 				m(
 					".panel-block",
 					m(
@@ -98,7 +98,7 @@ export default () => {
 							"input.input.is-small[type=text][placeholder=Search Devices]",
 							{
 								oninput: m.withAttr("value", deviceSearchText),
-								value: deviceSearchText(),
+								value: deviceSearchText()
 							}
 						),
 						m("span.icon.is-small.is-left", m("i.fas fa-search"))
@@ -115,18 +115,25 @@ export default () => {
 								},
 								// don't break spaces
 								style: "white-space:pre",
-								class: selectedProgress() === p && "is-active",
+								class: selectedProgress() === p && "is-active"
 							},
 							p
 						)
+					)
+				),
+				m(
+					".panel-block",
+					m(
+						"button.button.is-primary.is-outlined.is-fullwidth.is-small",
+						"Edit Assignments"
 					)
 				),
 				rackLoading()
 					? m(Spinner)
 					: m(LayoutTable, {
 							deviceSlots: filteredSlots,
-							activeDeviceId: activeDeviceId,
+							activeDeviceId: activeDeviceId
 					  })
-			),
+			)
 	};
 };

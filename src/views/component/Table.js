@@ -18,7 +18,7 @@ function table(caption, header, rows) {
 						r.map((d, i) => m("td", { "data-label": header[i] }, d))
 					)
 				)
-			),
+			)
 		])
 	);
 }

@@ -11,7 +11,7 @@ const Device = {
 				method: "GET",
 				url: `${conchApi}/workspace/${workspaceId}/device`,
 				data: { ids_only: 1 },
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				Device.deviceIds = res.sort();
@@ -30,7 +30,7 @@ const Device = {
 			.request({
 				method: "GET",
 				url: `${conchApi}/workspace/${workspaceId}/device`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				Device.devices = res.sort((a, b) => {
@@ -57,7 +57,7 @@ const Device = {
 			.request({
 				method: "GET",
 				url: `${conchApi}/device/${deviceId}`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				Device.current = res;
@@ -81,9 +81,9 @@ const Device = {
 				extract(xhr) {
 					return {
 						status: xhr.status,
-						body: xhr.response ? JSON.parse(xhr.response) : null,
+						body: xhr.response ? JSON.parse(xhr.response) : null
 					};
-				},
+				}
 			})
 			.then(res => {
 				Device.updatingFirmware = res.body.firmware === "updating";
@@ -113,9 +113,9 @@ const Device = {
 				extract(xhr) {
 					return {
 						status: xhr.status,
-						body: JSON.parse(xhr.response),
+						body: JSON.parse(xhr.response)
 					};
-				},
+				}
 			})
 			.then(res => res.body)
 			.catch(e => {
@@ -153,9 +153,9 @@ const Device = {
 			method: "POST",
 			url: `${conchApi}/device/${deviceId}/asset_tag`,
 			data: { asset_tag: assetTag },
-			withCredentials: true,
+			withCredentials: true
 		});
-	},
+	}
 };
 
 export default Device;

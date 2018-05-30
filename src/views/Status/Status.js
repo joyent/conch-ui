@@ -25,7 +25,7 @@ function deviceList(title, isProblem, devices) {
 							"a.status-device-list-item",
 							{
 								href: linkPrefix + id,
-								oncreate: m.route.link,
+								oncreate: m.route.link
 							},
 							id
 						)
@@ -43,7 +43,7 @@ export default {
 				Promise.all([
 					Device.loadDevices(workspaceId),
 					Relay.loadActiveRelays(workspaceId),
-					Rack.loadRooms(workspaceId),
+					Rack.loadRooms(workspaceId)
 				]).then(() => (state.loading = false));
 			})
 		);
@@ -93,12 +93,12 @@ export default {
 										} else {
 											state.group = "role";
 										}
-									},
+									}
 								},
 								"Group by " +
 									{
 										role: t("Status"),
-										status: t("Rack Role"),
+										status: t("Rack Role")
 									}[state.group || "status"]
 							)
 						)
@@ -109,49 +109,49 @@ export default {
 					"",
 					t("Active Devices"),
 					t("Inactive Devices"),
-					t("Total Devices"),
+					t("Total Devices")
 				],
 				[
 					[
 						t("Unknown"),
 						activeHealthCounts.UNKNOWN || 0,
 						inactiveHealthCounts.UNKNOWN || 0,
-						totalHealthCounts.UNKNOWN || 0,
+						totalHealthCounts.UNKNOWN || 0
 					],
 
 					[
 						t("Failing"),
 						activeHealthCounts.FAIL || 0,
 						inactiveHealthCounts.FAIL || 0,
-						totalHealthCounts.FAIL || 0,
+						totalHealthCounts.FAIL || 0
 					],
 
 					[
 						t("Passing"),
 						activeHealthCounts.PASS || 0,
 						inactiveHealthCounts.PASS || 0,
-						totalHealthCounts.PASS || 0,
+						totalHealthCounts.PASS || 0
 					],
 
 					[
 						t("Validated"),
 						activeHealthCounts.VALIDATED || 0,
 						inactiveHealthCounts.VALIDATED || 0,
-						totalHealthCounts.VALIDATED || 0,
+						totalHealthCounts.VALIDATED || 0
 					],
 
 					[
 						t("Graduated"),
 						activeHealthCounts.GRADUATED || 0,
 						inactiveHealthCounts.GRADUATED || 0,
-						totalHealthCounts.GRADUATED || 0,
+						totalHealthCounts.GRADUATED || 0
 					],
 					[
 						m("b", t("Sum")),
 						activeDevices.length,
 						inactiveDevices.length,
-						activeDevices.length + inactiveDevices.length,
-					],
+						activeDevices.length + inactiveDevices.length
+					]
 				]
 			),
 			Table(
@@ -167,7 +167,7 @@ export default {
 								{
 									href: `/relay/${id}`,
 									oncreate: m.route.link,
-									title: t("Show Relay Details"),
+									title: t("Show Relay Details")
 								},
 								Icons.showRelay
 							),
@@ -177,15 +177,15 @@ export default {
 										{
 											href: `/rack/${location.rack_id}`,
 											oncreate: m.route.link,
-											title: t("Show Connected Rack"),
+											title: t("Show Connected Rack")
 										},
 										Icons.showRack
 								  )
-								: null,
-						],
+								: null
+						]
 					];
 				})
-			),
+			)
 		];
-	},
+	}
 };

@@ -17,7 +17,7 @@ const allRacks = {
 			Workspace.withWorkspace(workspaceId => {
 				Promise.all([
 					Relay.loadActiveRelays(workspaceId),
-					Rack.loadRooms(workspaceId),
+					Rack.loadRooms(workspaceId)
 				]).then(() => (state.loading = false));
 			})
 		);
@@ -42,26 +42,26 @@ const allRacks = {
 							class:
 								id === Rack.current.id
 									? "selection-list-item-active"
-									: "",
+									: ""
 						},
 						m(".pure-g", [
 							m(".pure-u-1-2", m("b", t("Name"))),
 							m(".pure-u-1-2", m("b", t("Role"))),
 
 							m(".pure-u-1-2", name),
-							m(".pure-u-1-2", role),
+							m(".pure-u-1-2", role)
 						])
 					)
 				)
-			),
+			)
 		]);
-	},
+	}
 };
 
 const makeSelection = {
 	view() {
 		return m(".make-selection", t("Select Rack"));
-	},
+	}
 };
 
 const rackLayout = {
@@ -86,7 +86,7 @@ const rackLayout = {
 							"a.pure-button",
 							{
 								href: `/relay/${activeRelay.id}`,
-								oncreate: m.route.link,
+								oncreate: m.route.link
 							},
 							Icons.relayActive,
 							t("Relay Active in Rack")
@@ -105,7 +105,7 @@ const rackLayout = {
 						Workspace.withWorkspace(workspaceId =>
 							Rack.assignDevices(workspaceId, Rack.current)
 						);
-					},
+					}
 				},
 				m(
 					".pure-u-1",
@@ -116,8 +116,8 @@ const rackLayout = {
 							[
 								Rack.current.datacenter,
 								Rack.current.name,
-								Rack.current.role,
-							],
+								Rack.current.role
+							]
 						]
 					)
 				),
@@ -130,9 +130,9 @@ const rackLayout = {
 						t("Assign Devices")
 					)
 				)
-			),
+			)
 		];
-	},
+	}
 };
 
 var rackLayoutTable = {
@@ -144,7 +144,7 @@ var rackLayoutTable = {
 					{
 						href: `/device/${occupant.id}`,
 						oncreate: m.route.link,
-						title: t("Show Device Report"),
+						title: t("Show Device Report")
 					},
 					t("Pass")
 				),
@@ -155,10 +155,10 @@ var rackLayoutTable = {
 						href: `/problem/${occupant.id}`,
 						oncreate: m.route.link,
 						title: t("Show Device Report"),
-						class: "color-failure",
+						class: "color-failure"
 					},
 					t("FAIL")
-				),
+				)
 			};
 			return healthButton[occupant.health];
 		}
@@ -176,14 +176,14 @@ var rackLayoutTable = {
 					Rack.highlightDevice &&
 					Rack.highlightDevice === (slot.occupant || {}).id
 						? "row-highlight"
-						: "",
+						: ""
 			});
 		}
 		function deviceAssetTag(slot) {
 			if (!slot.occupant) {
 				return m("input[type=text]", {
 					placeholder: t("Must first assign device"),
-					disabled: true,
+					disabled: true
 				});
 			}
 			const deviceId = slot.occupant.id;
@@ -199,7 +199,7 @@ var rackLayoutTable = {
 					Device.setAssetTag(deviceId, state[deviceId].assetTag);
 				},
 				placeholder: t("Device asset tag"),
-				value: state[deviceId].assetTag || "",
+				value: state[deviceId].assetTag || ""
 			});
 		}
 		function flagDevice({ occupant }, slotId) {
@@ -219,7 +219,7 @@ var rackLayoutTable = {
 							}
 						);
 					},
-					title: t("Notify administrators about device"),
+					title: t("Notify administrators about device")
 				},
 				m("i.material-icons.md-18", "flag")
 			);
@@ -242,11 +242,11 @@ var rackLayoutTable = {
 						m(healthIcon),
 						Device.isActive(occupant)
 							? m(Icons.deviceReporting)
-							: null,
+							: null
 					]);
 				}
 				return m(".rack-status");
-			},
+			}
 		};
 
 		return Table(
@@ -260,7 +260,7 @@ var rackLayoutTable = {
 				t("Device"),
 				t("Report"),
 				t("Asset Tag"),
-				t("Actions"),
+				t("Actions")
 			],
 			Object.keys(Rack.current.slots || {})
 				.reverse()
@@ -275,15 +275,15 @@ var rackLayoutTable = {
 						deviceInput(slot),
 						slot.occupant ? reportButton(slot) : null,
 						deviceAssetTag(slot),
-						slot.occupant ? flagDevice(slot, slotId) : null,
+						slot.occupant ? flagDevice(slot, slotId) : null
 					];
 				})
 		);
-	},
+	}
 };
 
 export default {
 	allRacks,
 	makeSelection,
-	rackLayout,
+	rackLayout
 };

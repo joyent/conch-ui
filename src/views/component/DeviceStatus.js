@@ -23,5 +23,5 @@ export default {
 			);
 		}
 		return m(".device-status");
-	},
+	}
 };

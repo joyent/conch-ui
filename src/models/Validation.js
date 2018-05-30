@@ -9,7 +9,7 @@ const Validation = {
 			.request({
 				method: "get",
 				url: `${conchApi}/validation`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(validations => {
 				Validation.list = validations;
@@ -21,7 +21,7 @@ const Validation = {
 					{}
 				);
 			});
-	},
+	}
 };
 
 export default Validation;

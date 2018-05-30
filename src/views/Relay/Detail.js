@@ -18,15 +18,15 @@ export default {
 				t("IP Address"),
 				t("SSH Port Tunnel"),
 				t("Version"),
-				t("Last Seen"),
+				t("Last Seen")
 			],
 			[
 				[
 					Relay.current.ipaddr || t("No IP Address"),
 					Relay.current.ssh_port,
 					Relay.current.version,
-					moment(Relay.current.updated).fromNow(),
-				],
+					moment(Relay.current.updated).fromNow()
+				]
 			]
 		);
 		const locationInfo = Relay.current.location
@@ -36,7 +36,7 @@ export default {
 						t("Datacenter Room"),
 						t("Rack Name"),
 						t("Role Name"),
-						t("Actions"),
+						t("Actions")
 					],
 					[
 						[
@@ -50,11 +50,11 @@ export default {
 										Relay.current.location.rack_id
 									}`,
 									oncreate: m.route.link,
-									title: t("Show Rack"),
+									title: t("Show Rack")
 								},
 								Icons.showRack
-							),
-						],
+							)
+						]
 					]
 			  )
 			: null;
@@ -69,7 +69,7 @@ export default {
 								m.route.set(`/rack/${rack.id}?device=${id}`)
 							);
 						},
-						title: t("Find Device in Rack"),
+						title: t("Find Device in Rack")
 					},
 					Icons.findDeviceInRack
 				),
@@ -79,7 +79,7 @@ export default {
 							{
 								href: `/problem/${id}`,
 								oncreate: m.route.link,
-								title: t("Show Device Problems"),
+								title: t("Show Device Problems")
 							},
 							Icons.deviceProblems
 					  )
@@ -89,10 +89,10 @@ export default {
 					{
 						href: `/device/${id}`,
 						oncreate: m.route.link,
-						title: t("Latest Device Report"),
+						title: t("Latest Device Report")
 					},
 					Icons.deviceReport
-				),
+				)
 			];
 		};
 		// TODO: Fix the bug with the status icons and add it back to the table
@@ -102,7 +102,7 @@ export default {
 				//t("Status"),
 				t("Device"),
 				t("Last Seen"),
-				t("Actions"),
+				t("Actions")
 			],
 			Relay.current.devices.slice(0, -1).map(device => {
 				return [
@@ -113,10 +113,10 @@ export default {
 						{ title: device.last_seen },
 						moment(device.last_seen).fromNow()
 					),
-					deviceActions(device),
+					deviceActions(device)
 				];
 			})
 		);
 		return [relayInfo, locationInfo, deviceTable];
-	},
+	}
 };

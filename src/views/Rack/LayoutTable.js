@@ -11,8 +11,24 @@ const headers = [
 	m("th", "Slot"),
 	m("th", ""),
 	m("th", "Product Name"),
-	m("th", "Occupant"),
+	m("th", "Occupant")
 ];
+
+const OccupantEntry = {
+	view({ attrs: { occupant } }) {
+		if (!occupant) {
+			return m(
+				"button.button.is-primary.is-outlined.is-small",
+				"Add Device"
+			);
+		}
+		return [
+			occupant.id,
+			occupant.asset_tag &&
+				m("span.has-text-grey", ` ${occupant.asset_tag}`)
+		];
+	}
+};
 
 export default {
 	view: ({ attrs: { deviceSlots, activeDeviceId } }) => {
@@ -31,7 +47,7 @@ export default {
 								slot.occupant &&
 									activeDeviceId(slot.occupant.id);
 							},
-							style: slot.occupant && "cursor: pointer",
+							style: slot.occupant && "cursor: pointer"
 						},
 						m("th", slot.id),
 						m(
@@ -39,25 +55,15 @@ export default {
 							m(
 								"p",
 								m(ProgressIcon, {
-									progress: slot.progress,
+									progress: slot.progress
 								})
 							)
 						),
 						m("td", slot.name),
-						m(
-							"td",
-							occupant && [
-								occupant.id,
-								occupant.asset_tag &&
-									m(
-										"span.has-text-grey",
-										` ${occupant.asset_tag}`
-									),
-							]
-						)
+						m("td", m(OccupantEntry, { occupant }))
 					);
 				})
 			)
 		);
-	},
+	}
 };

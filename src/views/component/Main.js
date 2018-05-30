@@ -16,11 +16,11 @@ export default {
 					".column.is-2",
 					m(Sidebar, {
 						isWorkspaceAdmin: true,
-						isGlobalAdmin: true,
+						isGlobalAdmin: true
 					})
 				),
 				m(".column.is-10", contentView)
 			)
-		),
-	],
+		)
+	]
 };

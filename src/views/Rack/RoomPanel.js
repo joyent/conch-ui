@@ -39,7 +39,7 @@ export default () => {
 						m(
 							"input.input.is-small[type=text][placeholder=Search Rooms]",
 							{
-								oninput: m.withAttr("value", roomFilterText),
+								oninput: m.withAttr("value", roomFilterText)
 							}
 						),
 						m("span.icon.is-small.is-left", m("i.fas fa-search"))
@@ -56,7 +56,7 @@ export default () => {
 								},
 								// don't break spaces
 								style: "white-space:pre",
-								class: selectedProgress() === p && "is-active",
+								class: selectedProgress() === p && "is-active"
 							},
 							p
 						)
@@ -76,7 +76,7 @@ export default () => {
 									},
 									class:
 										activeRoomName() === room.name &&
-										"is-active",
+										"is-active"
 								},
 								m(
 									".panel-icon",
@@ -87,6 +87,6 @@ export default () => {
 						);
 					return acc;
 				}, [])
-			),
+			)
 	};
 };

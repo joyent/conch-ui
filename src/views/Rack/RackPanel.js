@@ -72,7 +72,7 @@ export default () => {
 							"input.input.is-small[type=text][placeholder=Search Racks]",
 							{
 								oninput: m.withAttr("value", rackFilterText),
-								value: rackFilterText(),
+								value: rackFilterText()
 							}
 						),
 						m("span.icon.is-small.is-left", m("i.fas fa-search"))
@@ -89,7 +89,7 @@ export default () => {
 								},
 								// don't break spaces
 								style: "white-space:pre",
-								class: selectedProgress() === p && "is-active",
+								class: selectedProgress() === p && "is-active"
 							},
 							p
 						)
@@ -104,7 +104,7 @@ export default () => {
 								onclick: e => {
 									selectedRole(r);
 								},
-								class: selectedRole() === r && "is-active",
+								class: selectedRole() === r && "is-active"
 							},
 							r
 						)
@@ -125,19 +125,19 @@ export default () => {
 									},
 									class:
 										activeRackId() === rack.id &&
-										"is-active",
+										"is-active"
 								},
 								m(
 									".panel-icon",
 									m(ProgressIcon, {
-										progress: rackProgress(rack),
+										progress: rackProgress(rack)
 									})
 								),
 								rack.name
 							)
 						);
 					return acc;
-				}, []),
-			]),
+				}, [])
+			])
 	};
 };

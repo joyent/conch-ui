@@ -15,7 +15,7 @@ export default () => {
 					// when currentWorkspace changes
 					onupdate: m.route.link,
 					onclick: () => activeItem(link),
-					class: m.route.get().startsWith(route) > 0 && "is-active",
+					class: m.route.get().startsWith(route) > 0 && "is-active"
 				},
 				name
 			),
@@ -46,7 +46,7 @@ export default () => {
 						"ul.menu-list",
 						menuItem("Users"),
 						menuItem("Datacenter Racks")
-					),
+					)
 				],
 				attrs.isGlobalAdmin && [
 					m("p.menu-label", "Global Admin"),
@@ -55,8 +55,8 @@ export default () => {
 						menuItem("Datacenters"),
 						menuItem("Validations"),
 						menuItem("Hardware Products")
-					),
+					)
 				]
-			),
+			)
 	};
 };

@@ -21,7 +21,7 @@ import english from "./languages/en.js";
 const languages = {
 	en: english,
 	ko: korean,
-	"ko-KR": korean,
+	"ko-KR": korean
 };
 
 t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
@@ -39,7 +39,7 @@ function loadWorkspaces() {
 		.request({
 			method: "GET",
 			url: `${conchApi}/workspace`,
-			withCredentials: true,
+			withCredentials: true
 		})
 		.then(workspaces => {
 			state.workspaces = workspaces;
@@ -57,9 +57,9 @@ function setupSession() {
 			extract(xhr) {
 				return {
 					status: xhr.status,
-					body: xhr.response ? JSON.parse(xhr.response) : null,
+					body: xhr.response ? JSON.parse(xhr.response) : null
 				};
-			},
+			}
 		})
 		.catch(e => {
 			if (e.status === 401) {
@@ -99,8 +99,8 @@ function dispatch(root, routes) {
 						view: () =>
 							m(comp.view || comp, {
 								currentWorkspace,
-								workspaces: state.workspaces,
-							}),
+								workspaces: state.workspaces
+							})
 					};
 				}, () => Login);
 			},
@@ -111,11 +111,11 @@ function dispatch(root, routes) {
 							{ currentWorkspace, workspaces: state.workspaces },
 							m(view, {
 								currentWorkspace,
-								workspaces: state.workspaces,
+								workspaces: state.workspaces
 							})
 					  )
 					: vnode;
-			},
+			}
 		};
 
 		return accTable;
@@ -126,7 +126,7 @@ function dispatch(root, routes) {
 			return setupSession().then(comp => {
 				m.route.set(`/${currentWorkspace().id}/status`);
 			}, () => Login);
-		},
+		}
 	};
 
 	m.route(root, "/", table);
@@ -139,6 +139,6 @@ dispatch(document.body, {
 	"/datacenter/:roomName/rack/:rackId/device": { layout: Main, view: Rack },
 	"/datacenter/:roomName/rack/:rackId/device/:deviceId": {
 		layout: Main,
-		view: Rack,
-	},
+		view: Rack
+	}
 });

@@ -11,7 +11,7 @@ const Rack = {
 			.request({
 				method: "GET",
 				url: `${conchApi}/workspace/${workspaceId}/rack`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				// sort and assign the rack rooms
@@ -37,7 +37,7 @@ const Rack = {
 			.request({
 				method: "GET",
 				url: `${conchApi}/workspace/${workspaceId}/rack/${id}`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				Rack.current = res;
@@ -69,7 +69,7 @@ const Rack = {
 					rack.id
 				}/layout`,
 				data: deviceAssignments,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				Rack.assignSuccess = true;
@@ -86,7 +86,7 @@ const Rack = {
 				console.log(`Error in assigning devices: ${e.message}`);
 			});
 	},
-	highlightDevice: null,
+	highlightDevice: null
 };
 
 export default Rack;

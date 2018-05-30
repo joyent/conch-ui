@@ -9,5 +9,5 @@ export default {
 				m("h1.title", attrs.title),
 				attrs.subtitle && m("h2.subtitle", attrs.subtitle)
 			)
-		),
+		)
 };

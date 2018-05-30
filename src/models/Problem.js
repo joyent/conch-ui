@@ -18,13 +18,13 @@ const Problem = {
 			.request({
 				method: "GET",
 				url: `${conchApi}/workspace/${workspaceId}/problem`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				Problem.devices = {
 					failing: sortObject(res.failing),
 					unlocated: sortObject(res.unlocated),
-					unreported: sortObject(res.unreported),
+					unreported: sortObject(res.unreported)
 				};
 			})
 			.catch(e => {
@@ -40,7 +40,7 @@ const Problem = {
 		return Object.keys(Problem.devices).some(
 			group => Problem.devices[group][deviceId]
 		);
-	},
+	}
 };
 
 export default Problem;

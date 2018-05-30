@@ -26,7 +26,7 @@ const Workspace = {
 			.request({
 				method: "GET",
 				url: `${conchApi}/workspace`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(workspaces => {
 				Workspace.list = workspaces;
@@ -44,7 +44,7 @@ const Workspace = {
 				}
 				return currentId;
 			});
-	},
+	}
 };
 
 export default Workspace;

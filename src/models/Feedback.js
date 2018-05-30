@@ -9,7 +9,7 @@ const Feedback = {
 				method: "POST",
 				url: `${conchApi}/feedback`,
 				withCredentials: true,
-				data: { subject, message },
+				data: { subject, message }
 			})
 			.then(data => {
 				next(data);
@@ -21,7 +21,7 @@ const Feedback = {
 	},
 	sendUserFeedback(text, next) {
 		return this.sendFeedback("Conch User Feedback", text, next);
-	},
+	}
 };
 
 export default Feedback;

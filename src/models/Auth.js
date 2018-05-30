@@ -15,9 +15,9 @@ const Auth = {
 				extract(xhr) {
 					return {
 						status: xhr.status,
-						body: xhr.response ? JSON.parse(xhr.response) : null,
+						body: xhr.response ? JSON.parse(xhr.response) : null
 					};
-				},
+				}
 			})
 			.then(_res => {
 				Auth._loggedIn = true;
@@ -48,9 +48,9 @@ const Auth = {
 				extract(xhr) {
 					return {
 						status: xhr.status,
-						body: xhr.response ? JSON.parse(xhr.response) : null,
+						body: xhr.response ? JSON.parse(xhr.response) : null
 					};
-				},
+				}
 			})
 			.then(res => {
 				Auth._loggedIn = true;
@@ -72,12 +72,12 @@ const Auth = {
 			.request({
 				method: "POST",
 				url: `${conchApi}/logout`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				Auth._loggedIn = false;
 			});
-	},
+	}
 };
 
 export default Auth;

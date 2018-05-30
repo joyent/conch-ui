@@ -16,11 +16,11 @@ export default {
 				{
 					oncreate: addToolTip(
 						t("Device has completed validation. Good to ship.")
-					),
+					)
 				},
 				"check_circle"
 			);
-		},
+		}
 	},
 
 	passValidation: {
@@ -28,11 +28,11 @@ export default {
 			return m(
 				"i.material-icons",
 				{
-					oncreate: addToolTip(t("Device passes validation")),
+					oncreate: addToolTip(t("Device passes validation"))
 				},
 				"check"
 			);
-		},
+		}
 	},
 
 	failValidation: {
@@ -40,11 +40,11 @@ export default {
 			return m(
 				"i.material-icons",
 				{
-					oncreate: addToolTip(t("Device fails validation")),
+					oncreate: addToolTip(t("Device fails validation"))
 				},
 				"error_outline"
 			);
-		},
+		}
 	},
 
 	deviceReporting: {
@@ -52,11 +52,11 @@ export default {
 			return m(
 				"i.material-icons",
 				{
-					oncreate: addToolTip(t("Device reporting to Conch")),
+					oncreate: addToolTip(t("Device reporting to Conch"))
 				},
 				"cloud_upload"
 			);
-		},
+		}
 	},
 
 	noReport: {
@@ -64,11 +64,11 @@ export default {
 			return m(
 				"i.material-icons",
 				{
-					oncreate: addToolTip(t("No reports collected from device")),
+					oncreate: addToolTip(t("No reports collected from device"))
 				},
 				"help_outline"
 			);
-		},
+		}
 	},
 
 	firmwareUpdating: m("i.material-icons", "refresh"),
@@ -95,10 +95,10 @@ export default {
 		relays: m("i.material-icons", "router"),
 		logout: m("i.material-icons", "exit_to_app"),
 		feedback: m("i.material-icons", "message"),
-		language: m("i.material-icons", "language"),
+		language: m("i.material-icons", "language")
 	},
 
 	ui: {
-		close: m("i.material-icons", "close"),
-	},
+		close: m("i.material-icons", "close")
+	}
 };

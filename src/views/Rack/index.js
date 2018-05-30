@@ -56,7 +56,7 @@ export default () => {
 					url: `${conchApi}/workspace/${currentWorkspace().id}/rack/${
 						rack.id
 					}`,
-					withCredentials: true,
+					withCredentials: true
 				}).then(res => {
 					rackLayout(res);
 					rackLoading(false);
@@ -78,7 +78,7 @@ export default () => {
 					withCredentials: true,
 					config: xhr => {
 						deviceXHR = xhr;
-					},
+					}
 				}).then(res => {
 					activeDevice(res);
 					deviceLoading(false);
@@ -117,7 +117,7 @@ export default () => {
 				request({
 					method: "GET",
 					url: `${conchApi}/workspace/${id}/rack`,
-					withCredentials: true,
+					withCredentials: true
 				}).then(res => {
 					// transform the response in to a list of rack rooms (from than
 					// a tree-like object) and compute the 'progress' of each room.
@@ -162,13 +162,13 @@ export default () => {
 			return [
 				m(ViewTitleHero, {
 					title: `${currentWorkspace().name} datacenters`,
-					subtitle: `Explore datacenter racks`,
+					subtitle: `Explore datacenter racks`
 				}),
 				activeDeviceId() &&
 					m(DeviceModal, {
 						activeDeviceId,
 						activeDevice,
-						deviceLoading,
+						deviceLoading
 					}),
 				rackRooms() == null
 					? m("section.section", m(Spinner))
@@ -178,7 +178,7 @@ export default () => {
 								".column.is-3",
 								m(RoomPanel, {
 									rackRooms,
-									activeRoomName,
+									activeRoomName
 								})
 							),
 							m(
@@ -187,7 +187,7 @@ export default () => {
 									m(RackPanel, {
 										activeRoomName,
 										activeRacks,
-										activeRackId,
+										activeRackId
 									})
 							),
 							m(
@@ -197,11 +197,11 @@ export default () => {
 										activeRack,
 										rackLoading,
 										rackLayout,
-										activeDeviceId,
+										activeDeviceId
 									})
 							)
-					  ),
+					  )
 			];
-		},
+		}
 	};
 };

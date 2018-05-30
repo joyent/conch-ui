@@ -10,7 +10,7 @@ const asWorkspaceLink = w =>
 					route.indexOf("/", 1)
 				);
 				m.route.set(`/${w.id}${nonWorkspaceRoute}`);
-			},
+			}
 		},
 		w.name
 	);
@@ -39,5 +39,5 @@ export default {
 				)
 			)
 		);
-	},
+	}
 };

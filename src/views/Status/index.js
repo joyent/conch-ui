@@ -9,7 +9,7 @@ import RackProgress from "./RackProgress";
 
 const StatusTile = {
 	view: ({ children }) =>
-		m(".tile.is-parent", m("article.tile.is-child.box", children)),
+		m(".tile.is-parent", m("article.tile.is-child.box", children))
 };
 
 export default () => {
@@ -61,7 +61,7 @@ export default () => {
 							? m(Spinner)
 							: [
 									m("p.title", rackCount),
-									m("p.subtitle", "Racks"),
+									m("p.subtitle", "Racks")
 							  ]
 					),
 					m(
@@ -70,7 +70,7 @@ export default () => {
 							? m(Spinner)
 							: [
 									m("p.title", devices().length),
-									m("p.subtitle", "Devices"),
+									m("p.subtitle", "Devices")
 							  ]
 					),
 					m(
@@ -79,7 +79,7 @@ export default () => {
 							? m(Spinner)
 							: [
 									m("p.title", failingValidations.length),
-									m("p.subtitle", "Validation Issues"),
+									m("p.subtitle", "Validation Issues")
 							  ]
 					)
 				),
@@ -138,7 +138,7 @@ export default () => {
 														onclick: () => {
 															validationsToShow =
 																failingValidations.length;
-														},
+														}
 													},
 													"View All"
 												)
@@ -154,7 +154,7 @@ export default () => {
 							"div.box",
 							{
 								style:
-									"background-color:rgba(28%, 61%, 91%, 0.4)",
+									"background-color:rgba(28%, 61%, 91%, 0.4)"
 							},
 							rackRooms == null
 								? m(Spinner)
@@ -165,8 +165,8 @@ export default () => {
 										),
 										m(RackProgress, {
 											rackRooms,
-											group: "status",
-										}),
+											group: "status"
+										})
 								  ]
 						)
 					),
@@ -176,7 +176,7 @@ export default () => {
 							"div.box",
 							{
 								style:
-									"background-color:rgba(28%, 61%, 91%, 0.4)",
+									"background-color:rgba(28%, 61%, 91%, 0.4)"
 							},
 							rackRooms == null
 								? m(Spinner)
@@ -187,13 +187,13 @@ export default () => {
 										),
 										m(RackProgress, {
 											rackRooms,
-											group: "role",
-										}),
+											group: "role"
+										})
 								  ]
 						)
 					)
 				)
-			),
+			)
 	};
 
 	return {
@@ -202,7 +202,7 @@ export default () => {
 				request({
 					method: "GET",
 					url: `${conchApi}/workspace/${id}/device`,
-					withCredentials: true,
+					withCredentials: true
 				}).then(res => {
 					devices(
 						res.sort((a, b) => {
@@ -222,7 +222,7 @@ export default () => {
 				request({
 					method: "GET",
 					url: `${conchApi}/workspace/${id}/rack`,
-					withCredentials: true,
+					withCredentials: true
 				}).then(res => {
 					// sort and assign the rack rooms
 					rackCount = 0;
@@ -237,14 +237,14 @@ export default () => {
 				request({
 					method: "GET",
 					url: `${conchApi}/workspace/${id}/validation_state?status=error,fail`,
-					withCredentials: true,
+					withCredentials: true
 				}).then(res => {
 					failingValidations = res;
 				});
 				request({
 					method: "GET",
 					url: `${conchApi}/validation_plan`,
-					withCredentials: true,
+					withCredentials: true
 				}).then(res => {
 					validationPlanIdToName = res.reduce(
 						(acc, validationPlan) => {
@@ -260,10 +260,10 @@ export default () => {
 			return [
 				m(ViewTitleHero, {
 					title: "Conch Status",
-					subtitle: `Overview of ${currentWorkspace().name}`,
+					subtitle: `Overview of ${currentWorkspace().name}`
 				}),
-				m(statusTiles),
+				m(statusTiles)
 			];
-		},
+		}
 	};
 };

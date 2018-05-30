@@ -31,7 +31,7 @@ const Relay = {
 			.request({
 				method: "GET",
 				url: `${conchApi}/workspace/${workspaceId}/relay`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				Relay.list = res.sort(byAlias);
@@ -49,7 +49,7 @@ const Relay = {
 			.request({
 				method: "GET",
 				url: `${conchApi}/workspace/${workspaceId}/relay?active=1`,
-				withCredentials: true,
+				withCredentials: true
 			})
 			.then(res => {
 				Relay.activeList = res.sort(byAlias);
@@ -61,7 +61,7 @@ const Relay = {
 					console.log(`Error in GET /relay  : ${e.message}`);
 				}
 			});
-	},
+	}
 };
 
 export default Relay;

@@ -13,6 +13,6 @@ export default () => {
 				m(RelayList, attrs),
 				m(RelayDetail, attrs)
 			);
-		},
+		}
 	};
 };

@@ -14,5 +14,5 @@ function progressIcon(progress) {
 }
 
 export default {
-	view: ({ attrs: { progress } }) => progressIcon(progress),
+	view: ({ attrs: { progress } }) => progressIcon(progress)
 };
