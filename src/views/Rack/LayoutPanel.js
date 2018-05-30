@@ -1,16 +1,89 @@
 import m from "mithril";
 import stream from "mithril/stream";
+import search from "fuzzysearch";
 
 import Spinner from "../component/Spinner";
 
 import LayoutTable from "./LayoutTable";
 
+const deviceProgress = device => {
+	if (device == null) return "unassigned";
+	if (device.validated) return "validated";
+	if (device.health.toLowerCase() === "fail") return "failing";
+	return "in progress";
+};
+
 export default () => {
-	const deviceFilter = stream("");
-	const roomNameFilter = roomName => roomName.indexOf(roomFilterText()) >= 0;
-	const rackProgressFilter = stream(() => true);
-	let rackRoleFilter = () => true;
+	const deviceSearchText = stream("");
+	const deviceSearchTextLC = deviceSearchText.map(t => t.toLowerCase());
+	const selectedProgress = stream("all");
+	let availableDeviceProgress;
+	let filteredSlots;
+
+	// filter devices by selected progress and search text. Search texts tries
+	// to match against device ID, device asset tag
+	const deviceFilter = stream.combine(
+		(progress, searchText) => occupant => {
+			const deviceId = occupant ? occupant.id.toLowerCase() : "";
+			const assetTag =
+				occupant && occupant.asset_tag
+					? occupant.asset_tag.toLowerCase()
+					: "";
+			const progressFilter =
+				progress() === "all" || progress() === deviceProgress(occupant);
+			const searchFilter =
+				search(searchText(), deviceId) ||
+				search(searchText(), assetTag);
+			return progressFilter && searchFilter;
+		},
+		[selectedProgress, deviceSearchTextLC]
+	);
+
 	return {
+		oninit: ({ attrs: { rackLayout } }) => {
+			// reset filters when rackLayout changes
+			rackLayout.map(() => {
+				deviceSearchText("");
+				selectedProgress("all");
+			});
+
+			// get the set of device progresses
+			availableDeviceProgress = rackLayout.map(layout =>
+				Array.from(
+					Object.keys(layout.slots || {}).reduce((acc, slotId) => {
+						let occupant = rackLayout().slots[slotId].occupant;
+						if (occupant == null) acc.add("unassigned");
+						else acc.add(deviceProgress(occupant));
+						return acc;
+					}, new Set(["all"]))
+				).sort()
+			);
+
+			// filter the slots based on the evaluation of deviceFilter and
+			// transform the layout into an array of objects in the form
+			// {id: slotId, name: productName, occupant: occupant }
+			filteredSlots = stream.combine(
+				(layout, filter) => {
+					return Object.keys(layout().slots || {})
+						.reverse()
+						.reduce((acc, slotId) => {
+							let slot = layout().slots[slotId];
+							let occupant = slot.occupant;
+							if (filter()(occupant))
+								acc.push({
+									id: slotId,
+									name: slot.name,
+									progress: occupant
+										? deviceProgress(occupant)
+										: "unassigned",
+									occupant: occupant,
+								});
+							return acc;
+						}, []);
+				},
+				[rackLayout, deviceFilter]
+			);
+		},
 		view: ({ attrs: { activeRack, rackLoading, rackLayout } }) =>
 			m(
 				"nav.panel",
@@ -22,7 +95,8 @@ export default () => {
 						m(
 							"input.input.is-small[type=text][placeholder=Search Devices]",
 							{
-								oninput: m.withAttr("value", deviceFilter),
+								oninput: m.withAttr("value", deviceSearchText),
+								value: deviceSearchText(),
 							}
 						),
 						m("span.icon.is-small.is-left", m("i.fas fa-search"))
@@ -30,11 +104,24 @@ export default () => {
 				),
 				m(
 					"p.panel-tabs",
-					m("a.is-active", "all"),
-					m("a", "validated"),
-					m("a", "failing")
+					availableDeviceProgress().map(p =>
+						m(
+							"a",
+							{
+								onclick: e => {
+									selectedProgress(p);
+								},
+								// don't break spaces
+								style: "white-space:pre",
+								class: selectedProgress() === p && "is-active",
+							},
+							p
+						)
+					)
 				),
-				rackLoading() ? m(Spinner) : m(LayoutTable, { rackLayout })
+				rackLoading()
+					? m(Spinner)
+					: m(LayoutTable, { deviceSlots: filteredSlots })
 			),
 	};
 };

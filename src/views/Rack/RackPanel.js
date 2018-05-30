@@ -55,10 +55,11 @@ export default () => {
 				).sort()
 			);
 
-			// reset selections to "all" when activeRacks change
+			// reset filters when activeRacks change
 			activeRacks.map(() => {
 				selectedRole("all");
 				selectedProgress("all");
+				rackFilterText("");
 			});
 		},
 		view: ({ attrs: { activeRoomName, activeRacks, activeRackId } }) =>
@@ -71,6 +72,7 @@ export default () => {
 							"input.input.is-small[type=text][placeholder=Search Racks]",
 							{
 								oninput: m.withAttr("value", rackFilterText),
+								value: rackFilterText(),
 							}
 						),
 						m("span.icon.is-small.is-left", m("i.fas fa-search"))
