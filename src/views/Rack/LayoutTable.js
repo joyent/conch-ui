@@ -15,7 +15,7 @@ const headers = [
 ];
 
 export default {
-	view: ({ attrs: { deviceSlots } }) => {
+	view: ({ attrs: { deviceSlots, activeDeviceId } }) => {
 		return m(
 			"table.table.is-fullwidth.is-hoverable",
 			m("thead", m("tr", headers)),
@@ -26,6 +26,13 @@ export default {
 					let occupant = slot.occupant;
 					return m(
 						"tr",
+						{
+							onclick() {
+								slot.occupant &&
+									activeDeviceId(slot.occupant.id);
+							},
+							style: slot.occupant && "cursor: pointer",
+						},
 						m("th", slot.id),
 						m(
 							"td",

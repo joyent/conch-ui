@@ -84,7 +84,9 @@ export default () => {
 				[rackLayout, deviceFilter]
 			);
 		},
-		view: ({ attrs: { activeRack, rackLoading, rackLayout } }) =>
+		view: ({
+			attrs: { activeRack, rackLoading, rackLayout, activeDeviceId },
+		}) =>
 			m(
 				"nav.panel",
 				m("p.panel-heading", `Rack ${activeRack().name}`),
@@ -121,7 +123,10 @@ export default () => {
 				),
 				rackLoading()
 					? m(Spinner)
-					: m(LayoutTable, { deviceSlots: filteredSlots })
+					: m(LayoutTable, {
+							deviceSlots: filteredSlots,
+							activeDeviceId: activeDeviceId,
+					  })
 			),
 	};
 };

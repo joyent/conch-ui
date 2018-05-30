@@ -9,6 +9,7 @@ import { Spinner, ViewTitleHero } from "../component/";
 import LayoutPanel from "./LayoutPanel";
 import RackPanel from "./RackPanel";
 import RoomPanel from "./RoomPanel";
+import DeviceModal from "./DeviceModal";
 
 export default () => {
 	const rackFilterText = stream("");
@@ -40,6 +41,11 @@ export default () => {
 		if (a == null) rackLayout = stream();
 	});
 
+	const activeDeviceId = stream();
+	const deviceLoading = stream();
+	const activeDevice = stream();
+	let deviceXHR;
+
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
 			// side-effect: load the rack whenever activeRack updates
@@ -57,9 +63,33 @@ export default () => {
 				});
 			});
 
+			activeDeviceId.map(deviceId => {
+				// cancel previous, unfinished requests
+				if (deviceXHR) {
+					deviceXHR.abort();
+					deviceXHR = null;
+				}
+
+				if (deviceId == null) return;
+				deviceLoading(true);
+				request({
+					method: "GET",
+					url: `${conchApi}/device/${deviceId}`,
+					withCredentials: true,
+					config: xhr => {
+						deviceXHR = xhr;
+					},
+				}).then(res => {
+					activeDevice(res);
+					deviceLoading(false);
+				});
+			});
+
 			m.route.param("roomName") &&
 				activeRoomName(m.route.param("roomName"));
 			m.route.param("rackId") && activeRackId(m.route.param("rackId"));
+			m.route.param("deviceId") &&
+				activeDeviceId(m.route.param("deviceId"));
 
 			activeRoomName.map(name => {
 				const route = m.route.get();
@@ -69,10 +99,19 @@ export default () => {
 				);
 				m.route.set(`${routePrefix}/datacenter/${name}/rack`);
 			});
-			activeRack.map(rack => {
+			activeRackId.map(rackId => {
 				const route = m.route.get();
 				const routePrefix = route.substring(0, route.indexOf("/rack"));
-				m.route.set(`${routePrefix}/rack/${rack.id}`);
+				m.route.set(`${routePrefix}/rack/${rackId}/device`);
+			});
+			activeDeviceId.map(deviceId => {
+				const route = m.route.get();
+				const routePrefix = route.substring(
+					0,
+					route.indexOf("/device")
+				);
+				if (deviceId) m.route.set(`${routePrefix}/device/${deviceId}`);
+				else m.route.set(`${routePrefix}/device`);
 			});
 			currentWorkspace.map(({ id }) =>
 				request({
@@ -125,6 +164,12 @@ export default () => {
 					title: `${currentWorkspace().name} datacenters`,
 					subtitle: `Explore datacenter racks`,
 				}),
+				activeDeviceId() &&
+					m(DeviceModal, {
+						activeDeviceId,
+						activeDevice,
+						deviceLoading,
+					}),
 				rackRooms() == null
 					? m("section.section", m(Spinner))
 					: m(
@@ -152,6 +197,7 @@ export default () => {
 										activeRack,
 										rackLoading,
 										rackLayout,
+										activeDeviceId,
 									})
 							)
 					  ),

@@ -79,7 +79,7 @@ function setupSession() {
 
 function dispatch(root, routes) {
 	let layout;
-	let view
+	let view;
 	const table = Object.keys(routes).reduce((accTable, route) => {
 		let workspacePrefixedRoute = "/:wid" + route;
 		accTable[workspacePrefixedRoute] = {
@@ -87,21 +87,34 @@ function dispatch(root, routes) {
 				return setupSession().then(() => {
 					let comp = routes[route];
 					let workspaceId = args.wid;
-					if ( currentWorkspace().id !== workspaceId ) {
+					if (currentWorkspace().id !== workspaceId) {
 						currentWorkspace(
 							state.workspaces.find(w => w.id === workspaceId) ||
-							currentWorkspace()
+								currentWorkspace()
 						);
 					}
 					layout = comp.layout;
 					view = comp.view;
 					return {
-						view: () => m(comp.view || comp, { currentWorkspace, workspaces: state.workspaces }),
+						view: () =>
+							m(comp.view || comp, {
+								currentWorkspace,
+								workspaces: state.workspaces,
+							}),
 					};
 				}, () => Login);
 			},
 			render(vnode) {
-				return layout && view ? m(layout, { currentWorkspace, workspaces: state.workspaces }, m(view, { currentWorkspace, workspaces: state.workspaces })) : vnode;
+				return layout && view
+					? m(
+							layout,
+							{ currentWorkspace, workspaces: state.workspaces },
+							m(view, {
+								currentWorkspace,
+								workspaces: state.workspaces,
+							})
+					  )
+					: vnode;
 			},
 		};
 
@@ -123,6 +136,9 @@ dispatch(document.body, {
 	"/status": { layout: Main, view: Status },
 	"/datacenter": { layout: Main, view: Rack },
 	"/datacenter/:roomName/rack": { layout: Main, view: Rack },
-	"/datacenter/:roomName/rack/:rackId": { layout: Main, view: Rack },
-	"/datacenter/:roomName/rack/:rackId/device/:deviceId": { layout: Main, view: Rack },
+	"/datacenter/:roomName/rack/:rackId/device": { layout: Main, view: Rack },
+	"/datacenter/:roomName/rack/:rackId/device/:deviceId": {
+		layout: Main,
+		view: Rack,
+	},
 });
