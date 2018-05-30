@@ -127,9 +127,12 @@ export default () => {
 										activeRackId() === rack.id &&
 										"is-active",
 								},
-								m(ProgressIcon, {
-									progress: rackProgress(rack),
-								}),
+								m(
+									".panel-icon",
+									m(ProgressIcon, {
+										progress: rackProgress(rack),
+									})
+								),
 								rack.name
 							)
 						);

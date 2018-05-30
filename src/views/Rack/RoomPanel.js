@@ -78,7 +78,10 @@ export default () => {
 										activeRoomName() === room.name &&
 										"is-active",
 								},
-								m(ProgressIcon, { progress: room.progress }),
+								m(
+									".panel-icon",
+									m(ProgressIcon, { progress: room.progress })
+								),
 								room.name
 							)
 						);
