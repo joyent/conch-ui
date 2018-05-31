@@ -10,7 +10,7 @@ import Device from "./views/Device";
 import Layout from "./views/Layout";
 import Login from "./views/Login";
 import Problem from "./views/Problem";
-import Rack from "./views/Rack";
+import DatacenterExplorer from "./views/DatacenterExplorer";
 import Status from "./views/Status";
 import RelayView from "./views/Relay";
 
@@ -134,11 +134,14 @@ function dispatch(root, routes) {
 
 dispatch(document.body, {
 	"/status": { layout: Main, view: Status },
-	"/datacenter": { layout: Main, view: Rack },
-	"/datacenter/:roomName/rack": { layout: Main, view: Rack },
-	"/datacenter/:roomName/rack/:rackId/device": { layout: Main, view: Rack },
+	"/datacenter": { layout: Main, view: DatacenterExplorer },
+	"/datacenter/:roomName/rack": { layout: Main, view: DatacenterExplorer },
+	"/datacenter/:roomName/rack/:rackId/device": {
+		layout: Main,
+		view: DatacenterExplorer
+	},
 	"/datacenter/:roomName/rack/:rackId/device/:deviceId": {
 		layout: Main,
-		view: Rack
+		view: DatacenterExplorer
 	}
 });
