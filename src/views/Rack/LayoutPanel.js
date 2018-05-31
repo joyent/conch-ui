@@ -5,6 +5,7 @@ import search from "fuzzysearch";
 import Spinner from "../component/Spinner";
 
 import LayoutTable from "./LayoutTable";
+import EditLayoutModal from "./EditLayoutModal";
 
 const deviceProgress = device => {
 	if (device == null) return "unassigned";
@@ -18,6 +19,7 @@ export default () => {
 	const deviceSearchTextLC = deviceSearchText.map(t => t.toLowerCase());
 	const selectedProgress = stream("all");
 	let availableDeviceProgress;
+	let normalizedSlots;
 	let filteredSlots;
 
 	// filter devices by selected progress and search text. Search texts tries
@@ -38,6 +40,8 @@ export default () => {
 		},
 		[selectedProgress, deviceSearchTextLC]
 	);
+
+	const editLayout = stream();
 
 	return {
 		oninit: ({ attrs: { rackLayout } }) => {
@@ -62,31 +66,37 @@ export default () => {
 			// filter the slots based on the evaluation of deviceFilter and
 			// transform the layout into an array of objects in the form
 			// {id: slotId, name: productName, occupant: occupant }
+			normalizedSlots = rackLayout.map(layout => {
+				return Object.keys(layout.slots || {})
+					.reverse()
+					.map(slotId => {
+						let slot = rackLayout().slots[slotId];
+						let occupant = slot.occupant;
+						return {
+							id: slotId,
+							name: slot.name,
+							progress: occupant
+								? deviceProgress(occupant)
+								: "unassigned",
+							occupant: occupant
+						};
+					});
+			});
 			filteredSlots = stream.combine(
-				(layout, filter) => {
-					return Object.keys(layout().slots || {})
-						.reverse()
-						.reduce((acc, slotId) => {
-							let slot = layout().slots[slotId];
-							let occupant = slot.occupant;
-							if (filter()(occupant))
-								acc.push({
-									id: slotId,
-									name: slot.name,
-									progress: occupant
-										? deviceProgress(occupant)
-										: "unassigned",
-									occupant: occupant
-								});
-							return acc;
-						}, []);
-				},
-				[rackLayout, deviceFilter]
+				(slots, filter) =>
+					slots().filter(slot => filter()(slot.occupant)),
+				[normalizedSlots, deviceFilter]
 			);
 		},
 		view: ({
-			attrs: { activeRack, rackLoading, rackLayout, activeDeviceId }
-		}) =>
+			attrs: {
+				currentWorkspace,
+				activeRack,
+				rackLoading,
+				rackLayout,
+				activeDeviceId
+			}
+		}) => [
 			m(
 				"nav.panel",
 				m(".panel-heading", `Rack ${activeRack().name}`),
@@ -125,6 +135,11 @@ export default () => {
 					".panel-block",
 					m(
 						"button.button.is-primary.is-outlined.is-fullwidth.is-small",
+						{
+							onclick() {
+								editLayout(true);
+							}
+						},
 						"Edit Assignments"
 					)
 				),
@@ -134,6 +149,14 @@ export default () => {
 							deviceSlots: filteredSlots,
 							activeDeviceId: activeDeviceId
 					  })
-			)
+			),
+			editLayout() &&
+				m(EditLayoutModal, {
+					deviceSlots: normalizedSlots,
+					activeRack,
+					currentWorkspace,
+					editLayout
+				})
+		]
 	};
 };

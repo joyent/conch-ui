@@ -194,6 +194,7 @@ export default () => {
 								".column.is-6",
 								rackLayout() &&
 									m(LayoutPanel, {
+										currentWorkspace,
 										activeRack,
 										rackLoading,
 										rackLayout,
