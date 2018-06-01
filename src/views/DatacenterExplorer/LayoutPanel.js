@@ -94,7 +94,8 @@ export default () => {
 				activeRack,
 				rackLoading,
 				rackLayout,
-				activeDeviceId
+				activeDeviceId,
+				searchedDevice
 			}
 		}) => [
 			m(
@@ -147,7 +148,8 @@ export default () => {
 					? m(Spinner)
 					: m(LayoutTable, {
 							deviceSlots: filteredSlots,
-							activeDeviceId: activeDeviceId
+							activeDeviceId,
+							searchedDevice
 					  })
 			),
 			editLayout() &&
