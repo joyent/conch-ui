@@ -7,13 +7,6 @@ import { conchApi } from "config";
 import Spinner from "../component/Spinner";
 import ProgressIcon from "./ProgressIcon";
 
-// ok to not be component because they don't change
-const headers = [
-	m("th", "Slot"),
-	m("th", "Product Name"),
-	m("th.has-text-right", "Device Identification")
-];
-
 const SaveEditButton = {
 	view: ({
 		attrs: {
@@ -80,6 +73,14 @@ const SaveEditButton = {
 const EditLayoutTable = () => {
 	const assignments = {};
 	const duplicateSerials = stream({});
+
+	// ok to not be component because they don't change
+	const headers = [
+		m("th", "Slot"),
+		m("th", "Product Name"),
+		m("th.has-text-right", "Device Identification")
+	];
+
 	return {
 		oninit: ({ attrs: { deviceSlots } }) => {
 			deviceSlots().map(slot => {
