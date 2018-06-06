@@ -19,7 +19,7 @@ export default () => {
 	let failingValidations;
 	let validationPlanIdToName = {};
 	let validationsToShow = 10;
-	let progress = { pass: 0, total: 0 };
+	let progress;
 	const progressPercent = () =>
 		progress.total ? progress.pass / progress.total * 100 : 0;
 
@@ -199,6 +199,7 @@ export default () => {
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
 			currentWorkspace.map(({ id }) => {
+				progress = { pass: 0, total: 0 };
 				request({
 					method: "GET",
 					url: `${conchApi}/workspace/${id}/device`,

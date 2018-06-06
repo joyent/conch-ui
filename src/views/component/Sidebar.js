@@ -31,32 +31,8 @@ export default () => {
 				m(
 					"ul.menu-list",
 					menuItem("Status", "status"),
-					menuItem("Datacenters", "datacenter"),
-					menuItem(
-						"Devices",
-						"device",
-						menuItem("Inventory"),
-						menuItem("Validation Status")
-					),
-					menuItem("Relays")
-				),
-				attrs.isWorkspaceAdmin && [
-					m("p.menu-label", "Workspace Admin"),
-					m(
-						"ul.menu-list",
-						menuItem("Users"),
-						menuItem("Datacenter Racks")
-					)
-				],
-				attrs.isGlobalAdmin && [
-					m("p.menu-label", "Global Admin"),
-					m(
-						"ul.menu-list",
-						menuItem("Datacenters"),
-						menuItem("Validations"),
-						menuItem("Hardware Products")
-					)
-				]
+					menuItem("Datacenter", "datacenter")
+				)
 			)
 	};
 };
