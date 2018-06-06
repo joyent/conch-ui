@@ -11,6 +11,7 @@ import LayoutPanel from "./LayoutPanel";
 import RackPanel from "./RackPanel";
 import RoomPanel from "./RoomPanel";
 import DeviceModal from "./DeviceModal";
+import { roomToProgress } from "./Progress";
 
 export default () => {
 	const rackFilterText = stream("");
@@ -166,37 +167,16 @@ export default () => {
 				}).then(res => {
 					// transform the response in to a list of rack rooms (from than
 					// a tree-like object) and compute the 'progress' of each room.
-					// A room is "failing" if one rack is failing, or "passing" if
-					// one rack is passing, or "validated" if *every* rack is
-					// validated. Otherwise, it's considered "not started".
 					rackRooms(
 						Object.keys(res)
 							.sort()
 							.reduce((acc, name) => {
-								let progress;
 								let racks = res[name];
-								if (
-									racks.some(
-										rack => rack["device_progress"]["FAIL"]
-									)
-								) {
-									progress = "failing";
-								} else if (
-									racks.some(
-										rack => rack["device_progress"]["PASS"]
-									)
-								) {
-									progress = "in progress";
-								} else if (
-									racks.every(
-										rack => rack["device_progress"]["VALID"]
-									)
-								) {
-									progress = "validated";
-								} else {
-									progress = "not started";
-								}
-								acc.push({ name, racks, progress });
+								acc.push({
+									name,
+									racks,
+									progress: roomToProgress(racks)
+								});
 								return acc;
 							}, [])
 					);

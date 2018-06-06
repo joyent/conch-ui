@@ -6,13 +6,7 @@ import Spinner from "../component/Spinner";
 
 import LayoutTable from "./LayoutTable";
 import EditLayoutModal from "./EditLayoutModal";
-
-const deviceProgress = device => {
-	if (device == null) return "unassigned";
-	if (device.validated) return "validated";
-	if (device.health.toLowerCase() === "fail") return "failing";
-	return "in progress";
-};
+import { deviceToProgress } from "./Progress";
 
 export default () => {
 	const deviceSearchText = stream("");
@@ -32,7 +26,8 @@ export default () => {
 					? occupant.asset_tag.toLowerCase()
 					: "";
 			const progressFilter =
-				progress() === "all" || progress() === deviceProgress(occupant);
+				progress() === "all" ||
+				progress() === deviceToProgress(occupant);
 			const searchFilter =
 				search(searchText(), deviceId) ||
 				search(searchText(), assetTag);
@@ -57,7 +52,7 @@ export default () => {
 					Object.keys(layout.slots || {}).reduce((acc, slotId) => {
 						let occupant = rackLayout().slots[slotId].occupant;
 						if (occupant == null) acc.add("unassigned");
-						else acc.add(deviceProgress(occupant));
+						else acc.add(deviceToProgress(occupant));
 						return acc;
 					}, new Set(["all"]))
 				).sort()
@@ -76,7 +71,7 @@ export default () => {
 							id: slotId,
 							name: slot.name,
 							progress: occupant
-								? deviceProgress(occupant)
+								? deviceToProgress(occupant)
 								: "unassigned",
 							occupant: occupant
 						};

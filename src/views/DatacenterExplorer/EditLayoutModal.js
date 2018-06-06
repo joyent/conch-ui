@@ -5,7 +5,7 @@ import { request } from "mithril";
 import { conchApi } from "config";
 
 import Spinner from "../component/Spinner";
-import ProgressIcon from "./ProgressIcon";
+import { ProgressIcon } from "./Progress";
 
 const SaveEditButton = {
 	view: ({

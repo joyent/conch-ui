@@ -3,19 +3,7 @@ import stream from "mithril/stream";
 import search from "fuzzysearch";
 
 import Spinner from "../component/Spinner";
-import ProgressIcon from "./ProgressIcon";
-
-const rackProgress = rack => {
-	if (rack["device_progress"]["FAIL"]) {
-		return "failing";
-	} else if (rack["device_progress"]["PASS"]) {
-		return "in progress";
-	} else if (rack["device_progress"]["VALID"]) {
-		return "validated";
-	} else {
-		return "not started";
-	}
-};
+import { ProgressIcon, rackToProgress } from "./Progress";
 
 export default () => {
 	const rackFilterText = stream("");
@@ -31,7 +19,7 @@ export default () => {
 	const selectedProgress = stream("all");
 	const rackProgressFilter = rack =>
 		selectedProgress() === "all" ||
-		selectedProgress() === rackProgress(rack);
+		selectedProgress() === rackToProgress(rack);
 	let availableRackProgress;
 
 	return {
@@ -49,7 +37,7 @@ export default () => {
 			availableRackProgress = activeRacks.map(racks =>
 				Array.from(
 					racks.reduce((acc, rack) => {
-						acc.add(rackProgress(rack));
+						acc.add(rackToProgress(rack));
 						return acc;
 					}, new Set(["all"]))
 				).sort()
@@ -130,7 +118,7 @@ export default () => {
 								m(
 									".panel-icon",
 									m(ProgressIcon, {
-										progress: rackProgress(rack)
+										progress: rackToProgress(rack)
 									})
 								),
 								rack.name

@@ -4,7 +4,7 @@ import { request } from "mithril";
 import { conchApi } from "config";
 
 import Spinner from "../component/Spinner";
-import ProgressIcon from "./ProgressIcon";
+import { ProgressIcon } from "./Progress";
 
 // ok to not be component because they don't change
 const headers = [

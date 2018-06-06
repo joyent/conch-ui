@@ -3,7 +3,7 @@ import stream from "mithril/stream";
 import search from "fuzzysearch";
 
 import Spinner from "../component/Spinner";
-import ProgressIcon from "./ProgressIcon";
+import { ProgressIcon } from "./Progress";
 
 export default () => {
 	const roomFilterText = stream("");
