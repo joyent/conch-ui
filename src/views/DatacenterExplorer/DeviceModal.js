@@ -254,6 +254,35 @@ const ValidationTab = () => {
 	};
 };
 
+const SettingsTab = () => {
+	const headers = [m("th", "Name"), m("th", "Value")];
+	const settings = stream();
+
+	return {
+		oninit: ({ attrs: { activeDevice } }) => {
+			request({
+				method: "GET",
+				url: `${conchApi}/device/${activeDevice().id}/settings`,
+				withCredentials: true
+			}).then(settings);
+		},
+		view: ({ attrs: { activeDevice } }) => {
+			return settings() == null
+				? m(Spinner)
+				: m(
+						"table.table.is-narrow.is-fullwidth",
+						m("thead", m("tr", headers)),
+						m("tfoot", m("tr", headers)),
+						Object.entries(settings())
+							.sort()
+							.map(([name, value]) =>
+								m("tr", m("td", name), m("td", value))
+							)
+				  );
+		}
+	};
+};
+
 export default () => {
 	return {
 		oninit: ({ attrs: { activeDevice } }) => {},
@@ -269,7 +298,10 @@ export default () => {
 					".modal-card",
 					m(
 						"header.modal-card-head",
-						m("p.modal-card-title", `Device ${activeDeviceId()}`),
+						m(
+							"p.modal-card-title.has-text-left",
+							`Device ${activeDeviceId()}`
+						),
 						m("button.delete[aria-label=close]", {
 							onclick() {
 								activeDeviceId(null);
@@ -301,7 +333,7 @@ export default () => {
 											},
 											{
 												title: "Settings",
-												component: null
+												component: SettingsTab
 											},
 											{
 												title: "Location",
