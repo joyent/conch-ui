@@ -394,6 +394,26 @@ const NetworkingTab = () => {
 	};
 };
 
+const ReportTab = () => {
+	return {
+		view: ({ attrs: { activeDevice } }) => {
+			return activeDevice() == null
+				? m(Spinner)
+				: m(
+						".content.has-text-left",
+						m(
+							"pre",
+							JSON.stringify(
+								activeDevice().latest_report || {},
+								null,
+								"  "
+							)
+						)
+				  );
+		}
+	};
+};
+
 export default () => {
 	return {
 		oninit: ({ attrs: { activeDevice } }) => {},
@@ -446,7 +466,10 @@ export default () => {
 												title: "Networking",
 												component: NetworkingTab
 											},
-											{ title: "Report", component: null }
+											{
+												title: "Latest Report",
+												component: ReportTab
+											}
 										],
 										activeDevice
 									})
