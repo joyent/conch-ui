@@ -88,7 +88,8 @@ export default () => {
 							parent: selectParent(rack),
 							value: nodeValue(rack),
 							_private_: {
-								id: rack.id
+								room_name: room,
+								rack_id: rack.id
 							}
 						});
 					});
@@ -120,7 +121,9 @@ export default () => {
 								path.pop();
 								path = path.join("/");
 								window.open(
-									`${path}/rack/${_private_.id}`,
+									`${path}/datacenter/${
+										_private_.room_name
+									}/rack/${_private_.rack_id}/device`,
 									"_blank"
 								);
 							}
