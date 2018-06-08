@@ -6,13 +6,9 @@ import moment from "moment";
 import { conchApi } from "../config";
 import "./styles/main.scss";
 
-import Device from "./views/Device";
-import Layout from "./views/Layout";
 import Login from "./views/Login";
-import Problem from "./views/Problem";
 import DatacenterExplorer from "./views/DatacenterExplorer";
 import Status from "./views/Status";
-import RelayView from "./views/Relay";
 
 import Main from "./views/component/Main";
 
