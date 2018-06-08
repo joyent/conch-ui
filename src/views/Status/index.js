@@ -115,19 +115,23 @@ export default () => {
 										),
 										m(
 											".card-table",
+											{
+												style:
+													"max-height: 600px; overflow-y: scroll;"
+											},
 											m(
-												"table.table.is-fullwidth.is-striped",
+												"table.table.is-narrow.is-fullwidth.is-striped",
 												m(
 													"thead",
 													m(
 														"tr",
-														m("td"),
-														m("td", "Device"),
+														m("th"),
+														m("th", "Device"),
 														m(
-															"td",
+															"th",
 															"Validation Plan"
 														),
-														m("td")
+														m("th")
 													)
 												),
 												m(
