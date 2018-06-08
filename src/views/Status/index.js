@@ -15,15 +15,17 @@ const StatusTile = {
 
 export default () => {
 	const devices = stream();
-	const showDeviceId = stream();
+	const showDeviceModalId = stream();
 	let rackRooms;
 	let rackCount;
 	let failingValidations;
 	let validationPlanIdToName = {};
 	let validationsToShow = 10;
-	let progress;
-	const progressPercent = () =>
-		progress.total ? progress.pass / progress.total * 100 : 0;
+
+	const progress = stream({});
+	const progressPercent = progress.map(
+		p => (p.total ? p.pass / p.total * 100 : 0)
+	);
 
 	const validationToRow = validation => {
 		return m(
@@ -43,7 +45,7 @@ export default () => {
 					"a.button.is-small.is-primary",
 					{
 						onclick() {
-							showDeviceId(validation.device_id);
+							showDeviceModalId(validation.device_id);
 						}
 					},
 					"View Device"
@@ -216,7 +218,7 @@ export default () => {
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
 			currentWorkspace.map(({ id }) => {
-				progress = { pass: 0, total: 0 };
+				devices(null);
 				request({
 					method: "GET",
 					url: `${conchApi}/workspace/${id}/device`,
@@ -232,11 +234,16 @@ export default () => {
 							}
 						})
 					);
+					const newProgress = { pass: 0, total: 0 };
 					devices().forEach(device => {
-						if (device.health === "PASS") progress.pass++;
-						progress.total++;
+						if (device.health === "PASS") newProgress.pass++;
+						newProgress.total++;
 					});
+					progress(newProgress);
 				});
+
+				rackCount = null;
+				rackRooms = null;
 				request({
 					method: "GET",
 					url: `${conchApi}/workspace/${id}/rack`,
@@ -252,6 +259,8 @@ export default () => {
 							return acc;
 						}, {});
 				});
+
+				failingValidations = null;
 				request({
 					method: "GET",
 					url: `${conchApi}/workspace/${id}/validation_state?status=error,fail`,
@@ -259,6 +268,7 @@ export default () => {
 				}).then(res => {
 					failingValidations = res;
 				});
+
 				request({
 					method: "GET",
 					url: `${conchApi}/validation_plan`,
@@ -281,8 +291,8 @@ export default () => {
 					subtitle: "Overview of workspace build progress"
 				}),
 				m(statusTiles),
-				showDeviceId() &&
-					m(DeviceModal, { activeDeviceId: showDeviceId })
+				showDeviceModalId() &&
+					m(DeviceModal, { activeDeviceId: showDeviceModalId })
 			];
 		}
 	};
