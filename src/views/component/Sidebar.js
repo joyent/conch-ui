@@ -1,5 +1,7 @@
 import m from "mithril";
 import stream from "mithril/stream";
+import { conchApi } from "config";
+import { request } from "mithril";
 
 export default () => {
 	const activeItem = stream();
@@ -24,14 +26,37 @@ export default () => {
 	};
 
 	return {
-		view: ({ attrs }) =>
+		view: ({ attrs: { loggedIn } }) =>
 			m(
 				"aside.menu",
-				m("p.menu-label", "General"),
+				m("p.menu-label", "Datacenter Builds"),
 				m(
 					"ul.menu-list",
 					menuItem("Status", "status"),
-					menuItem("Datacenter", "datacenter")
+					menuItem("Browse", "datacenter")
+				),
+				m("p.menu-label", "Conch"),
+				m(
+					"ul.menu-list",
+					m(
+						"li",
+						m(
+							"a",
+							{
+								onclick: () => {
+									request({
+										method: "POST",
+										url: `${conchApi}/logout`,
+										withCredentials: true
+									}).then(() => {
+										loggedIn(false);
+										m.route.set("/");
+									});
+								}
+							},
+							"Log out"
+						)
+					)
 				)
 			)
 	};

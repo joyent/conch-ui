@@ -28,23 +28,25 @@ t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
 const state = {};
 
 const currentWorkspace = stream();
+const loggedIn = stream(false);
+const workspaces = stream();
 
 function loadWorkspaces() {
-	if (state.workspaces != null) return Promise.resolve();
+	if (workspaces() != null) return Promise.resolve();
 	return m
 		.request({
 			method: "GET",
 			url: `${conchApi}/workspace`,
 			withCredentials: true
 		})
-		.then(workspaces => {
-			state.workspaces = workspaces;
-			currentWorkspace(workspaces[0]);
+		.then(ws => {
+			workspaces(ws);
+			currentWorkspace(workspaces()[0]);
 		});
 }
 
 function setupSession() {
-	if (state.loggedIn) return loadWorkspaces();
+	if (loggedIn()) return loadWorkspaces();
 	return m
 		.request({
 			method: "GET",
@@ -66,7 +68,7 @@ function setupSession() {
 		})
 		.then(
 			() => {
-				state.loggedIn = true;
+				loggedIn(true);
 				return loadWorkspaces();
 			},
 			() => Promise.reject(Login)
@@ -85,7 +87,7 @@ function dispatch(root, routes) {
 					let workspaceId = args.wid;
 					if (currentWorkspace().id !== workspaceId) {
 						currentWorkspace(
-							state.workspaces.find(w => w.id === workspaceId) ||
+							workspaces().find(w => w.id === workspaceId) ||
 								currentWorkspace()
 						);
 					}
@@ -95,7 +97,7 @@ function dispatch(root, routes) {
 						view: () =>
 							m(comp.view || comp, {
 								currentWorkspace,
-								workspaces: state.workspaces
+								workspaces
 							})
 					};
 				}, () => Login);
@@ -104,10 +106,14 @@ function dispatch(root, routes) {
 				return layout && view
 					? m(
 							layout,
-							{ currentWorkspace, workspaces: state.workspaces },
+							{
+								currentWorkspace,
+								loggedIn,
+								workspaces
+							},
 							m(view, {
 								currentWorkspace,
-								workspaces: state.workspaces
+								workspaces
 							})
 					  )
 					: vnode;
@@ -119,6 +125,7 @@ function dispatch(root, routes) {
 
 	table["/"] = {
 		onmatch() {
+			console.log("here");
 			return setupSession().then(comp => {
 				m.route.set(`/${currentWorkspace().id}/status`);
 			}, () => Login);

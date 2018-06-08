@@ -15,8 +15,7 @@ export default {
 				m(
 					".column.is-2",
 					m(Sidebar, {
-						isWorkspaceAdmin: true,
-						isGlobalAdmin: true
+						loggedIn: attrs.loggedIn
 					})
 				),
 				m(".column.is-10", contentView)

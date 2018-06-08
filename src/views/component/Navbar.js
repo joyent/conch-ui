@@ -33,7 +33,7 @@ export default {
 						m("a.navbar-link", currentWorkspace().name),
 						m(
 							".navbar-dropdown.is-right",
-							workspaces.map(asWorkspaceLink)
+							workspaces().map(asWorkspaceLink)
 						)
 					)
 				)
