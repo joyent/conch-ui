@@ -198,8 +198,8 @@ export default () => {
 		view: ({ attrs: { currentWorkspace } }) => {
 			return [
 				m(ViewTitleHero, {
-					title: `${currentWorkspace().name} datacenters`,
-					subtitle: `Explore datacenter racks`
+					title: `${currentWorkspace().name} workspace datacenters`,
+					subtitle: `Browse datacenter rooms, racks, and devices`
 				}),
 				m(
 					"section.info-tiles",

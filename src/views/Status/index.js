@@ -260,8 +260,8 @@ export default () => {
 		view({ attrs: { currentWorkspace } }) {
 			return [
 				m(ViewTitleHero, {
-					title: "Conch Status",
-					subtitle: `Overview of ${currentWorkspace().name}`
+					title: `${currentWorkspace().name} workspace status`,
+					subtitle: "Overview of workspace build progress"
 				}),
 				m(statusTiles)
 			];
