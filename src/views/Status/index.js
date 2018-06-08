@@ -5,6 +5,7 @@ import { conchApi } from "config";
 
 import { Spinner, ViewTitleHero } from "../component";
 
+import DeviceModal from "../DeviceModal";
 import RackProgress from "./RackProgress";
 
 const StatusTile = {
@@ -14,6 +15,7 @@ const StatusTile = {
 
 export default () => {
 	const devices = stream();
+	const showDeviceId = stream();
 	let rackRooms;
 	let rackCount;
 	let failingValidations;
@@ -35,7 +37,18 @@ export default () => {
 					validationPlanIdToName[validation.validation_plan_id]
 				)
 			),
-			m("td", m("a.button.is-small.is-primary", "Details"))
+			m(
+				"td",
+				m(
+					"a.button.is-small.is-primary",
+					{
+						onclick() {
+							showDeviceId(validation.device_id);
+						}
+					},
+					"View Device"
+				)
+			)
 		);
 	};
 
@@ -263,7 +276,9 @@ export default () => {
 					title: `${currentWorkspace().name} workspace status`,
 					subtitle: "Overview of workspace build progress"
 				}),
-				m(statusTiles)
+				m(statusTiles),
+				showDeviceId() &&
+					m(DeviceModal, { activeDeviceId: showDeviceId })
 			];
 		}
 	};

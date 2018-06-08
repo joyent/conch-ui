@@ -409,27 +409,17 @@ const ReportTab = () => {
 
 export default () => {
 	const activeDevice = stream();
-	let deviceLoading;
-	let deviceXHR;
+	let deviceLoading = true;
 
 	return {
 		oninit: ({ attrs: { activeDeviceId } }) => {
 			activeDeviceId.map(deviceId => {
-				// cancel previous, unfinished requests
-				if (deviceXHR) {
-					deviceXHR.abort();
-					deviceXHR = null;
-				}
-
 				if (deviceId == null) return;
 				deviceLoading = true;
 				request({
 					method: "GET",
 					url: `${conchApi}/device/${deviceId}`,
-					withCredentials: true,
-					config: xhr => {
-						deviceXHR = xhr;
-					}
+					withCredentials: true
 				}).then(res => {
 					activeDevice(res);
 					deviceLoading = false;
