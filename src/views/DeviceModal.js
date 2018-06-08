@@ -8,8 +8,7 @@ import { request } from "mithril";
 
 import { conchApi } from "config";
 
-import { Spinner } from "../component/";
-import { ProgressIcon } from "./Progress";
+import { Spinner } from "./component/";
 
 const Tabs = () => {
 	const activeTab = stream();
@@ -136,13 +135,7 @@ const ValidationRows = () => {
 					class: revealDetails && "is-selected",
 					style: "cursor: pointer"
 				},
-				m(
-					"td",
-					resultsToCountTags(results)
-					//m(ProgressIcon, {
-					//progress: "validated"
-					//})
-				),
+				m("td", resultsToCountTags(results)),
 				m("td", validation.name),
 				m(
 					"td",
@@ -415,9 +408,35 @@ const ReportTab = () => {
 };
 
 export default () => {
+	const activeDevice = stream();
+	let deviceLoading;
+	let deviceXHR;
+
 	return {
-		oninit: ({ attrs: { activeDevice } }) => {},
-		view: ({ attrs: { activeDeviceId, activeDevice, deviceLoading } }) => {
+		oninit: ({ attrs: { activeDeviceId } }) => {
+			activeDeviceId.map(deviceId => {
+				// cancel previous, unfinished requests
+				if (deviceXHR) {
+					deviceXHR.abort();
+					deviceXHR = null;
+				}
+
+				if (deviceId == null) return;
+				deviceLoading = true;
+				request({
+					method: "GET",
+					url: `${conchApi}/device/${deviceId}`,
+					withCredentials: true,
+					config: xhr => {
+						deviceXHR = xhr;
+					}
+				}).then(res => {
+					activeDevice(res);
+					deviceLoading = false;
+				});
+			});
+		},
+		view: ({ attrs: { activeDeviceId } }) => {
 			return m(
 				".modal.is-active.is-size-6",
 				m(".modal-background", {
@@ -441,7 +460,7 @@ export default () => {
 					),
 					m(
 						"section.modal-card-body",
-						deviceLoading()
+						deviceLoading
 							? m(Spinner)
 							: [
 									m(Tabs, {

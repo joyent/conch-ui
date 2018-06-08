@@ -10,7 +10,7 @@ import { Spinner, ViewTitleHero } from "../component/";
 import LayoutPanel from "./LayoutPanel";
 import RackPanel from "./RackPanel";
 import RoomPanel from "./RoomPanel";
-import DeviceModal from "./DeviceModal";
+import DeviceModal from "../DeviceModal";
 import { roomToProgress } from "./Progress";
 
 export default () => {
@@ -44,9 +44,6 @@ export default () => {
 	});
 
 	const activeDeviceId = stream();
-	const deviceLoading = stream();
-	const activeDevice = stream();
-	let deviceXHR;
 
 	const workspaceDevices = stream();
 	const searchText = stream();
@@ -87,28 +84,6 @@ export default () => {
 				}).then(res => {
 					rackLayout(res);
 					rackLoading(false);
-				});
-			});
-
-			activeDeviceId.map(deviceId => {
-				// cancel previous, unfinished requests
-				if (deviceXHR) {
-					deviceXHR.abort();
-					deviceXHR = null;
-				}
-
-				if (deviceId == null) return;
-				deviceLoading(true);
-				request({
-					method: "GET",
-					url: `${conchApi}/device/${deviceId}`,
-					withCredentials: true,
-					config: xhr => {
-						deviceXHR = xhr;
-					}
-				}).then(res => {
-					activeDevice(res);
-					deviceLoading(false);
 				});
 			});
 
@@ -279,9 +254,7 @@ export default () => {
 								"article.tile.is-child",
 								activeDeviceId() &&
 									m(DeviceModal, {
-										activeDeviceId,
-										activeDevice,
-										deviceLoading
+										activeDeviceId
 									}),
 								rackRooms() == null
 									? m("section.section", m(Spinner))
