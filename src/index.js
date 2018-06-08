@@ -7,7 +7,7 @@ import { conchApi } from "../config";
 import "./styles/main.scss";
 
 import Login from "./views/Login";
-import DatacenterExplorer from "./views/DatacenterExplorer";
+import DatacenterBrowser from "./views/DatacenterBrowser";
 import Status from "./views/Status";
 
 import Main from "./views/component/Main";
@@ -125,7 +125,6 @@ function dispatch(root, routes) {
 
 	table["/"] = {
 		onmatch() {
-			console.log("here");
 			return setupSession().then(comp => {
 				m.route.set(`/${currentWorkspace().id}/status`);
 			}, () => Login);
@@ -137,14 +136,14 @@ function dispatch(root, routes) {
 
 dispatch(document.body, {
 	"/status": { layout: Main, view: Status },
-	"/datacenter": { layout: Main, view: DatacenterExplorer },
-	"/datacenter/:roomName/rack": { layout: Main, view: DatacenterExplorer },
+	"/datacenter": { layout: Main, view: DatacenterBrowser },
+	"/datacenter/:roomName/rack": { layout: Main, view: DatacenterBrowser },
 	"/datacenter/:roomName/rack/:rackId/device": {
 		layout: Main,
-		view: DatacenterExplorer
+		view: DatacenterBrowser
 	},
 	"/datacenter/:roomName/rack/:rackId/device/:deviceId": {
 		layout: Main,
-		view: DatacenterExplorer
+		view: DatacenterBrowser
 	}
 });
