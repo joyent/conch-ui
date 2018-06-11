@@ -119,7 +119,7 @@ export default () => {
 											".card-table",
 											{
 												style:
-													"max-height: 600px; overflow-y: scroll;"
+													"max-height: 600px; overflow-y: auto; overflow-x: hidden;"
 											},
 											m(
 												"table.table.is-narrow.is-fullwidth.is-striped",
