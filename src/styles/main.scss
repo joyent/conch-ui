@@ -47,3 +47,11 @@ progress::-webkit-progress-value {
 	border-left-width: 4px;
 	border-left-color: $primary;
 }
+
+.has-stroke-primary {
+	stroke: $primary;
+}
+
+.has-stroke-success {
+	stroke: $success;
+}

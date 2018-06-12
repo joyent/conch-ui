@@ -8,7 +8,7 @@ import { request } from "mithril";
 
 import { conchApi } from "config";
 
-import { Spinner } from "./component/";
+import { RadialProgress, Spinner } from "./component/";
 
 const Tabs = () => {
 	const activeTab = stream();
@@ -75,7 +75,7 @@ const OverviewTab = () => {
 				m(
 					".tile.is-ancestor.has-text-centered",
 					m(
-						".tile.is-parent",
+						".tile.is-parent.is-vertical",
 						m(
 							"article.tile.is-child.box",
 							m("p.subtitle", "Last Seen"),
@@ -85,10 +85,7 @@ const OverviewTab = () => {
 									? moment(activeDevice().last_seen).fromNow()
 									: "never"
 							)
-						)
-					),
-					m(
-						".tile.is-parent",
+						),
 						m(
 							"article.tile.is-child.box",
 							m("p.subtitle", "BIOS Version"),
@@ -98,6 +95,18 @@ const OverviewTab = () => {
 									? activeDevice().latest_report.bios_version
 									: "unknown"
 							)
+						)
+					),
+					m(
+						".tile.is-parent",
+						m(
+							"article.tile.is-child.box",
+							m("p.title.is-marginless", "Time until Validated"),
+							m(RadialProgress, {
+								percentage: 80,
+								strokeWidth: "20px"
+							}),
+							m("p.subtitle", "1 hour")
 						)
 					)
 				)
