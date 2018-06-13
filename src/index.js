@@ -8,6 +8,7 @@ import "./styles/main.scss";
 
 import Login from "./views/Login";
 import DatacenterBrowser from "./views/DatacenterBrowser";
+import DevicesView from "./views/Devices";
 import Status from "./views/Status";
 
 import Main from "./views/component/Main";
@@ -136,6 +137,7 @@ function dispatch(root, routes) {
 
 dispatch(document.body, {
 	"/status": { layout: Main, view: Status },
+	"/device": { layout: Main, view: DevicesView },
 	"/datacenter": { layout: Main, view: DatacenterBrowser },
 	"/datacenter/:roomName/rack": { layout: Main, view: DatacenterBrowser },
 	"/datacenter/:roomName/rack/:rackId/device": {

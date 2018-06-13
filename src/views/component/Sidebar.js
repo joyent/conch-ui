@@ -33,7 +33,8 @@ export default () => {
 				m(
 					"ul.menu-list",
 					menuItem("Status", "status"),
-					menuItem("Browse", "datacenter")
+					menuItem("Browse", "datacenter"),
+					menuItem("Devices", "device")
 				),
 				m("p.menu-label", "Conch"),
 				m(
