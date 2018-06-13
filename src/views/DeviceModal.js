@@ -16,7 +16,7 @@ const Tabs = () => {
 		oninit: ({ attrs: { tabs } }) => {
 			activeTab(tabs[0]);
 		},
-		view: ({ attrs: { tabs, activeDevice } }) => {
+		view: ({ attrs: { tabs, activeDevice, deviceSettings } }) => {
 			return [
 				m(
 					".tabs.is-centered.is-boxed.is-small",
@@ -39,10 +39,56 @@ const Tabs = () => {
 					)
 				),
 				activeTab().component &&
-					m(activeTab().component, { activeDevice })
+					m(activeTab().component, { activeDevice, deviceSettings })
 			];
 		}
 	};
+};
+
+const TimeToBurnin = {
+	view: ({ attrs: { activeDevice, deviceSettings } }) => {
+		if (deviceSettings() == null) return m(Spinner);
+
+		const { uptime_since, last_seen } = activeDevice();
+
+		if (last_seen == null)
+			return m("p.is-size-4", "Device has not reported");
+
+		if (deviceSettings().firmware !== "current")
+			return m("p.is-size-4", "Burn-in not started");
+
+		const maxBurnin = 32400; // 9 hours in seconds
+		const numReboots = 3;
+		const burninStageTime = maxBurnin / numReboots;
+		const sinceLastReboot = uptime_since
+			? moment().diff(moment(uptime_since), "seconds")
+			: moment().diff(moment(last_seen), "seconds");
+
+		const rebootCount = deviceSettings()["build.reboot_count"] || 0;
+
+		const time =
+			maxBurnin - (rebootCount * burninStageTime + sinceLastReboot);
+
+		const percentage = (() => {
+			if (rebootCount === numReboots) return 100;
+			if (time < 0) return Math.trunc(rebootCount / numReboots * 100);
+			return Math.trunc((maxBurnin - time) / time * 100);
+		})();
+
+		return [
+			m(RadialProgress, {
+				percentage,
+				strokeWidth: "20px"
+			}),
+			percentage === 100
+				? m("p.subtitle", "Burn-in Complete")
+				: m(
+						"p.subtitle",
+						time < 0 && m("p", "Should have finished"),
+						moment.duration(time, "seconds").humanize(true)
+				  )
+		];
+	}
 };
 
 const OverviewTab = () => {
@@ -68,7 +114,7 @@ const OverviewTab = () => {
 				return tags;
 			});
 		},
-		view: ({ attrs: { activeDevice } }) => [
+		view: ({ attrs: { activeDevice, deviceSettings } }) => [
 			m(".tags", deviceTags()),
 			m(
 				"section.info-tiles",
@@ -78,12 +124,24 @@ const OverviewTab = () => {
 						".tile.is-parent.is-vertical",
 						m(
 							"article.tile.is-child.box",
-							m("p.subtitle", "Last Seen"),
+							m("p.subtitle", "Last Reported"),
 							m(
 								"p.title",
 								activeDevice().last_seen
 									? moment(activeDevice().last_seen).fromNow()
 									: "never"
+							)
+						),
+						m(
+							"article.tile.is-child.box",
+							m("p.subtitle", "Uptime"),
+							m(
+								"p.title",
+								activeDevice().uptime_since
+									? moment(
+											activeDevice().uptime_since
+									  ).fromNow(true)
+									: "Unknown"
 							)
 						),
 						m(
@@ -101,12 +159,11 @@ const OverviewTab = () => {
 						".tile.is-parent",
 						m(
 							"article.tile.is-child.box",
-							m("p.title.is-marginless", "Time until Validated"),
-							m(RadialProgress, {
-								percentage: 80,
-								strokeWidth: "20px"
-							}),
-							m("p.subtitle", "1 hour")
+							m("p.subtitle", "Time for Burn-in"),
+							m(TimeToBurnin, {
+								activeDevice,
+								deviceSettings
+							})
 						)
 					)
 				)
@@ -258,24 +315,15 @@ const ValidationTab = () => {
 
 const SettingsTab = () => {
 	const headers = [m("th", "Name"), m("th", "Value")];
-	const settings = stream();
-
 	return {
-		oninit: ({ attrs: { activeDevice } }) => {
-			request({
-				method: "GET",
-				url: `${conchApi}/device/${activeDevice().id}/settings`,
-				withCredentials: true
-			}).then(settings);
-		},
-		view: ({ attrs: { activeDevice } }) => {
-			return settings() == null
+		view: ({ attrs: { deviceSettings } }) => {
+			return deviceSettings() == null
 				? m(Spinner)
 				: m(
 						"table.table.is-narrow.is-fullwidth",
 						m("thead", m("tr", headers)),
 						m("tfoot", m("tr", headers)),
-						Object.entries(settings())
+						Object.entries(deviceSettings())
 							.sort()
 							.map(([name, value]) =>
 								m("tr", m("td", name), m("td", value))
@@ -418,6 +466,7 @@ const ReportTab = () => {
 
 export default () => {
 	const activeDevice = stream();
+	const deviceSettings = stream();
 	let deviceLoading = true;
 
 	return {
@@ -433,6 +482,11 @@ export default () => {
 					activeDevice(res);
 					deviceLoading = false;
 				});
+				request({
+					method: "GET",
+					url: `${conchApi}/device/${deviceId}/settings`,
+					withCredentials: true
+				}).then(deviceSettings);
 			});
 		},
 		view: ({ attrs: { activeDeviceId } }) => {
@@ -489,7 +543,8 @@ export default () => {
 												component: ReportTab
 											}
 										],
-										activeDevice
+										activeDevice,
+										deviceSettings
 									})
 							  ]
 					),

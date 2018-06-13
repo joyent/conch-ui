@@ -10,7 +10,7 @@ const Meter = {
 				class:
 					percentage === 100
 						? "has-stroke-success"
-						: "has-stroke-primary",
+						: "has-stroke-info",
 				style: {
 					"stroke-width": strokeWidth,
 					"will-change": "auto",
@@ -43,6 +43,10 @@ export default {
 		m(
 			"svg[xmlns=http://www.w3.org/2000/svg][height=160][width=200][viewBox=0 0 200 160]",
 			m(MeterBg, { strokeWidth }),
-			m(Meter, { percentage, strokeWidth })
+			m(Meter, { percentage, strokeWidth }),
+			m(
+				"text[x=102][y=110][text-anchor=middle].is-size-2.has-text-weight-bold[fill=#dee5ed]",
+				`${percentage}%`
+			)
 		)
 };
