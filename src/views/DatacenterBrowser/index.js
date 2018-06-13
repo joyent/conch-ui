@@ -7,10 +7,10 @@ import { conchApi } from "config";
 
 import { Spinner, ViewTitleHero } from "../component/";
 
+import DeviceModal from "../DeviceModal";
 import LayoutPanel from "./LayoutPanel";
 import RackPanel from "./RackPanel";
 import RoomPanel from "./RoomPanel";
-import DeviceModal from "../DeviceModal";
 import { roomToProgress } from "./Progress";
 
 export default () => {

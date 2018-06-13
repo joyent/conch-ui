@@ -11,7 +11,7 @@ import DatacenterBrowser from "./views/DatacenterBrowser";
 import DevicesView from "./views/Devices";
 import Status from "./views/Status";
 
-import Main from "./views/component/Main";
+import Main from "./layouts/Main";
 
 import korean from "./languages/ko.js";
 import english from "./languages/en.js";
