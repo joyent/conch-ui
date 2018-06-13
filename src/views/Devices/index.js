@@ -107,16 +107,6 @@ export default () => {
 															`Device ${activeDeviceId}`
 														)
 													),
-													//m(
-													//".level.box",
-													//m(
-													//".level-left",
-													//m(
-													//".level-item.subtitle",
-													//`Device ${activeDeviceId}`
-													//)
-													//)
-													//),
 													m(DeviceInspector, {
 														activeDeviceId
 													})

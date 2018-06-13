@@ -157,7 +157,6 @@ export default () => {
 									onclick: e => {
 										activeDeviceId(device.id);
 									},
-									style: "white-space:pre",
 									class:
 										activeDeviceId() === device.id &&
 										"is-active"
@@ -168,11 +167,14 @@ export default () => {
 										progress: deviceToProgress(device)
 									})
 								),
-								device.id,
+								m("p", device.id),
 								device.asset_tag &&
 									m(
 										"p.has-text-grey-light",
-										`  ${device.asset_tag}`
+										{
+											style: "flex-grow: 1;"
+										},
+										device.asset_tag
 									)
 							)
 						);
