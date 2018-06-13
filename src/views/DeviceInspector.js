@@ -493,7 +493,7 @@ export default () => {
 		},
 		view: ({ attrs: { activeDeviceId } }) => {
 			return deviceLoading
-				? m(Spinner)
+				? m("section.section", m(Spinner))
 				: [
 						m(Tabs, {
 							tabs: [
