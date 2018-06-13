@@ -1,15 +1,76 @@
 import m from "mithril";
 
+const NetworkingRow = () => {
+	let revealDetails = false;
+	return {
+		view: ({ attrs: { iface } }) => [
+			m(
+				"tr",
+				{
+					onclick() {
+						revealDetails = !revealDetails;
+					},
+					class: revealDetails && "is-selected",
+					style: "cursor: pointer"
+				},
+				m(
+					"td",
+					m(
+						".icon",
+						revealDetails
+							? m("i.fas.fa-caret-down")
+							: m("i.fas.fa-caret-right")
+					)
+				),
+				m("td", iface.state),
+				m("td", iface.id),
+				m("td", iface.ip),
+				m("td", iface.mac)
+			),
+			revealDetails &&
+				m(
+					"tr",
+					m("td"),
+					m(
+						"td[colspan=4]",
+						m(
+							".content",
+							m(
+								"table.table.is-narrow.is-marginless",
+								m(
+									"tbody",
+									[
+										["Product", iface.product],
+										["Peer Switch", iface.peer_switch],
+										["Peer Port", iface.peer_port],
+										["Peer Mac", iface.peer_mac]
+									].map(([k, v]) =>
+										m(
+											"tr",
+											m("td.has-text-weight-semibold", k),
+											m("td", v)
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+		]
+	};
+};
+
 const NetworkingTab = () => {
 	const headers = [
-		m("th", "Name"),
-		m("th", "MAC"),
-		m("th", "IP Address"),
+		m("th", ""),
 		m("th", "State"),
-		m("th", "Product"),
-		m("th", "Peer Switch"),
-		m("th", "Peer Port"),
-		m("th", "Peer MAC")
+		m("th", "Interface"),
+		m("th", "IP Address"),
+		m("th", "MAC")
+		//m("th", "Product"),
+		//m("th", "Peer Switch"),
+		//m("th", "Peer Port"),
+		//m("th", "Peer MAC")
 	];
 	let nics;
 
@@ -30,21 +91,10 @@ const NetworkingTab = () => {
 						m("tfoot", m("tr", headers)),
 						Object.entries(nics())
 							.sort()
-							.map(([id, iface]) =>
-								m(
-									"tr",
-									[
-										id,
-										iface.mac,
-										iface.ipaddr,
-										iface.state,
-										iface.product,
-										iface.peer_switch,
-										iface.peer_port,
-										iface.peer_mac
-									].map(a => m("td", a))
-								)
-							)
+							.map(([id, iface]) => {
+								iface.id = id;
+								return m(NetworkingRow, { iface });
+							})
 				  );
 		}
 	};

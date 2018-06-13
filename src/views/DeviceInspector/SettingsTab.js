@@ -14,7 +14,11 @@ const SettingsTab = () => {
 						Object.entries(deviceSettings())
 							.sort()
 							.map(([name, value]) =>
-								m("tr", m("td", name), m("td", value))
+								m(
+									"tr",
+									m("td.has-text-weight-semibold", name),
+									m("td", value)
+								)
 							)
 				  );
 		}

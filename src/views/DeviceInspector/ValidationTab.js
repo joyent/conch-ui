@@ -9,7 +9,7 @@ import { conchApi } from "config";
 
 import { Spinner } from "../component";
 
-const ValidationRows = () => {
+const ValidationRow = () => {
 	let revealDetails = false;
 	const resultsToCountTags = results => {
 		const counts = countBy(results, "status");
@@ -38,7 +38,16 @@ const ValidationRows = () => {
 					class: revealDetails && "is-selected",
 					style: "cursor: pointer"
 				},
-				m("td", resultsToCountTags(results)),
+				m(
+					"td",
+					m(
+						".icon",
+						revealDetails
+							? m("i.fas.fa-caret-down")
+							: m("i.fas.fa-caret-right")
+					)
+				),
+				m("td.has-text-centered", resultsToCountTags(results)),
 				m("td", validation.name),
 				m(
 					"td",
@@ -49,6 +58,7 @@ const ValidationRows = () => {
 			revealDetails &&
 				m(
 					"tr",
+					m("td"),
 					m(
 						"td[colspan=3]",
 						m(
@@ -59,8 +69,8 @@ const ValidationRows = () => {
 									"thead",
 									m(
 										"tr",
-										m("th"),
-										m("th", "Status"),
+										m("th", "Order"),
+										m("th", "Results"),
 										m("th", "Message"),
 										m("th", "Hint")
 									)
@@ -70,6 +80,11 @@ const ValidationRows = () => {
 									sortBy(results, "order").map(result =>
 										m(
 											"tr",
+											{
+												class:
+													result.status !== "pass" &&
+													"has-background-warning has-text-dark"
+											},
 											m("td", result.order + 1),
 											m("td", result.status),
 											m("td", result.message),
@@ -93,7 +108,12 @@ const ValidationRows = () => {
 };
 
 const ValidationTab = () => {
-	const headers = [m("th", ""), m("th", "Name"), m("th", "Description")];
+	const headers = [
+		m("th", ""),
+		m("th", "Status"),
+		m("th", "Name"),
+		m("th", "Description")
+	];
 	const validationStates = stream();
 	const validations = stream();
 
@@ -138,7 +158,7 @@ const ValidationTab = () => {
 									Object.keys(groupedResults),
 									vid => idToValidation()(vid).name
 								).map(vid =>
-									m(ValidationRows, {
+									m(ValidationRow, {
 										results: groupedResults[vid],
 										validation: idToValidation()(vid)
 									})

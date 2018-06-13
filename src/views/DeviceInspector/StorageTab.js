@@ -1,19 +1,77 @@
 import m from "mithril";
 
+const DiskRow = () => {
+	let revealDetails = false;
+	return {
+		view: ({ attrs: { disk } }) => [
+			m(
+				"tr",
+				{
+					onclick() {
+						revealDetails = !revealDetails;
+					},
+					class: revealDetails && "is-selected",
+					style: "cursor: pointer"
+				},
+				m(
+					"td",
+					m(
+						".icon",
+						revealDetails
+							? m("i.fas.fa-caret-down")
+							: m("i.fas.fa-caret-right")
+					)
+				),
+				m("td", disk.health),
+				m("td", disk.id),
+				m("td", disk.enclosure),
+				m("td", disk.hba),
+				m("td", disk.slot)
+			),
+			revealDetails &&
+				m(
+					"tr",
+					m("td"),
+					m(
+						"td[colspan=5]",
+						m(
+							".content",
+							m(
+								"table.table.is-narrow.is-marginless",
+								m(
+									"tbody",
+									[
+										["Vendor", disk.vendor],
+										["Model", disk.model],
+										["Size", disk.size],
+										["Drive Type", disk.drive_type],
+										["Transport", disk.transport],
+										["Firmware", disk.firmware],
+										["Temperature", disk.temperature]
+									].map(([k, v]) =>
+										m(
+											"tr",
+											m("td.has-text-weight-semibold", k),
+											m("td", v)
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+		]
+	};
+};
+
 const StorageTab = () => {
 	const headers = [
+		m("th", ""),
+		m("th", "Health"),
 		m("th", "Serial Number"),
 		m("th", "Enclosure"),
 		m("th", "HBA"),
-		m("th", "Slot Number"),
-		m("th", "Vendor"),
-		m("th", "Model"),
-		m("th", "Size"),
-		m("th", "Drive Type"),
-		m("th", "Transport"),
-		m("th", "Firmware"),
-		m("th", "Health"),
-		m("th", "Temperature")
+		m("th", "Slot Number")
 	];
 	let disks;
 
@@ -34,28 +92,16 @@ const StorageTab = () => {
 
 						Object.entries(disks())
 							.map(([id, disk]) => {
+								disk.id = id;
 								return {
 									sortKey:
 										100 * (parseInt(disk.hba) || 0) +
 										(parseInt(disk.slot) || 0),
-									value: [
-										id,
-										disk.enclosure,
-										disk.hba,
-										disk.slot,
-										disk.vendor,
-										disk.model,
-										disk.size,
-										disk.drive_type,
-										disk.transport,
-										disk.firmware,
-										disk.health,
-										disk.temp
-									].map(d => m("td", d))
+									disk
 								};
 							})
 							.sort((a, b) => a.sortKey - b.sortKey)
-							.map(a => m("tr", a.value))
+							.map(({ disk }) => m(DiskRow, { disk }))
 				  );
 		}
 	};
