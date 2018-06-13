@@ -3,6 +3,7 @@ import search from "fuzzysearch";
 import stream from "mithril/stream";
 import { request } from "mithril";
 import keyBy from "lodash/keyBy";
+import sortBy from "lodash/keyBy";
 
 import { conchApi } from "config";
 
@@ -12,7 +13,7 @@ import DevicesPanel from "./DevicesPanel";
 import DeviceInspector from "../DeviceInspector";
 
 export default () => {
-	const workspaceDevices = stream();
+	let workspaceDevices = stream();
 	let hardwareProductLookup;
 	const activeDeviceId = stream();
 
@@ -40,13 +41,22 @@ export default () => {
 			});
 
 			currentWorkspace.map(({ id }) => {
+				// drop the previous stream
+				workspaceDevices = stream();
 				request({
 					method: "GET",
 					url: `${conchApi}/workspace/${id}/device`,
 					withCredentials: true
 				}).then(devices => {
-					// sort by ID
+					let foundActiveDevice = false;
+					// sort and attempt to find the currently active device ID
 					devices.sort((a, b) => {
+						if (
+							activeDeviceId() != null &&
+							(activeDeviceId() === a.id ||
+								activeDeviceId() === b.id)
+						)
+							foundActiveDevice = true;
 						if (a.id < b.id) {
 							return -1;
 						}
@@ -56,6 +66,7 @@ export default () => {
 						return 0;
 					});
 					workspaceDevices(devices);
+					if (!foundActiveDevice) activeDeviceId(null);
 				});
 			});
 		},
@@ -89,6 +100,23 @@ export default () => {
 											activeDeviceId() &&
 												m(
 													".column.is-6.container",
+													m(
+														".box.has-text-left",
+														m(
+															".subtitle",
+															`Device ${activeDeviceId}`
+														)
+													),
+													//m(
+													//".level.box",
+													//m(
+													//".level-left",
+													//m(
+													//".level-item.subtitle",
+													//`Device ${activeDeviceId}`
+													//)
+													//)
+													//),
 													m(DeviceInspector, {
 														activeDeviceId
 													})
