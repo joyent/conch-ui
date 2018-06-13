@@ -2,6 +2,7 @@ import m from "mithril";
 import search from "fuzzysearch";
 import stream from "mithril/stream";
 import { request } from "mithril";
+import keyBy from "lodash/keyBy";
 
 import { conchApi } from "config";
 
@@ -12,6 +13,7 @@ import DeviceInspector from "../DeviceInspector";
 
 export default () => {
 	const workspaceDevices = stream();
+	let hardwareProductLookup;
 	const activeDeviceId = stream();
 
 	return {
@@ -28,6 +30,14 @@ export default () => {
 
 			m.route.param("deviceId") &&
 				activeDeviceId(m.route.param("deviceId"));
+
+			request({
+				method: "GET",
+				url: `${conchApi}/hardware_product`,
+				withCredentials: true
+			}).then(hardwareProducts => {
+				hardwareProductLookup = keyBy(hardwareProducts, "id");
+			});
 
 			currentWorkspace.map(({ id }) => {
 				request({
@@ -63,7 +73,8 @@ export default () => {
 							".tile.is-parent",
 							m(
 								"article.tile.is-child",
-								workspaceDevices() == null
+								workspaceDevices() == null ||
+								hardwareProductLookup == null
 									? m("section.section", m(Spinner))
 									: m(
 											".columns",
@@ -71,6 +82,7 @@ export default () => {
 												".column.is-4",
 												m(DevicesPanel, {
 													workspaceDevices,
+													hardwareProductLookup,
 													activeDeviceId
 												})
 											),

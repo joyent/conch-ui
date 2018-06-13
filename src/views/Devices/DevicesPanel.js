@@ -1,20 +1,43 @@
 import m from "mithril";
 import stream from "mithril/stream";
 import search from "fuzzysearch";
+import sortBy from "lodash/sortBy";
 
 import Spinner from "../component/Spinner";
-//import { ProgressIcon, rackToProgress } from "./Progress";
+import { ProgressIcon, deviceToProgress } from "../DatacenterBrowser/Progress";
 
 export default () => {
-	const deviceFilterText = stream("");
-	const deviceFilterTextLC = deviceFilterText.map(t => t.toLowerCase());
-	const deviceTextFilter = device =>
-		search(deviceFilterTextLC(), device.id.toLowerCase());
+	const deviceSearchText = stream("");
+	const deviceSearchTextLC = deviceSearchText.map(t => t.toLowerCase());
 
-	//const selectedRole = stream("all");
-	//const rackRoleFilter = role =>
-	//selectedRole() === "all" || selectedRole() === role.toLowerCase();
-	//let availableRackRoles;
+	const selectedProgress = stream("all");
+	let availableDeviceProgress;
+
+	let availableProducts;
+	const selectedProductId = stream("all");
+
+	const deviceFilter = stream.combine(
+		(progress, productId, searchText) => device => {
+			const deviceId = device ? device.id.toLowerCase() : "";
+			const assetTag =
+				device && device.asset_tag
+					? device.asset_tag.toLowerCase()
+					: "";
+			const progressFilter =
+				progress() === "all" || progress() === deviceToProgress(device);
+			const productFilter =
+				productId() === "all" ||
+				productId() === device.hardware_product;
+			const searchFilter =
+				search(searchText(), deviceId) ||
+				search(searchText(), assetTag);
+
+			return progressFilter && productFilter && searchFilter;
+		},
+		[selectedProgress, selectedProductId, deviceSearchTextLC]
+	);
+
+	let filteredDevices;
 
 	//const selectedProgress = stream("all");
 	//const rackProgressFilter = rack =>
@@ -23,37 +46,51 @@ export default () => {
 	//let availableRackProgress;
 
 	return {
-		oninit: ({ attrs: { workspaceDevices } }) => {
-			//// get the list of available rack roles
-			//availableRackRoles = activeRacks.map(racks =>
-			//Array.from(
-			//racks.reduce((acc, rack) => {
-			//acc.add(rack.role.toLowerCase());
-			//return acc;
-			//}, new Set(["all"]))
-			//).sort()
-			//);
+		oninit: ({ attrs: { workspaceDevices, hardwareProductLookup } }) => {
+			availableDeviceProgress = workspaceDevices.map(devices =>
+				Array.from(
+					devices.reduce((acc, device) => {
+						acc.add(deviceToProgress(device));
+						return acc;
+					}, new Set(["all"]))
+				).sort()
+			);
 
-			//availableRackProgress = activeRacks.map(racks =>
-			//Array.from(
-			//racks.reduce((acc, rack) => {
-			//acc.add(rackToProgress(rack));
-			//return acc;
-			//}, new Set(["all"]))
-			//).sort()
-			//);
+			availableProducts = workspaceDevices.map(devices => {
+				const products = sortBy(
+					Array.from(
+						devices.reduce((acc, device) => {
+							acc.add(
+								hardwareProductLookup[device.hardware_product]
+							);
+							return acc;
+						}, new Set())
+					),
+					"name"
+				);
+				products.unshift({ id: "all", name: "all" });
+				return products;
+			});
 
 			// reset filters when activeRacks change
 			workspaceDevices.map(() => {
-				//selectedRole("all");
-				//selectedProgress("all");
-				deviceFilterText("");
+				selectedProgress("all");
+				deviceSearchText("");
 			});
+			filteredDevices = stream.combine(
+				(devices, filter) => devices().filter(filter()),
+				[workspaceDevices, deviceFilter]
+			);
 		},
 		view: ({ attrs: { activeDeviceId, workspaceDevices } }) =>
 			m(
 				"nav.panel",
-				m("p.panel-heading", `${workspaceDevices().length} Devices`),
+				m(
+					"p.panel-heading",
+					`${filteredDevices().length} of ${
+						workspaceDevices().length
+					} Devices`
+				),
 				[
 					m(
 						".panel-block",
@@ -64,9 +101,9 @@ export default () => {
 								{
 									oninput: m.withAttr(
 										"value",
-										deviceFilterText
+										deviceSearchText
 									),
-									value: deviceFilterText()
+									value: deviceSearchText()
 								}
 							),
 							m(
@@ -76,63 +113,69 @@ export default () => {
 						)
 					),
 					m(
-						"p.panel-tabs"
-						//availableRackProgress().map(p =>
-						//m(
-						//"a",
-						//{
-						//onclick: e => {
-						//selectedProgress(p);
-						//},
-						//// don't break spaces
-						//style: "white-space:pre",
-						//class: selectedProgress() === p && "is-active"
-						//},
-						//p
-						//)
-						//)
+						"p.panel-tabs",
+						availableDeviceProgress().map(p =>
+							m(
+								"a",
+								{
+									onclick: e => {
+										selectedProgress(p);
+									},
+									// don't break spaces
+									style: "white-space:pre",
+									class:
+										selectedProgress() === p && "is-active"
+								},
+								p
+							)
+						)
 					),
 					m(
-						"p.panel-tabs"
-						//availableRackRoles().map(r =>
-						//m(
-						//"a",
-						//{
-						//onclick: e => {
-						//selectedRole(r);
-						//},
-						//class: selectedRole() === r && "is-active"
-						//},
-						//r
-						//)
-						//)
-					),
-					workspaceDevices().reduce((acc, device) => {
-						if (
-							deviceTextFilter(device)
-							//rackRoleFilter(rack.role) &&
-							//rackProgressFilter(rack)
-						)
-							acc.push(
-								m(
-									"a.panel-block",
-									{
-										onclick: e => {
-											activeDeviceId(device.id);
-										},
-										class:
-											activeDeviceId() === device.id &&
-											"is-active"
+						"p.panel-tabs",
+						availableProducts().map(p =>
+							m(
+								"a",
+								{
+									onclick: e => {
+										selectedProductId(p.id);
 									},
-									//m(
-									//".panel-icon",
-									//m(ProgressIcon, {
-									//progress: rackToProgress(rack)
-									//})
-									//),
-									device.id
-								)
-							);
+									// don't break spaces
+									style: "white-space:pre",
+									class:
+										selectedProductId() === p.id &&
+										"is-active"
+								},
+								p.name
+							)
+						)
+					),
+					filteredDevices().reduce((acc, device) => {
+						acc.push(
+							m(
+								"a.panel-block",
+								{
+									onclick: e => {
+										activeDeviceId(device.id);
+									},
+									style: "white-space:pre",
+									class:
+										activeDeviceId() === device.id &&
+										"is-active"
+								},
+								m(
+									".panel-icon",
+									m(ProgressIcon, {
+										progress: deviceToProgress(device)
+									})
+								),
+								device.id,
+								device.asset_tag &&
+									m(
+										"p.has-text-grey-light",
+										`  ${device.asset_tag}`
+									)
+							)
+						);
 						return acc;
 					}, [])
 				]

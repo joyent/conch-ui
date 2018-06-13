@@ -2,6 +2,11 @@
 
 @import "bulmaswatch/superhero/bulmaswatch.scss";
 
+// Extend Bulma's panel-tabs class to wrap items
+.panel-tabs {
+	flex-wrap: wrap;
+}
+
 progress::-webkit-progress-value {
 	-webkit-transition: width 1.5s ease;
 	-moz-transition: width 1.5s ease;
