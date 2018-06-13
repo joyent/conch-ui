@@ -137,6 +137,7 @@ function dispatch(root, routes) {
 
 dispatch(document.body, {
 	"/status": { layout: Main, view: Status },
+	"/status/device/:deviceId": { layout: Main, view: Status },
 	"/device": { layout: Main, view: DevicesView },
 	"/device/:deviceId": { layout: Main, view: DevicesView },
 	"/datacenter": { layout: Main, view: DatacenterBrowser },

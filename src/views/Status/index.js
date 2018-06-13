@@ -15,7 +15,8 @@ const StatusTile = {
 
 export default () => {
 	const devices = stream();
-	const showDeviceModalId = stream();
+	const activeDeviceId = stream();
+
 	let rackRooms;
 	let rackCount;
 	let failingValidations;
@@ -45,7 +46,7 @@ export default () => {
 					"a.button.is-small.is-primary",
 					{
 						onclick() {
-							showDeviceModalId(validation.device_id);
+							activeDeviceId(validation.device_id);
 						}
 					},
 					"View Device"
@@ -282,6 +283,25 @@ export default () => {
 						{}
 					);
 				});
+
+				m.route.param("deviceId") &&
+					activeDeviceId(m.route.param("deviceId"));
+				activeDeviceId.map(deviceId => {
+					const route = m.route.get();
+					const routePrefix = route.substring(
+						0,
+						route.indexOf("/status")
+					);
+
+					let [_, queryS] = route.split("?");
+					queryS ? (queryS = `?${queryS}`) : (queryS = "");
+
+					if (deviceId)
+						m.route.set(
+							`${routePrefix}/status/device/${deviceId}${queryS}`
+						);
+					else m.route.set(`${routePrefix}`);
+				});
 			});
 		},
 		view({ attrs: { currentWorkspace } }) {
@@ -291,8 +311,7 @@ export default () => {
 					subtitle: "Overview of workspace build progress"
 				}),
 				m(statusTiles),
-				showDeviceModalId() &&
-					m(DeviceModal, { activeDeviceId: showDeviceModalId })
+				activeDeviceId() && m(DeviceModal, { activeDeviceId })
 			];
 		}
 	};

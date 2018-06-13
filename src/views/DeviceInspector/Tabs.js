@@ -5,7 +5,24 @@ export default () => {
 	const activeTab = stream();
 	return {
 		oninit: ({ attrs: { tabs } }) => {
-			activeTab(tabs[0]);
+			let activeTabTitle = m.route.param("activeDeviceTab");
+			let showTab = tabs[0];
+			if (activeTabTitle)
+				showTab =
+					tabs.find(tab => tab.title === activeTabTitle) || showTab;
+
+			activeTab(showTab);
+
+			activeTab.map(tab => {
+				let route = m.route.get();
+				let [mainRoute, queryS] = route.split("?");
+				let queryParams;
+				if (queryS) queryParams = m.parseQueryString(queryS);
+				else queryParams = {};
+				queryParams.activeDeviceTab = tab.title;
+				let newQueryS = m.buildQueryString(queryParams);
+				m.route.set(`${mainRoute}?${newQueryS}`);
+			});
 		},
 		view: ({ attrs: { tabs, activeDevice, deviceSettings } }) => {
 			return [

@@ -112,7 +112,11 @@ export default () => {
 					0,
 					route.indexOf("/device")
 				);
-				if (deviceId) m.route.set(`${routePrefix}/device/${deviceId}`);
+				let [_, queryS] = route.split("?");
+				queryS ? (queryS = `?${queryS}`) : (queryS = "");
+
+				if (deviceId)
+					m.route.set(`${routePrefix}/device/${deviceId}${queryS}`);
 				else m.route.set(`${routePrefix}/device`);
 			});
 			currentWorkspace.map(({ id }) => {
