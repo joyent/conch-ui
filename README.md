@@ -1,5 +1,7 @@
 # Conch UI
 
+![Screenshot of Conch UI](./screenshot.png)
+
 This report contains source for the Conch front-end UI. 
 
 See the [Design Document](./DESIGN.md) for information regarding UI design and
