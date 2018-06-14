@@ -7,6 +7,7 @@ import { conchApi } from "../config";
 import "./styles/main.scss";
 
 import Login from "./views/Login";
+import WorkspaceNotFound from "./views/WorkspaceNotFound";
 import DatacenterBrowser from "./views/DatacenterBrowser";
 import DevicesView from "./views/Devices";
 import Status from "./views/Status";
@@ -33,11 +34,14 @@ const loggedIn = stream(false);
 const workspaces = stream();
 
 currentWorkspace.map( ws => {
-	localStorage.setItem("currentWorkspace", ws.id)
+	if (ws) localStorage.setItem("currentWorkspace", ws.id)
 });
 
-function loadWorkspaces() {
-	if (workspaces() != null) return Promise.resolve();
+function loadWorkspaces(urlWorkspaceId) {
+	if (currentWorkspace() && currentWorkspace().id === urlWorkspaceId) {
+		return Promise.resolve();
+	}
+
 	return m
 		.request({
 			method: "GET",
@@ -46,23 +50,35 @@ function loadWorkspaces() {
 		})
 		.then(ws => {
 			workspaces(ws);
-			let storedId = localStorage.getItem("currentWorkspace");
-			let current;
-			// try to use current workspace in localStorage
-			if (storedId)
-				current = ws.find(ws => ws.id === storedId);
-			// if none stored, try to use GLOBAL workspace if available
-			if (!current)
-				current = ws.find(ws => ws.name === "GLOBAL");
-			// fallback on first workspace in list
-			if (!current)
-				current = ws[0];
-			currentWorkspace(current);
+
+			// use the workspace ID encoded in the URL if present. Reject and
+			// direct to error page if not found
+			if (urlWorkspaceId) {
+				let found = ws.find(ws => ws.id === urlWorkspaceId);
+				if (!found)
+					return Promise.reject(WorkspaceNotFound(urlWorkspaceId));
+				currentWorkspace(found);
+			} else {
+
+				let current;
+				// try to use current workspace in localStorage
+				let storedId = localStorage.getItem("currentWorkspace");
+				if (storedId)
+					current = ws.find(ws => ws.id === storedId);
+
+				// if none stored, try to use GLOBAL workspace if available
+				if (!current)
+					current = ws.find(ws => ws.name === "GLOBAL");
+				// fallback on first workspace in list
+				if (!current)
+					current = ws[0];
+				currentWorkspace(current);
+			}
 		});
 }
 
-function setupSession() {
-	if (loggedIn()) return loadWorkspaces();
+function setupSession(urlWorkspaceId) {
+	if (loggedIn()) return loadWorkspaces(urlWorkspaceId);
 	return m
 		.request({
 			method: "GET",
@@ -85,7 +101,7 @@ function setupSession() {
 		.then(
 			() => {
 				loggedIn(true);
-				return loadWorkspaces();
+				return loadWorkspaces(urlWorkspaceId);
 			},
 			() => Promise.reject(Login)
 		);
@@ -100,13 +116,6 @@ function dispatch(root, routes) {
 			onmatch(args, pendingRoute) {
 				return setupSession(args.wid).then(() => {
 					let comp = routes[route];
-					let workspaceId = args.wid;
-					if (currentWorkspace().id !== workspaceId) {
-						currentWorkspace(
-							workspaces().find(w => w.id === workspaceId) ||
-								currentWorkspace()
-						);
-					}
 					layout = comp.layout;
 					view = comp.view;
 					return {
@@ -116,7 +125,7 @@ function dispatch(root, routes) {
 								workspaces
 							})
 					};
-				}, () => Login);
+				}, errorView => errorView );
 			},
 			render(vnode) {
 				return layout && view
@@ -143,7 +152,7 @@ function dispatch(root, routes) {
 		onmatch() {
 			return setupSession().then(comp => {
 				m.route.set(`/${currentWorkspace().id}/status`);
-			}, () => Login);
+			}, errorView => errorView);
 		}
 	};
 
