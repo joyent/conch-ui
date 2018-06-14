@@ -105,15 +105,23 @@ export default () => {
 												m(
 													".column.is-6.container",
 													m(
-														".box.has-text-left",
+														"div",
+														{
+															// stick to the top as the page scrolls
+															style:
+																"position: -webkit-sticky; position: sticky; top: 0;"
+														},
 														m(
-															".subtitle",
-															`Device ${activeDeviceId}`
-														)
-													),
-													m(DeviceInspector, {
-														activeDeviceId
-													})
+															".box.has-text-left",
+															m(
+																".subtitle",
+																`Device ${activeDeviceId}`
+															)
+														),
+														m(DeviceInspector, {
+															activeDeviceId
+														})
+													)
 												)
 									  )
 							)
