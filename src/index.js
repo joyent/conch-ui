@@ -32,6 +32,10 @@ const currentWorkspace = stream();
 const loggedIn = stream(false);
 const workspaces = stream();
 
+currentWorkspace.map( ws => {
+	localStorage.setItem("currentWorkspace", ws.id)
+});
+
 function loadWorkspaces() {
 	if (workspaces() != null) return Promise.resolve();
 	return m
@@ -42,7 +46,18 @@ function loadWorkspaces() {
 		})
 		.then(ws => {
 			workspaces(ws);
-			currentWorkspace(workspaces()[0]);
+			let storedId = localStorage.getItem("currentWorkspace");
+			let current;
+			// try to use current workspace in localStorage
+			if (storedId)
+				current = ws.find(ws => ws.id === storedId);
+			// if none stored, try to use GLOBAL workspace if available
+			if (!current)
+				current = ws.find(ws => ws.name === "GLOBAL");
+			// fallback on first workspace in list
+			if (!current)
+				current = ws[0];
+			currentWorkspace(current);
 		});
 }
 
@@ -83,7 +98,7 @@ function dispatch(root, routes) {
 		let workspacePrefixedRoute = "/:wid" + route;
 		accTable[workspacePrefixedRoute] = {
 			onmatch(args, pendingRoute) {
-				return setupSession().then(() => {
+				return setupSession(args.wid).then(() => {
 					let comp = routes[route];
 					let workspaceId = args.wid;
 					if (currentWorkspace().id !== workspaceId) {
