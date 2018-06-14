@@ -6,6 +6,8 @@ export default {
 	view: ({ attrs: { activeDeviceId } }) =>
 		m(
 			".modal.is-active",
+			// override. keep the modal at the top, not center
+			{ style: "align-items: start" },
 			m(".modal-background", {
 				onclick() {
 					activeDeviceId(null);
@@ -13,6 +15,8 @@ export default {
 			}),
 			m(
 				".modal-card",
+				// give a bit of space
+				{ style: "margin-top: 5vh" },
 				m(
 					"header.modal-card-head",
 					m(
