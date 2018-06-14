@@ -21,8 +21,7 @@ To develop the Conch UI:
 
 1. Start a local instance of the [Conch
 API](https://github.com/joyent/conch/Conch) in a separate shell using `make
-morbo` in the Conch repo. This will start Conch in development mode on port
-5001.
+morbo` in the Conch repo. This will start Conch in development mode on port 5001.
 
 2. Copy `config.js.dist` in this directory to `config.js`
 
