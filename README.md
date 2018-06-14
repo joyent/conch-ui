@@ -2,7 +2,8 @@
 
 ![Screenshot of Conch UI](./screenshot.png)
 
-This report contains source for the Conch front-end UI. 
+This repository contains all source needed to build the Web UI for the Conch
+API service.
 
 See the [Design Document](./DESIGN.md) for information regarding UI design and
 development decisions.
@@ -16,21 +17,29 @@ GNU `make` is used for make commands.
 
 ## Development
 
-Start a local instance of Conch in a separate shell using `make morbo` in the
-Conch repo. This will start Conch in development mode on port 5001.
+To develop the Conch UI:
 
-Run `make start` in this repo to launch a hot-reloading server and open a
+1. Start a local instance of the [Conch
+API](https://github.com/joyent/conch/Conch) in a separate shell using `make
+morbo` in the Conch repo. This will start Conch in development mode on port
+5001.
+
+2. Copy `config.js.dist` in this directory to `config.js`
+
+3. Run `make start` in this repo to launch a hot-reloading server and open a
 browser window to it.
 
-Alternatively, run `make watch` to start an auto-compiling process, which will
-raise errors and warnings. No running Conch instance is needed for this to work.
+Alternatively, run `make watch` in this directory to start an auto-compiling
+process, which will raise errors and warnings without a hot-reloading server.
+No running Conch instance is needed for this to work.
 
 ## Build for Production
 
-Configure the Conch API URI the UI will request against in `config.js`. This
-server must have CORS headers configured appropriately or be served at the same
-host as the API.
+Copy `config.js.dist` in this directory to `config.js` Edit `config.js` and
+assign the `conchApi` to the HTTP/S URI of the Conch API host the UI will
+issues requests against.  This server must have
+CORS headers configured appropriately or be served at the same host as the API.
 
-Run 'make build'. All web assets, including Javascript, CSS, images, and
+Run 'make build'. All web assets, including HTML, Javascript, CSS, images, and
 dependencies, will output into `dist/`. You can serve this directory statically
 using a proxy like nginx.
