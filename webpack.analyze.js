@@ -10,8 +10,8 @@ const prod = require('./webpack.prod.js');
 
 // merge this configuration with webpack.prod.js
 module.exports = merge(prod, {
-    plugins: [
-        new BundleAnalyzerPlugin.BundleAnalyzerPlugin(),
-    ],
+	plugins: [
+		new BundleAnalyzerPlugin.BundleAnalyzerPlugin(),
+	],
 });
 

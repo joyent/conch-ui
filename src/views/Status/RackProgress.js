@@ -1,6 +1,6 @@
 import m from "mithril";
 import t from "i18n4v";
-import * as d3 from "d3";
+import {select, selectAll} from "d3-selection";
 import RelationshipGraph from "d3-relationshipgraph";
 
 function nodeParent({ device_progress }) {
@@ -100,7 +100,7 @@ export default () => {
 
 			return m(".rack-progress-graph", {
 				oncreate: ({ dom, state }) => {
-					state.graph = new RelationshipGraph(d3.select(dom), {
+					state.graph = new RelationshipGraph(select(dom), {
 						showTooltips: true,
 						maxChildCount: 10,
 						showKeys: true,
@@ -139,7 +139,7 @@ export default () => {
 					// svg to the body. This isn't cleaned up when the node is
 					// removed, leaving a junk SVG block elemeent that screws
 					// with the layout.
-					d3.selectAll("svg").remove();
+					selectAll("svg").remove();
 				}
 			});
 		}
