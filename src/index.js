@@ -2,6 +2,13 @@ import "./styles/main.scss";
 
 import dispatch from "./dispatch";
 
+import Login from "./views/Login";
+import WorkspaceNotFound from "./views/WorkspaceNotFound";
+import DatacenterBrowser from "./views/DatacenterBrowser";
+import DatacenterDesigner from "./views/DatacenterDesigner";
+import DevicesView from "./views/Devices";
+import Status from "./views/Status";
+
 import Main from "./layouts/Main";
 
 import DatacenterBrowser from "./views/DatacenterBrowser";
@@ -22,5 +29,9 @@ dispatch(document.body, {
 	"/datacenter/:roomName/rack/:rackId/device/:deviceId": {
 		layout: Main,
 		view: DatacenterBrowser
+	},
+	"/datacenter_design": {
+		layout: Main,
+		view: DatacenterDesigner
 	}
 });

@@ -52,7 +52,10 @@ export default {
 
 		const activeDevices = R.filter(Device.isActive, Device.devices);
 		const inactiveDevices = R.filter(
-			R.compose(R.not, Device.isActive),
+			R.compose(
+				R.not,
+				Device.isActive
+			),
 			Device.devices
 		);
 

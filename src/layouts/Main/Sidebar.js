@@ -36,6 +36,11 @@ export default () => {
 					menuItem("Browse", "datacenter"),
 					menuItem("Devices", "device")
 				),
+				m("p.menu-label", "Global Admin"),
+				m(
+					"ul.menu-list",
+					menuItem("Datacenter Designer", "datacenter_design")
+				),
 				m("p.menu-label", "Conch"),
 				m(
 					"ul.menu-list",

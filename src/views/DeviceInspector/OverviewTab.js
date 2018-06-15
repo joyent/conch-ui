@@ -47,8 +47,8 @@ const TimeToBurnin = {
 
 		const percentage = (() => {
 			if (rebootCount === numReboots) return 100;
-			if (time < 0) return Math.trunc(rebootCount / numReboots * 100);
-			return Math.trunc((maxBurnin - time) / time * 100);
+			if (time < 0) return Math.trunc((rebootCount / numReboots) * 100);
+			return Math.trunc(((maxBurnin - time) / time) * 100);
 		})();
 
 		return [

@@ -25,7 +25,7 @@ export default () => {
 
 	const progress = stream({});
 	const progressPercent = progress.map(
-		p => (p.total ? p.pass / p.total * 100 : 0)
+		p => (p.total ? (p.pass / p.total) * 100 : 0)
 	);
 
 	const validationToRow = validation => {
