@@ -3,10 +3,8 @@ import stream from "mithril/stream";
 import { conchApi } from "config";
 import { request } from "mithril";
 
-export default () => {
-	const activeItem = stream();
-
-	const menuItem = (name, link, ...children) => {
+const MenuItem = {
+	view: ({ attrs: { name, link }, children }) => {
 		let route = `/${m.route.param("wid")}/${link}`;
 		return m(
 			"li",
@@ -17,13 +15,17 @@ export default () => {
 					// when currentWorkspace changes
 					onupdate: m.route.link,
 					onclick: () => activeItem(link),
-					class: m.route.get().startsWith(route) > 0 && "is-active"
+					class: m.route.get().split("/")[2] === link && "is-active"
 				},
 				name
 			),
 			children.length > 0 && m("ul", children)
 		);
-	};
+	}
+};
+
+export default () => {
+	const activeItem = stream();
 
 	return {
 		view: ({ attrs: { loggedIn } }) =>
@@ -32,14 +34,17 @@ export default () => {
 				m("p.menu-label", "Datacenter Builds"),
 				m(
 					"ul.menu-list",
-					menuItem("Status", "status"),
-					menuItem("Browse", "datacenter"),
-					menuItem("Devices", "device")
+					m(MenuItem, { name: "Status", link: "status" }),
+					m(MenuItem, { name: "Browse", link: "datacenter" }),
+					m(MenuItem, { name: "Devices", link: "device" })
 				),
 				m("p.menu-label", "Global Admin"),
 				m(
 					"ul.menu-list",
-					menuItem("Datacenter Designer", "datacenter_design")
+					m(MenuItem, {
+						name: "Datacenter Designer",
+						link: "designer"
+					})
 				),
 				m("p.menu-label", "Conch"),
 				m(

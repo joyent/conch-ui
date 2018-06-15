@@ -30,7 +30,7 @@ dispatch(document.body, {
 		layout: Main,
 		view: DatacenterBrowser
 	},
-	"/datacenter_design": {
+	"/designer": {
 		layout: Main,
 		view: DatacenterDesigner
 	}
