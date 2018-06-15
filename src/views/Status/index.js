@@ -300,7 +300,7 @@ export default () => {
 						m.route.set(
 							`${routePrefix}/status/device/${deviceId}${queryS}`
 						);
-					else m.route.set(`${routePrefix}`);
+					else m.route.set(`${routePrefix}/status`);
 				});
 			});
 		},
