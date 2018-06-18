@@ -60,3 +60,7 @@ progress::-webkit-progress-value {
 .has-stroke-success {
 	stroke: $success;
 }
+
+.navbar-dropdown ul > li {
+	margin-left: 1em;
+}
