@@ -36,7 +36,20 @@ const Stage = {
 				shadowBlur: 2,
 				shadowOffset: { x: 1, y: 1 },
 				shadowOpacity: 0.4,
-				draggable: true
+				draggable: true,
+				dragBoundFunc: function(pos) {
+					pos.x = pos.x >= 0 ? pos.x : 0;
+					pos.x =
+						pos.x <= stage.getWidth() - this.width()
+							? pos.x
+							: stage.getWidth() - this.width();
+					pos.y = pos.y >= 0 ? pos.y : 0;
+					pos.y =
+						pos.y <= stage.getHeight() - this.height()
+							? pos.y
+							: stage.getHeight() - this.height();
+					return pos;
+				}
 			});
 			rectangle.on("dragstart", e => {
 				shadowRectangle.show();
@@ -188,9 +201,6 @@ export default () => {
 		stream({ id: 1, x: 3, y: 3 }),
 		stream({ id: 2, x: 10, y: 3 })
 	];
-	boxes.forEach(boxStream => {
-		boxStream.map(b => console.log(b));
-	});
 
 	return {
 		oninit: () => {
