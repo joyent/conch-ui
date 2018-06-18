@@ -99,7 +99,7 @@ function setupSession(urlWorkspaceId) {
 		})
 		.catch(e => {
 			if (e.status === 401) {
-				Promise.reject();
+				return Promise.reject();
 			} else {
 				throw e;
 			}
