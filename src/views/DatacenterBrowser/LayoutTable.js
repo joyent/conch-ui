@@ -16,7 +16,7 @@ const headers = [
 ];
 
 export default {
-	view: ({ attrs: { deviceSlots, activeDeviceId, searchedDevice } }) => {
+	view: ({ attrs: { deviceSlots, activeDeviceId, highlightDeviceId } }) => {
 		return m(
 			"table.table.is-fullwidth.is-hoverable",
 			m("thead", m("tr", headers)),
@@ -35,8 +35,8 @@ export default {
 							style: slot.occupant && "cursor: pointer",
 							class:
 								slot.occupant &&
-								searchedDevice() &&
-								slot.occupant.id === searchedDevice().id &&
+								highlightDeviceId() &&
+								slot.occupant.id === highlightDeviceId() &&
 								"is-selected"
 						},
 						m("th", slot.id),

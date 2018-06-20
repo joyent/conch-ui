@@ -24,7 +24,9 @@ export default () => {
 				m.route.set(`${mainRoute}?${newQueryS}`);
 			});
 		},
-		view: ({ attrs: { tabs, activeDevice, deviceSettings } }) => {
+		view: ({
+			attrs: { tabs, activeDevice, activeDeviceId, deviceSettings }
+		}) => {
 			return [
 				m(
 					".tabs.is-centered.is-boxed.is-small",
@@ -47,7 +49,11 @@ export default () => {
 					)
 				),
 				activeTab().component &&
-					m(activeTab().component, { activeDevice, deviceSettings })
+					m(activeTab().component, {
+						activeDevice,
+						activeDeviceId,
+						deviceSettings
+					})
 			];
 		}
 	};

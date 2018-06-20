@@ -69,6 +69,7 @@ export default () => {
 	);
 
 	const searchedDevice = stream();
+	const highlightDeviceId = stream();
 
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
@@ -171,10 +172,14 @@ export default () => {
 					activeRoomName(deviceLoc.datacenter.name);
 					// delay to prevent a race in setting the route
 					setTimeout(() => activeRackId(deviceLoc.rack.id), 10);
+					highlightDeviceId(device.id);
 				});
 			});
 		},
 		view: ({ attrs: { currentWorkspace } }) => {
+			m.route.param("highlightDeviceId") &&
+				highlightDeviceId(m.route.param("highlightDeviceId"));
+
 			return [
 				m(ViewTitleHero, {
 					title: `${currentWorkspace().name} workspace datacenters`,
@@ -289,7 +294,7 @@ export default () => {
 														rackLoading,
 														rackLayout,
 														activeDeviceId,
-														searchedDevice
+														highlightDeviceId
 													})
 											)
 									  )

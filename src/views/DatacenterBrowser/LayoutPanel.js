@@ -90,7 +90,7 @@ export default () => {
 				rackLoading,
 				rackLayout,
 				activeDeviceId,
-				searchedDevice
+				highlightDeviceId
 			}
 		}) => [
 			m(
@@ -144,7 +144,7 @@ export default () => {
 					: m(LayoutTable, {
 							deviceSlots: filteredSlots,
 							activeDeviceId,
-							searchedDevice
+							highlightDeviceId
 					  })
 			),
 			editLayout() &&

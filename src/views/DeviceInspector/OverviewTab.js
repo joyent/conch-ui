@@ -95,8 +95,54 @@ const OverviewTab = () => {
 				[activeDevice, deviceSettings]
 			);
 		},
-		view: ({ attrs: { activeDevice, deviceSettings } }) => [
-			m(".tags", deviceTags()),
+		view: ({
+			attrs: {
+				activeDevice,
+				activeDeviceId,
+				deviceSettings,
+				currentWorkspace
+			}
+		}) => [
+			m(
+				".level",
+				m(".level-left", m(".level-item.tags", deviceTags())),
+				activeDevice().location &&
+					m(
+						".level-right",
+						m(
+							".level.item",
+							m(
+								"button.button.is-small.is-link.is-rounded",
+								{
+									onclick: () => {
+										let {
+											datacenter,
+											rack
+										} = activeDevice().location;
+										let workspaceRoute = m.route
+											.get()
+											.substring(
+												0,
+												m.route.get().indexOf("/", 1)
+											);
+										// clear activeDeviceId
+										activeDeviceId(null);
+										m.route.set(
+											`${workspaceRoute}/datacenter/${
+												datacenter.name
+											}/rack/${
+												rack.id
+											}/device?highlightDeviceId=${
+												activeDevice().id
+											}`
+										);
+									}
+								},
+								"Show Device in Rack"
+							)
+						)
+					)
+			),
 			m(
 				"section.info-tiles",
 				m(

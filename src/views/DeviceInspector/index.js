@@ -75,6 +75,7 @@ export default () => {
 								}
 							],
 							activeDevice,
+							activeDeviceId,
 							deviceSettings
 						})
 				  ];
