@@ -24,7 +24,7 @@ const NetworkingRow = () => {
 				),
 				m("td", iface.state),
 				m("td", iface.id),
-				m("td", iface.ip),
+				m("td", iface.ipaddr),
 				m("td", iface.mac)
 			),
 			revealDetails &&
