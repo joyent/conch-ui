@@ -2,31 +2,24 @@ import m from "mithril";
 
 const FlatStage = {
 	view: () => m("div.container"),
-	oncreate: ({ attrs: { konva, boxes, height, width }, dom }) => {
-		// add an additional pixel to account for right and bottom border
-		width += 1;
-		height += 1;
-
-		let blockSnapSize = 32;
-
+	oncreate: ({ attrs: { konva, boxes, gridSize, rows, columns }, dom }) => {
 		let shadowRectangle = new konva.Rect({
 			x: 0,
 			y: 0,
-			width: blockSnapSize * 3,
-			height: blockSnapSize * 3,
+			width: gridSize * 3,
+			height: gridSize * 3,
 			fill: "#FF7B17",
 			opacity: 0.6,
 			stroke: "#CF6412",
-			strokeWidth: 3,
-			dash: [20, 2]
+			strokeWidth: 3
 		});
 
 		function newRectangle(boxStream, layer, stage) {
 			let rectangle = new konva.Rect({
-				x: blockSnapSize * boxStream().x,
-				y: blockSnapSize * boxStream().y,
-				width: blockSnapSize * 3,
-				height: blockSnapSize * 3,
+				x: gridSize * boxStream().x,
+				y: gridSize * boxStream().y,
+				width: gridSize * 3,
+				height: gridSize * 3,
 				fill: "#fff",
 				stroke: "#ddd",
 				strokeWidth: 1,
@@ -57,14 +50,12 @@ const FlatStage = {
 			rectangle.on("dragend", e => {
 				boxStream({
 					id: boxStream().id,
-					x: Math.round(rectangle.x() / blockSnapSize),
-					y: Math.round(rectangle.y() / blockSnapSize)
+					x: Math.round(rectangle.x() / gridSize),
+					y: Math.round(rectangle.y() / gridSize)
 				});
 				rectangle.position({
-					x:
-						Math.round(rectangle.x() / blockSnapSize) *
-						blockSnapSize,
-					y: Math.round(rectangle.y() / blockSnapSize) * blockSnapSize
+					x: Math.round(rectangle.x() / gridSize) * gridSize,
+					y: Math.round(rectangle.y() / gridSize) * gridSize
 				});
 				stage.batchDraw();
 				shadowRectangle.hide();
@@ -72,14 +63,12 @@ const FlatStage = {
 			rectangle.on("dragmove", e => {
 				boxStream({
 					id: boxStream().id,
-					x: Math.round(rectangle.x() / blockSnapSize),
-					y: Math.round(rectangle.y() / blockSnapSize)
+					x: Math.round(rectangle.x() / gridSize),
+					y: Math.round(rectangle.y() / gridSize)
 				});
 				shadowRectangle.position({
-					x:
-						Math.round(rectangle.x() / blockSnapSize) *
-						blockSnapSize,
-					y: Math.round(rectangle.y() / blockSnapSize) * blockSnapSize
+					x: Math.round(rectangle.x() / gridSize) * gridSize,
+					y: Math.round(rectangle.y() / gridSize) * gridSize
 				});
 				stage.batchDraw();
 			});
@@ -88,20 +77,20 @@ const FlatStage = {
 
 		let stage = new konva.Stage({
 			container: dom,
-			width: width,
-			height: height
+			// extra pixel for borders
+			height: columns * gridSize + 1,
+			width: rows * gridSize + 1
 		});
 
 		let gridLayer = new konva.Layer();
-		let padding = blockSnapSize;
-		for (let i = 0; i <= width / padding; i++) {
+		for (let i = 0; i <= stage.getWidth() / gridSize; i++) {
 			gridLayer.add(
 				new konva.Line({
 					points: [
-						Math.round(i * padding) + 0.5,
+						Math.round(i * gridSize) + 0.5,
 						0,
-						Math.round(i * padding) + 0.5,
-						height
+						Math.round(i * gridSize) + 0.5,
+						stage.getHeight()
 					],
 					stroke: "#ddd",
 					strokeWidth: 1
@@ -109,14 +98,14 @@ const FlatStage = {
 			);
 		}
 
-		for (let j = 0; j < height / padding; j++) {
+		for (let j = 0; j < stage.getHeight() / gridSize; j++) {
 			gridLayer.add(
 				new konva.Line({
 					points: [
 						0,
-						Math.round(j * padding),
-						width,
-						Math.round(j * padding)
+						Math.round(j * gridSize),
+						stage.getWidth(),
+						Math.round(j * gridSize)
 					],
 					stroke: "#ddd",
 					strokeWidth: 0.5

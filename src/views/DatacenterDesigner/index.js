@@ -37,8 +37,9 @@ export default () => {
 								m(FlatStage, {
 									konva,
 									boxes,
-									height: 512,
-									width: 512
+									gridSize: 32,
+									rows: 16,
+									columns: 16
 								})
 							)
 						),
@@ -47,6 +48,8 @@ export default () => {
 							m(IsometricStage, {
 								obelisk,
 								boxes,
+								gridSize: 24,
+								zHeightMax: 9,
 								rows: 16,
 								columns: 16
 							})
