@@ -133,16 +133,18 @@ const ValidationTab = () => {
 
 	return {
 		oninit: ({ attrs: { activeDevice } }) => {
-			request({
-				method: "GET",
-				url: `${conchApi}/device/${activeDevice().id}/validation_state`,
-				withCredentials: true
-			}).then(validationStates);
-			request({
-				method: "GET",
-				url: `${conchApi}/validation`,
-				withCredentials: true
-			}).then(validations);
+			activeDevice.map(device => {
+				request({
+					method: "GET",
+					url: `${conchApi}/device/${device.id}/validation_state`,
+					withCredentials: true
+				}).then(validationStates);
+				request({
+					method: "GET",
+					url: `${conchApi}/validation`,
+					withCredentials: true
+				}).then(validations);
+			});
 		},
 		view: ({ attrs: { activeDevice } }) => {
 			return stream.merge([validationStates, validations])() == null

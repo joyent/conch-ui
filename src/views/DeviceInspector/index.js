@@ -22,19 +22,18 @@ export default () => {
 	const activeDevice = stream();
 	const deviceSettings = stream();
 	let deviceLoading = true;
+	let intervalId;
 
 	return {
 		oninit: ({ attrs: { activeDeviceId } }) => {
 			activeDeviceId.map(deviceId => {
 				if (deviceId == null) return;
-				deviceLoading = true;
 				request({
 					method: "GET",
 					url: `${conchApi}/device/${deviceId}`,
 					withCredentials: true
 				}).then(res => {
 					activeDevice(res);
-					deviceLoading = false;
 				});
 				request({
 					method: "GET",
@@ -42,9 +41,18 @@ export default () => {
 					withCredentials: true
 				}).then(deviceSettings);
 			});
+
+			// refresh the device, settings, and any dependent streams every 15
+			// seconds
+			intervalId = setInterval(() => {
+				activeDeviceId(activeDeviceId());
+			}, 15000);
+		},
+		onremove: () => {
+			clearInterval(intervalId);
 		},
 		view: ({ attrs: { activeDeviceId } }) => {
-			return deviceLoading
+			return stream.merge([activeDevice, deviceSettings])() == null
 				? m("section.section", m(Spinner))
 				: [
 						m(Tabs, {
