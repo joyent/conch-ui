@@ -8,7 +8,7 @@ const TimeToBurnin = {
 	view: ({ attrs: { activeDevice, deviceSettings } }) => {
 		if (deviceSettings() == null) return m(Spinner);
 
-		const { uptime_since, last_seen } = activeDevice();
+		const { uptime_since, last_seen, health } = activeDevice();
 
 		if (last_seen == null)
 			return m("p.is-size-4", "Device has not reported");
@@ -26,6 +26,21 @@ const TimeToBurnin = {
 			: moment().diff(moment(last_seen), "seconds");
 
 		const rebootCount = deviceSettings()["build.reboot_count"] || 0;
+
+		if (health.toLowerCase() === "fail") {
+			return [
+				m(RadialProgress, {
+					percentage: Math.trunc(rebootCount / numReboots * 100),
+					strokeWidth: "20px",
+					failing: true
+				}),
+				m(
+					"p.subtitle",
+					m("p", "Failing validation"),
+					m("p", `${rebootCount} of ${numReboots} reboots complete`)
+				)
+			];
+		}
 
 		const time =
 			maxBurnin - (rebootCount * burninStageTime + sinceLastReboot);
