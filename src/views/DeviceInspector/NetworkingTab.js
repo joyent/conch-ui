@@ -67,10 +67,6 @@ const NetworkingTab = () => {
 		m("th", "Interface"),
 		m("th", "IP Address"),
 		m("th", "MAC")
-		//m("th", "Product"),
-		//m("th", "Peer Switch"),
-		//m("th", "Peer Port"),
-		//m("th", "Peer MAC")
 	];
 	let nics;
 

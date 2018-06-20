@@ -1,4 +1,5 @@
 import m from "mithril";
+import stream from "mithril/stream";
 import moment from "moment";
 
 import { RadialProgress, Spinner } from "../component";
@@ -51,27 +52,33 @@ const TimeToBurnin = {
 	}
 };
 const OverviewTab = () => {
-	let deviceTags;
+	let deviceTags = [];
 	return {
-		oninit: ({ attrs: { activeDevice } }) => {
-			deviceTags = activeDevice.map(device => {
-				let tags = [];
-				if (device.health.toLowerCase() === "fail")
-					tags.push(m(".tag.is-danger", "Failing Validaiton"));
-				else if (device.health.toLowerCase() === "pass")
-					tags.push(m(".tag.is-info", "Passing Validation"));
-				else if (device.health.toLowerCase() === "unknown")
-					tags.push(m(".tag.is-warning", "No report"));
+		oninit: ({ attrs: { activeDevice, deviceSettings } }) => {
+			deviceTags = stream.combine(
+				(device, settings) => {
+					let tags = [];
+					if (device().health.toLowerCase() === "fail")
+						tags.push(m(".tag.is-danger", "Failing Validaiton"));
+					else if (device().health.toLowerCase() === "pass")
+						tags.push(m(".tag.is-info", "Passing Validation"));
+					else if (device().health.toLowerCase() === "unknown")
+						tags.push(m(".tag.is-warning", "No report"));
 
-				if (device.validated)
-					tags.push(m(".tag.is-success", "Validated"));
-				if (device.graduated)
-					tags.push(m(".tag.is-success", "Graduated"));
-				if (device.triton_setup)
-					tags.push(m(".tag.is-success", "Triton Setup"));
+					if (settings().firmware === "updating")
+						tags.push(m(".tag.is-warning", "Firmware Updating"));
 
-				return tags;
-			});
+					if (device().validated)
+						tags.push(m(".tag.is-success", "Validated"));
+					if (device().graduated)
+						tags.push(m(".tag.is-success", "Graduated"));
+					if (device().triton_setup)
+						tags.push(m(".tag.is-success", "Triton Setup"));
+
+					return tags;
+				},
+				[activeDevice, deviceSettings]
+			);
 		},
 		view: ({ attrs: { activeDevice, deviceSettings } }) => [
 			m(".tags", deviceTags()),
