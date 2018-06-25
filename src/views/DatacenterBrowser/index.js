@@ -22,12 +22,15 @@ export default () => {
 		[rackRooms, activeRoomName]
 	);
 
-	const activeRacks = activeRoom.map(
-		room =>
-			room
-				? room.racks.sort((a, b) => (a.name > b.name ? 1 : -1))
-				: stream.HALT
-	);
+	let rackLayout = stream();
+
+	const activeRacks = activeRoom.map(room => {
+		// reset layoutRack
+		rackLayout = stream();
+		return room
+			? room.racks.sort((a, b) => (a.name > b.name ? 1 : -1))
+			: stream.HALT;
+	});
 	const activeRackId = stream();
 
 	// finds the active rack in activeRacks with activeRackId
@@ -36,12 +39,6 @@ export default () => {
 		[activeRacks, activeRackId]
 	);
 	const rackLoading = stream();
-
-	let rackLayout = stream();
-	// if there's no activeRoom, reset layoutRack
-	activeRoom.map(a => {
-		if (a == null) rackLayout = stream();
-	});
 
 	const activeDeviceId = stream();
 
