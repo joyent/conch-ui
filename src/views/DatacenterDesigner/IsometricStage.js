@@ -12,7 +12,7 @@ const IsometricStage = {
 		return m(`canvas[height=${height}][width=${width}]`, {});
 	},
 	oncreate: ({
-		attrs: { obelisk, boxes, rows, columns, gridSize, zHeightMax },
+		attrs: { obelisk, boxes, tiles, rows, columns, gridSize, zHeightMax },
 		dom
 	}) => {
 		let point = new obelisk.Point(
@@ -25,39 +25,57 @@ const IsometricStage = {
 			gridSize
 		);
 		let colorBrick = new obelisk.LineColor(0xccccee);
-		let floorTile = new obelisk.Brick(floorBrickDimension, colorBrick);
-		let dimension = new obelisk.CubeDimension(
-			gridSize * 3,
-			gridSize * 3,
-			gridSize * 3
+		let blankTile = new obelisk.Brick(floorBrickDimension, colorBrick);
+
+		var coldTileColor = new obelisk.SideColor().getByInnerColor(
+			obelisk.ColorPattern.BLUE
 		);
+		let coldTile = new obelisk.Brick(floorBrickDimension, coldTileColor);
+
+		let dimension = new obelisk.CubeDimension(
+			gridSize * 2,
+			gridSize * 3,
+			gridSize * 8
+		);
+
 		let gray = obelisk.ColorPattern.YELLOW;
 		let color = new obelisk.CubeColor().getByHorizontalColor(gray);
 		let cube = new obelisk.Cube(dimension, color, true);
 
-		stream.combine((...bs) => {
-			pixelView.clear();
-			for (let x = 0; x < rows; x++) {
-				for (let y = 0; y < columns; y++) {
-					let p3d = new obelisk.Point3D(
-						x * gridSize,
-						y * gridSize,
-						0
-					);
-					pixelView.renderObject(floorTile, p3d);
-				}
-			}
+		let boxesStream = stream.merge(boxes);
 
-			bs.splice(0, bs.length - 1).map(boxStream => {
-				pixelView.renderObject(
-					cube,
-					new obelisk.Point3D(
-						boxStream().x * gridSize,
-						boxStream().y * gridSize
-					)
-				);
-			});
-		}, boxes);
+		stream.combine(
+			(bs, ts) => {
+				pixelView.clear();
+				for (let x = 0; x < rows; x++) {
+					for (let y = 0; y < columns; y++) {
+						let p3d = new obelisk.Point3D(
+							x * gridSize,
+							y * gridSize,
+							0
+						);
+						pixelView.renderObject(blankTile, p3d);
+					}
+				}
+
+				ts().map(tile => {
+					pixelView.renderObject(
+						coldTile,
+						new obelisk.Point3D(
+							tile.x * gridSize,
+							tile.y * gridSize
+						)
+					);
+				});
+				bs().map(box => {
+					pixelView.renderObject(
+						cube,
+						new obelisk.Point3D(box.x * gridSize, box.y * gridSize)
+					);
+				});
+			},
+			[boxesStream, tiles]
+		);
 	}
 };
 

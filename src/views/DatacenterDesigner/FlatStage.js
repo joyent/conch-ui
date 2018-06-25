@@ -2,12 +2,15 @@ import m from "mithril";
 
 const FlatStage = {
 	view: () => m("div.container"),
-	oncreate: ({ attrs: { konva, boxes, gridSize, rows, columns }, dom }) => {
+	oncreate: ({
+		attrs: { konva, boxes, tiles, gridSize, rows, columns },
+		dom
+	}) => {
 		let shadowRectangle = new konva.Rect({
 			x: 0,
 			y: 0,
-			width: gridSize * 3,
 			height: gridSize * 3,
+			width: gridSize * 2,
 			fill: "#FF7B17",
 			opacity: 0.6,
 			stroke: "#CF6412",
@@ -18,8 +21,8 @@ const FlatStage = {
 			let rectangle = new konva.Rect({
 				x: gridSize * boxStream().x,
 				y: gridSize * boxStream().y,
-				width: gridSize * 3,
 				height: gridSize * 3,
+				width: gridSize * 2,
 				fill: "#fff",
 				stroke: "#ddd",
 				strokeWidth: 1,
@@ -78,39 +81,78 @@ const FlatStage = {
 		let stage = new konva.Stage({
 			container: dom,
 			// extra pixel for borders
-			height: columns * gridSize + 1,
-			width: rows * gridSize + 1
+			height: columns * gridSize,
+			width: rows * gridSize
 		});
 
 		let gridLayer = new konva.Layer();
+
+		let paint = false;
+
+		stage.on("mousedown", () => {
+			paint = true;
+		});
+
+		stage.on("mouseup", () => {
+			paint = false;
+		});
+
 		for (let i = 0; i <= stage.getWidth() / gridSize; i++) {
-			gridLayer.add(
-				new konva.Line({
-					points: [
-						Math.round(i * gridSize) + 0.5,
-						0,
-						Math.round(i * gridSize) + 0.5,
-						stage.getHeight()
-					],
+			for (let j = 0; j <= stage.getWidth() / gridSize; j++) {
+				let blankTile = new konva.Rect({
+					x: i * gridSize,
+					y: j * gridSize,
+					width: gridSize,
+					height: gridSize,
 					stroke: "#ddd",
 					strokeWidth: 1
-				})
-			);
-		}
+				});
+				gridLayer.add(blankTile);
+				blankTile.on("mousedown", () => {
+					if (!paint) return;
+					let ts = tiles().slice();
+					ts.push({
+						x: blankTile.x() / gridSize,
+						y: blankTile.y() / gridSize,
+						type: "cold"
+					});
+					tiles(ts);
+					let coldTile = new konva.Rect({
+						x: i * gridSize,
+						y: j * gridSize,
+						width: gridSize,
+						height: gridSize,
+						fill: "#58CAFA",
+						stroke: "#ddd",
+						strokeWidth: 1
+					});
 
-		for (let j = 0; j < stage.getHeight() / gridSize; j++) {
-			gridLayer.add(
-				new konva.Line({
-					points: [
-						0,
-						Math.round(j * gridSize),
-						stage.getWidth(),
-						Math.round(j * gridSize)
-					],
-					stroke: "#ddd",
-					strokeWidth: 0.5
-				})
-			);
+					gridLayer.add(coldTile);
+					stage.draw();
+				});
+				blankTile.on("mouseenter", () => {
+					if (!paint) return;
+					let ts = tiles().slice();
+					ts.push({
+						x: blankTile.x() / gridSize,
+						y: blankTile.y() / gridSize,
+						type: "cold"
+					});
+					tiles(ts);
+					let coldTile = new konva.Rect({
+						x: i * gridSize,
+						y: j * gridSize,
+						width: gridSize,
+						height: gridSize,
+						fill: "#58CAFA",
+						stroke: "#ddd",
+						strokeWidth: 1
+					});
+
+					gridLayer.add(coldTile);
+					stage.draw();
+				});
+			}
 		}
 
 		let layer = new konva.Layer();

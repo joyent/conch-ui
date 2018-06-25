@@ -6,6 +6,9 @@ import IsometricStage from "./IsometricStage";
 import FlatStage from "./FlatStage";
 
 export default () => {
+	const rows = 16;
+	const columns = 16;
+
 	let konva;
 	let obelisk;
 	let libsLoaded = false;
@@ -14,6 +17,8 @@ export default () => {
 		stream({ id: 1, x: 3, y: 3 }),
 		stream({ id: 2, x: 10, y: 3 })
 	];
+
+	const tiles = stream([]);
 
 	return {
 		oninit: () => {
@@ -37,9 +42,10 @@ export default () => {
 								m(FlatStage, {
 									konva,
 									boxes,
+									tiles,
 									gridSize: 32,
-									rows: 16,
-									columns: 16
+									rows,
+									columns
 								})
 							)
 						),
@@ -48,10 +54,11 @@ export default () => {
 							m(IsometricStage, {
 								obelisk,
 								boxes,
+								tiles,
 								gridSize: 24,
 								zHeightMax: 9,
-								rows: 16,
-								columns: 16
+								rows,
+								columns
 							})
 						)
 				  );
