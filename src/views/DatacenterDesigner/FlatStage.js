@@ -95,7 +95,7 @@ const FlatStage = {
 		let newDraw;
 		const startDraw = e => {
 			if (activeTileType() == null) return;
-			let pos = e.currentTarget.pointerPos;
+			let pos = { x: e.evt.layerX, y: e.evt.layerY };
 			mousedownStart.x = Math.trunc(pos.x / gridSize);
 			mousedownStart.y = Math.trunc(pos.y / gridSize);
 			// account for simple click
@@ -132,7 +132,7 @@ const FlatStage = {
 
 		const drawSelection = e => {
 			if (!paint) return;
-			let pos = e.currentTarget.pointerPos;
+			let pos = { x: e.evt.layerX, y: e.evt.layerY };
 
 			// skip if the last drawn position is in the same grid
 			if (
@@ -177,9 +177,9 @@ const FlatStage = {
 			}
 			stage.batchDraw();
 		};
-		stage.on("mousedown", startDraw);
-		stage.on("mousemove", drawSelection);
-		stage.on("mouseleave", drawSelection);
+		gridLayer.on("mousedown", startDraw);
+		gridLayer.on("mousemove", drawSelection);
+		gridLayer.on("mouseleave", drawSelection);
 
 		// draw blank grid
 		for (let i = 0; i <= stage.getWidth() / gridSize; i++) {
@@ -196,18 +196,18 @@ const FlatStage = {
 			}
 		}
 
-		let layer = new konva.Layer();
+		let rackLayer = new konva.Layer();
 		shadowRectangle.hide();
-		layer.add(shadowRectangle);
+		rackLayer.add(shadowRectangle);
 
 		boxes.forEach(boxStream => {
-			newRectangle(boxStream, layer, stage);
+			newRectangle(boxStream, rackLayer, stage);
 		});
 
-		stage.add(gridLayer);
 		stage.add(tileLayer);
 		stage.add(tileDrawLayer);
-		stage.add(layer);
+		stage.add(gridLayer);
+		stage.add(rackLayer);
 	}
 };
 
