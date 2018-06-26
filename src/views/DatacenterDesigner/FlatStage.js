@@ -86,17 +86,99 @@ const FlatStage = {
 		});
 
 		let gridLayer = new konva.Layer();
+		let tileLayer = new konva.Layer();
+		let tileDrawLayer = new konva.Layer();
 
 		let paint = false;
-
-		stage.on("mousedown", () => {
+		const mousedownStart = { x: 0, y: 0 };
+		const mousedownEnd = { x: -1, y: -1 };
+		let newDraw;
+		const startDraw = e => {
+			let pos = e.currentTarget.pointerPos;
+			mousedownStart.x = Math.trunc(pos.x / gridSize);
+			mousedownStart.y = Math.trunc(pos.y / gridSize);
+			// account for simple click
+			newDraw = [{ x: mousedownStart.x, y: mousedownStart.y }];
 			paint = true;
-		});
 
-		stage.on("mouseup", () => {
+			// draw the selection whenever the mouse is lifted up, even if outside the element
+			document.addEventListener("mouseup", endDraw, { once: true });
+		};
+		const endDraw = () => {
 			paint = false;
-		});
+			(mousedownEnd.x = -1), (mousedownEnd.y = -1);
+			newDraw.forEach(tile => {
+				let coldtile = new konva.Rect({
+					x: tile.x * gridSize,
+					y: tile.y * gridSize,
+					width: gridSize,
+					height: gridSize,
+					fill: "#58cafa",
+					stroke: "#ddd",
+					strokewidth: 1
+				});
+				tileLayer.add(coldtile);
+			});
+			stage.batchDraw();
+			tiles(tiles().concat(newDraw));
+		};
 
+		const drawSelection = e => {
+			if (!paint) return;
+			let pos = e.currentTarget.pointerPos;
+
+			// skip if the last drawn position is in the same grid
+			if (
+				Math.abs(
+					mousedownEnd.x * gridSize - Math.trunc(pos.x / gridSize)
+				) < gridSize &&
+				Math.abs(
+					mousedownEnd.y * gridSize - Math.trunc(pos.y / gridSize)
+				) < gridSize
+			)
+				return;
+
+			mousedownEnd.x = Math.trunc(pos.x / gridSize);
+			mousedownEnd.y = Math.trunc(pos.y / gridSize);
+
+			let deltaX = Math.abs(mousedownStart.x - mousedownEnd.x);
+			let deltaY = Math.abs(mousedownStart.y - mousedownEnd.y);
+
+			tileDrawLayer.destroyChildren();
+			newDraw = [];
+			for (let i = 0; i <= deltaX; i++) {
+				for (let j = 0; j <= deltaY; j++) {
+					let x = Math.min(mousedownStart.x, mousedownEnd.x) + i;
+					let y = Math.min(mousedownStart.y, mousedownEnd.y) + j;
+					if (x >= rows || x < 0 || y >= columns || y < 0) continue;
+
+					newDraw.push({
+						x: Math.min(mousedownStart.x, mousedownEnd.x) + i,
+						y: Math.min(mousedownStart.y, mousedownEnd.y) + j
+					});
+					let coldtile = new konva.Rect({
+						x:
+							(Math.min(mousedownStart.x, mousedownEnd.x) + i) *
+							gridSize,
+						y:
+							(Math.min(mousedownStart.y, mousedownEnd.y) + j) *
+							gridSize,
+						width: gridSize,
+						height: gridSize,
+						fill: "#58cafa",
+						stroke: "#ddd",
+						strokewidth: 1
+					});
+					tileDrawLayer.add(coldtile);
+				}
+			}
+			stage.batchDraw();
+		};
+		stage.on("mousedown", startDraw);
+		stage.on("mousemove", drawSelection);
+		stage.on("mouseleave", drawSelection);
+
+		// draw blank grid
 		for (let i = 0; i <= stage.getWidth() / gridSize; i++) {
 			for (let j = 0; j <= stage.getWidth() / gridSize; j++) {
 				let blankTile = new konva.Rect({
@@ -108,50 +190,6 @@ const FlatStage = {
 					strokeWidth: 1
 				});
 				gridLayer.add(blankTile);
-				blankTile.on("mousedown", () => {
-					if (!paint) return;
-					let ts = tiles().slice();
-					ts.push({
-						x: blankTile.x() / gridSize,
-						y: blankTile.y() / gridSize,
-						type: "cold"
-					});
-					tiles(ts);
-					let coldTile = new konva.Rect({
-						x: i * gridSize,
-						y: j * gridSize,
-						width: gridSize,
-						height: gridSize,
-						fill: "#58CAFA",
-						stroke: "#ddd",
-						strokeWidth: 1
-					});
-
-					gridLayer.add(coldTile);
-					stage.draw();
-				});
-				blankTile.on("mouseenter", () => {
-					if (!paint) return;
-					let ts = tiles().slice();
-					ts.push({
-						x: blankTile.x() / gridSize,
-						y: blankTile.y() / gridSize,
-						type: "cold"
-					});
-					tiles(ts);
-					let coldTile = new konva.Rect({
-						x: i * gridSize,
-						y: j * gridSize,
-						width: gridSize,
-						height: gridSize,
-						fill: "#58CAFA",
-						stroke: "#ddd",
-						strokeWidth: 1
-					});
-
-					gridLayer.add(coldTile);
-					stage.draw();
-				});
 			}
 		}
 
@@ -164,6 +202,8 @@ const FlatStage = {
 		});
 
 		stage.add(gridLayer);
+		stage.add(tileLayer);
+		stage.add(tileDrawLayer);
 		stage.add(layer);
 	}
 };
