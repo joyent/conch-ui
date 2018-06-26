@@ -17,78 +17,6 @@ const FlatStage = {
 			strokeWidth: 3
 		});
 
-		function newRectangle(boxStream, layer, stage) {
-			let rectangle = new konva.Rect({
-				x: gridSize * boxStream().x,
-				y: gridSize * boxStream().y,
-				height: gridSize * 3,
-				width: gridSize * 2,
-				fill: "#666",
-				stroke: "#ddd",
-				strokeWidth: 1,
-				shadowColor: "white",
-				shadowBlur: 2,
-				shadowOffset: { x: 1, y: 1 },
-				shadowOpacity: 0.4,
-				draggable: true,
-				dragBoundFunc: function(pos) {
-					pos.x = pos.x >= 0 ? pos.x : 0;
-					pos.x =
-						pos.x <= stage.getWidth() - this.width()
-							? pos.x
-							: stage.getWidth() - this.width();
-					pos.y = pos.y >= 0 ? pos.y : 0;
-					pos.y =
-						pos.y <= stage.getHeight() - this.height()
-							? pos.y
-							: stage.getHeight() - this.height();
-					return pos;
-				}
-			});
-			rectangle.on("dragstart", e => {
-				shadowRectangle.show();
-				shadowRectangle.moveToTop();
-				rectangle.moveToTop();
-			});
-			rectangle.on("dragend", e => {
-				boxStream({
-					id: boxStream().id,
-					x: Math.round(rectangle.x() / gridSize),
-					y: Math.round(rectangle.y() / gridSize)
-				});
-				rectangle.position({
-					x: Math.round(rectangle.x() / gridSize) * gridSize,
-					y: Math.round(rectangle.y() / gridSize) * gridSize
-				});
-				stage.batchDraw();
-				shadowRectangle.hide();
-			});
-			rectangle.on("dragmove", e => {
-				boxStream({
-					id: boxStream().id,
-					x: Math.round(rectangle.x() / gridSize),
-					y: Math.round(rectangle.y() / gridSize)
-				});
-				shadowRectangle.position({
-					x: Math.round(rectangle.x() / gridSize) * gridSize,
-					y: Math.round(rectangle.y() / gridSize) * gridSize
-				});
-				stage.batchDraw();
-			});
-			layer.add(rectangle);
-		}
-
-		let stage = new konva.Stage({
-			container: dom,
-			// extra pixel for borders
-			height: columns * gridSize,
-			width: rows * gridSize
-		});
-
-		let gridLayer = new konva.Layer();
-		let tileLayer = new konva.Layer();
-		let tileDrawLayer = new konva.Layer();
-
 		var tooltipLayer = new Konva.Layer();
 
 		var tooltip = new Konva.Label({
@@ -120,6 +48,94 @@ const FlatStage = {
 			})
 		);
 		tooltipLayer.add(tooltip);
+
+		function newRectangle(boxStream, layer, stage) {
+			let rectangle = new konva.Rect({
+				x: gridSize * boxStream().x,
+				y: gridSize * boxStream().y,
+				height: gridSize * 3,
+				width: gridSize * 2,
+				fill: "#666",
+				stroke: "#ddd",
+				strokeWidth: 1,
+				shadowColor: "white",
+				shadowBlur: 2,
+				shadowOffset: { x: 1, y: 1 },
+				shadowOpacity: 0.4,
+				draggable: true,
+				dragBoundFunc: function(pos) {
+					pos.x = pos.x >= 0 ? pos.x : 0;
+					pos.x =
+						pos.x <= stage.getWidth() - this.width()
+							? pos.x
+							: stage.getWidth() - this.width();
+					pos.y = pos.y >= 0 ? pos.y : 0;
+					pos.y =
+						pos.y <= stage.getHeight() - this.height()
+							? pos.y
+							: stage.getHeight() - this.height();
+					return pos;
+				}
+			});
+			rectangle.on("mousedown", e => {
+				tooltip.show();
+				tooltip.getText().setText("45 U Rack");
+				tooltip.setPosition({
+					x: rectangle.x() + rectangle.width() / 2,
+					y: rectangle.y()
+				});
+				tooltipLayer.batchDraw();
+			});
+			rectangle.on("mouseup", e => {
+				tooltip.hide();
+				tooltipLayer.batchDraw();
+			});
+			rectangle.on("dragstart", e => {
+				shadowRectangle.show();
+				shadowRectangle.moveToTop();
+				rectangle.moveToTop();
+			});
+			rectangle.on("dragend", e => {
+				boxStream({
+					id: boxStream().id,
+					x: Math.round(rectangle.x() / gridSize),
+					y: Math.round(rectangle.y() / gridSize)
+				});
+				rectangle.position({
+					x: Math.round(rectangle.x() / gridSize) * gridSize,
+					y: Math.round(rectangle.y() / gridSize) * gridSize
+				});
+				stage.batchDraw();
+				shadowRectangle.hide();
+			});
+			rectangle.on("dragmove", e => {
+				tooltip.setPosition({
+					x: rectangle.x() + rectangle.width() / 2,
+					y: rectangle.y()
+				});
+				boxStream({
+					id: boxStream().id,
+					x: Math.round(rectangle.x() / gridSize),
+					y: Math.round(rectangle.y() / gridSize)
+				});
+				shadowRectangle.position({
+					x: Math.round(rectangle.x() / gridSize) * gridSize,
+					y: Math.round(rectangle.y() / gridSize) * gridSize
+				});
+				stage.batchDraw();
+			});
+			layer.add(rectangle);
+		}
+
+		let stage = new konva.Stage({
+			container: dom,
+			height: columns * gridSize,
+			width: rows * gridSize
+		});
+
+		let gridLayer = new konva.Layer();
+		let tileLayer = new konva.Layer();
+		let tileDrawLayer = new konva.Layer();
 
 		let paint = false;
 		const mousedownStart = { x: 0, y: 0 };
