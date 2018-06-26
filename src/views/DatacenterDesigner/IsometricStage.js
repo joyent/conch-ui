@@ -27,18 +27,13 @@ const IsometricStage = {
 		let colorBrick = new obelisk.LineColor(0xccccee);
 		let blankTile = new obelisk.Brick(floorBrickDimension, colorBrick);
 
-		var coldTileColor = new obelisk.SideColor().getByInnerColor(
-			obelisk.ColorPattern.BLUE
-		);
-		let coldTile = new obelisk.Brick(floorBrickDimension, coldTileColor);
-
 		let dimension = new obelisk.CubeDimension(
 			gridSize * 2,
 			gridSize * 3,
 			gridSize * 8
 		);
 
-		let gray = obelisk.ColorPattern.YELLOW;
+		let gray = obelisk.ColorPattern.BLACK;
 		let color = new obelisk.CubeColor().getByHorizontalColor(gray);
 		let cube = new obelisk.Cube(dimension, color, true);
 
@@ -58,16 +53,23 @@ const IsometricStage = {
 					}
 				}
 
-				ts().map(tile => {
+				ts().forEach(tile => {
+					var tileColor = new obelisk.SideColor().getByInnerColor(
+						Number.parseInt(tile.tileType.color.replace("#", "0x"))
+					);
+					let tileBrick = new obelisk.Brick(
+						floorBrickDimension,
+						tileColor
+					);
 					pixelView.renderObject(
-						coldTile,
+						tileBrick,
 						new obelisk.Point3D(
 							tile.x * gridSize,
 							tile.y * gridSize
 						)
 					);
 				});
-				bs().map(box => {
+				bs().forEach(box => {
 					pixelView.renderObject(
 						cube,
 						new obelisk.Point3D(box.x * gridSize, box.y * gridSize)

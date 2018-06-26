@@ -54,13 +54,12 @@ const Controls = () => {
 									{
 										onclick: () => {
 											activeTileType({
-												name: "Erase Tiles",
-												type: "erase"
+												name: "Erase"
 											});
 											active = false;
 										}
 									},
-									"Erase Tiles"
+									"Erase"
 								)
 							)
 						)

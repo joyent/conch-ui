@@ -39,8 +39,18 @@ export default () => {
 				: [
 						m(Controls, {
 							tileTypes: [
-								{ name: "Cold Tile", type: "cold" },
-								{ name: "Hot Tile", type: "hot" }
+								{
+									name: "Cold Tile",
+									color: "#58cafa"
+								},
+								{
+									name: "Hot Tile",
+									color: "#FF0099"
+								},
+								{
+									name: "Powered Tile",
+									color: "#FFFF00"
+								}
 							],
 							activeTileType
 						}),

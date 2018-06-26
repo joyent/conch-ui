@@ -3,7 +3,7 @@ import m from "mithril";
 const FlatStage = {
 	view: () => m("div.container"),
 	oncreate: ({
-		attrs: { konva, boxes, tiles, gridSize, rows, columns },
+		attrs: { konva, boxes, tiles, gridSize, rows, columns, activeTileType },
 		dom
 	}) => {
 		let shadowRectangle = new konva.Rect({
@@ -23,7 +23,7 @@ const FlatStage = {
 				y: gridSize * boxStream().y,
 				height: gridSize * 3,
 				width: gridSize * 2,
-				fill: "#fff",
+				fill: "#666",
 				stroke: "#ddd",
 				strokeWidth: 1,
 				shadowColor: "white",
@@ -46,6 +46,7 @@ const FlatStage = {
 				}
 			});
 			rectangle.on("dragstart", e => {
+				tile;
 				shadowRectangle.show();
 				shadowRectangle.moveToTop();
 				rectangle.moveToTop();
@@ -94,11 +95,18 @@ const FlatStage = {
 		const mousedownEnd = { x: -1, y: -1 };
 		let newDraw;
 		const startDraw = e => {
+			if (activeTileType() == null) return;
 			let pos = e.currentTarget.pointerPos;
 			mousedownStart.x = Math.trunc(pos.x / gridSize);
 			mousedownStart.y = Math.trunc(pos.y / gridSize);
 			// account for simple click
-			newDraw = [{ x: mousedownStart.x, y: mousedownStart.y }];
+			newDraw = [
+				{
+					x: mousedownStart.x,
+					y: mousedownStart.y,
+					tileType: activeTileType()
+				}
+			];
 			paint = true;
 
 			// draw the selection whenever the mouse is lifted up, even if outside the element
@@ -108,16 +116,16 @@ const FlatStage = {
 			paint = false;
 			(mousedownEnd.x = -1), (mousedownEnd.y = -1);
 			newDraw.forEach(tile => {
-				let coldtile = new konva.Rect({
+				let tileRect = new konva.Rect({
 					x: tile.x * gridSize,
 					y: tile.y * gridSize,
 					width: gridSize,
 					height: gridSize,
-					fill: "#58cafa",
+					fill: activeTileType().color,
 					stroke: "#ddd",
 					strokewidth: 1
 				});
-				tileLayer.add(coldtile);
+				tileLayer.add(tileRect);
 			});
 			stage.batchDraw();
 			tiles(tiles().concat(newDraw));
@@ -154,9 +162,10 @@ const FlatStage = {
 
 					newDraw.push({
 						x: Math.min(mousedownStart.x, mousedownEnd.x) + i,
-						y: Math.min(mousedownStart.y, mousedownEnd.y) + j
+						y: Math.min(mousedownStart.y, mousedownEnd.y) + j,
+						tileType: activeTileType()
 					});
-					let coldtile = new konva.Rect({
+					let tileRect = new konva.Rect({
 						x:
 							(Math.min(mousedownStart.x, mousedownEnd.x) + i) *
 							gridSize,
@@ -165,11 +174,11 @@ const FlatStage = {
 							gridSize,
 						width: gridSize,
 						height: gridSize,
-						fill: "#58cafa",
+						fill: activeTileType().color,
 						stroke: "#ddd",
 						strokewidth: 1
 					});
-					tileDrawLayer.add(coldtile);
+					tileDrawLayer.add(tileRect);
 				}
 			}
 			stage.batchDraw();
