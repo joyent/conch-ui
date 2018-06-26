@@ -4,28 +4,65 @@ import stream from "mithril/stream";
 const gridSize = 24;
 const Z_HEIGHT_MAX = gridSize * 3;
 
-const IsometricStage = {
-	view: ({ attrs: { gridSize, rows, columns, zHeightMax } }) => {
-		// 2:1 width-to-height
-		let width = gridSize * (rows + columns);
-		let height = width / 2 + gridSize * zHeightMax;
-		return m(`canvas[height=${height}][width=${width}]`, {});
+// layer for drawing the base grid and tiles
+const GridLayer = {
+	view: ({ attrs: { width, height } }) => {
+		return m(`canvas[height=${height}][width=${width}]`, {
+			style: "position: absolute;"
+		});
 	},
 	oncreate: ({
-		attrs: { obelisk, boxes, tiles, rows, columns, gridSize, zHeightMax },
+		attrs: { obelisk, tiles, rows, columns, basePoint, gridSize },
 		dom
 	}) => {
-		let point = new obelisk.Point(
-			gridSize * columns,
-			gridSize * zHeightMax
-		);
-		let pixelView = new obelisk.PixelView(dom, point);
+		let pixelView = new obelisk.PixelView(dom, basePoint);
 		let floorBrickDimension = new obelisk.BrickDimension(
 			gridSize,
 			gridSize
 		);
-		let colorBrick = new obelisk.LineColor(0xccccee);
-		let blankTile = new obelisk.Brick(floorBrickDimension, colorBrick);
+
+		let blankTileColor = new obelisk.LineColor(0xccccee);
+		let blankTile = new obelisk.Brick(floorBrickDimension, blankTileColor);
+
+		tiles.map(tiles => {
+			pixelView.clear();
+			for (let x = 0; x < rows; x++) {
+				for (let y = 0; y < columns; y++) {
+					let p3d = new obelisk.Point3D(
+						x * gridSize,
+						y * gridSize,
+						0
+					);
+					pixelView.renderObject(blankTile, p3d);
+				}
+			}
+
+			tiles.forEach(tile => {
+				var tileColor = new obelisk.SideColor().getByInnerColor(
+					Number.parseInt(tile.tileType.color.replace("#", "0x"))
+				);
+				let tileBrick = new obelisk.Brick(
+					floorBrickDimension,
+					tileColor
+				);
+				pixelView.renderObject(
+					tileBrick,
+					new obelisk.Point3D(tile.x * gridSize, tile.y * gridSize)
+				);
+			});
+		});
+	}
+};
+
+// layer for drawing the racks. Separate to avoid excessive re-draws
+const RacksLayer = {
+	view: ({ attrs: { width, height } }) => {
+		return m(`canvas[height=${height}][width=${width}]`, {
+			style: "position: absolute;"
+		});
+	},
+	oncreate: ({ attrs: { obelisk, boxes, gridSize, basePoint }, dom }) => {
+		let pixelView = new obelisk.PixelView(dom, basePoint);
 
 		let dimension = new obelisk.CubeDimension(
 			gridSize * 2,
@@ -38,46 +75,31 @@ const IsometricStage = {
 		let cube = new obelisk.Cube(dimension, color, true);
 
 		let boxesStream = stream.merge(boxes);
+		boxesStream.map(bs => {
+			pixelView.clear();
+			bs.forEach(box => {
+				pixelView.renderObject(
+					cube,
+					new obelisk.Point3D(box.x * gridSize, box.y * gridSize)
+				);
+			});
+		});
+	}
+};
 
-		stream.combine(
-			(bs, ts) => {
-				pixelView.clear();
-				for (let x = 0; x < rows; x++) {
-					for (let y = 0; y < columns; y++) {
-						let p3d = new obelisk.Point3D(
-							x * gridSize,
-							y * gridSize,
-							0
-						);
-						pixelView.renderObject(blankTile, p3d);
-					}
-				}
+const IsometricStage = {
+	view: ({ attrs }) => {
+		// set up common attributes for layers
+		// width-to-height ratio is 2:1
+		attrs.width = attrs.gridSize * (attrs.rows + attrs.columns);
+		attrs.height = attrs.width / 2 + attrs.gridSize * attrs.zHeightMax;
 
-				ts().forEach(tile => {
-					var tileColor = new obelisk.SideColor().getByInnerColor(
-						Number.parseInt(tile.tileType.color.replace("#", "0x"))
-					);
-					let tileBrick = new obelisk.Brick(
-						floorBrickDimension,
-						tileColor
-					);
-					pixelView.renderObject(
-						tileBrick,
-						new obelisk.Point3D(
-							tile.x * gridSize,
-							tile.y * gridSize
-						)
-					);
-				});
-				bs().forEach(box => {
-					pixelView.renderObject(
-						cube,
-						new obelisk.Point3D(box.x * gridSize, box.y * gridSize)
-					);
-				});
-			},
-			[boxesStream, tiles]
+		// set the base point for the layers ( where the grid starts)
+		attrs.basePoint = new attrs.obelisk.Point(
+			attrs.gridSize * attrs.columns,
+			attrs.gridSize * attrs.zHeightMax
 		);
+		return m(".container", m(GridLayer, attrs), m(RacksLayer, attrs));
 	}
 };
 
