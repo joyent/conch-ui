@@ -89,10 +89,43 @@ const FlatStage = {
 		let tileLayer = new konva.Layer();
 		let tileDrawLayer = new konva.Layer();
 
+		var tooltipLayer = new Konva.Layer();
+
+		var tooltip = new Konva.Label({
+			opacity: 0.75,
+			visible: false,
+			listening: false
+		});
+
+		tooltip.add(
+			new Konva.Tag({
+				fill: "black",
+				pointerDirection: "down",
+				pointerWidth: 10,
+				pointerHeight: 10,
+				lineJoin: "round",
+				shadowColor: "black",
+				shadowBlur: 10,
+				shadowOffset: 10,
+				shadowOpacity: 0.5
+			})
+		);
+
+		tooltip.add(
+			new Konva.Text({
+				text: "",
+				fontSize: 12,
+				padding: 4,
+				fill: "white"
+			})
+		);
+		tooltipLayer.add(tooltip);
+
 		let paint = false;
 		const mousedownStart = { x: 0, y: 0 };
 		const mousedownEnd = { x: -1, y: -1 };
 		let newDraw;
+
 		const startDraw = e => {
 			if (activeTileType() == null) return;
 			let pos = { x: e.evt.layerX, y: e.evt.layerY };
@@ -113,6 +146,7 @@ const FlatStage = {
 		};
 		const endDraw = () => {
 			paint = false;
+			tooltip.hide();
 			(mousedownEnd.x = -1), (mousedownEnd.y = -1);
 			newDraw.forEach(tile => {
 				let tileRect = new konva.Rect({
@@ -133,6 +167,12 @@ const FlatStage = {
 		const drawSelection = e => {
 			if (!paint) return;
 			let pos = { x: e.evt.layerX, y: e.evt.layerY };
+			tooltip.show();
+			tooltip.setPosition({
+				x: Math.max(pos.x, tooltip.width() / 2),
+				y: Math.max(pos.y, tooltip.height() + 10)
+			});
+			tooltipLayer.batchDraw();
 
 			// skip if the last drawn position is in the same grid
 			if (
@@ -145,6 +185,7 @@ const FlatStage = {
 
 			let deltaX = Math.abs(mousedownStart.x - mousedownEnd.x);
 			let deltaY = Math.abs(mousedownStart.y - mousedownEnd.y);
+			tooltip.getText().setText(`${deltaX + 1} x ${deltaY + 1}`);
 
 			tileDrawLayer.destroyChildren();
 			newDraw = [];
@@ -208,6 +249,7 @@ const FlatStage = {
 		stage.add(tileDrawLayer);
 		stage.add(gridLayer);
 		stage.add(rackLayer);
+		stage.add(tooltipLayer);
 	}
 };
 
