@@ -3,6 +3,7 @@ import stream from "mithril/stream";
 
 import { Spinner } from "../component";
 import IsometricStage from "./IsometricStage";
+import Controls from "./Controls";
 import FlatStage from "./FlatStage";
 
 export default () => {
@@ -20,6 +21,8 @@ export default () => {
 
 	const tiles = stream([]);
 
+	const activeTileType = stream();
+
 	return {
 		oninit: () => {
 			// load required libraries asyncronously. Also allows for splitting
@@ -33,35 +36,45 @@ export default () => {
 		view: () => {
 			return !libsLoaded
 				? m(Spinner)
-				: m(
-						".columns",
+				: [
+						m(Controls, {
+							tileTypes: [
+								{ name: "Cold Tile", type: "cold" },
+								{ name: "Hot Tile", type: "hot" }
+							],
+							activeTileType
+						}),
 						m(
-							".column.is-5",
+							".columns",
 							m(
-								".box",
-								m(FlatStage, {
-									konva,
+								".column.is-5",
+								m(
+									".box",
+									m(FlatStage, {
+										konva,
+										boxes,
+										tiles,
+										gridSize: 32,
+										rows,
+										columns,
+										activeTileType
+									})
+								)
+							),
+							m(
+								".column.is-6",
+								m(IsometricStage, {
+									obelisk,
 									boxes,
 									tiles,
-									gridSize: 32,
+									gridSize: 24,
+									zHeightMax: 9,
 									rows,
 									columns
 								})
 							)
-						),
-						m(
-							".column.is-6",
-							m(IsometricStage, {
-								obelisk,
-								boxes,
-								tiles,
-								gridSize: 24,
-								zHeightMax: 9,
-								rows,
-								columns
-							})
 						)
-				  );
+				  ];
 		}
 	};
 };
