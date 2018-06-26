@@ -46,7 +46,6 @@ const FlatStage = {
 				}
 			});
 			rectangle.on("dragstart", e => {
-				tile;
 				shadowRectangle.show();
 				shadowRectangle.moveToTop();
 				rectangle.moveToTop();
@@ -137,15 +136,10 @@ const FlatStage = {
 
 			// skip if the last drawn position is in the same grid
 			if (
-				Math.abs(
-					mousedownEnd.x * gridSize - Math.trunc(pos.x / gridSize)
-				) < gridSize &&
-				Math.abs(
-					mousedownEnd.y * gridSize - Math.trunc(pos.y / gridSize)
-				) < gridSize
+				mousedownEnd.x - Math.trunc(pos.x / gridSize) === 0 &&
+				mousedownEnd.y - Math.trunc(pos.y / gridSize) === 0
 			)
 				return;
-
 			mousedownEnd.x = Math.trunc(pos.x / gridSize);
 			mousedownEnd.y = Math.trunc(pos.y / gridSize);
 
