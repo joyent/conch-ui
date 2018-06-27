@@ -12,6 +12,41 @@ decisions related to the Conch UI. It should be updated whenever new decisions
 are implemented. In addition, learning resources and examples should be
 provided to help developers new to the project get up to speed.
 
+---
+
+* [Project Goals](#project-goals)
+* [Dependency and Library Decisions](#dependency-and-library-decisions)
+	* [Mithril](#mithril)
+		+ [Resources for learning Mithril:](#resources-for-learning-mithril)
+		+ [Component design](#component-design)
+			* [Styling and interaction](#styling-and-interaction)
+			* [State and event management](#state-and-event-management)
+		+ [Stream concepts](#stream-concepts)
+		+ [Streams and Mithril](#streams-and-mithril)
+
+
+
+Project Goals
+-------------
+
+The primary goal of this project is to increase adoption and use of Conch.
+Conch could provide a platform for managing and validating datacenter resources
+without a user interface. We have [an excellent CLI tool for working with
+Conch](https://github.com/joyent/conch-shell) that can largely do everything
+the UI can and more. However, a well-designed visual tool is convincing and
+inviting to most humans. We need to build a great platform and we need to get
+people to use it. These goals are related but separate, and people must
+willfully adopt Conch to be successful.
+
+Our goals for the Conch UI are:
+
+1. Giving the user the information they want as quickly and with as few clicks as
+   possible. Optimize for straightforward, quick information retrieval.
+2. Visual "prettiness" is not everything, but a little goes a long way to
+   attract and delight people. Make it well-designed and use visual elements
+   effectively.
+3. Working well and with consistency. A broken tool is worse than no tool at all.
+
 Dependency and Library Decisions
 --------------------
 
