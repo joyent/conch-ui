@@ -283,25 +283,25 @@ export default () => {
 						{}
 					);
 				});
+			});
 
-				m.route.param("deviceId") &&
-					activeDeviceId(m.route.param("deviceId"));
-				activeDeviceId.map(deviceId => {
-					const route = m.route.get();
-					const routePrefix = route.substring(
-						0,
-						route.indexOf("/status")
+			m.route.param("deviceId") &&
+				activeDeviceId(m.route.param("deviceId"));
+			activeDeviceId.map(deviceId => {
+				const route = m.route.get();
+				const routePrefix = route.substring(
+					0,
+					route.indexOf("/status")
+				);
+
+				let [_, queryS] = route.split("?");
+				queryS ? (queryS = `?${queryS}`) : (queryS = "");
+
+				if (deviceId)
+					m.route.set(
+						`${routePrefix}/status/device/${deviceId}${queryS}`
 					);
-
-					let [_, queryS] = route.split("?");
-					queryS ? (queryS = `?${queryS}`) : (queryS = "");
-
-					if (deviceId)
-						m.route.set(
-							`${routePrefix}/status/device/${deviceId}${queryS}`
-						);
-					else m.route.set(`${routePrefix}/status`);
-				});
+				else m.route.set(`${routePrefix}/status`);
 			});
 		},
 		view({ attrs: { currentWorkspace } }) {
