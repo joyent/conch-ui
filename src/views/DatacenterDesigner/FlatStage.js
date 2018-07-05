@@ -1,5 +1,7 @@
 import m from "mithril";
 
+import { Tile, Tiles, TileType } from "./Tiles";
+
 const FlatStage = {
 	view: () => m("div.container"),
 	oncreate: ({
@@ -12,7 +14,7 @@ const FlatStage = {
 			width: rows * gridSize
 		});
 
-		// build tooltip layer
+		// set up tooltip layer
 		var tooltipLayer = new Konva.Layer();
 		var tooltip = new Konva.Label({
 			opacity: 0.75,
@@ -42,7 +44,7 @@ const FlatStage = {
 		);
 		tooltipLayer.add(tooltip);
 
-		// layer to draw a blank grid
+		// blank grid layer
 		const gridLayer = new konva.Layer();
 
 		for (let i = 0; i <= stage.getWidth() / gridSize; i++) {
@@ -75,14 +77,13 @@ const FlatStage = {
 			let pos = { x: e.evt.layerX, y: e.evt.layerY };
 			mousedownStart.x = Math.trunc(pos.x / gridSize);
 			mousedownStart.y = Math.trunc(pos.y / gridSize);
-			// account for simple click
-			newDraw = [
-				{
-					x: mousedownStart.x,
-					y: mousedownStart.y,
-					tileType: activeTileType()
-				}
-			];
+			// account for single click
+			newDraw = new Tiles(rows, columns);
+			newDraw.setTile(
+				mousedownStart.x,
+				mousedownStart.y,
+				new Tile(activeTileType())
+			);
 			paint = true;
 
 			// draw the selection whenever the mouse is lifted up, even if outside the element
@@ -94,10 +95,11 @@ const FlatStage = {
 			paint = false;
 			tooltip.hide();
 			(mousedownEnd.x = -1), (mousedownEnd.y = -1);
-			newDraw.forEach(tile => {
+			newDraw.forEach(({ x, y, tile }) => {
+				if (tile.type === TileType.EMPTY) return;
 				let tileRect = new konva.Rect({
-					x: tile.x * gridSize,
-					y: tile.y * gridSize,
+					x: x * gridSize,
+					y: y * gridSize,
 					width: gridSize,
 					height: gridSize,
 					fill: activeTileType().color,
@@ -107,7 +109,7 @@ const FlatStage = {
 				tileLayer.add(tileRect);
 			});
 			stage.batchDraw();
-			tiles(tiles().concat(newDraw));
+			tiles(tiles().merge(newDraw));
 		};
 
 		// event function when dragging the mouse across tiles
@@ -135,18 +137,18 @@ const FlatStage = {
 			tooltip.getText().setText(`${deltaX + 1} x ${deltaY + 1}`);
 
 			tileDrawLayer.destroyChildren();
-			newDraw = [];
+			newDraw = new Tiles(rows, columns);
 			for (let i = 0; i <= deltaX; i++) {
 				for (let j = 0; j <= deltaY; j++) {
 					let x = Math.min(mousedownStart.x, mousedownEnd.x) + i;
 					let y = Math.min(mousedownStart.y, mousedownEnd.y) + j;
 					if (x >= rows || x < 0 || y >= columns || y < 0) continue;
 
-					newDraw.push({
-						x: Math.min(mousedownStart.x, mousedownEnd.x) + i,
-						y: Math.min(mousedownStart.y, mousedownEnd.y) + j,
-						tileType: activeTileType()
-					});
+					newDraw.setTile(
+						Math.min(mousedownStart.x, mousedownEnd.x) + i,
+						Math.min(mousedownStart.y, mousedownEnd.y) + j,
+						new Tile(activeTileType())
+					);
 					let tileRect = new konva.Rect({
 						x:
 							(Math.min(mousedownStart.x, mousedownEnd.x) + i) *

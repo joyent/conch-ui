@@ -6,6 +6,8 @@ import IsometricStage from "./IsometricStage";
 import Controls from "./Controls";
 import FlatStage from "./FlatStage";
 
+import { Tiles } from "./Tiles";
+
 export default () => {
 	const rows = 16;
 	const columns = 16;
@@ -19,7 +21,7 @@ export default () => {
 		stream({ id: 2, x: 10, y: 3 })
 	];
 
-	const tiles = stream([]);
+	const tiles = stream(new Tiles(rows, columns));
 
 	const activeTileType = stream();
 
@@ -38,20 +40,7 @@ export default () => {
 				? m(Spinner)
 				: [
 						m(Controls, {
-							tileTypes: [
-								{
-									name: "Cold Tile",
-									color: "#58cafa"
-								},
-								{
-									name: "Hot Tile",
-									color: "#FF0099"
-								},
-								{
-									name: "Powered Tile",
-									color: "#FFFF00"
-								}
-							],
+							tileTypes: [],
 							activeTileType
 						}),
 						m(

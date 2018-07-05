@@ -1,4 +1,5 @@
 import m from "mithril";
+import { TileType } from "./Tiles";
 
 const Controls = () => {
 	let active = false;
@@ -36,7 +37,7 @@ const Controls = () => {
 							".dropdown-menu",
 							m(
 								".dropdown-content",
-								tileTypes.map(t =>
+								Object.values(TileType).map(t =>
 									m(
 										"a.dropdown-item",
 										{

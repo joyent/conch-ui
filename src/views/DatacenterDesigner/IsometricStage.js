@@ -4,6 +4,8 @@ import stream from "mithril/stream";
 const gridSize = 24;
 const Z_HEIGHT_MAX = gridSize * 3;
 
+import { TileType } from "./Tiles";
+
 // layer for drawing the base grid and tiles
 const GridLayer = {
 	view: ({ attrs: { width, height } }) => {
@@ -24,7 +26,7 @@ const GridLayer = {
 		let blankTileColor = new obelisk.LineColor(0xccccee);
 		let blankTile = new obelisk.Brick(floorBrickDimension, blankTileColor);
 
-		tiles.map(tiles => {
+		tiles.map(ts => {
 			pixelView.clear();
 			for (let x = 0; x < rows; x++) {
 				for (let y = 0; y < columns; y++) {
@@ -37,9 +39,10 @@ const GridLayer = {
 				}
 			}
 
-			tiles.forEach(tile => {
+			ts.forEach(({ x, y, tile }) => {
+				if (tile.type === TileType.EMPTY) return;
 				var tileColor = new obelisk.SideColor().getByInnerColor(
-					Number.parseInt(tile.tileType.color.replace("#", "0x"))
+					Number.parseInt(tile.type.color.replace("#", "0x"))
 				);
 				let tileBrick = new obelisk.Brick(
 					floorBrickDimension,
@@ -47,7 +50,7 @@ const GridLayer = {
 				);
 				pixelView.renderObject(
 					tileBrick,
-					new obelisk.Point3D(tile.x * gridSize, tile.y * gridSize)
+					new obelisk.Point3D(x * gridSize, y * gridSize)
 				);
 			});
 		});
