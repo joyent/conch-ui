@@ -184,6 +184,9 @@ const FlatStage = {
 		tileLayer.on("mousemove", drawSelection);
 		tileLayer.on("mouseleave", drawSelection);
 
+		// lets the drag go back on itself
+		tileDrawLayer.on("mousemove", drawSelection);
+
 		// add rack layer, which includes build drag-and-dropable rectangles
 		// for racks
 		const rackLayer = new konva.Layer();
