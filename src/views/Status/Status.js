@@ -1,5 +1,4 @@
 import m from "mithril";
-import t from "i18n4v";
 import R from "ramda";
 
 import Auth from "../../models/Auth";
@@ -31,7 +30,7 @@ function deviceList(title, isProblem, devices) {
 						)
 					)
 			  )
-			: m("i", t("No devices"))
+			: m("i", "No devices")
 	);
 }
 
@@ -70,10 +69,7 @@ export default {
 		const deviceHealthGroups = R.groupBy(R.prop("health"), Device.devices);
 		return [
 			m("h1.text-center", "Status"),
-			m(
-				".pure-u-1",
-				m("h3.text-center", t("Datacenter Rack Build Status"))
-			),
+			m(".pure-u-1", m("h3.text-center", "Datacenter Rack Build Status")),
 			R.isEmpty(Rack.rackRooms)
 				? null
 				: m(
@@ -97,57 +93,52 @@ export default {
 								},
 								"Group by " +
 									{
-										role: t("Status"),
-										status: t("Rack Role")
+										role: "Status",
+										status: "Rack Role"
 									}[state.group || "status"]
 							)
 						)
 				  ),
 			Table(
-				t("Summary of Device Status"),
-				[
-					"",
-					t("Active Devices"),
-					t("Inactive Devices"),
-					t("Total Devices")
-				],
+				"Summary of Device Status",
+				["", "Active Devices", "Inactive Devices", "Total Devices"],
 				[
 					[
-						t("Unknown"),
+						"Unknown",
 						activeHealthCounts.UNKNOWN || 0,
 						inactiveHealthCounts.UNKNOWN || 0,
 						totalHealthCounts.UNKNOWN || 0
 					],
 
 					[
-						t("Failing"),
+						"Failing",
 						activeHealthCounts.FAIL || 0,
 						inactiveHealthCounts.FAIL || 0,
 						totalHealthCounts.FAIL || 0
 					],
 
 					[
-						t("Passing"),
+						"Passing",
 						activeHealthCounts.PASS || 0,
 						inactiveHealthCounts.PASS || 0,
 						totalHealthCounts.PASS || 0
 					],
 
 					[
-						t("Validated"),
+						"Validated",
 						activeHealthCounts.VALIDATED || 0,
 						inactiveHealthCounts.VALIDATED || 0,
 						totalHealthCounts.VALIDATED || 0
 					],
 
 					[
-						t("Graduated"),
+						"Graduated",
 						activeHealthCounts.GRADUATED || 0,
 						inactiveHealthCounts.GRADUATED || 0,
 						totalHealthCounts.GRADUATED || 0
 					],
 					[
-						m("b", t("Sum")),
+						m("b", "Sum"),
 						activeDevices.length,
 						inactiveDevices.length,
 						activeDevices.length + inactiveDevices.length
@@ -155,8 +146,8 @@ export default {
 				]
 			),
 			Table(
-				t("Active Relays"),
-				[t("Name"), t("Devices Connected"), t("Actions")],
+				"Active Relays",
+				["Name", "Devices Connected", "Actions"],
 				Relay.activeList.map(({ alias, id, devices, location }) => {
 					return [
 						alias || id,
@@ -167,7 +158,7 @@ export default {
 								{
 									href: `/relay/${id}`,
 									oncreate: m.route.link,
-									title: t("Show Relay Details")
+									title: "Show Relay Details"
 								},
 								Icons.showRelay
 							),
@@ -177,7 +168,7 @@ export default {
 										{
 											href: `/rack/${location.rack_id}`,
 											oncreate: m.route.link,
-											title: t("Show Connected Rack")
+											title: "Show Connected Rack"
 										},
 										Icons.showRack
 								  )

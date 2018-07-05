@@ -1,6 +1,5 @@
 import m from "mithril";
 import stream from "mithril/stream";
-import t from "i18n4v";
 import moment from "moment";
 
 import { conchApi } from "../config";
@@ -13,19 +12,6 @@ import DevicesView from "./views/Devices";
 import Status from "./views/Status";
 
 import Main from "./layouts/Main";
-
-import korean from "./languages/ko.js";
-import english from "./languages/en.js";
-const languages = {
-	en: english,
-	ko: korean,
-	"ko-KR": korean
-};
-
-t.selectLanguage(["en", "ko", "ko-KR"], (err, lang) => {
-	moment.locale(lang ? lang.slice(0, 2) : "en");
-	t.translator.add(languages[lang] ? languages[lang] : languages.en);
-});
 
 const state = {};
 

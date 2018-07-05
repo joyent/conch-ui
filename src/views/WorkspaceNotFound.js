@@ -1,7 +1,6 @@
 import m from "mithril";
 
 import { conchApi } from "config";
-import t from "i18n4v";
 
 // Not a normal closure component. Creates a closure with urlWorkspaceId
 export default urlWorkspaceId => {

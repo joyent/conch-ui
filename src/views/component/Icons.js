@@ -1,5 +1,4 @@
 import m from "mithril";
-import t from "i18n4v";
 import Tooltip from "tooltip.js";
 
 function addToolTip(title, placement = "right") {
@@ -15,7 +14,7 @@ export default {
 				"i.material-icons",
 				{
 					oncreate: addToolTip(
-						t("Device has completed validation. Good to ship.")
+						"Device has completed validation. Good to ship."
 					)
 				},
 				"check_circle"
@@ -28,7 +27,7 @@ export default {
 			return m(
 				"i.material-icons",
 				{
-					oncreate: addToolTip(t("Device passes validation"))
+					oncreate: addToolTip("Device passes validation")
 				},
 				"check"
 			);
@@ -40,7 +39,7 @@ export default {
 			return m(
 				"i.material-icons",
 				{
-					oncreate: addToolTip(t("Device fails validation"))
+					oncreate: addToolTip("Device fails validation")
 				},
 				"error_outline"
 			);
@@ -52,7 +51,7 @@ export default {
 			return m(
 				"i.material-icons",
 				{
-					oncreate: addToolTip(t("Device reporting to Conch"))
+					oncreate: addToolTip("Device reporting to Conch")
 				},
 				"cloud_upload"
 			);
@@ -64,7 +63,7 @@ export default {
 			return m(
 				"i.material-icons",
 				{
-					oncreate: addToolTip(t("No reports collected from device"))
+					oncreate: addToolTip("No reports collected from device")
 				},
 				"help_outline"
 			);

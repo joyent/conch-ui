@@ -1,16 +1,14 @@
 import m from "mithril";
-import t from "i18n4v";
-import {select, selectAll} from "d3-selection";
+import { select, selectAll } from "d3-selection";
 import RelationshipGraph from "d3-relationshipgraph";
 
 function nodeParent({ device_progress }) {
 	// If there's any failing devices, the whole rack is Failing
-	if (device_progress.FAIL) return t("Failing");
+	if (device_progress.FAIL) return "Failing";
 
 	// If there's no passing and no validated devices (or no devices at all),
 	// then the rack hasn't started validation
-	if (!device_progress.PASS && !device_progress.VALID)
-		return t("Not Started");
+	if (!device_progress.PASS && !device_progress.VALID) return "Not Started";
 
 	// If the only devices are validated, then the rack has finished validation
 	if (
@@ -18,10 +16,10 @@ function nodeParent({ device_progress }) {
 		!device_progress.PASS &&
 		!device_progress.UNKNOWN
 	)
-		return t("Validated");
+		return "Validated";
 
 	// There's a mixture of passing and unknown devices
-	return t("In Progress");
+	return "In Progress";
 }
 
 // Calculate a numerical value between [-1..100] based on the status of devices
@@ -46,10 +44,10 @@ function nodeValue({ device_progress }) {
 
 // Sort order for the node groups in the graph.
 const statusSortOrder = {};
-statusSortOrder[t("Validated")] = 1;
-statusSortOrder[t("Failing")] = 2;
-statusSortOrder[t("In Progress")] = 3;
-statusSortOrder[t("Not Started")] = 4;
+statusSortOrder["Validated"] = 1;
+statusSortOrder["Failing"] = 2;
+statusSortOrder["In Progress"] = 3;
+statusSortOrder["Not Started"] = 4;
 
 const roleSortOrder = {};
 roleSortOrder["TRITON"] = 1;
