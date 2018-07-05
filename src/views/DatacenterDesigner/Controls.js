@@ -4,7 +4,7 @@ import { TileType } from "./Tiles";
 const Controls = () => {
 	let active = false;
 	return {
-		view: ({ attrs: { tileTypes, activeTileType } }) => {
+		view: ({ attrs: { activeTileType, targetTBs, maxAmps } }) => {
 			return m(
 				".level.box",
 				m(
@@ -18,7 +18,8 @@ const Controls = () => {
 						m(
 							"p.control",
 							m(
-								"input.input[type=number][placeholder=Target Capcity]"
+								"input.input[type=number][placeholder=Target Storage]",
+								{ oninput: m.withAttr("value", targetTBs) }
 							)
 						),
 						m("p.control", m("a.button.is-static", "Terabytes"))
@@ -28,7 +29,8 @@ const Controls = () => {
 						m(
 							"p.control",
 							m(
-								"input.input[type=number][placeholder=Total Current]"
+								"input.input[type=number][placeholder=Total Current]",
+								{ oninput: m.withAttr("value", maxAmps) }
 							)
 						),
 						m("p.control", m("a.button.is-static", "Amps"))

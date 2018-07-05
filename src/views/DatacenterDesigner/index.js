@@ -4,6 +4,7 @@ import stream from "mithril/stream";
 import { Spinner } from "../component";
 import IsometricStage from "./IsometricStage";
 import Controls from "./Controls";
+import Progress from "./Progress";
 import FlatStage from "./FlatStage";
 
 import { Tiles } from "./Tiles";
@@ -22,6 +23,8 @@ export default () => {
 	];
 
 	const tiles = stream(new Tiles(rows, columns));
+	const maxAmps = stream();
+	const targetTBs = stream();
 
 	const activeTileType = stream();
 
@@ -42,9 +45,24 @@ export default () => {
 					? m(Spinner)
 					: [
 							m(Controls, {
-								tileTypes: [],
-								activeTileType
+								activeTileType,
+								targetTBs,
+								maxAmps
 							}),
+							m(
+								".tile.is-ancestor.has-text-centered",
+								m(
+									".tile.is-parent.is-vertical",
+									m(
+										".tile.is-child",
+										m(Progress, {
+											boxes,
+											targetTBs,
+											maxAmps
+										})
+									)
+								)
+							),
 
 							m(
 								".tile.is-ancestor.has-text-centered",
