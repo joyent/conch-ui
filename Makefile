@@ -13,6 +13,10 @@ start: ## Start a development web server that watches and hot-reloads code
 analyze: ## Analyze production web asset bundle sizes to find bloat
 	@yarn analyze
 
+.PHONY: format
+format: ## Format Javascript source files with prettier
+	@yarn prettier
+
 node_modules: yarn.lock
 	@yarn install
 	@touch node_modules
