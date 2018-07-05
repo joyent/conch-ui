@@ -175,9 +175,14 @@ const FlatStage = {
 			}
 			stage.batchDraw();
 		};
-		stage.on("mousedown", startDraw);
-		stage.on("mousemove", drawSelection);
-		stage.on("mouseleave", drawSelection);
+
+		// events are on both the empty grid layer and the drawn tile layer
+		gridLayer.on("mousedown", startDraw);
+		gridLayer.on("mousemove", drawSelection);
+		gridLayer.on("mouseleave", drawSelection);
+		tileLayer.on("mousedown", startDraw);
+		tileLayer.on("mousemove", drawSelection);
+		tileLayer.on("mouseleave", drawSelection);
 
 		// add rack layer, which includes build drag-and-dropable rectangles
 		// for racks
