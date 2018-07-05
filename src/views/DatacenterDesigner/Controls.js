@@ -6,11 +6,38 @@ const Controls = () => {
 	return {
 		view: ({ attrs: { tileTypes, activeTileType } }) => {
 			return m(
-				".level",
+				".level.box",
 				m(
 					".level-left",
 					m(
-						".dropdown",
+						".level-item",
+						m("input.input[type=text][placeholder=Datacenter Name]")
+					),
+					m(
+						".level-item",
+						m(
+							"p.control",
+							m(
+								"input.input[type=number][placeholder=Target Capcity]"
+							)
+						),
+						m("p.control", m("a.button.is-static", "Terabytes"))
+					),
+					m(
+						".level-item",
+						m(
+							"p.control",
+							m(
+								"input.input[type=number][placeholder=Total Current]"
+							)
+						),
+						m("p.control", m("a.button.is-static", "Amps"))
+					)
+				),
+				m(
+					".level-right",
+					m(
+						".dropdown.is-right",
 						{ class: active && "is-active" },
 						m(
 							".dropdown-trigger",

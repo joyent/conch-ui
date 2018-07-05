@@ -41,24 +41,23 @@ export default () => {
 				!libsLoaded
 					? m(Spinner)
 					: [
+							m(Controls, {
+								tileTypes: [],
+								activeTileType
+							}),
+
 							m(
 								".tile.is-ancestor.has-text-centered",
 								m(
 									".tile.is-parent.is-vertical",
-									m(
-										".tile.is-child",
-										m(Controls, {
-											tileTypes: [],
-											activeTileType
-										})
-									),
+									m(".tile.is-child"),
 									m(
 										".tile.is-child",
 										m(IsometricStage, {
 											obelisk,
 											boxes,
 											tiles,
-											gridSize: 10,
+											gridSize: 16,
 											zHeightMax: 9,
 											rows,
 											columns
