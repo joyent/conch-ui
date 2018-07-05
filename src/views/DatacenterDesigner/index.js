@@ -36,44 +36,53 @@ export default () => {
 			});
 		},
 		view: () => {
-			return !libsLoaded
-				? m(Spinner)
-				: [
-						m(Controls, {
-							tileTypes: [],
-							activeTileType
-						}),
-						m(
-							".columns",
+			return m(
+				"section",
+				!libsLoaded
+					? m(Spinner)
+					: [
 							m(
-								".column.is-5",
+								".tile.is-ancestor.has-text-centered",
 								m(
-									".box",
-									m(FlatStage, {
-										konva,
-										boxes,
-										tiles,
-										gridSize: 32,
-										rows,
-										columns,
-										activeTileType
-									})
+									".tile.is-parent.is-vertical",
+									m(
+										".tile.is-child",
+										m(Controls, {
+											tileTypes: [],
+											activeTileType
+										})
+									),
+									m(
+										".tile.is-child",
+										m(IsometricStage, {
+											obelisk,
+											boxes,
+											tiles,
+											gridSize: 10,
+											zHeightMax: 9,
+											rows,
+											columns
+										})
+									)
+								),
+								m(
+									".tile.is-parent",
+									m(
+										".tile.is-child.box",
+										m(FlatStage, {
+											konva,
+											boxes,
+											tiles,
+											gridSize: 32,
+											rows,
+											columns,
+											activeTileType
+										})
+									)
 								)
-							),
-							m(
-								".column.is-6",
-								m(IsometricStage, {
-									obelisk,
-									boxes,
-									tiles,
-									gridSize: 24,
-									zHeightMax: 9,
-									rows,
-									columns
-								})
 							)
-						)
-				  ];
+					  ]
+			);
 		}
 	};
 };

@@ -10,7 +10,7 @@ import { TileType } from "./Tiles";
 const GridLayer = {
 	view: ({ attrs: { width, height } }) => {
 		return m(`canvas[height=${height}][width=${width}]`, {
-			style: "position: absolute;"
+			style: "position: absolute; top:0; left:0"
 		});
 	},
 	oncreate: ({
@@ -61,7 +61,7 @@ const GridLayer = {
 const RacksLayer = {
 	view: ({ attrs: { width, height } }) => {
 		return m(`canvas[height=${height}][width=${width}]`, {
-			style: "position: absolute;"
+			style: "position: absolute; top:0; left:0"
 		});
 	},
 	oncreate: ({ attrs: { obelisk, boxes, gridSize, basePoint }, dom }) => {
@@ -102,7 +102,16 @@ const IsometricStage = {
 			attrs.gridSize * attrs.columns,
 			attrs.gridSize * attrs.zHeightMax
 		);
-		return m(".container", m(GridLayer, attrs), m(RacksLayer, attrs));
+		return m(
+			"div",
+			{
+				style: `position: relative;
+					height: ${attrs.height}px;
+					width: ${attrs.width}px;`
+			},
+			m(GridLayer, attrs),
+			m(RacksLayer, attrs)
+		);
 	}
 };
 

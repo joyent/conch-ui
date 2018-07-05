@@ -3,7 +3,7 @@ import m from "mithril";
 import { Tile, Tiles, TileType } from "./Tiles";
 
 const FlatStage = {
-	view: () => m("div.container"),
+	view: () => m("div", { style: "display: inline-block" }),
 	oncreate: ({
 		attrs: { konva, boxes, tiles, gridSize, rows, columns, activeTileType },
 		dom
