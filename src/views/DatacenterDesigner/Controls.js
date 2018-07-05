@@ -37,31 +37,22 @@ const Controls = () => {
 							".dropdown-menu",
 							m(
 								".dropdown-content",
-								Object.values(TileType).map(t =>
-									m(
-										"a.dropdown-item",
-										{
-											onclick: () => {
-												activeTileType(t);
-												active = false;
-											}
-										},
-										t.name
-									)
-								),
-								m("hr.dropdown-divider"),
-								m(
-									"a.dropdown-item",
-									{
-										onclick: () => {
-											activeTileType({
-												name: "Erase"
-											});
-											active = false;
-										}
-									},
-									"Erase"
-								)
+								Object.values(TileType).reduce((acc, t) => {
+									if (t.name)
+										acc.push(
+											m(
+												"a.dropdown-item",
+												{
+													onclick: () => {
+														activeTileType(t);
+														active = false;
+													}
+												},
+												t.name
+											)
+										);
+									return acc;
+								}, [])
 							)
 						)
 					)

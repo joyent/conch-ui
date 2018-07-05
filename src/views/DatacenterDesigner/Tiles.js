@@ -12,7 +12,11 @@ const TileType = {
 		name: "Powered Tile",
 		color: "#FFFF00"
 	},
-	EMPTY: { name: "Erase" }
+	ERASE: {
+		name: "Erase",
+		color: "#2F3E4E"
+	},
+	EMPTY: {}
 };
 
 Object.freeze(TileType);
@@ -53,6 +57,8 @@ class Tiles {
 			for (let j = 0; j < this.columns; j++) {
 				let tile = tiles.getTile(i, j);
 				if (tile.type === TileType.EMPTY) tile = this.getTile(i, j);
+				if (tile.type === TileType.ERASE)
+					tile = new Tile(TileType.EMPTY);
 				mergeTiles[i][j] = tile;
 			}
 		}

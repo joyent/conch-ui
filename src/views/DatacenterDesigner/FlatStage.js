@@ -91,25 +91,33 @@ const FlatStage = {
 		};
 
 		// event function when drawing tiles ends
-		const endDraw = () => {
-			paint = false;
-			tooltip.hide();
-			(mousedownEnd.x = -1), (mousedownEnd.y = -1);
-			newDraw.forEach(({ x, y, tile }) => {
-				if (tile.type === TileType.EMPTY) return;
+		tiles.map(ts => {
+			tileLayer.destroyChildren();
+			ts.forEach(({ x, y, tile }) => {
+				if (
+					tile.type === TileType.EMPTY ||
+					tile.type === TileType.ERASE
+				)
+					return;
 				let tileRect = new konva.Rect({
 					x: x * gridSize,
 					y: y * gridSize,
 					width: gridSize,
 					height: gridSize,
-					fill: activeTileType().color,
+					fill: tile.type.color,
 					stroke: "#ddd",
 					strokewidth: 1
 				});
 				tileLayer.add(tileRect);
 			});
-			stage.batchDraw();
+		});
+		const endDraw = () => {
+			paint = false;
+			tooltip.hide();
+			(mousedownEnd.x = -1), (mousedownEnd.y = -1);
+			tileDrawLayer.destroyChildren();
 			tiles(tiles().merge(newDraw));
+			stage.batchDraw();
 		};
 
 		// event function when dragging the mouse across tiles
@@ -167,9 +175,9 @@ const FlatStage = {
 			}
 			stage.batchDraw();
 		};
-		gridLayer.on("mousedown", startDraw);
-		gridLayer.on("mousemove", drawSelection);
-		gridLayer.on("mouseleave", drawSelection);
+		stage.on("mousedown", startDraw);
+		stage.on("mousemove", drawSelection);
+		stage.on("mouseleave", drawSelection);
 
 		// add rack layer, which includes build drag-and-dropable rectangles
 		// for racks
