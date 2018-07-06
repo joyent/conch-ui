@@ -1,11 +1,21 @@
 import m from "mithril";
+import stream from "mithril/stream";
 
 import { Tile, Tiles, TileType } from "./Tiles";
 
 const FlatStage = {
 	view: () => m("div", { style: "display: inline-block" }),
 	oncreate: ({
-		attrs: { konva, boxes, tiles, gridSize, rows, columns, activeTileType },
+		attrs: {
+			konva,
+			racks,
+			tiles,
+			gridSize,
+			rows,
+			columns,
+			activeTileType,
+			activeRackType
+		},
 		dom
 	}) => {
 		const stage = new konva.Stage({
@@ -203,10 +213,10 @@ const FlatStage = {
 			strokeWidth: 3
 		});
 
-		function newRectangle(boxStream, layer, stage) {
+		function newRectangle(r, layer, stage) {
 			let rectangle = new konva.Rect({
-				x: gridSize * boxStream().x,
-				y: gridSize * boxStream().y,
+				x: gridSize * r().x,
+				y: gridSize * r().y,
 				height: gridSize * 3,
 				width: gridSize * 2,
 				fill: "#666",
@@ -231,16 +241,16 @@ const FlatStage = {
 					return pos;
 				}
 			});
-			rectangle.on("mousedown", e => {
+			rectangle.on("mouseover", e => {
 				tooltip.show();
-				tooltip.getText().setText("45 U Rack");
+				tooltip.getText().setText(r().type.name);
 				tooltip.setPosition({
 					x: rectangle.x() + rectangle.width() / 2,
 					y: rectangle.y()
 				});
 				tooltipLayer.batchDraw();
 			});
-			rectangle.on("mouseup", e => {
+			rectangle.on("mouseout", e => {
 				tooltip.hide();
 				tooltipLayer.batchDraw();
 			});
@@ -250,8 +260,7 @@ const FlatStage = {
 				rectangle.moveToTop();
 			});
 			rectangle.on("dragend", e => {
-				boxStream({
-					id: boxStream().id,
+				r({
 					x: Math.round(rectangle.x() / gridSize),
 					y: Math.round(rectangle.y() / gridSize)
 				});
@@ -267,8 +276,7 @@ const FlatStage = {
 					x: rectangle.x() + rectangle.width() / 2,
 					y: rectangle.y()
 				});
-				boxStream({
-					id: boxStream().id,
+				r({
 					x: Math.round(rectangle.x() / gridSize),
 					y: Math.round(rectangle.y() / gridSize)
 				});
@@ -283,9 +291,47 @@ const FlatStage = {
 		shadowRectangle.hide();
 		rackLayer.add(shadowRectangle);
 
+		activeRackType.map(r => {
+			if (r == null) {
+				shadowRectangle.hide();
+				rackLayer.batchDraw();
+			}
+		});
+
+		stage.on("mousemove", e => {
+			if (activeRackType() == null) return;
+
+			let pos = { x: e.evt.layerX, y: e.evt.layerY };
+			shadowRectangle.position({
+				x: Math.round(pos.x / gridSize - 1) * gridSize,
+				y: Math.round(pos.y / gridSize - 1.5) * gridSize
+			});
+			shadowRectangle.show();
+			rackLayer.batchDraw();
+		});
+
+		stage.on("click", e => {
+			if (activeRackType() == null) return;
+
+			let pos = { x: e.evt.layerX, y: e.evt.layerY };
+			shadowRectangle.hide();
+			let newRacks = racks();
+			newRacks.push(
+				stream({
+					type: activeRackType(),
+					x: Math.round(pos.x / gridSize - 1),
+					y: Math.round(pos.y / gridSize - 1.5)
+				})
+			);
+			racks(newRacks);
+		});
+
 		// create a rectange for each box in the stream
-		boxes.forEach(boxStream => {
-			newRectangle(boxStream, rackLayer, stage);
+		racks.map(rs => {
+			rs.forEach(r => {
+				newRectangle(r, rackLayer, stage);
+			});
+			rackLayer.batchDraw();
 		});
 
 		// add layers in order: grid, set tiles, drawing tiles, racks, tooltips

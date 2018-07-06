@@ -17,16 +17,14 @@ export default () => {
 	let obelisk;
 	let libsLoaded = false;
 
-	const boxes = [
-		stream({ id: 1, x: 3, y: 3 }),
-		stream({ id: 2, x: 10, y: 3 })
-	];
+	const racks = stream([]);
 
 	const tiles = stream(new Tiles(rows, columns));
-	const maxAmps = stream();
-	const targetTBs = stream();
+	const maxAmps = stream(0);
+	const targetTBs = stream(0);
 
 	const activeTileType = stream();
+	const activeRackType = stream();
 
 	return {
 		oninit: () => {
@@ -46,6 +44,7 @@ export default () => {
 					: [
 							m(Controls, {
 								activeTileType,
+								activeRackType,
 								targetTBs,
 								maxAmps
 							}),
@@ -56,7 +55,7 @@ export default () => {
 									m(
 										".tile.is-child",
 										m(Progress, {
-											boxes,
+											racks,
 											targetTBs,
 											maxAmps
 										})
@@ -73,7 +72,7 @@ export default () => {
 										".tile.is-child",
 										m(IsometricStage, {
 											obelisk,
-											boxes,
+											racks,
 											tiles,
 											gridSize: 16,
 											zHeightMax: 9,
@@ -88,12 +87,13 @@ export default () => {
 										".tile.is-child.box",
 										m(FlatStage, {
 											konva,
-											boxes,
+											racks,
 											tiles,
 											gridSize: 32,
 											rows,
 											columns,
-											activeTileType
+											activeTileType,
+											activeRackType
 										})
 									)
 								)

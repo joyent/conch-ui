@@ -64,7 +64,7 @@ const RacksLayer = {
 			style: "position: absolute; top:0; left:0"
 		});
 	},
-	oncreate: ({ attrs: { obelisk, boxes, gridSize, basePoint }, dom }) => {
+	oncreate: ({ attrs: { obelisk, racks, gridSize, basePoint }, dom }) => {
 		let pixelView = new obelisk.PixelView(dom, basePoint);
 
 		let dimension = new obelisk.CubeDimension(
@@ -77,14 +77,21 @@ const RacksLayer = {
 		let color = new obelisk.CubeColor().getByHorizontalColor(gray);
 		let cube = new obelisk.Cube(dimension, color, true);
 
-		let boxesStream = stream.merge(boxes);
-		boxesStream.map(bs => {
-			pixelView.clear();
-			bs.forEach(box => {
-				pixelView.renderObject(
-					cube,
-					new obelisk.Point3D(box.x * gridSize, box.y * gridSize)
-				);
+		let racksStream = stream();
+		racks.map(rs => {
+			racksStream(stream.HALT);
+			racksStream = stream.merge(rs);
+			racksStream.map(rs => {
+				pixelView.clear();
+				rs.forEach(rack => {
+					pixelView.renderObject(
+						cube,
+						new obelisk.Point3D(
+							rack.x * gridSize,
+							rack.y * gridSize
+						)
+					);
+				});
 			});
 		});
 	}

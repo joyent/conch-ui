@@ -1,10 +1,13 @@
 import m from "mithril";
 import { TileType } from "./Tiles";
+import { RackTypes } from "./Racks";
 
 const Controls = () => {
 	let active = false;
 	return {
-		view: ({ attrs: { activeTileType, targetTBs, maxAmps } }) => {
+		view: ({
+			attrs: { activeTileType, activeRackType, targetTBs, maxAmps }
+		}) => {
 			return m(
 				".level.box",
 				m(
@@ -52,9 +55,11 @@ const Controls = () => {
 								"button.button",
 								m(
 									"span",
-									activeTileType() == null
-										? "Choose Tile"
-										: activeTileType().name
+									(activeTileType() &&
+										activeTileType().name) ||
+										(activeRackType() &&
+											activeRackType().name) ||
+										"Select to add"
 								),
 								m(
 									"span.icon.is-small",
@@ -73,11 +78,30 @@ const Controls = () => {
 												"a.dropdown-item",
 												{
 													onclick: () => {
+														activeRackType(null);
 														activeTileType(t);
 														active = false;
 													}
 												},
 												t.name
+											)
+										);
+									return acc;
+								}, []),
+								m("hr.dropdown-divider"),
+								Object.values(RackTypes).reduce((acc, r) => {
+									if (r.name)
+										acc.push(
+											m(
+												"a.dropdown-item",
+												{
+													onclick: () => {
+														activeTileType(null);
+														activeRackType(r);
+														active = false;
+													}
+												},
+												r.name
 											)
 										);
 									return acc;
