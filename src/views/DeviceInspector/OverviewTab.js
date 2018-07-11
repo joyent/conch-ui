@@ -16,7 +16,7 @@ const TimeToBurnin = {
 		if (deviceSettings().firmware !== "current")
 			return m("p.is-size-4", "Burn-in not started");
 
-		// 6 hours in seconds. Taken from the user settings used to store this value
+		// 30 minutes in seconds. Taken from the user settings used to store this value
 		const maxBurnin = 1800;
 
 		const numReboots = 3;
