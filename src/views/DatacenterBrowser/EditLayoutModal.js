@@ -107,6 +107,7 @@ const EditLayoutTable = () => {
 				saveButton,
 				m(
 					"table.table.is-fullwidth.is-marginless",
+					{ id: 'edit-layout-table' },
 					m("thead", m("tr", headers)),
 					m("tfoot", m("tr", headers)),
 					m(
@@ -123,6 +124,7 @@ const EditLayoutTable = () => {
 										m(
 											"input.input.is-small[type=text][placeholder=Serial Number]",
 											{
+												pattern: '[a-zA-Z0-9]+',
 												value:
 													assignments[slot.id] &&
 													assignments[slot.id].id,
@@ -162,6 +164,8 @@ const EditLayoutTable = () => {
 										m(
 											"input.input.is-small[type=text][placeholder=Asset Tag]",
 											{
+
+												pattern: '[a-zA-Z0-9]+',
 												value:
 													assignments[slot.id] &&
 													assignments[slot.id]
@@ -198,6 +202,7 @@ export default {
 	view: ({ attrs }) => {
 		return m(
 			".modal.is-active",
+			{ id: 'device-editor-modal' },
 			m(".modal-background", {
 				onclick() {
 					attrs.editLayout(false);
