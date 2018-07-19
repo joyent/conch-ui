@@ -3,12 +3,10 @@ import moment from "moment";
 
 
 const deviceToProgress = device => {
-    console.log(device);
 	if (device == null) return "unassigned";
 	if (device.validated) return "validated";
 	if (device.health.toLowerCase() === "fail") return "failing";
-    //if (moment().diff(moment(device.last_seen), "second") <= 300)
-    if (device.last_seen != null)
+    if (moment().diff(moment(device.last_seen), "second") <= 300)
         return "active";
 	return "in progress";
 };
