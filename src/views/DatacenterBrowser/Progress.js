@@ -1,9 +1,15 @@
 import m from "mithril";
+import moment from "moment";
+
 
 const deviceToProgress = device => {
+    console.log(device);
 	if (device == null) return "unassigned";
 	if (device.validated) return "validated";
 	if (device.health.toLowerCase() === "fail") return "failing";
+    //if (moment().diff(moment(device.last_seen), "second") <= 300)
+    if (device.last_seen != null)
+        return "active";
 	return "in progress";
 };
 
@@ -41,6 +47,8 @@ const ProgressIcon = {
 				return m("span.has-text-danger", m("i.fas fa-exclamation"));
 			case "in progress":
 				return m("span.has-text-info", m("i.fas fa-spinner"));
+            case "active":
+                return m("span.has-text-info", m("i.fas fa-sync"));
 			case "validated":
 				return m("span", m("i.fas fa-check-circle"));
 			default:
