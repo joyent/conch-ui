@@ -39,6 +39,7 @@ export default () => {
 				m("p.menu-label", "Conch"),
 				m(
 					"ul.menu-list",
+                    menuItem("Profile", "user"),
 					m(
 						"li",
 						m(
