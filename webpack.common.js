@@ -15,6 +15,7 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist'),
 	},
 	resolve: {
+        modules: [path.join(__dirname, "src"), "node_modules"],
 		alias: {
 			// allow `import from 'config'` to be mapped to the config.js file
 			// in the directory root
