@@ -1,33 +1,13 @@
 import m from "mithril";
 
 import { conchApi } from "config";
+import User from "models/User";
 
 export default () => {
 	let badLoginAttempt = false;
 	let emailAddress = "";
 	let password = "";
-
-	const login = (email, pass) =>
-		m
-			.request({
-				method: "POST",
-				url: `${conchApi}/login`,
-				withCredentials: true,
-				data: { user: email, password: pass },
-				extract(xhr) {
-					return {
-						status: xhr.status,
-						body: xhr.response ? JSON.parse(xhr.response) : null
-					};
-				}
-			})
-			.catch(e => {
-				if (e.status === 401) {
-					this.reject();
-				} else {
-					throw e;
-				}
-			});
+	const user = new User();
 
 	return {
 		view() {
@@ -93,7 +73,11 @@ export default () => {
 													"is-loading"
 												);
 												e.preventDefault();
-												login(emailAddress, password)
+												user
+													.login(
+														emailAddress,
+														password
+													)
 													.then(
 														() => {
 															badLoginAttempt = false;
