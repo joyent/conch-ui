@@ -29,7 +29,7 @@ test("user handles token refresh", () => {
 	expect.assertions(1);
 	const user = new User();
 	return user.login("chris.prather@joyent.com", "NewPassword").then(() => {
-		return expect(user.refreshToken()).resolves.toHaveProperty("jwt_token");
+		return expect(user.refreshToken()).resolves.toBeTruthy();;
 	});
 });
 

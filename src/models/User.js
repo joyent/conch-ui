@@ -1,71 +1,47 @@
 // src/models/User.js
 
-import m from "mithril";
+import Request from "util/Request";
 
 export default () => {
+	const r = new Request();
 	return {
 		login(email, pass) {
-			return m
+			return r
 				.request({
 					method: "POST",
 					url: "/login",
-					withCredentials: true,
 					data: { user: email, password: pass }
 				})
 				.then(result => {
 					if (result && result.jwt_token) {
-						localStorage.setItem("token", result.jwt_token);
+						r.setToken(result.jwt_token);
 					}
 					return result;
 				});
 		},
 
 		refreshToken() {
-			let token = localStorage.getItem("token");
-			if (!token) throw "Could not find token.";
-			return m
-				.request({
-					method: "POST",
-					url: "/refresh_token",
-					headers: "Authorization: Bearer $token",
-					withCredentials: true
-				})
-				.then(result => {
-					if (result && result.jwt_token) {
-						localStorage.setItem("token", result.jwt_token);
-					}
-					return result;
-				});
+			return r.refreshToken();
 		},
 
 		logout() {
-			const token = localStorage.getItem("token");
-			if (!token) return Promise.resolve(true);
-			return m
+			return r
 				.request({
 					method: "POST",
-					url: "/logout",
-					headers: {
-						Authorization: "Bearer $token"
-					},
-					withCredentials: true
+					url: "/logout"
 				})
 				.then(result => {
-					console.log("logging out");
-					localStorage.removeItem("token");
-					return result ? result : true;
+					r.clearToken();
+					return true;
 				});
 		},
+
 		updatePassword(newPassword) {
-			const token = localStorage.getItem("token");
-			if (!token) throw "Could not find token.";
-			return m
+			return r
 				.request({
 					method: "POST",
 					url: "/user/me/password",
-					headers: { Authorization: "Bearer " + token },
-					data: { password: newPassword },
-					withCredentials: true
+					data: { password: newPassword }
 				})
 				.then(() => {
 					return true;
