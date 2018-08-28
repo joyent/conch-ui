@@ -1,12 +1,13 @@
-import "./styles/main.scss";
+import "styles/main.scss";
 
-import dispatch from "./dispatch";
+import dispatch from "dispatch";
 
-import Main from "./layouts/Main";
+import Main from "layouts/Main";
 
-import DatacenterBrowser from "./views/DatacenterBrowser";
-import DevicesView from "./views/Devices";
-import Status from "./views/Status";
+import DatacenterBrowser from "views/DatacenterBrowser";
+import DevicesView from "views/Devices";
+import Status from "views/Status";
+import UserView from "views/User";
 
 dispatch(document.body, {
 	"/status": { layout: Main, view: Status },
@@ -22,5 +23,9 @@ dispatch(document.body, {
 	"/datacenter/:roomName/rack/:rackId/device/:deviceId": {
 		layout: Main,
 		view: DatacenterBrowser
+	},
+	"/user": {
+		layout: Main,
+		view: UserView
 	}
 });

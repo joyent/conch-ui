@@ -26,8 +26,8 @@ export default () => {
 	};
 
 	return {
-		view: ({ attrs: { loggedIn } }) =>
-			m(
+		view: ({ attrs: { user }}) => {
+			return m(
 				"aside.menu",
 				m("p.menu-label", "Datacenter Builds"),
 				m(
@@ -39,18 +39,14 @@ export default () => {
 				m("p.menu-label", "Conch"),
 				m(
 					"ul.menu-list",
+                    menuItem("Profile", "user"),
 					m(
 						"li",
 						m(
 							"a",
 							{
 								onclick: () => {
-									request({
-										method: "POST",
-										url: `${conchApi}/logout`,
-										withCredentials: true
-									}).then(() => {
-										loggedIn(false);
+									user.logout().then(() => {
 										m.route.set("/");
 									});
 								}
@@ -60,5 +56,6 @@ export default () => {
 					)
 				)
 			)
+            }
 	};
 };
