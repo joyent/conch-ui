@@ -1,6 +1,5 @@
 import m from "mithril";
 import { ViewTitleHero } from "views/component/";
-import User from "models/User";
 
 const StatusTile = {
 	view: ({ children }) =>
@@ -9,18 +8,19 @@ const StatusTile = {
 
 const passwordTile = () => {
 	let password = null;
-    const user = new User;
 
 	return {
-		view: () => {
+		view: ({ attrs: { user } }) => {
 			return m(StatusTile, [
-				m("p.Title", "Password"),
+				m("p.Title", "New Password"),
 				m(
 					"form",
 					{
 						onsubmit: e => {
 							e.preventDefault();
-							user.updatePassword(password);
+							user.updatePassword(password).then(() => {
+								m.route.set("/");
+							});
 						}
 					},
 					[
@@ -42,23 +42,23 @@ const passwordTile = () => {
 };
 
 const statusTiles = {
-	view: () =>
+	view: ({ attrs: { user } }) =>
 		m(
 			"section.info-tiles",
 			m(".tile"),
-			m(".tile.is-ancestor", m(passwordTile), m(StatusTile))
+			m(".tile.is-ancestor", m(passwordTile, { user }), m(StatusTile))
 		)
 };
 
 export default () => {
 	return {
-		view: () => {
+		view: ({ attrs: { user } }) => {
 			return [
 				m(ViewTitleHero, {
 					title: "User profile",
 					subtitle: "Update password and profile settings"
 				}),
-				m(statusTiles)
+				m(statusTiles, { user })
 			];
 		}
 	};

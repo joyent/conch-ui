@@ -1,10 +1,12 @@
 // src/models/User.js
 
 import Request from "util/Request";
+import stream from "mithril/stream";
 
 export default () => {
 	const r = new Request();
 	return {
+		loggedIn: stream(false),
 		login(email, pass) {
 			return r
 				.request({
@@ -32,7 +34,8 @@ export default () => {
 				})
 				.then(result => {
 					r.clearToken();
-					return true;
+					this.loggedIn(false);
+					return Promise.resolve(true);
 				});
 		},
 
@@ -44,7 +47,8 @@ export default () => {
 					data: { password: newPassword }
 				})
 				.then(() => {
-					return true;
+					this.loggedIn(false);
+					return Promise.resolve(true);
 				});
 		}
 	};

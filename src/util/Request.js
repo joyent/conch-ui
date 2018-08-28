@@ -7,7 +7,7 @@ export default () => {
 		},
 		setToken(token) {
 			localStorage.setItem("token", token);
-            return true;
+            return Promise.resolve(true);
 		},
 		clearToken(token) {
 			return localStorage.removeItem("token");
@@ -34,9 +34,9 @@ export default () => {
 			}).then(result => {
 				if (result && result.jwt_token) {
 					this.setToken(result.jwt_token);
-                    return true;
+                    return Promise.resolve(true);
 				}
-				return false;
+				return Promise.reject(false);
 			});
 		}
 	};

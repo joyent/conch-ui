@@ -15,7 +15,7 @@ export default {
 				m(
 					".column.is-2",
 					m(Sidebar, {
-						loggedIn: attrs.loggedIn
+						user: attrs.user
 					})
 				),
 				m(".column.is-10", contentView)

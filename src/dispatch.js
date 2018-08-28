@@ -31,16 +31,17 @@
 import m from "mithril";
 import stream from "mithril/stream";
 
-import WorkspaceNotFound from "./views/WorkspaceNotFound";
-import Login from "./views/Login";
+import WorkspaceNotFound from "views/WorkspaceNotFound";
+import Login from "views/Login";
 
-import { conchApi } from "../config";
+import { conchApi } from "config";
+import User from "models/User"
 
 /// IIFE to prevent escaping scope
 const dispatch = (() => {
 	const currentWorkspace = stream();
-	const loggedIn = stream(false);
 	const workspaces = stream();
+    const user = new User();
 
 	currentWorkspace.map(ws => {
 		if (ws) localStorage.setItem("currentWorkspace", ws.id);
@@ -95,7 +96,7 @@ const dispatch = (() => {
 	}
 
 	function setupSession(urlWorkspaceId) {
-		if (loggedIn()) return loadWorkspace(urlWorkspaceId);
+		if (user.loggedIn()) return loadWorkspace(urlWorkspaceId);
 		return m
 			.request({
 				method: "GET",
@@ -117,7 +118,7 @@ const dispatch = (() => {
 			})
 			.then(
 				() => {
-					loggedIn(true);
+					user.loggedIn(true);
 					return loadWorkspace(urlWorkspaceId);
 				},
 				() => Promise.reject(Login)
@@ -140,7 +141,8 @@ const dispatch = (() => {
 								view: () =>
 									m(comp.view || comp, {
 										currentWorkspace,
-										workspaces
+										workspaces,
+                                        user
 									})
 							};
 						},
@@ -158,12 +160,13 @@ const dispatch = (() => {
 								{
 									currentWorkspace,
 									// required to set to false when "logout" link clicked
-									loggedIn,
+									user,
 									workspaces
 								},
 								m(view, {
 									currentWorkspace,
-									workspaces
+									workspaces,
+                                    user
 								})
 						  )
 						: vnode;
