@@ -1,4 +1,5 @@
 import User from "models/User";
+jest.mock('util/Request');
 
 test("user throws on failure", () => {
 	expect.assertions(1);
@@ -29,7 +30,7 @@ test("user handles token refresh", () => {
 	expect.assertions(1);
 	const user = new User();
 	return user.login("chris.prather@joyent.com", "NewPassword").then(() => {
-		return expect(user.refreshToken()).resolves.toBeTruthy();;
+		return expect(user.refreshToken()).resolves.toBeTruthy();
 	});
 });
 
