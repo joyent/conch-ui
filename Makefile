@@ -2,7 +2,7 @@
 build: node_modules dist/index.html ## Build web assets for production
 
 .PHONY: test
-test: build ## test to ensure everything functions as we expect (currently "it builds clean")
+test: config.js build ## test to ensure everything functions as we expect (currently "it builds clean")
 	@yarn test
 
 .PHONY: watch
@@ -29,7 +29,8 @@ dist/index.html: src/**/* config.js webpack.common.js webpack.prod.js
 	@yarn build
 
 config.js:
-	cp config.js.dist src/config.js
+	@node_modules/.bin/babel config.dist.js  > src/config.js
+	@ln -s src/config.js config.js
 
 .PHONY: help
 help: ## Display this help message

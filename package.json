@@ -50,7 +50,7 @@
     "prettier": "prettier --write src/index.js src/views/**/*.js src/models/**/*.js",
     "start": "webpack-dev-server --progress --open --config webpack.dev.js",
     "watch": "webpack --progress --config webpack.dev.js --watch",
-    "test": "jest t/**"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
