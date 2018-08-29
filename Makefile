@@ -2,12 +2,8 @@
 build: node_modules dist/index.html ## Build web assets for production
 
 .PHONY: test
-test:
-	@true
-
-# TODO we need to get tests passing in buildbot's environment
-#test: config.js build ## test to ensure everything functions as we expect (currently "it builds clean")
-#	@yarn test
+test: build config.js ## test to ensure everything functions as we expect (currently "it builds clean")
+	@yarn test
 
 .PHONY: watch
 watch: ## Watch web assets and re-build for development
@@ -33,7 +29,7 @@ dist/index.html: src/**/* config.js webpack.common.js webpack.prod.js
 	@yarn build
 
 config.js:
-	@node_modules/.bin/babel config.dist.js  > src/config.js
+	@node_modules/.bin/babel config.js.dist  > src/config.js
 	@ln -s src/config.js config.js
 
 .PHONY: help
