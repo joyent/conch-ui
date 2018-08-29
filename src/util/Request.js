@@ -34,7 +34,7 @@ export default () => {
 			}).then(result => {
 				if (result && result.jwt_token) {
 					this.setToken(result.jwt_token);
-                    return Promise.resolve(true);
+                    return Promise.resolve(result.jwt_token);
 				}
 				return Promise.reject(false);
 			});
