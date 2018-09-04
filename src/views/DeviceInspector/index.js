@@ -18,6 +18,8 @@ import StorageTab from "./StorageTab";
 import ValidationTab from "./ValidationTab";
 import ReportTab from "./ReportTab";
 
+import Device from "src/models/Device";
+
 export default () => {
 	const activeDevice = stream();
 	const deviceSettings = stream();
@@ -28,18 +30,11 @@ export default () => {
 		oninit: ({ attrs: { activeDeviceId } }) => {
 			activeDeviceId.map(deviceId => {
 				if (deviceId == null) return;
-				request({
-					method: "GET",
-					url: `${conchApi}/device/${deviceId}`,
-					withCredentials: true
-				}).then(res => {
+				const device = new Device(deviceId);
+				device.getDeviceDetails().then(res => {
 					activeDevice(res);
 				});
-				request({
-					method: "GET",
-					url: `${conchApi}/device/${deviceId}/settings`,
-					withCredentials: true
-				}).then(deviceSettings);
+				device.getDeviceSettings().then(deviceSettings);
 			});
 
 			// refresh the device, settings, and any dependent streams every 15
