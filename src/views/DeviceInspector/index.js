@@ -8,21 +8,21 @@ import groupBy from "lodash/groupBy";
 
 import { conchApi } from "config";
 
-import { RadialProgress, Spinner } from "../component";
+import { RadialProgress, Spinner } from "views/component";
 
-import Tabs from "./Tabs";
-import NetworkingTab from "./NetworkingTab";
-import OverviewTab from "./OverviewTab";
-import SettingsTab from "./SettingsTab";
-import StorageTab from "./StorageTab";
-import ValidationTab from "./ValidationTab";
-import ReportTab from "./ReportTab";
+import Tabs from "views/DeviceInspector/Tabs";
+import NetworkingTab from "views/DeviceInspector/NetworkingTab";
+import OverviewTab from "views/DeviceInspector/OverviewTab";
+import SettingsTab from "views/DeviceInspector/SettingsTab";
+import TagsTab from "views/DeviceInspector/TagsTab";
+import StorageTab from "views/DeviceInspector/StorageTab";
+import ValidationTab from "views/DeviceInspector/ValidationTab";
+import ReportTab from "views/DeviceInspector/ReportTab";
 
-import Device from "src/models/Device";
+import Device from "models/Device";
 
 export default () => {
 	const activeDevice = stream();
-	const deviceSettings = stream();
 	let deviceLoading = true;
 	let intervalId;
 
@@ -31,10 +31,9 @@ export default () => {
 			activeDeviceId.map(deviceId => {
 				if (deviceId == null) return;
 				const device = new Device(deviceId);
-				device.getDeviceDetails().then(res => {
-					activeDevice(res);
+				device.ready().then(() => {
+					activeDevice(device);
 				});
-				device.getDeviceSettings().then(deviceSettings);
 			});
 
 			// refresh the device, settings, and any dependent streams every 15
@@ -47,7 +46,7 @@ export default () => {
 			clearInterval(intervalId);
 		},
 		view: ({ attrs: { activeDeviceId } }) => {
-			return stream.merge([activeDevice, deviceSettings])() == null
+			return activeDevice() == null
 				? m("section.section", m(Spinner))
 				: [
 						m(Tabs, {
@@ -65,6 +64,10 @@ export default () => {
 									component: SettingsTab
 								},
 								{
+									title: "Tags",
+									component: TagsTab
+								},
+								{
 									title: "Storage",
 									component: StorageTab
 								},
@@ -78,8 +81,7 @@ export default () => {
 								}
 							],
 							activeDevice,
-							activeDeviceId,
-							deviceSettings
+							activeDeviceId
 						})
 				  ];
 		}

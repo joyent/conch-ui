@@ -1,10 +1,11 @@
 import m from "mithril";
-import { Spinner } from "../component";
+import { Spinner } from "views/component";
 
 const SettingsTab = () => {
 	const headers = [m("th", "Name"), m("th", "Value")];
 	return {
-		view: ({ attrs: { deviceSettings } }) => {
+		view: ({ attrs: { activeDevice } }) => {
+            const deviceSettings = activeDevice().settings;
 			return deviceSettings() == null
 				? m(Spinner)
 				: m(

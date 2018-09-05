@@ -2,7 +2,31 @@ import m from "mithril";
 import stream from "mithril/stream";
 import moment from "moment";
 
-import { RadialProgress, Spinner } from "../component";
+import { RadialProgress, Spinner } from "views/component";
+
+const ViewDeviceInRackButton = {
+	view: ({ attrs: { activeDevice, activeDeviceId } }) => {
+		return m(
+			"button.button.is-small.is-link.is-rounded",
+			{
+				onclick: () => {
+					const { datacenter, rack } = activeDevice().location;
+					const workspaceRoute = m.route
+						.get()
+						.substring(0, m.route.get().indexOf("/", 1));
+					// clear activeDeviceId
+					activeDeviceId(null);
+					m.route.set(
+						`${workspaceRoute}/datacenter/${datacenter.name}/rack/${
+							rack.id
+						}/device?highlightDeviceId=${activeDevice().id}`
+					);
+				}
+			},
+			"Show Device in Rack"
+		);
+	}
+};
 
 const TimeToBurnin = {
 	view: ({ attrs: { activeDevice, deviceSettings } }) => {
@@ -66,80 +90,43 @@ const TimeToBurnin = {
 		];
 	}
 };
+
 const OverviewTab = () => {
 	let deviceTags = [];
 	return {
-		oninit: ({ attrs: { activeDevice, deviceSettings } }) => {
-			deviceTags = stream.combine(
-				(device, settings) => {
-					let tags = [];
-					if (device().health.toLowerCase() === "fail")
-						tags.push(m(".tag.is-danger", "Failing Validaiton"));
-					else if (device().health.toLowerCase() === "pass")
-						tags.push(m(".tag.is-info", "Passing Validation"));
-					else if (device().health.toLowerCase() === "unknown")
-						tags.push(m(".tag.is-warning", "No report"));
+		oninit: ({ attrs: { activeDevice } }) => {
+			if (activeDevice().isFailing())
+				deviceTags.push(m(".tag.is-danger", "Failing Validaiton"));
+			else if (activeDevice().isPassing())
+				deviceTags.push(m(".tag.is-info", "Passing Validation"));
+			else if (activeDevice().isHealthUnknown())
+				deviceTags.push(m(".tag.is-warning", "No report"));
 
-					if (settings().firmware === "updating")
-						tags.push(m(".tag.is-warning", "Firmware Updating"));
+			if (activeDevice().isFirmwareUpdating())
+				deviceTags.push(m(".tag.is-warning", "Firmware Updating"));
 
-					if (device().validated)
-						tags.push(m(".tag.is-success", "Validated"));
-					if (device().graduated)
-						tags.push(m(".tag.is-success", "Graduated"));
-					if (device().triton_setup)
-						tags.push(m(".tag.is-success", "Triton Setup"));
-
-					return tags;
-				},
-				[activeDevice, deviceSettings]
-			);
+			if (activeDevice().isValidated())
+				deviceTags.push(m(".tag.is-success", "Validated"));
+			if (activeDevice().isGraduated())
+				deviceTags.push(m(".tag.is-success", "Graduated"));
+			if (activeDevice().isTritonSetup())
+				deviceTags.push(m(".tag.is-success", "Triton Setup"));
 		},
 		view: ({
-			attrs: {
-				activeDevice,
-				activeDeviceId,
-				deviceSettings,
-				currentWorkspace
-			}
+			attrs: { activeDevice, activeDeviceId, currentWorkspace }
 		}) => [
 			m(
 				".level",
-				m(".level-left", m(".level-item.tags", deviceTags())),
+				m(".level-left", m(".level-item.tags", deviceTags)),
 				activeDevice().location &&
 					m(
 						".level-right",
 						m(
 							".level.item",
-							m(
-								"button.button.is-small.is-link.is-rounded",
-								{
-									onclick: () => {
-										let {
-											datacenter,
-											rack
-										} = activeDevice().location;
-										let workspaceRoute = m.route
-											.get()
-											.substring(
-												0,
-												m.route.get().indexOf("/", 1)
-											);
-										// clear activeDeviceId
-										activeDeviceId(null);
-										m.route.set(
-											`${workspaceRoute}/datacenter/${
-												datacenter.name
-											}/rack/${
-												rack.id
-											}/device?highlightDeviceId=${
-												activeDevice().id
-											}`
-										);
-									}
-								},
-								"Show Device in Rack"
-							)
+							m(ViewDeviceInRackButton, {
+								activeDevice,
+								activeDeviceId
+							})
 						)
 					)
 			),
@@ -154,8 +141,10 @@ const OverviewTab = () => {
 							m("p.subtitle", "Last Reported"),
 							m(
 								"p.title",
-								activeDevice().last_seen
-									? moment(activeDevice().last_seen).fromNow()
+								activeDevice().lastSeen()
+									? activeDevice()
+											.lastSeen()
+											.fromNow()
 									: "never"
 							)
 						),
@@ -164,10 +153,10 @@ const OverviewTab = () => {
 							m("p.subtitle", "Uptime"),
 							m(
 								"p.title",
-								activeDevice().uptime_since
-									? moment(
-											activeDevice().uptime_since
-									  ).fromNow(true)
+								activeDevice().uptimeSince()
+									? activeDevice()
+											.uptimeSince()
+											.fromNow(true)
 									: "Unknown"
 							)
 						),
@@ -188,8 +177,8 @@ const OverviewTab = () => {
 							"article.tile.is-child.box",
 							m("p.subtitle", "Time for Burn-in"),
 							m(TimeToBurnin, {
-								activeDevice,
-								deviceSettings
+								activeDevice: activeDevice,
+								deviceSettings: activeDevice().settings
 							})
 						)
 					)

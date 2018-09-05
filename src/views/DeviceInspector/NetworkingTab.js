@@ -72,14 +72,10 @@ const NetworkingTab = () => {
 
 	return {
 		oninit: ({ attrs: { activeDevice } }) => {
-			nics = activeDevice.map(
-				device =>
-					(device.latest_report && device.latest_report.interfaces) ||
-					{}
-			);
+			nics = activeDevice.map(device => device.interfaces());
 		},
 		view: () => {
-			return nics() == null
+			return nics == null
 				? m(Spinner)
 				: m(
 						"table.table.is-narrow.is-fullwidth",
