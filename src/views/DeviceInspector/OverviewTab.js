@@ -2,7 +2,7 @@ import m from "mithril";
 import stream from "mithril/stream";
 import moment from "moment";
 
-import { RadialProgress, Spinner } from "../component";
+import { RadialProgress, Spinner } from "views/component";
 
 const TimeToBurnin = {
 	view: ({ attrs: { activeDevice, deviceSettings } }) => {

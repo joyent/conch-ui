@@ -3,8 +3,8 @@ import stream from "mithril/stream";
 import search from "fuzzysearch";
 import sortBy from "lodash/sortBy";
 
-import Spinner from "../component/Spinner";
-import { ProgressIcon, deviceToProgress } from "../DatacenterBrowser/Progress";
+import Spinner from "views/component/Spinner";
+import { ProgressIcon, deviceToProgress } from "views/DatacenterBrowser/Progress";
 
 export default () => {
 	const deviceSearchText = stream("");

@@ -5,13 +5,13 @@ import { request } from "mithril";
 
 import { conchApi } from "config";
 
-import { Spinner, ViewTitleHero } from "../component/";
+import { Spinner, ViewTitleHero } from "views/component/";
 
-import DeviceModal from "../DeviceModal";
-import LayoutPanel from "./LayoutPanel";
-import RackPanel from "./RackPanel";
-import RoomPanel from "./RoomPanel";
-import { roomToProgress } from "./Progress";
+import DeviceModal from "views/DeviceModal";
+import LayoutPanel from "views/DatacenterBrowser/LayoutPanel";
+import RackPanel from "views/DatacenterBrowser/RackPanel";
+import RoomPanel from "views/DatacenterBrowser/RoomPanel";
+import { roomToProgress } from "views/DatacenterBrowser/Progress";
 
 export default () => {
 	const rackFilterText = stream("");

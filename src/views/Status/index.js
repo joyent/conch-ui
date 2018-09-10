@@ -3,10 +3,10 @@ import stream from "mithril/stream";
 import { request } from "mithril";
 import { conchApi } from "config";
 
-import { Spinner, ViewTitleHero } from "../component";
+import { Spinner, ViewTitleHero } from "views/component";
 
-import DeviceModal from "../DeviceModal";
-import RackProgress from "./RackProgress";
+import DeviceModal from "views/DeviceModal";
+import RackProgress from "views/Status/RackProgress";
 
 const StatusTile = {
 	view: ({ children }) =>

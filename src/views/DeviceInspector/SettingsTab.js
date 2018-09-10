@@ -1,5 +1,5 @@
 import m from "mithril";
-import { Spinner } from "../component";
+import { Spinner } from "views/component";
 
 const SettingsTab = () => {
 	const headers = [m("th", "Name"), m("th", "Value")];

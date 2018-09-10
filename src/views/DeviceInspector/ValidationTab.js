@@ -7,7 +7,7 @@ import groupBy from "lodash/groupBy";
 
 import { conchApi } from "config";
 
-import { Spinner } from "../component";
+import { Spinner } from "views/component";
 
 const ValidationRow = () => {
 	let revealDetails = false;

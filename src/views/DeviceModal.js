@@ -1,6 +1,6 @@
 import m from "mithril";
 
-import DeviceInspector from "./DeviceInspector";
+import DeviceInspector from "views/DeviceInspector";
 
 export default () => {
 	return {

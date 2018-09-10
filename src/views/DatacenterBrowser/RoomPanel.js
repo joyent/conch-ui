@@ -2,8 +2,8 @@ import m from "mithril";
 import stream from "mithril/stream";
 import search from "fuzzysearch";
 
-import Spinner from "../component/Spinner";
-import { ProgressIcon } from "./Progress";
+import Spinner from "views/component/Spinner";
+import { ProgressIcon } from "views/DatacenterBrowser/Progress";
 
 export default () => {
 	const roomFilterText = stream("");

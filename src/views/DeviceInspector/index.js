@@ -8,15 +8,15 @@ import groupBy from "lodash/groupBy";
 
 import { conchApi } from "config";
 
-import { RadialProgress, Spinner } from "../component";
+import { RadialProgress, Spinner } from "views/component";
 
-import Tabs from "./Tabs";
-import NetworkingTab from "./NetworkingTab";
-import OverviewTab from "./OverviewTab";
-import SettingsTab from "./SettingsTab";
-import StorageTab from "./StorageTab";
-import ValidationTab from "./ValidationTab";
-import ReportTab from "./ReportTab";
+import Tabs from "views/DeviceInspector/Tabs";
+import NetworkingTab from "views/DeviceInspector/NetworkingTab";
+import OverviewTab from "views/DeviceInspector/OverviewTab";
+import SettingsTab from "views/DeviceInspector/SettingsTab";
+import StorageTab from "views/DeviceInspector/StorageTab";
+import ValidationTab from "views/DeviceInspector/ValidationTab";
+import ReportTab from "views/DeviceInspector/ReportTab";
 
 export default () => {
 	const activeDevice = stream();

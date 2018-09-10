@@ -3,8 +3,8 @@ import { request } from "mithril";
 
 import { conchApi } from "config";
 
-import Spinner from "../component/Spinner";
-import { ProgressIcon } from "./Progress";
+import Spinner from "views/component/Spinner";
+import { ProgressIcon } from "views/DatacenterBrowser/Progress";
 
 // ok to not be component because they don't change
 const headers = [

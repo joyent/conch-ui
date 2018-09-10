@@ -7,10 +7,10 @@ import sortBy from "lodash/keyBy";
 
 import { conchApi } from "config";
 
-import { Spinner, ViewTitleHero } from "../component/";
+import { Spinner, ViewTitleHero } from "views/component/";
 
-import DevicesPanel from "./DevicesPanel";
-import DeviceInspector from "../DeviceInspector";
+import DevicesPanel from "views/Devices/DevicesPanel";
+import DeviceInspector from "views/DeviceInspector";
 
 export default () => {
 	let workspaceDevices = stream();

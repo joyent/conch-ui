@@ -1,6 +1,6 @@
 import m from "mithril";
-import Icons from "./Icons";
-import Device from "../../models/Device";
+import Icons from "views/component//Icons";
+import Device from "models/Device";
 
 // Given a Device, renders icons in a <div> showing the current status.
 export default {
