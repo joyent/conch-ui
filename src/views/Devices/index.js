@@ -35,7 +35,7 @@ export default () => {
 				activeDeviceId(m.route.param("deviceId"));
 
 			r
-				.request({
+				.requestWithToken({
 					method: "GET",
 					url: "/hardware_product"
 				})
@@ -47,7 +47,7 @@ export default () => {
 				// drop the previous stream
 				workspaceDevices = stream();
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/workspace/${id}/device`
 					})

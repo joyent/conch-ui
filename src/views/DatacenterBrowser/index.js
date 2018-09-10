@@ -73,7 +73,7 @@ export default () => {
 			activeRack.map(rack => {
 				rackLoading(true);
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/workspace/${currentWorkspace().id}/rack/${
 							rack.id
@@ -119,7 +119,7 @@ export default () => {
 			});
 			currentWorkspace.map(({ id }) => {
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/workspace/${id}/device`
 					})
@@ -139,7 +139,7 @@ export default () => {
 					});
 
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/workspace/${id}/rack`
 					})
@@ -164,7 +164,7 @@ export default () => {
 
 			searchedDevice.map(device => {
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/device/${device.id}/location`
 					})

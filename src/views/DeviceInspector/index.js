@@ -27,7 +27,7 @@ export default () => {
 			activeDeviceId.map(deviceId => {
 				if (deviceId == null) return;
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/device/${deviceId}`
 					})
@@ -35,7 +35,7 @@ export default () => {
 						activeDevice(res);
 					});
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/device/${deviceId}/settings`
 					})

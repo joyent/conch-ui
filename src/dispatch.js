@@ -62,7 +62,7 @@ const dispatch = (() => {
 			}
 		}
 		return r
-			.request({
+			.requestWithToken({
 				method: "GET",
 				url: "/workspace",
 			})
@@ -95,6 +95,7 @@ const dispatch = (() => {
 
 	function setupSession(urlWorkspaceId) {
 		if (user.loggedIn()) return loadWorkspace(urlWorkspaceId);
+        // TODO rewrite this to use model/User
 		return r
 			.request({
 				method: "GET",

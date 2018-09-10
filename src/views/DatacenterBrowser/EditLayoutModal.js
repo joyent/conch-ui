@@ -33,7 +33,7 @@ const SaveEditButton = {
 						e.target.classList.add("is-loading");
 						const r = new Request();
 						r
-							.request({
+							.requestWithToken({
 								method: "POST",
 								url: `/workspace/${
 									currentWorkspace().id
@@ -45,7 +45,7 @@ const SaveEditButton = {
 									Object.values(assignments).map(
 										assignment => {
 											if (assignment.assetTag)
-												return r.request({
+												return r.requestWithToken({
 													method: "POST",
 													url: `/device/${
 														assignment.id

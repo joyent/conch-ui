@@ -221,7 +221,7 @@ export default () => {
 			currentWorkspace.map(({ id }) => {
 				devices(null);
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/workspace/${id}/device`
 					})
@@ -247,7 +247,7 @@ export default () => {
 				rackCount = null;
 				rackRooms = null;
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/workspace/${id}/rack`
 					})
@@ -265,7 +265,7 @@ export default () => {
 
 				failingValidations = null;
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/workspace/${id}/validation_state?status=error,fail`
 					})
@@ -274,7 +274,7 @@ export default () => {
 					});
 
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: "/validation_plan"
 					})

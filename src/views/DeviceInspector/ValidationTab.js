@@ -133,13 +133,13 @@ const ValidationTab = () => {
 		oninit: ({ attrs: { activeDevice } }) => {
 			activeDevice.map(device => {
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: `/device/${device.id}/validation_state`
 					})
 					.then(validationStates);
 				r
-					.request({
+					.requestWithToken({
 						method: "GET",
 						url: "/validation"
 					})
