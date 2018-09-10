@@ -6,10 +6,49 @@ import moment from "moment";
 
 export default id => {
 	const r = new Request();
-	const o = {
+
+	const liftProperty = (object, attribute, key) => {
+		Object.defineProperty(object, key, {
+			get: () => {
+				const data = object[attribute];
+				return data()[key];
+			}
+		});
+	};
+
+	const getDeviceDetails = device => {
+		return r
+			.requestWithToken({
+				method: "GET",
+				url: "/device/" + id
+			})
+			.then(device.details);
+	};
+
+	const getDeviceSettings = device => {
+		return r
+			.requestWithToken({
+				method: "GET",
+				url: "/device/" + id + "/settings"
+			})
+			.then(res => {
+				// filter out non-tag settings
+				Object.entries(res)
+					.sort()
+					.map(([key, value]) => {
+						key.indexOf("tag.") === 0
+							? device.tags().push([key, value])
+							: (device.settings()[key] = value);
+					});
+				return res;
+			});
+	};
+
+	return {
 		id: id,
 		details: stream({}),
 		settings: stream({}),
+		tags: stream([]),
 		interfaces() {
 			if (!this.details().latest_report) {
 				return {};
@@ -52,56 +91,22 @@ export default id => {
 		hasBurnInStarted() {
 			return this.isFirmwareCurrent ? false : true;
 		},
-		tags() {
-			// create a new object based on settings filtered for anything that starts with 'tag.';
-			return Object.assign(
-				...Object.keys(this.settings())
-					.filter(key => key.indexOf("tag.") === 0)
-					.map(key => ({ [key]: object[key] })),
-				{}
-			);
-		},
 		ready() {
-            // capture device object so we can use it inside the functions below
+			// capture device object so we can use it inside the functions below
 			const device = this;
-			return device.getDeviceDetails().then(ret => {
+			return getDeviceDetails(device).then(ret => {
 				// "lift" all the properties into first class properties
 				Object.keys(ret).map(key =>
-					device.liftProperty("details", key)
+					liftProperty(device, "details", key)
 				);
 
-				device.getDeviceSettings().then(ret => {
+				getDeviceSettings(device).then(ret => {
 					Object.keys(ret).map(key =>
-						device.liftProperty("settings", key)
+						liftProperty(device, "settings", key)
 					);
 				});
-			});
-		},
-		getDeviceDetails() {
-			return r
-				.requestWithToken({
-					method: "GET",
-					url: "/device/" + id
-				})
-				.then(this.details);
-		},
-		getDeviceSettings() {
-			return r
-				.requestWithToken({
-					method: "GET",
-					url: "/device/" + id + "/settings"
-				})
-				.then(this.settings);
-		},
-		liftProperty(attribute, key) {
-			Object.defineProperty(this, key, {
-				get: () => {
-					const data = this[attribute];
-					return data()[key];
-				}
+                return true;
 			});
 		}
 	};
-
-	return o;
 };

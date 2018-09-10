@@ -38,12 +38,12 @@ export default () => {
 
 			// refresh the device, settings, and any dependent streams every 15
 			// seconds
-			intervalId = setInterval(() => {
-				activeDeviceId(activeDeviceId());
-			}, 15000);
+			//intervalId = setInterval(() => {
+			//	activeDeviceId(activeDeviceId());
+			//}, 15000);
 		},
 		onremove: () => {
-			clearInterval(intervalId);
+			//clearInterval(intervalId);
 		},
 		view: ({ attrs: { activeDeviceId } }) => {
 			return activeDevice() == null
