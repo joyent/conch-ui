@@ -33,8 +33,7 @@ import stream from "mithril/stream";
 
 import WorkspaceNotFound from "views/WorkspaceNotFound";
 import Login from "views/Login";
-
-import { conchApi } from "config";
+import Request from "util/Request";
 import User from "models/User"
 
 /// IIFE to prevent escaping scope
@@ -42,6 +41,7 @@ const dispatch = (() => {
 	const currentWorkspace = stream();
 	const workspaces = stream();
     const user = new User();
+    const r = new Request();
 
 	currentWorkspace.map(ws => {
 		if (ws) localStorage.setItem("currentWorkspace", ws.id);
@@ -61,12 +61,10 @@ const dispatch = (() => {
 				return Promise.resolve();
 			}
 		}
-
-		return m
+		return r
 			.request({
 				method: "GET",
-				url: `${conchApi}/workspace`,
-				withCredentials: true
+				url: "/workspace",
 			})
 			.then(ws => {
 				workspaces(ws);
@@ -97,11 +95,10 @@ const dispatch = (() => {
 
 	function setupSession(urlWorkspaceId) {
 		if (user.loggedIn()) return loadWorkspace(urlWorkspaceId);
-		return m
+		return r
 			.request({
 				method: "GET",
-				url: `${conchApi}/login`,
-				withCredentials: true,
+				url: "/login",
 				extract(xhr) {
 					return {
 						status: xhr.status,

@@ -1,8 +1,4 @@
 import m from "mithril";
-import { request } from "mithril";
-
-import { conchApi } from "config";
-
 import Spinner from "views/component/Spinner";
 import { ProgressIcon } from "views/DatacenterBrowser/Progress";
 

@@ -4,7 +4,10 @@ import search from "fuzzysearch";
 import sortBy from "lodash/sortBy";
 
 import Spinner from "views/component/Spinner";
-import { ProgressIcon, deviceToProgress } from "views/DatacenterBrowser/Progress";
+import {
+	ProgressIcon,
+	deviceToProgress
+} from "views/DatacenterBrowser/Progress";
 
 export default () => {
 	const deviceSearchText = stream("");

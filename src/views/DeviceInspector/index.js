@@ -2,11 +2,9 @@ import m from "mithril";
 import moment from "moment";
 import sortBy from "lodash/sortBy";
 import stream from "mithril/stream";
-import { request } from "mithril";
+import Request from "util/Request";
 import countBy from "lodash/countBy";
 import groupBy from "lodash/groupBy";
-
-import { conchApi } from "config";
 
 import { RadialProgress, Spinner } from "views/component";
 
@@ -23,23 +21,25 @@ export default () => {
 	const deviceSettings = stream();
 	let deviceLoading = true;
 	let intervalId;
-
+	const r = new Request();
 	return {
 		oninit: ({ attrs: { activeDeviceId } }) => {
 			activeDeviceId.map(deviceId => {
 				if (deviceId == null) return;
-				request({
-					method: "GET",
-					url: `${conchApi}/device/${deviceId}`,
-					withCredentials: true
-				}).then(res => {
-					activeDevice(res);
-				});
-				request({
-					method: "GET",
-					url: `${conchApi}/device/${deviceId}/settings`,
-					withCredentials: true
-				}).then(deviceSettings);
+				r
+					.request({
+						method: "GET",
+						url: `/device/${deviceId}`
+					})
+					.then(res => {
+						activeDevice(res);
+					});
+				r
+					.request({
+						method: "GET",
+						url: `/device/${deviceId}/settings`
+					})
+					.then(deviceSettings);
 			});
 
 			// refresh the device, settings, and any dependent streams every 15

@@ -1,5 +1,5 @@
 import User from "models/User";
-jest.mock('util/Request');
+jest.mock("util/Request");
 
 test("user throws on failure", () => {
 	expect.assertions(1);

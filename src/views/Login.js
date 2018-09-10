@@ -1,6 +1,5 @@
 import m from "mithril";
 
-import { conchApi } from "config";
 import User from "models/User";
 
 export default () => {

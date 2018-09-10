@@ -1,7 +1,6 @@
 import m from "mithril";
 import stream from "mithril/stream";
-import { request } from "mithril";
-import { conchApi } from "config";
+import Request from "util/Request";
 
 import { Spinner, ViewTitleHero } from "views/component";
 
@@ -216,73 +215,78 @@ export default () => {
 			)
 	};
 
+	const r = new Request();
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
 			currentWorkspace.map(({ id }) => {
 				devices(null);
-				request({
-					method: "GET",
-					url: `${conchApi}/workspace/${id}/device`,
-					withCredentials: true
-				}).then(res => {
-					devices(
-						res.sort((a, b) => {
-							if (a.id < b.id) {
-								return -1;
-							}
-							if (a.id > b.id) {
-								return 1;
-							}
-						})
-					);
-					const newProgress = { pass: 0, total: 0 };
-					devices().forEach(device => {
-						if (device.health === "PASS") newProgress.pass++;
-						newProgress.total++;
+				r
+					.request({
+						method: "GET",
+						url: `/workspace/${id}/device`
+					})
+					.then(res => {
+						devices(
+							res.sort((a, b) => {
+								if (a.id < b.id) {
+									return -1;
+								}
+								if (a.id > b.id) {
+									return 1;
+								}
+							})
+						);
+						const newProgress = { pass: 0, total: 0 };
+						devices().forEach(device => {
+							if (device.health === "PASS") newProgress.pass++;
+							newProgress.total++;
+						});
+						progress(newProgress);
 					});
-					progress(newProgress);
-				});
 
 				rackCount = null;
 				rackRooms = null;
-				request({
-					method: "GET",
-					url: `${conchApi}/workspace/${id}/rack`,
-					withCredentials: true
-				}).then(res => {
-					// sort and assign the rack rooms
-					rackCount = 0;
-					rackRooms = Object.keys(res)
-						.sort()
-						.reduce((acc, room) => {
-							acc[room] = res[room];
-							rackCount += res[room].length;
-							return acc;
-						}, {});
-				});
+				r
+					.request({
+						method: "GET",
+						url: `/workspace/${id}/rack`
+					})
+					.then(res => {
+						// sort and assign the rack rooms
+						rackCount = 0;
+						rackRooms = Object.keys(res)
+							.sort()
+							.reduce((acc, room) => {
+								acc[room] = res[room];
+								rackCount += res[room].length;
+								return acc;
+							}, {});
+					});
 
 				failingValidations = null;
-				request({
-					method: "GET",
-					url: `${conchApi}/workspace/${id}/validation_state?status=error,fail`,
-					withCredentials: true
-				}).then(res => {
-					failingValidations = res;
-				});
+				r
+					.request({
+						method: "GET",
+						url: `/workspace/${id}/validation_state?status=error,fail`
+					})
+					.then(res => {
+						failingValidations = res;
+					});
 
-				request({
-					method: "GET",
-					url: `${conchApi}/validation_plan`,
-					withCredentials: true
-				}).then(res => {
-					validationPlanIdToName = res.reduce(
-						(acc, validationPlan) => {
-							acc[validationPlan.id] = validationPlan.name;
-							return acc;
-						},
-						{}
-					);
-				});
+				r
+					.request({
+						method: "GET",
+						url: "/validation_plan"
+					})
+					.then(res => {
+						validationPlanIdToName = res.reduce(
+							(acc, validationPlan) => {
+								acc[validationPlan.id] = validationPlan.name;
+								return acc;
+							},
+							{}
+						);
+					});
 			});
 
 			m.route.param("deviceId") &&

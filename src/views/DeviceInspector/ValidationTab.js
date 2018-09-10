@@ -1,11 +1,9 @@
 import m from "mithril";
 import sortBy from "lodash/sortBy";
 import stream from "mithril/stream";
-import { request } from "mithril";
+import Request from "util/Request";
 import countBy from "lodash/countBy";
 import groupBy from "lodash/groupBy";
-
-import { conchApi } from "config";
 
 import { Spinner } from "views/component";
 
@@ -130,20 +128,22 @@ const ValidationTab = () => {
 	});
 
 	const revealDetails = {};
-
+	const r = new Request();
 	return {
 		oninit: ({ attrs: { activeDevice } }) => {
 			activeDevice.map(device => {
-				request({
-					method: "GET",
-					url: `${conchApi}/device/${device.id}/validation_state`,
-					withCredentials: true
-				}).then(validationStates);
-				request({
-					method: "GET",
-					url: `${conchApi}/validation`,
-					withCredentials: true
-				}).then(validations);
+				r
+					.request({
+						method: "GET",
+						url: `/device/${device.id}/validation_state`
+					})
+					.then(validationStates);
+				r
+					.request({
+						method: "GET",
+						url: "/validation"
+					})
+					.then(validations);
 			});
 		},
 		view: ({ attrs: { activeDevice } }) => {

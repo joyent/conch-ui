@@ -1,8 +1,6 @@
 import m from "mithril";
 import stream from "mithril/stream";
-import { request } from "mithril";
-
-import { conchApi } from "config";
+import Request from "util/Request";
 
 import Spinner from "views/component/Spinner";
 import { ProgressIcon } from "views/DatacenterBrowser/Progress";
@@ -33,36 +31,40 @@ const SaveEditButton = {
 					duplicateSerials(duplicates);
 					if (Object.keys(duplicateSerials()).length === 0) {
 						e.target.classList.add("is-loading");
-						request({
-							method: "POST",
-							url: `${conchApi}/workspace/${
-								currentWorkspace().id
-							}/rack/${activeRack().id}/layout`,
-							data: layout,
-							withCredentials: true
-						}).then(res => {
-							Promise.all(
-								Object.values(assignments).map(assignment => {
-									if (assignment.assetTag)
-										return request({
-											method: "POST",
-											url: `${conchApi}/device/${
-												assignment.id
-											}/asset_tag`,
-											data: {
-												asset_tag: assignment.assetTag
-											},
-											background: true,
-											withCredentials: true
-										});
-									else return Promise.resolve();
-								})
-							).then(() => {
-								editLayout(false);
-								activeRack(activeRack());
-								m.redraw();
+						const r = new Request();
+						r
+							.request({
+								method: "POST",
+								url: `/workspace/${
+									currentWorkspace().id
+								}/rack/${activeRack().id}/layout`,
+								data: layout
+							})
+							.then(res => {
+								Promise.all(
+									Object.values(assignments).map(
+										assignment => {
+											if (assignment.assetTag)
+												return r.request({
+													method: "POST",
+													url: `/device/${
+														assignment.id
+													}/asset_tag`,
+													data: {
+														asset_tag:
+															assignment.assetTag
+													},
+													background: true
+												});
+											else return Promise.resolve();
+										}
+									)
+								).then(() => {
+									editLayout(false);
+									activeRack(activeRack());
+									m.redraw();
+								});
 							});
-						});
 					}
 				}
 			},

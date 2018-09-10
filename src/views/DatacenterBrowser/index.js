@@ -1,9 +1,7 @@
 import m from "mithril";
 import search from "fuzzysearch";
 import stream from "mithril/stream";
-import { request } from "mithril";
-
-import { conchApi } from "config";
+import Request from "util/Request";
 
 import { Spinner, ViewTitleHero } from "views/component/";
 
@@ -67,22 +65,24 @@ export default () => {
 
 	const searchedDevice = stream();
 	const highlightDeviceId = stream();
+	const r = new Request();
 
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
 			// side-effect: load the rack whenever activeRack updates
 			activeRack.map(rack => {
 				rackLoading(true);
-				request({
-					method: "GET",
-					url: `${conchApi}/workspace/${currentWorkspace().id}/rack/${
-						rack.id
-					}`,
-					withCredentials: true
-				}).then(res => {
-					rackLayout(res);
-					rackLoading(false);
-				});
+				r
+					.request({
+						method: "GET",
+						url: `/workspace/${currentWorkspace().id}/rack/${
+							rack.id
+						}`
+					})
+					.then(res => {
+						rackLayout(res);
+						rackLoading(false);
+					});
 			});
 
 			m.route.param("roomName") &&
@@ -118,59 +118,62 @@ export default () => {
 				else m.route.set(`${routePrefix}/device`);
 			});
 			currentWorkspace.map(({ id }) => {
-				request({
-					method: "GET",
-					url: `${conchApi}/workspace/${id}/device`,
-					withCredentials: true
-				}).then(devices => {
-					// sort by ID
-					devices.sort((a, b) => {
-						if (a.id < b.id) {
-							return -1;
-						}
-						if (a.id > b.id) {
-							return 1;
-						}
-						return 0;
+				r
+					.request({
+						method: "GET",
+						url: `/workspace/${id}/device`
+					})
+					.then(devices => {
+						// sort by ID
+						devices.sort((a, b) => {
+							if (a.id < b.id) {
+								return -1;
+							}
+							if (a.id > b.id) {
+								return 1;
+							}
+							return 0;
+						});
+
+						workspaceDevices(devices);
 					});
 
-					workspaceDevices(devices);
-				});
-
-				request({
-					method: "GET",
-					url: `${conchApi}/workspace/${id}/rack`,
-					withCredentials: true
-				}).then(res => {
-					// transform the response in to a list of rack rooms (from than
-					// a tree-like object) and compute the 'progress' of each room.
-					rackRooms(
-						Object.keys(res)
-							.sort()
-							.reduce((acc, name) => {
-								let racks = res[name];
-								acc.push({
-									name,
-									racks,
-									progress: roomToProgress(racks)
-								});
-								return acc;
-							}, [])
-					);
-				});
+				r
+					.request({
+						method: "GET",
+						url: `/workspace/${id}/rack`
+					})
+					.then(res => {
+						// transform the response in to a list of rack rooms (from than
+						// a tree-like object) and compute the 'progress' of each room.
+						rackRooms(
+							Object.keys(res)
+								.sort()
+								.reduce((acc, name) => {
+									let racks = res[name];
+									acc.push({
+										name,
+										racks,
+										progress: roomToProgress(racks)
+									});
+									return acc;
+								}, [])
+						);
+					});
 			});
 
 			searchedDevice.map(device => {
-				request({
-					method: "GET",
-					url: `${conchApi}/device/${device.id}/location`,
-					withCredentials: true
-				}).then(deviceLoc => {
-					activeRoomName(deviceLoc.datacenter.name);
-					// delay to prevent a race in setting the route
-					setTimeout(() => activeRackId(deviceLoc.rack.id), 10);
-					highlightDeviceId(device.id);
-				});
+				r
+					.request({
+						method: "GET",
+						url: `/device/${device.id}/location`
+					})
+					.then(deviceLoc => {
+						activeRoomName(deviceLoc.datacenter.name);
+						// delay to prevent a race in setting the route
+						setTimeout(() => activeRackId(deviceLoc.rack.id), 10);
+						highlightDeviceId(device.id);
+					});
 			});
 		},
 		view: ({ attrs: { currentWorkspace } }) => {

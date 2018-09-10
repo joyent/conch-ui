@@ -1,7 +1,5 @@
 import m from "mithril";
 import stream from "mithril/stream";
-import { conchApi } from "config";
-import { request } from "mithril";
 
 export default () => {
 	const activeItem = stream();
