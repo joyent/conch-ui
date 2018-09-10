@@ -2,11 +2,11 @@ import m from "mithril";
 import stream from "mithril/stream";
 import search from "fuzzysearch";
 
-import Spinner from "../component/Spinner";
+import Spinner from "views/component/Spinner";
 
-import LayoutTable from "./LayoutTable";
-import EditLayoutModal from "./EditLayoutModal";
-import { deviceToProgress } from "./Progress";
+import LayoutTable from "views/DatacenterBrowser/LayoutTable";
+import EditLayoutModal from "views/DatacenterBrowser/EditLayoutModal";
+import { deviceToProgress } from "views/DatacenterBrowser/Progress";
 
 export default () => {
 	const deviceSearchText = stream("");

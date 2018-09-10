@@ -1,22 +1,20 @@
 import m from "mithril";
 import search from "fuzzysearch";
 import stream from "mithril/stream";
-import { request } from "mithril";
+import Request from "util/Request";
 import keyBy from "lodash/keyBy";
 import sortBy from "lodash/keyBy";
 
-import { conchApi } from "config";
+import { Spinner, ViewTitleHero } from "views/component/";
 
-import { Spinner, ViewTitleHero } from "../component/";
-
-import DevicesPanel from "./DevicesPanel";
-import DeviceInspector from "../DeviceInspector";
+import DevicesPanel from "views/Devices/DevicesPanel";
+import DeviceInspector from "views/DeviceInspector";
 
 export default () => {
 	let workspaceDevices = stream();
 	let hardwareProductLookup;
 	const activeDeviceId = stream();
-
+	const r = new Request();
 	return {
 		oninit: ({ attrs: { currentWorkspace } }) => {
 			activeDeviceId.map(deviceId => {
@@ -36,42 +34,44 @@ export default () => {
 			m.route.param("deviceId") &&
 				activeDeviceId(m.route.param("deviceId"));
 
-			request({
-				method: "GET",
-				url: `${conchApi}/hardware_product`,
-				withCredentials: true
-			}).then(hardwareProducts => {
-				hardwareProductLookup = keyBy(hardwareProducts, "id");
-			});
+			r
+				.requestWithToken({
+					method: "GET",
+					url: "/hardware_product"
+				})
+				.then(hardwareProducts => {
+					hardwareProductLookup = keyBy(hardwareProducts, "id");
+				});
 
 			currentWorkspace.map(({ id }) => {
 				// drop the previous stream
 				workspaceDevices = stream();
-				request({
-					method: "GET",
-					url: `${conchApi}/workspace/${id}/device`,
-					withCredentials: true
-				}).then(devices => {
-					let foundActiveDevice = false;
-					// sort and attempt to find the currently active device ID
-					devices.sort((a, b) => {
-						if (
-							activeDeviceId() != null &&
-							(activeDeviceId() === a.id ||
-								activeDeviceId() === b.id)
-						)
-							foundActiveDevice = true;
-						if (a.id < b.id) {
-							return -1;
-						}
-						if (a.id > b.id) {
-							return 1;
-						}
-						return 0;
+				r
+					.requestWithToken({
+						method: "GET",
+						url: `/workspace/${id}/device`
+					})
+					.then(devices => {
+						let foundActiveDevice = false;
+						// sort and attempt to find the currently active device ID
+						devices.sort((a, b) => {
+							if (
+								activeDeviceId() != null &&
+								(activeDeviceId() === a.id ||
+									activeDeviceId() === b.id)
+							)
+								foundActiveDevice = true;
+							if (a.id < b.id) {
+								return -1;
+							}
+							if (a.id > b.id) {
+								return 1;
+							}
+							return 0;
+						});
+						workspaceDevices(devices);
+						if (!foundActiveDevice) activeDeviceId(null);
 					});
-					workspaceDevices(devices);
-					if (!foundActiveDevice) activeDeviceId(null);
-				});
 			});
 		},
 		view: ({ attrs: { currentWorkspace } }) => {

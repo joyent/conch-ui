@@ -2,8 +2,8 @@ import m from "mithril";
 import stream from "mithril/stream";
 import search from "fuzzysearch";
 
-import Spinner from "../component/Spinner";
-import { ProgressIcon, rackToProgress } from "./Progress";
+import Spinner from "views/component/Spinner";
+import { ProgressIcon, rackToProgress } from "views/DatacenterBrowser/Progress";
 
 export default () => {
 	const rackFilterText = stream("");
