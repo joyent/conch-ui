@@ -10,11 +10,15 @@ import { Spinner, ViewTitleHero } from "views/component/";
 import DevicesPanel from "views/Devices/DevicesPanel";
 import DeviceInspector from "views/DeviceInspector";
 
+import HardwareProducts from "models/HardwareProduct";
+import Workspace from "models/Workspace";
+
 export default () => {
 	let workspaceDevices = stream();
 	let hardwareProductLookup;
 	const activeDeviceId = stream();
-	const r = new Request();
+	const hardwareProducts = new HardwareProducts();
+
 	return {
 		oninit: ({ attrs: { currentWorkspace } }) => {
 			activeDeviceId.map(deviceId => {
@@ -33,45 +37,30 @@ export default () => {
 
 			m.route.param("deviceId") &&
 				activeDeviceId(m.route.param("deviceId"));
-
-			r
-				.requestWithToken({
-					method: "GET",
-					url: "/hardware_product"
-				})
-				.then(hardwareProducts => {
-					hardwareProductLookup = keyBy(hardwareProducts, "id");
-				});
+			hardwareProducts.get().then(hardwareProducts => {
+				hardwareProductLookup = keyBy(hardwareProducts, "id");
+			});
 
 			currentWorkspace.map(({ id }) => {
 				// drop the previous stream
 				workspaceDevices = stream();
-				r
-					.requestWithToken({
-						method: "GET",
-						url: `/workspace/${id}/device`
-					})
-					.then(devices => {
-						let foundActiveDevice = false;
-						// sort and attempt to find the currently active device ID
-						devices.sort((a, b) => {
-							if (
-								activeDeviceId() != null &&
-								(activeDeviceId() === a.id ||
-									activeDeviceId() === b.id)
-							)
-								foundActiveDevice = true;
-							if (a.id < b.id) {
-								return -1;
-							}
-							if (a.id > b.id) {
-								return 1;
-							}
-							return 0;
-						});
-						workspaceDevices(devices);
-						if (!foundActiveDevice) activeDeviceId(null);
+				const workspace = new Workspace(id);
+				workspace.getDevices().then(devices => {
+					let foundActiveDevice = false;
+					// sort and attempt to find the currently active device ID
+					devices.sort((a, b) => {
+						if (
+							activeDeviceId() != null &&
+							(activeDeviceId() === a.id ||
+								activeDeviceId() === b.id)
+						)
+							foundActiveDevice = true;
+						// negative == a, 0, postiive == b
+						return a.id - b.id;
 					});
+					workspaceDevices(devices);
+					if (!foundActiveDevice) activeDeviceId(null);
+				});
 			});
 		},
 		view: ({ attrs: { currentWorkspace } }) => {
