@@ -127,7 +127,7 @@ export default () => {
 
 				rackCount = null;
 				rackRooms = null;
-				workspace.getRacks().then(res => {
+				workspace.getAllRacks().then(res => {
 					// sort and assign the rack rooms
 					rackCount = 0;
 					rackRooms = Object.keys(res)

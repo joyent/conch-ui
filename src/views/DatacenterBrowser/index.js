@@ -11,7 +11,6 @@ import RoomPanel from "views/DatacenterBrowser/RoomPanel";
 import { roomToProgress } from "views/DatacenterBrowser/Progress";
 
 import Workspace from "models/Workspace";
-import Racks from "models/Rack";
 import Devices from "models/Device";
 
 export default () => {
@@ -72,10 +71,10 @@ export default () => {
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
 			// side-effect: load the rack whenever activeRack updates
-			const racks = new Racks(currentWorkspace().id);
+			const workspace = new Workspace(currentWorkspace().id);
 			activeRack.map(rack => {
 				rackLoading(true);
-				racks.loadRack(rack.id).then(res => {
+				workspace.getRackById(rack.id).then(res => {
 					rackLayout(res);
 					rackLoading(false);
 				});
@@ -121,7 +120,7 @@ export default () => {
 					workspaceDevices(devices);
 				});
 
-				workspace.getRacks().then(res => {
+				workspace.getAllRacks().then(res => {
 					// transform the response in to a list of rack rooms (from than
 					// a tree-like object) and compute the 'progress' of each room.
 					rackRooms(
