@@ -12,6 +12,7 @@ import Tabs from "views/DeviceInspector/Tabs";
 import NetworkingTab from "views/DeviceInspector/NetworkingTab";
 import OverviewTab from "views/DeviceInspector/OverviewTab";
 import SettingsTab from "views/DeviceInspector/SettingsTab";
+import TagsTab from "views/DeviceInspector/TagsTab";
 import StorageTab from "views/DeviceInspector/StorageTab";
 import ValidationTab from "views/DeviceInspector/ValidationTab";
 import ReportTab from "views/DeviceInspector/ReportTab";
@@ -59,6 +60,10 @@ export default () => {
 								{
 									title: "Settings",
 									component: SettingsTab
+								},
+                                {
+									title: "Tags",
+									component: TagsTab
 								},
 								{
 									title: "Storage",

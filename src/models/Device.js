@@ -29,7 +29,7 @@ export default id => {
 		settings: stream({}),
 		tags: stream([]),
         addTag(tuple) {
-            this.tags.push(tuple);
+            this.tags().push(tuple);
         },
 		getLocation() {
 			r.requestWithToken({
