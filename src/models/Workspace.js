@@ -26,12 +26,6 @@ export default id => {
 				url: `/workspace/${id}/rack`
 			});
 		},
-		getFailingValidations() {
-			return r.requestWithToken({
-				method: "GET",
-				url: `/workspace/${id}/validation_state?status=error,fail`
-			});
-		},
 		setRackLayout(rackId, layout) {
 			return r.requestWithToken({
 				method: "POST",
