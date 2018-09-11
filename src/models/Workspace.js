@@ -20,11 +20,25 @@ export default id => {
 				url: `/workspace/${id}/device`
 			});
 		},
-		getRacks() {
+		getAllRacks() {
 			return r.requestWithToken({
 				method: "GET",
 				url: `/workspace/${id}/rack`
 			});
+		},
+		getRackById(rackId) {
+			return r
+				.requestWithToken({
+					method: "GET",
+					url: `/workspace/${id}/rack/${rackId}`
+				})
+				.then(res => {
+					res.slots = res.slots.reduce((obj, curr) => {
+						obj[curr.rack_unit_start] = curr;
+						return obj;
+					}, {});
+					return Promise.resolve(res);
+				});
 		},
 		setRackLayout(rackId, layout) {
 			return r.requestWithToken({
