@@ -1,6 +1,5 @@
 import m from "mithril";
 import stream from "mithril/stream";
-import Request from "util/Request";
 
 import Spinner from "views/component/Spinner";
 import { ProgressIcon } from "views/DatacenterBrowser/Progress";
@@ -31,32 +30,22 @@ const SaveEditButton = {
 					duplicateSerials(duplicates);
 					if (Object.keys(duplicateSerials()).length === 0) {
 						e.target.classList.add("is-loading");
-						const r = new Request();
-						r
-							.requestWithToken({
-								method: "POST",
-								url: `/workspace/${
-									currentWorkspace().id
-								}/rack/${activeRack().id}/layout`,
-								data: layout
-							})
+						const workspace = new Workspace(currentWorkspace().id);
+						worspace
+							.setRackLayout(activeRack().id, layout)
 							.then(res => {
 								Promise.all(
 									Object.values(assignments).map(
 										assignment => {
-											if (assignment.assetTag)
-												return r.requestWithToken({
-													method: "POST",
-													url: `/device/${
-														assignment.id
-													}/asset_tag`,
-													data: {
-														asset_tag:
-															assignment.assetTag
-													},
-													background: true
-												});
-											else return Promise.resolve();
+											if (!assignment.assetTag)
+												return Promise.resolve();
+
+											const device = new Device(
+												assigment.id
+											);
+											return device.setAssetTag(
+												assignment.assetTag
+											);
 										}
 									)
 								).then(() => {

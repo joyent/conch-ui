@@ -1,11 +1,14 @@
 import m from "mithril";
 import sortBy from "lodash/sortBy";
 import stream from "mithril/stream";
-import Request from "util/Request";
 import countBy from "lodash/countBy";
 import groupBy from "lodash/groupBy";
 
 import { Spinner } from "views/component";
+
+import Request from "util/Request";
+import Device from "models/Device";
+import Validations from "models/Validations";
 
 const ValidationRow = () => {
 	let revealDetails = false;
@@ -128,22 +131,14 @@ const ValidationTab = () => {
 	});
 
 	const revealDetails = {};
-	const r = new Request();
 	return {
 		oninit: ({ attrs: { activeDevice } }) => {
-			activeDevice.map(device => {
-				r
-					.requestWithToken({
-						method: "GET",
-						url: `/device/${device.id}/validation_state`
-					})
-					.then(validationStates);
-				r
-					.requestWithToken({
-						method: "GET",
-						url: "/validation"
-					})
-					.then(validations);
+			activeDevice.map(d => {
+				const device = new Device(d.id);
+				const validationList = new Validations();
+
+				device.getDeviceValidations().then(validationStates);
+				validationList.get().then(validations);
 			});
 		},
 		view: ({ attrs: { activeDevice } }) => {

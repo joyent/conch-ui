@@ -34,14 +34,15 @@ import stream from "mithril/stream";
 import WorkspaceNotFound from "views/WorkspaceNotFound";
 import Login from "views/Login";
 import Request from "util/Request";
-import User from "models/User"
+import User from "models/User";
+
+import Workspaces from "models/Workspace";
 
 /// IIFE to prevent escaping scope
 const dispatch = (() => {
 	const currentWorkspace = stream();
 	const workspaces = stream();
-    const user = new User();
-    const r = new Request();
+	const user = new User();
 
 	currentWorkspace.map(ws => {
 		if (ws) localStorage.setItem("currentWorkspace", ws.id);
@@ -61,66 +62,41 @@ const dispatch = (() => {
 				return Promise.resolve();
 			}
 		}
-		return r
-			.requestWithToken({
-				method: "GET",
-				url: "/workspace",
-			})
-			.then(ws => {
-				workspaces(ws);
+		const workspaceList = new Workspaces('');
+		return workspaceList.getAll().then(ws => {
+			workspaces(ws);
 
-				// use the workspace ID encoded in the URL if present. Reject and
-				// direct to error page if not found
-				if (urlWorkspaceId) {
-					let found = ws.find(w => w.id === urlWorkspaceId);
-					if (!found)
-						return Promise.reject(
-							WorkspaceNotFound(urlWorkspaceId)
-						);
-					currentWorkspace(found);
-				} else {
-					let current;
-					// try to use current workspace in localStorage
-					let storedId = localStorage.getItem("currentWorkspace");
-					if (storedId) current = ws.find(w => w.id === storedId);
+			// use the workspace ID encoded in the URL if present. Reject and
+			// direct to error page if not found
+			if (urlWorkspaceId) {
+				let found = ws.find(w => w.id === urlWorkspaceId);
+				if (!found)
+					return Promise.reject(WorkspaceNotFound(urlWorkspaceId));
+				currentWorkspace(found);
+			} else {
+				let current;
+				// try to use current workspace in localStorage
+				let storedId = localStorage.getItem("currentWorkspace");
+				if (storedId) current = ws.find(w => w.id === storedId);
 
-					// if none stored, try to use GLOBAL workspace if available
-					if (!current) current = ws.find(w => w.name === "GLOBAL");
-					// fallback on first workspace in list
-					if (!current) current = ws[0];
-					currentWorkspace(current);
-				}
-			});
+				// if none stored, try to use GLOBAL workspace if available
+				if (!current) current = ws.find(w => w.name === "GLOBAL");
+				// fallback on first workspace in list
+				if (!current) current = ws[0];
+				currentWorkspace(current);
+			}
+		});
 	}
 
 	function setupSession(urlWorkspaceId) {
 		if (user.loggedIn()) return loadWorkspace(urlWorkspaceId);
-        // TODO rewrite this to use model/User
-		return r
-			.request({
-				method: "GET",
-				url: "/login",
-				extract(xhr) {
-					return {
-						status: xhr.status,
-						body: xhr.response ? JSON.parse(xhr.response) : null
-					};
-				}
-			})
-			.catch(e => {
-				if (e.status === 401) {
-					return Promise.reject();
-				} else {
-					throw e;
-				}
-			})
-			.then(
-				() => {
-					user.loggedIn(true);
-					return loadWorkspace(urlWorkspaceId);
-				},
-				() => Promise.reject(Login)
-			);
+		// TODO rewrite this to use model/User
+		return user.refreshToken().then(
+			() => {
+				return loadWorkspace(urlWorkspaceId);
+			},
+			() => Promise.reject(Login)
+		);
 	}
 
 	function dispatch(root, routes) {
@@ -140,7 +116,7 @@ const dispatch = (() => {
 									m(comp.view || comp, {
 										currentWorkspace,
 										workspaces,
-                                        user
+										user
 									})
 							};
 						},
@@ -164,7 +140,7 @@ const dispatch = (() => {
 								m(view, {
 									currentWorkspace,
 									workspaces,
-                                    user
+									user
 								})
 						  )
 						: vnode;

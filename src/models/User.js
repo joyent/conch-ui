@@ -23,7 +23,10 @@ export default () => {
 		},
 
 		refreshToken() {
-			return r.refreshToken();
+			return r.refreshToken().then(result => {
+				this.loggedIn(true);
+				return Promise.resolve(result);
+			});
 		},
 
 		logout() {

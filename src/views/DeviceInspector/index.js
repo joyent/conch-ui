@@ -16,30 +16,21 @@ import StorageTab from "views/DeviceInspector/StorageTab";
 import ValidationTab from "views/DeviceInspector/ValidationTab";
 import ReportTab from "views/DeviceInspector/ReportTab";
 
+import Device from "models/Device";
+
 export default () => {
 	const activeDevice = stream();
 	const deviceSettings = stream();
 	let deviceLoading = true;
 	let intervalId;
-	const r = new Request();
+
 	return {
 		oninit: ({ attrs: { activeDeviceId } }) => {
 			activeDeviceId.map(deviceId => {
 				if (deviceId == null) return;
-				r
-					.requestWithToken({
-						method: "GET",
-						url: `/device/${deviceId}`
-					})
-					.then(res => {
-						activeDevice(res);
-					});
-				r
-					.requestWithToken({
-						method: "GET",
-						url: `/device/${deviceId}/settings`
-					})
-					.then(deviceSettings);
+				const device = new Device(deviceId);
+				device.getDeviceDetails().then(activeDevice);
+				device.getDeviceSettings().then(deviceSettings);
 			});
 
 			// refresh the device, settings, and any dependent streams every 15
