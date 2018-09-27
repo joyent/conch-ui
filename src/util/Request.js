@@ -9,7 +9,7 @@ export default () => {
 			localStorage.setItem("token", token);
             return Promise.resolve(true);
 		},
-		clearToken(token) {
+		clearToken() {
 			return localStorage.removeItem("token");
 		},
 		request(args) {
@@ -19,7 +19,7 @@ export default () => {
 		requestWithToken(args) {
 			const token = this.getToken();
 			if (!token) {
-				throw "No Token!";
+				return Promise.reject(false);
 			}
 			// TODO add support for headers being passed in
 			args.headers = {
@@ -36,6 +36,7 @@ export default () => {
 					this.setToken(result.jwt_token);
                     return Promise.resolve(result.jwt_token);
 				}
+                this.clearToken();
 				return Promise.reject(false);
 			});
 		}
