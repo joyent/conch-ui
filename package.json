@@ -13,6 +13,7 @@
     "lodash": "^4.17.10",
     "mithril": "^1.1.3",
     "moment": "^2.22.1",
+    "patchinko": "^4.1.0",
     "popper.js": "^1.12.5",
     "tooltip.js": "^1.1.5"
   },

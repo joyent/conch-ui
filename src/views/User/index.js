@@ -50,15 +50,17 @@ const statusTiles = {
 		)
 };
 
-export default () => {
+export default update => {
 	return {
-		view: ({ attrs: { user } }) => {
+		name: "User",
+		layout: "Main",
+		view: ({ attrs: { model } }) => {
 			return [
 				m(ViewTitleHero, {
 					title: "User profile",
 					subtitle: "Update password and profile settings"
 				}),
-				m(statusTiles, { user })
+				m(statusTiles, { user: model.user })
 			];
 		}
 	};

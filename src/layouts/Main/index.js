@@ -1,23 +1,23 @@
 import m from "mithril";
 
-import Navbar from "layouts/Main/Navbar";
-import Sidebar from "layouts/Main/Sidebar";
+import NavbarComponent from "layouts/Main/Navbar";
+import SidebarComponent from "layouts/Main/Sidebar";
 
-export default {
-	view: ({ attrs, children: [contentView] }) => [
-		m(Navbar, attrs),
-		m(
-			".section",
+export default update => {
+	const sidebar = new SidebarComponent(update);
+	const navbar = new NavbarComponent(update);
+
+	return {
+		view: ({ attrs: { model }, children: [contentView] }) => [
+			m(navbar, { model }),
 			m(
-				".columns",
+				".section",
 				m(
-					".column.is-2",
-					m(Sidebar, {
-						user: attrs.user
-					})
-				),
-				m(".column.is-10", contentView)
+					".columns",
+					m(".column.is-2", m(sidebar, { model })),
+					m(".column.is-10", contentView)
+				)
 			)
-		)
-	]
+		]
+	};
 };

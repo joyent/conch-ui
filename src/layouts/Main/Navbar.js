@@ -1,5 +1,4 @@
 import m from "mithril";
-import keyBy from "lodash/keyBy";
 import sortBy from "lodash/sortBy";
 
 export default () => {
@@ -47,10 +46,15 @@ export default () => {
 	};
 
 	return {
-		view: ({ attrs: { currentWorkspace, workspaces } }) => {
-			const workspaceIdToWorkspace = keyBy(workspaces(), "id");
-
-			const workspaceGraph = workspaces().reduce(
+		oninit: ({ attrs: { model } }) => {
+			model.currentWorkspace = Object.values(model.workspaces).find(
+				w => w.name === "GLOBAL"
+			).id;
+		},
+		view: ({ attrs: { model } }) => {
+			const workspaceMap = model.workspaces;
+			const currentWorkspace = model.currentWorkspace;
+			const workspaceGraph = Object.values(workspaceMap).reduce(
 				(acc, workspace) => {
 					// global workspace
 					if (!workspace.parent_id) {
@@ -63,7 +67,7 @@ export default () => {
 					else acc.graph[workspace.parent_id] = [workspace];
 
 					// if the parent isn't present, then the workspace is a root
-					if (!workspaceIdToWorkspace[workspace.parent_id])
+					if (!workspaceMap[workspace.parent_id])
 						acc.roots.push(workspace);
 					return acc;
 				},
@@ -95,7 +99,10 @@ export default () => {
 						".navbar-end",
 						m(
 							".navbar-item.has-dropdown.is-hoverable",
-							m("a.navbar-link", currentWorkspace().name),
+							m(
+								"a.navbar-link",
+								workspaceMap[currentWorkspace].name
+							),
 							m(
 								".navbar-dropdown.is-right",
 								workspaceGraphLinks(workspaceGraph)
