@@ -19,6 +19,7 @@ export default () => {
 		requestWithToken(args) {
 			const token = this.getToken();
 			if (!token) {
+                console.log("No jwt. Cannot proceed.")
 				return Promise.reject(false);
 			}
 			// TODO add support for headers being passed in

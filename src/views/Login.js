@@ -1,9 +1,7 @@
 import m from "mithril";
 import stream from "mithril/stream";
-import keyBy from "lodash/keyBy";
 
 import User from "models/User";
-import Workspaces from "models/WorkspaceList";
 
 export default update => {
 	const badLoginAttempt = stream(false);
@@ -18,28 +16,22 @@ export default update => {
 			user
 				.login(emailAddress(), password())
 				.catch(() => {
-					e.target.classList.remove("is-loading");
 					badLoginAttempt(true);
 					password("");
 				})
-				.then(() => {
-					e.target.classList.remove("is-loading");
+				.then(auth => {
 					badLoginAttempt(false);
-					update({ loggedIn: true, hello: "world" });
+					update({ auth });
 				})
-				.then(() => {
-					Workspaces.getAll()
-						.then(wss => keyBy(wss, "id"))
-						.then(wss => update({ workspaces: wss }))
-						.then(() => {
-							m.route.set("/user");
-						});
-				});
-		}
+				.finally(() => e.target.classList.remove("is-loading"))
+				.then(actions.loadDefaultPage);
+		},
+		loadDefaultPage: () => m.route.set("/")
 	};
 
 	return {
 		name: "Login",
+		navigatingTo: () => {},
 		view({ attrs: { model } }) {
 			return m(
 				"section.hero.is-fullheight",

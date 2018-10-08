@@ -8,22 +8,24 @@ import StatusTilesComponent from "views/Status/StatusTiles";
 import { ViewTitleHero } from "views/component/";
 
 export default update => {
-    const statusTiles = new StatusTilesComponent(update);
-
+	const statusTiles = new StatusTilesComponent(update);
 	return {
-		oninit: ({ attrs: { model } }) => {
-			const cws = model.workspaces[model.currentWorkspace];
-			const ws = new Workspace(cws.id);
-			const getCount = rs =>
-				Object.values(rs).reduce((acc, r) => acc + r.length, 0);
-
-			if (!model.rooms)
+		name: "Status",
+		layout: true,
+		navigatingTo: ({ page, model }) => {
+            if (!model.currentWorkspace) return Promise.reject("No workspace");
+			const ws = new Workspace(model.currentWorkspace);
+			const getCount = racks =>
+				Object.values(racks).reduce(
+					(acc, rack) => acc + rack.length,
+					0
+				);
+			return Promise.all([
 				ws
 					.getRacks()
 					.then(r => ({ rackrooms: r, rackCount: getCount(r) }))
-					.then(rooms => update({ rooms }));
+					.then(rooms => update({ rooms })),
 
-			if (!model.devices)
 				ws
 					.getDevices()
 					.then(res => res.sort((a, b) => a.id - b.id))
@@ -33,12 +35,22 @@ export default update => {
 							progress[d.health]++;
 							progress.total++;
 						});
-						progress[percent] = progress.PASS / progress.total;
+						progress["percent"] = progress.PASS / progress.total;
 						return { devices, progress };
 					})
-					.then(devices => update({ devices }));
+					.then(devices => update({ devices }))
+			]);
 		},
 		view: ({ attrs: { model } }) => {
+			/*
+            console.log(model);
+            console.log(model.workspaces);
+			console.log(model.currentWorkspace);
+			console.log(
+				model.workspaces["496f76b4-8245-4d41-8d97-42fe988401c5"]
+			);
+			console.log(model.workspaces[model.currentWorkspace]);
+*/
 			const cws = model.workspaces[model.currentWorkspace];
 			return [
 				m(ViewTitleHero, {

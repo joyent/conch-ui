@@ -53,7 +53,7 @@ const statusTiles = {
 export default update => {
 	return {
 		name: "User",
-		layout: "Main",
+		layout: true,
 		view: ({ attrs: { model } }) => {
 			return [
 				m(ViewTitleHero, {

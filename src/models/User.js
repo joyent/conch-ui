@@ -6,7 +6,9 @@ import stream from "mithril/stream";
 export default () => {
 	const r = new Request();
 	return {
-		loggedIn: stream(false),
+		loggedIn() {
+			r.getToken() == null;
+		},
 		login(email, pass) {
 			return r
 				.request({

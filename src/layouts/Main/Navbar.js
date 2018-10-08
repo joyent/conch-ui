@@ -47,9 +47,10 @@ export default () => {
 
 	return {
 		oninit: ({ attrs: { model } }) => {
-			model.currentWorkspace = Object.values(model.workspaces).find(
-				w => w.name === "GLOBAL"
-			).id;
+			if (!model.currentWorkspace)
+				model.currentWorkspace = Object.values(model.workspaces).find(
+					w => w.name === "GLOBAL"
+				).id;
 		},
 		view: ({ attrs: { model } }) => {
 			const workspaceMap = model.workspaces;
