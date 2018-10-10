@@ -44,7 +44,7 @@ export default () => {
 
 		updatePassword(newPassword) {
 			return r
-				.request({
+				.requestWithToken({
 					method: "POST",
 					url: "/user/me/password",
 					data: { password: newPassword }
