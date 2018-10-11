@@ -5,6 +5,7 @@ import Spinner from "views/component/Spinner";
 import { ProgressIcon } from "views/DatacenterBrowser/Progress";
 
 import Workspace from "models/Workspace";
+import Device from "models/Device";
 
 const SaveEditButton = {
 	view: ({
@@ -37,19 +38,13 @@ const SaveEditButton = {
 							.setRackLayout(activeRack().id, layout)
 							.then(res => {
 								Promise.all(
-									Object.values(assignments).map(
-										assignment => {
-											if (!assignment.assetTag)
-												return Promise.resolve();
+									Object.values(assignments).map(a => {
+										if (!a.assetTag)
+											return Promise.resolve();
 
-											const device = new Device(
-												assigment.id
-											);
-											return device.setAssetTag(
-												assignment.assetTag
-											);
-										}
-									)
+										const device = new Device(a.id);
+										return device.setAssetTag(a.assetTag);
+									})
 								).then(() => {
 									editLayout(false);
 									activeRack(activeRack());
