@@ -11,7 +11,7 @@ import RoomPanel from "views/DatacenterBrowser/RoomPanel";
 import { roomToProgress } from "views/DatacenterBrowser/Progress";
 
 import Workspace from "models/Workspace";
-import Devices from "models/Device";
+import Device from "models/Device";
 
 export default () => {
 	const rackFilterText = stream("");

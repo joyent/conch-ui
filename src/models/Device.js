@@ -10,7 +10,7 @@ export default id => {
 	return {
 		id: id,
 		getLocation() {
-			r.requestWithToken({
+			return r.requestWithToken({
 				method: "GET",
 				url: `/device/${id}/location`
 			});
