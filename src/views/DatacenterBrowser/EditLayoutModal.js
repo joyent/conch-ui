@@ -4,6 +4,8 @@ import stream from "mithril/stream";
 import Spinner from "views/component/Spinner";
 import { ProgressIcon } from "views/DatacenterBrowser/Progress";
 
+import Workspace from "models/Workspace";
+
 const SaveEditButton = {
 	view: ({
 		attrs: {
@@ -31,7 +33,7 @@ const SaveEditButton = {
 					if (Object.keys(duplicateSerials()).length === 0) {
 						e.target.classList.add("is-loading");
 						const workspace = new Workspace(currentWorkspace().id);
-						worspace
+						workspace
 							.setRackLayout(activeRack().id, layout)
 							.then(res => {
 								Promise.all(
