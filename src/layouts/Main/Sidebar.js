@@ -1,6 +1,6 @@
 import m from "mithril";
 
-export default update => {
+export default ({ navigator, update }) => {
 	const actions = {
 		navigateTo: route => e => {
 			e.preventDefault;
@@ -16,8 +16,8 @@ export default update => {
 				{
 					// onupdate instead of oncreate required to update links
 					// when currentWorkspace changes
-                    onupdate: m.route.link,
-                    oncreate: m.route.link,
+					onupdate: m.route.link,
+					oncreate: m.route.link,
 					onclick: actions.navigateTo(route),
 					class: m.route.get().startsWith(route) > 0 && "is-active"
 				},

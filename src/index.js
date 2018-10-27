@@ -11,43 +11,88 @@ import StatusView from "views/Status";
 import User from "models/User";
 import UserView from "views/User";
 
-const LogoutView = update => ({
+import MainLayout from "layouts/Main";
+
+const LogoutView = (navigator, update) => ({
 	view: () => {
 		const user = new User();
 		user.logout().then(() => {
 			update(O);
-			m.route.set("/login");
+			navigator.navigateTo({ pageId: "Login" });
 		});
 	}
 });
 
 const DefaultRoute = model => ({
-	layout: false,
-	view: ({ attrs: { model } }) => {
-		if (!model.auth) return m.route.set("/login");
-		if (model.currentWorkspace) return m.route.set("/user");
-		return m.route.set(`/${model.currentWorkspace}/status`);
-	}
+	view: ({ attrs: { model } }) => navigator.loadDefaultPage(model)
 });
+
+const Navigator = ({ update }) => {
+	const layouts = {};
+	const pages = {};
+	const registerLayouts = newLayouts => O(layouts, newLayouts);
+	const registerPages = newPages => O(pages, newPages);
+
+	const getPage = model => pages[model.pageId];
+
+	const getLayout = model =>
+		getPage(model) && getPage(model).layout && layouts.DefaultLayout;
+
+	const navigateTo = (pageId, params) => {
+		const page = getPage({ pageId });
+		const layout = getLayout({ pageId });
+		let navigate = Promise.resolve(O({ pageId }, params));
+		if (layout && layout.navigate) navigate.then(layout.navigate);
+        navigate.then(d => console.log(d) && d);
+		if (page && page.navigate) navigate.then(page.navigate);
+        navigate.then(d => console.log(d) && d);
+		navigate.then(update);
+	};
+
+	const loadDefaultPage = model => {
+		if (!model.auth) return navigateTo("Login", model);
+		if (model.currentWorkspace) navigateTo("Status", model);
+		navigateTo("User", model);
+	};
+
+	return {
+		getLayout,
+		getPage,
+		loadDefaultPage,
+		navigateTo,
+		registerLayouts,
+		registerPages
+	};
+};
 
 const update = stream();
 
+const navigator = new Navigator({ update });
+
+navigator.registerLayouts({
+	DefaultLayout: new MainLayout({ navigator, update })
+});
+
+navigator.registerPages({
+	DefaultRoute,
+	Login: new LoginView({ navigator, update }),
+	Logout: new LogoutView({ navigator, update }),
+	Status: new StatusView({ navigator, update }),
+	User: new UserView({ navigator, update })
+});
+
 const app = new App({
 	update,
-	pages: {
-		Login: new LoginView(update),
-		Logout: new LogoutView(update),
-		Status: new StatusView(update),
-		User: new UserView(update)
-	}
+	navigator
 });
 
 const models = stream.scan(O, app.model(), update);
+models.map(model => m.render(document.body, m(app, { model })));
 
+/*
 const route = page => ({
 	onmatch: (params, path) => {
 		return app
-			.navigatingTo({ page, model: O(models(), { params, path }) })
 			.then(update)
 			.then(m(app, { page, model: models() }));
 	},
@@ -62,7 +107,6 @@ const authedRoute = page => ({
 			return Promise.reject();
 		}
 		return app
-			.navigatingTo({ page, model: O(models(), { params, path }) })
 			.then(update)
 			.then(m(app, { page, model: models() }));
 	},
@@ -70,12 +114,11 @@ const authedRoute = page => ({
 });
 
 m.route(document.body, "/", {
-	"/": route(DefaultRoute),
-	"/login": route(app.pages.Login),
-	"/logout": route(app.pages.Logout),
-	"/:wid/status": authedRoute(app.pages.Status),
-	"/:wid/status/device/:deviceId": authedRoute(app.pages.Status),
-	/*
+	"/": route("DefaultRoute"),
+	"/login": route("Login"),
+	"/logout": route("Logout"),
+	"/:wid/status": authedRoute("Status"),
+	"/:wid/status/device/:deviceId": authedRoute("Status"),
 	"/:wid/device": authedRoute(app.pages.Device),
 	"/:wid/device/:deviceId": authedRoute(app.pages.Device),
 	"/:wid/datacenter": authedRoute(app.pages.Datacenter),
@@ -86,6 +129,6 @@ m.route(document.body, "/", {
 	"/:wid/datacenter/:roomName/rack/:rackId/device/:deviceId": authedRoute(
 		app.pages.Datacenter
 	),
-    */
-	"/user": authedRoute(app.pages.User)
+	"/user": authedRoute("User")
 });
+    */

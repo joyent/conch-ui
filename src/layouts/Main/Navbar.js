@@ -1,7 +1,7 @@
 import m from "mithril";
 import sortBy from "lodash/sortBy";
 
-export default () => {
+export default ({navigator, update}) => {
 	let menuActive = false;
 
 	const WorkspaceLink = {
@@ -46,15 +46,11 @@ export default () => {
 	};
 
 	return {
-		oninit: ({ attrs: { model } }) => {
-			if (!model.currentWorkspace)
-				model.currentWorkspace = Object.values(model.workspaces).find(
-					w => w.name === "GLOBAL"
-				).id;
-		},
 		view: ({ attrs: { model } }) => {
+			console.log(JSON.parse(JSON.stringify(model)));
 			const workspaceMap = model.workspaces;
-			const currentWorkspace = model.currentWorkspace;
+			let currentWorkspace = model.currentWorkspace;
+
 			const workspaceGraph = Object.values(workspaceMap).reduce(
 				(acc, workspace) => {
 					// global workspace
@@ -74,6 +70,8 @@ export default () => {
 				},
 				{ roots: [], graph: {} }
 			);
+
+			console.log(JSON.parse(JSON.stringify(worksapceGraph)));
 
 			return m(
 				".navbar[role=navigation]",

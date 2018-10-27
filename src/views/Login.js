@@ -3,12 +3,12 @@ import stream from "mithril/stream";
 
 import User from "models/User";
 
-export default update => {
+export default ({ navigator, update }) => {
 	const badLoginAttempt = stream(false);
 	const emailAddress = stream();
 	const password = stream();
-
 	const user = new User();
+
 	const actions = {
 		login: e => {
 			e.preventDefault();
@@ -21,17 +21,16 @@ export default update => {
 				})
 				.then(auth => {
 					badLoginAttempt(false);
-					update({ auth });
+					return update({ auth });
 				})
 				.finally(() => e.target.classList.remove("is-loading"))
-				.then(actions.loadDefaultPage);
-		},
-		loadDefaultPage: () => m.route.set("/")
+				.then(navigator.loadDefaultPage);
+		}
 	};
 
 	return {
 		name: "Login",
-		navigatingTo: () => {},
+		layout: false,
 		view({ attrs: { model } }) {
 			return m(
 				"section.hero.is-fullheight",
