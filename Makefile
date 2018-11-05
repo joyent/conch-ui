@@ -32,6 +32,10 @@ config.js:
 	@node_modules/.bin/babel config.js.dist  > src/config.js
 	@ln -s src/config.js config.js
 
+.PHONY: docker_test
+docker_test: ## Run the test suite inside docker
+	docker/test.bash
+
 .PHONY: help
 help: ## Display this help message
 	@echo "GNU make(1) targets:"
