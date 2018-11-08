@@ -1,6 +1,8 @@
 import Request from "util/Request";
 import m from "mithril";
 
+jest.mock("mithril");
+
 test("request can make a plain request", () => {
 	m.request.mockReturnValueOnce(
 		new Promise(resolve => {
