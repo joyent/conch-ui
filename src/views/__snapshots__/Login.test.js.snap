@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login component default title should be 'Page' 1`] = `
+"<section class=\\"hero is-fullheight\\">
+  <div class=
+  \\"hero-body container has-text-centered column is-4 is-offset-4\\">
+    <div class=\\"box\\">
+      <h3 class=\\"title\\">
+        Login to Conch
+      </h3>
+      <form>
+        <div class=\\"field\\">
+          <div class=\\"control\\">
+            <input type=\\"email\\" placeholder=\\"Email address\\" class=
+            \\"input is-info is-fullwidth is-rounded\\">
+          </div>
+        </div>
+        <div class=\\"field\\">
+          <div class=\\"control\\">
+            <input type=\\"password\\" placeholder=\\"Password\\" class=
+            \\"input is-info is-fullwidth is-rounded\\">
+          </div>
+        </div><button type=\\"submit\\" class=
+        \\"button is-primary is-fullwidth\\">Login</button>
+      </form>
+    </div>
+  </div>
+</section>
+"
+`;
