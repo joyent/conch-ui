@@ -19,9 +19,10 @@ test("user handles bad password", () => {
 });
 
 test("user handles login+logout", () => {
-	expect.assertions(1);
+	expect.assertions(2);
 	const user = new User();
-	return user.login("chris.prather@joyent.com", "NewPassword").then(() => {
+	return user.login("chris.prather@joyent.com", "NewPassword").then(auth => {
+        expect(auth).toMatchObject({"jwt_token": "true"});
 		return expect(user.logout()).resolves.toBeTruthy();
 	});
 });
