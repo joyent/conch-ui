@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserView component by default renders a default page 1`] = `
+"<section class=\\"hero is-primary welcome is-small is-bold\\">
+  <div class=\\"hero-body\\">
+    <h1 class=\\"title\\">
+      User profile
+    </h1>
+    <h2 class=\\"subtitle\\">
+      Update password and profile settings
+    </h2>
+  </div>
+</section>
+<section class=\\"info-tiles\\">
+  <div class=\\"tile\\"></div>
+  <div class=\\"tile is-ancestor\\">
+    <div class=\\"tile is-parent\\">
+      <article class=\\"tile is-child box\\">
+        <p class=\\"Title\\">
+          New Password
+        </p>
+        <form>
+          <input type=\\"password\\" placeholder=\\"New Password\\" class=
+          \\"input is-small\\"><button type=\\"submit\\" class=
+          \\"button is-primary\\">Save</button>
+        </form>
+      </article>
+    </div>
+    <div class=\\"tile is-parent\\">
+      <article class=\\"tile is-child box\\"></article>
+    </div>
+  </div>
+</section>
+"
+`;

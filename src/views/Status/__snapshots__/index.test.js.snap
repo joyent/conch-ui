@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Status component default renders a default page 1`] = `
+"<section class=\\"hero is-primary welcome is-small is-bold\\">
+  <div class=\\"hero-body\\">
+    <h1 class=\\"title\\">
+      Applejack workspace status
+    </h1>
+    <h2 class=\\"subtitle\\">
+      Overview of workspace build progress
+    </h2>
+  </div>
+</section>
+<section class=\\"info-tiles\\">
+  <div class=\\"tile is-ancestor has-text-centered\\">
+    <div class=\\"tile is-parent\\">
+      <article class=\\"tile is-child box\\">
+        <progress value=\\"0\\" max=\\"100\\" class=
+        \\"progress is-info\\">0%</progress>
+      </article>
+    </div>
+  </div>
+  <div class=\\"tile is-ancestor has-text-centered\\">
+    <div class=\\"tile is-parent\\">
+      <article class=\\"tile is-child box\\">
+        <div class=\\"spinner\\"></div>
+      </article>
+    </div>
+    <div class=\\"tile is-parent\\">
+      <article class=\\"tile is-child box\\">
+        <div class=\\"spinner\\"></div>
+      </article>
+    </div>
+  </div>
+  <div class=\\"tile is-ancestor has-text-centered\\">
+    <div class=\\"tile is-parent\\">
+      <article class=\\"tile is-child box\\">
+        <div style=\\"background-color: rgba(71, 155, 232, 0.4);\\"
+        class=\\"box\\">
+          <div class=\\"spinner\\"></div>
+        </div>
+      </article>
+    </div>
+    <div class=\\"tile is-parent\\">
+      <article class=\\"tile is-child box\\">
+        <div style=\\"background-color: rgba(71, 155, 232, 0.4);\\"
+        class=\\"box\\">
+          <div class=\\"spinner\\"></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+"
+`;
