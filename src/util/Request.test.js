@@ -1,14 +1,7 @@
 import Request from "util/Request";
 import m from "mithril";
 
-jest.mock("mithril");
-
-test("request can make a plain request", () => {
-	m.request.mockReturnValueOnce(
-		new Promise(resolve => {
-			resolve(true);
-		})
-	);
+test.nock("request can make a plain request", () => {
 	const r = new Request();
 	return expect(
 		r.request({
@@ -18,12 +11,7 @@ test("request can make a plain request", () => {
 	).resolves.toBeTruthy();
 });
 
-test("request can make fetch a new jwt", () => {
-	m.request.mockReturnValueOnce(
-		new Promise(resolve => {
-			resolve({ jwt_token: "TOKEN_HERE" });
-		})
-	);
+test.nock("request can make fetch a new jwt", () => {
 	expect.assertions(3);
 	const r = new Request();
 	return r
@@ -41,19 +29,7 @@ test("request can make fetch a new jwt", () => {
 		});
 });
 
-test("request can make fetch with jwt", () => {
-	m.request
-		.mockReturnValueOnce(
-			new Promise(resolve => {
-				resolve({ jwt_token: "TOKEN_HERE" });
-			})
-		)
-		.mockReturnValueOnce(
-			new Promise(resolve => {
-				resolve(null);
-			})
-		);
-
+test.nock("request can make fetch with jwt", () => {
 	expect.assertions(1);
 	const r = new Request();
 
@@ -75,20 +51,8 @@ test("request can make fetch with jwt", () => {
 	).resolves.toBe(null);
 });
 
-test("we can refresh a token", () => {
-	m.request
-		.mockReturnValueOnce(
-			new Promise(resolve => {
-				resolve({ jwt_token: "FIRST_TOKEN" });
-			})
-		)
-		.mockReturnValueOnce(
-			new Promise(resolve => {
-				resolve({ jwt_token: "SECOND_TOKEN" });
-			})
-		);
-
-	expect.assertions(2);
+test.nock("request can refresh a token", () => {
+	expect.assertions(1);
 	const r = new Request();
 
 	r
@@ -98,9 +62,8 @@ test("we can refresh a token", () => {
 			data: { user: "chris.prather@joyent.com", password: "NewPassword" }
 		})
 		.then(result => {
-            expect(result.jwt_token).toBe('FIRST_TOKEN');
 			r.setToken(result.jwt_token);
 		});
 
-	return expect(r.refreshToken()).resolves.toBe("SECOND_TOKEN");
+	return expect(r.refreshToken()).resolves.toMatch(/\w+/);
 });

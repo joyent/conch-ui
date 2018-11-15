@@ -12,7 +12,7 @@ export default () => {
 			return r
 				.request({
 					method: "POST",
-					url: "/login",
+					url: "login",
 					data: { user: email, password: pass }
 				})
 				.then(result => {
@@ -33,7 +33,7 @@ export default () => {
 			return r
 				.request({
 					method: "POST",
-					url: "/logout"
+					url: "logout"
 				})
 				.then(r.clearToken());
 		},
@@ -42,7 +42,7 @@ export default () => {
 			return r
 				.requestWithToken({
 					method: "POST",
-					url: "/user/me/password",
+					url: "user/me/password",
 					data: { password: newPassword }
 				})
 				.then(r.clearToken());

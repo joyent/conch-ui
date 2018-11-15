@@ -1,7 +1,6 @@
 import User from "models/User";
-jest.mock("util/Request");
 
-test("user throws on failure", () => {
+test.nock("user throws on failure", () => {
 	expect.assertions(1);
 	const user = new User();
 	return expect(user.login("", "")).rejects.toHaveProperty(
@@ -10,7 +9,7 @@ test("user throws on failure", () => {
 	);
 });
 
-test("user handles bad password", () => {
+test.nock("user handles bad password", () => {
 	expect.assertions(1);
 	const user = new User();
 	return expect(
@@ -18,16 +17,16 @@ test("user handles bad password", () => {
 	).rejects.toHaveProperty("error", "unauthorized");
 });
 
-test("user handles login+logout", () => {
+test.nock("user handles login+logout", () => {
 	expect.assertions(2);
 	const user = new User();
 	return user.login("chris.prather@joyent.com", "NewPassword").then(auth => {
-        expect(auth).toMatchObject({"jwt_token": "true"});
+        expect(auth.jwt_token).toMatch(/\w+/);
 		return expect(user.logout()).resolves.toBeTruthy();
 	});
 });
 
-test("user handles token refresh", () => {
+test.nock("user handles token refresh", () => {
 	expect.assertions(1);
 	const user = new User();
 	return user.login("chris.prather@joyent.com", "NewPassword").then(() => {
@@ -35,7 +34,7 @@ test("user handles token refresh", () => {
 	});
 });
 
-test("user can update password", () => {
+test.nock("user can update password", () => {
 	expect.assertions(1);
 	const user = new User();
 	return user.login("chris.prather@joyent.com", "NewPassword").then(() => {
