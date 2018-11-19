@@ -1,6 +1,7 @@
 node_modules
 bin/app.js
 dist/
+__nocks__
 
 # Ignore local modifications
 config.js

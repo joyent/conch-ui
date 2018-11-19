@@ -5,7 +5,7 @@ test.nock("user throws on failure", () => {
 	const user = new User();
 	return expect(user.login("", "")).rejects.toHaveProperty(
 		"error",
-		'"user" and "password" required'
+		'unauthorized'
 	);
 });
 
