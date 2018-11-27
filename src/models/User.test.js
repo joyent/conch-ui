@@ -5,7 +5,7 @@ test.nock("user throws on failure", () => {
 	const user = new User();
 	return expect(user.login("", "")).rejects.toHaveProperty(
 		"error",
-		'unauthorized'
+		"/password: String is too short: 0/1.\n/password: String is too short: 0/1."
 	);
 });
 
@@ -21,7 +21,7 @@ test.nock("user handles login+logout", () => {
 	expect.assertions(2);
 	const user = new User();
 	return user.login("chris.prather@joyent.com", "NewPassword").then(auth => {
-        expect(auth.jwt_token).toMatch(/\w+/);
+		expect(auth.jwt_token).toMatch(/\w+/);
 		return expect(user.logout()).resolves.toBeTruthy();
 	});
 });
