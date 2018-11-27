@@ -51,11 +51,11 @@ test.nock("request can make fetch with jwt", () => {
 	).resolves.toBe(null);
 });
 
-test.nock("request can refresh a token", () => {
-	expect.assertions(1);
+test.nock("request refresh a token", () => {
+	expect.assertions(2);
 	const r = new Request();
-
-	r
+    let firstToken;
+	return r
 		.request({
 			method: "POST",
 			url: "/login",
@@ -63,7 +63,11 @@ test.nock("request can refresh a token", () => {
 		})
 		.then(result => {
 			r.setToken(result.jwt_token);
+            firstToken = result.jwt_token
+			return r.refreshToken(); // okay now we try refreshing the token
+		})
+		.then(() => {
+			expect(r.getToken()).toBeTruthy(); // we should still have a token
+			expect(r.getToken()).not.toBe(firstToken); // and it should be different
 		});
-
-	return expect(r.refreshToken()).resolves.toMatch(/\w+/);
 });
