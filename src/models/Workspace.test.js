@@ -22,6 +22,19 @@ test.nock("workspace can getAll()", () => {
 		);
 });
 
+test.nock("we can load a specific worksapce", () => {
+	expect.assertions(2);
+	const user = new User();
+	const ws = new Workspace(GLOBAL_UUID);
+	return user
+		.login("chris.prather@joyent.com", "NewPassword")
+		.then(() => ws.loadCurrentWorkspace())
+		.then(res => {
+            expect(res).toMatchObject({id: GLOBAL_UUID});
+			expect(ws.currentWorkspace()).toMatchObject({ id: GLOBAL_UUID });
+		});
+});
+
 test.nock("we can get all devices in a workspace", () => {
 	expect.assertions(1);
 	const user = new User();
@@ -87,4 +100,3 @@ test.nock("we can getRackById() in a workspace", () => {
 });
 
 //TODO setRackLayout() test
-
