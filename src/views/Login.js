@@ -79,8 +79,6 @@ export default () => {
 													)
 													.then(() => {
 														badLoginAttempt = false;
-                                                        console.log(user.loggedIn());
-                                                        console.log("redirecting to /");
 														m.route.set("/");
 													})
 													.catch(() => {
