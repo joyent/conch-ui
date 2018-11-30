@@ -77,18 +77,14 @@ export default () => {
 														emailAddress,
 														password
 													)
-													.then(
-														() => {
-															badLoginAttempt = false;
-															m.route.set(
-																m.route.get()
-															);
-														},
-														() => {
-															badLoginAttempt = true;
-															password = "";
-														}
-													)
+													.then(() => {
+														badLoginAttempt = false;
+														m.route.set("/");
+													})
+													.catch(() => {
+														badLoginAttempt = true;
+														password = "";
+													})
 													.then(() => {
 														e.target.classList.remove(
 															"is-loading"

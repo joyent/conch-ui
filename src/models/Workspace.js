@@ -7,13 +7,48 @@ import moment from "moment";
 export default id => {
 	const r = new Request();
 
-	return {
-		getAll() {
-			return r.requestWithToken({
+	const workspaces = stream([]);
+
+	const currentWorkspace = stream();
+	currentWorkspace.map(ws => {
+		if (ws) localStorage.setItem("currentWorkspace", ws.id);
+	});
+
+	const loadAllWorkspaces = () => {
+		return r
+			.requestWithToken({
 				method: "GET",
 				url: "/workspace"
-			});
-		},
+			})
+			.then(workspaces);
+	};
+
+	const findWorkspaceById = id => workspaces().find(w => w.id === id);
+	const findWorkspaceByName = name => workspaces().find(w => w.name === name);
+
+    // TODO: I'm not sure this is really the right logic we should be using here
+    // seems that we should just throw an error if we can't find the workspace in
+    // question or return null or something
+	const loadCurrentWorkspace = id =>
+		loadAllWorkspaces().then(() => {
+			let found;
+			if (id) found = findWorkspaceById(id);
+			if (!found)
+				found = findWorkspaceById(
+					localStorage.getItem("currentWorkspace")
+				);
+			if (!found) found = findWorkspaceByName("GLOBAL");
+			if (!found) found = workspaces()[0];
+            if (!found) return Promise.reject(id);
+			return currentWorkspace(found);
+		});
+
+	return {
+		currentWorkspace,
+		workspaces,
+		getAll: loadAllWorkspaces,
+		loadAllWorkspaces,
+		loadCurrentWorkspace,
 		getDevices() {
 			return r.requestWithToken({
 				method: "GET",
