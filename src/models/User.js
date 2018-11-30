@@ -6,7 +6,8 @@ import stream from "mithril/stream";
 export default () => {
 	const r = new Request();
 	return {
-		loggedIn: stream(false),
+		loggedIn: () => (r.getToken() ? true : false),
+
 		login(email, pass) {
 			return r
 				.request({
@@ -24,7 +25,6 @@ export default () => {
 
 		refreshToken() {
 			return r.refreshToken().then(result => {
-				this.loggedIn(true);
 				return Promise.resolve(result);
 			});
 		},
@@ -35,11 +35,7 @@ export default () => {
 					method: "POST",
 					url: "/logout"
 				})
-				.then(result => {
-					r.clearToken();
-					this.loggedIn(false);
-					return Promise.resolve(true);
-				});
+				.then(r.clearToken());
 		},
 
 		updatePassword(newPassword) {
@@ -49,10 +45,7 @@ export default () => {
 					url: "/user/me/password",
 					data: { password: newPassword }
 				})
-				.then(() => {
-					this.loggedIn(false);
-					return Promise.resolve(true);
-				});
+				.then(r.clearToken());
 		}
 	};
 };
