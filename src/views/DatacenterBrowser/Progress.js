@@ -3,6 +3,7 @@ import moment from "moment";
 
 const deviceToProgress = device => {
 	if (device == null) return "unassigned";
+	if (device.graduated) return "graduated";
 	if (device.validated) return "validated";
 	if (device.health.toLowerCase() === "fail") return "failing";
 	if (moment().diff(moment(device.last_seen), "second") <= 300)
@@ -48,6 +49,8 @@ const ProgressIcon = {
 				return m("span.has-text-info", m("i.fas fa-sync"));
 			case "validated":
 				return m("span", m("i.fas fa-check-circle"));
+			case "graduated":
+				return m("span", m("i.fas fa-graduation-cap"));
 			default:
 				return m("span", m("i.fas fa-ellipsis-h"));
 		}
