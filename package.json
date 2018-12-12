@@ -50,7 +50,11 @@
     "prettier": "prettier --write src/index.js src/views/**/*.js src/models/**/*.js",
     "start": "webpack-dev-server --progress --open --config webpack.dev.js",
     "watch": "webpack --progress --config webpack.dev.js --watch",
-    "test": "jest"
+    "jest": "jest -c=./jest.config.js --passWithNoTests",
+    "jest:coverage": "jest -c=./jest.config.js --coverage --passWithNoTests",
+    "jest:local": "jest -c=./jest.config.js -o --passWithNoTests",
+    "jest:watch": "jest -c=./jest.config.js --watch --passWithNoTests",
+    "jest:watch:all": "jest -c=./jest.config.js --watchAll --passWithNoTests"
   },
   "keywords": [],
   "author": "",
