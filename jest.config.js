@@ -180,4 +180,13 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+
+  // Global constants, which should mirror the global constants in webpack.common.js
+  globals: {
+    CONCH: {
+      GLOBALS: {
+        apiUrl: JSON.stringify("http://localhost:5001"),
+      }
+    }
+  }
 };

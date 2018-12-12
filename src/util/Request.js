@@ -14,6 +14,7 @@ export default () => {
 		},
 		request(args) {
 			args.withCredentials = true;
+			if (args.url) args.url = CONCH.GLOBALS.apiUrl + args.url;
 			return m.request(args);
 		},
 		requestWithToken(args) {

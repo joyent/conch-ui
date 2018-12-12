@@ -65,6 +65,14 @@ module.exports = {
 			template: 'src/index.html',
 			favicon: './src/styles/images/favicon.ico'
 		}),
+		// Global constants, which should mirror the global constants in jest.config.js
+		new webpack.DefinePlugin({
+			CONCH: {
+				GLOBALS: {
+					apiUrl: JSON.stringify("http://localhost:5001"),
+				}
+			},
+		}),
 	],
 };
 
