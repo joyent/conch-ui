@@ -3,7 +3,7 @@ build: node_modules dist/index.html ## Build web assets for production
 
 .PHONY: test
 test: build config.js ## test to ensure everything functions as we expect (currently "it builds clean")
-	@yarn test
+	@yarn jest
 
 .PHONY: watch
 watch: ## Watch web assets and re-build for development
