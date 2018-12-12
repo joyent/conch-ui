@@ -26,10 +26,10 @@ export default id => {
 	const findWorkspaceById = id => workspaces().find(w => w.id === id);
 	const findWorkspaceByName = name => workspaces().find(w => w.name === name);
 
-    // TODO: I'm not sure this is really the right logic we should be using here
-    // seems that we should just throw an error if we can't find the workspace in
-    // question or return null or something
-	const loadCurrentWorkspace = id =>
+	// TODO: I'm not sure this is really the right logic we should be using here
+	// seems that we should just throw an error if we can't find the workspace in
+	// question or return null or something
+	const loadCurrentWorkspace = () =>
 		loadAllWorkspaces().then(() => {
 			let found;
 			if (id) found = findWorkspaceById(id);
@@ -39,7 +39,7 @@ export default id => {
 				);
 			if (!found) found = findWorkspaceByName("GLOBAL");
 			if (!found) found = workspaces()[0];
-            if (!found) return Promise.reject(id);
+			if (!found) return Promise.reject(id);
 			return currentWorkspace(found);
 		});
 
