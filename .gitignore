@@ -1,6 +1,7 @@
 node_modules
 bin/app.js
 dist/
+coverage/
 
 # Ignore local modifications
 config.js
