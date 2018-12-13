@@ -8,7 +8,7 @@ export const getVersion = (repository)=> {
 			url: `https://api.github.com/repos/joyent/${repository}/releases/latest`
 		})
 		.then(response => {
-			return response.tag_name;
+			return response;
 		});
 };
 
