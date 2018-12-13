@@ -6,6 +6,8 @@ export default () => {
 	const activeItem = stream();
 	let conchVersion = '';
 	let conchUIVersion = '';
+	let conchReleaseUrl = '';
+	let conchUIReleaseUrl = '';
 
 	const menuItem = (name, link, ...children) => {
 		let route = `/${m.route.param("wid")}/${link}`;
@@ -28,14 +30,15 @@ export default () => {
 
 	return {
 		oninit: () => {
-			ConchVersions.getVersion('conch-ui')
-				.then(response => {
-					conchUIVersion = response;
-				});
-
 			ConchVersions.getVersion('conch')
 				.then(response => {
-					conchVersion = response;
+					conchVersion = response.tag_name;
+					conchReleaseUrl = response.html_url;
+				});
+			ConchVersions.getVersion('conch-ui')
+				.then(response => {
+					conchUIVersion = response.tag_name;
+					conchUIReleaseUrl = response.html_url;
 				});
 		},
 		view: ({ attrs: { user }}) => {
@@ -73,11 +76,15 @@ export default () => {
 					m(".tags-container", [
 						m(".tags.has-addons", [
 							m(".tag.is-primary", "Conch"),
-							m(".tag.is-dark", conchVersion)
+							m("a", { href: conchReleaseUrl, target: "_blank" },
+								m(".tag.is-dark", conchVersion)
+							)
 						]),
 						m(".tags.has-addons", [
 							m(".tag.is-primary", "Conch UI"),
-							m(".tag.is-dark", conchUIVersion)
+							m("a", { href: conchUIReleaseUrl, target: "_blank" },
+								m(".tag.is-dark", conchUIVersion)
+							)
 						])
 					])
 				])
