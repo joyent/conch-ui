@@ -1,8 +1,11 @@
 import m from "mithril";
 import stream from "mithril/stream";
+import ConchVersions from "../../models/ConchVersions";
 
 export default () => {
 	const activeItem = stream();
+	let conchVersion = '';
+	let conchUIVersion = '';
 
 	const menuItem = (name, link, ...children) => {
 		let route = `/${m.route.param("wid")}/${link}`;
@@ -24,6 +27,17 @@ export default () => {
 	};
 
 	return {
+		oninit: () => {
+			ConchVersions.getVersion('conch-ui')
+				.then(response => {
+					conchUIVersion = response;
+				});
+
+			ConchVersions.getVersion('conch')
+				.then(response => {
+					conchVersion = response;
+				});
+		},
 		view: ({ attrs: { user }}) => {
 			return m(
 				"aside.menu",
@@ -52,8 +66,22 @@ export default () => {
 							"Log out"
 						)
 					)
-				)
+				),
+				m("br"),
+				m(".box.conch-versions", [
+					m("p.heading", "Conch Versions:"),
+					m(".tags-container", [
+						m(".tags.has-addons", [
+							m(".tag.is-primary", "Conch"),
+							m(".tag.is-dark", conchVersion)
+						]),
+						m(".tags.has-addons", [
+							m(".tag.is-primary", "Conch UI"),
+							m(".tag.is-dark", conchUIVersion)
+						])
+					])
+				])
 			)
-            }
+		}
 	};
 };
