@@ -2,9 +2,12 @@
 
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const GitRevisionWebpackPlugin = require('git-revision-webpack-plugin');
 const webpack = require('webpack');
 
 const package = require('./package.json');
+
+const gitRevisionPlugin = new GitRevisionWebpackPlugin();
 
 module.exports = {
 	entry: {
@@ -66,10 +69,12 @@ module.exports = {
 			favicon: './src/styles/images/favicon.ico'
 		}),
 		// Global constants, which should mirror the global constants in jest.config.js
+		gitRevisionPlugin,
 		new webpack.DefinePlugin({
 			CONCH: {
 				GLOBALS: {
 					apiUrl: JSON.stringify("http://localhost:5001"),
+					conchUIVersion: JSON.stringify(gitRevisionPlugin.version()),
 				}
 			},
 		}),
