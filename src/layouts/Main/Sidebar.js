@@ -75,13 +75,13 @@ export default () => {
 					m("p.heading", "Conch Versions:"),
 					m(".tags-container", [
 						m(".tags.has-addons", [
-							m(".tag.is-primary", "Conch"),
+							m(".tag.is-primary", "conch-api"),
 							m("a", { href: conchReleaseUrl, target: "_blank" },
 								m(".tag.is-dark", conchVersion)
 							)
 						]),
 						m(".tags.has-addons", [
-							m(".tag.is-primary", "Conch UI"),
+							m(".tag.is-primary", "conch-ui"),
 							m("a", { href: conchUIReleaseUrl, target: "_blank" },
 								m(".tag.is-dark", conchUIVersion)
 							)
