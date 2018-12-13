@@ -1,13 +1,11 @@
 import m from "mithril";
 import stream from "mithril/stream";
-import ConchVersions from "../../models/ConchVersions";
+import ConchApiVersion from "../../models/ConchApiVersion";
 
 export default () => {
 	const activeItem = stream();
 	let conchVersion = '';
 	let conchUIVersion = '';
-	let conchReleaseUrl = '';
-	let conchUIReleaseUrl = '';
 
 	const menuItem = (name, link, ...children) => {
 		let route = `/${m.route.param("wid")}/${link}`;
@@ -30,16 +28,12 @@ export default () => {
 
 	return {
 		oninit: () => {
-			ConchVersions.getVersion('conch')
+			ConchApiVersion.get()
 				.then(response => {
-					conchVersion = response.tag_name;
-					conchReleaseUrl = response.html_url;
+					conchVersion = response.version;
 				});
-			ConchVersions.getVersion('conch-ui')
-				.then(response => {
-					conchUIVersion = response.tag_name;
-					conchUIReleaseUrl = response.html_url;
-				});
+
+			conchUIVersion = CONCH.GLOBALS.conchUIVersion;
 		},
 		view: ({ attrs: { user }}) => {
 			return m(
@@ -76,15 +70,11 @@ export default () => {
 					m(".tags-container", [
 						m(".tags.has-addons", [
 							m(".tag.is-primary", "conch-api"),
-							m("a", { href: conchReleaseUrl, target: "_blank" },
-								m(".tag.is-dark", conchVersion)
-							)
+							m(".tag.is-dark", conchVersion)
 						]),
 						m(".tags.has-addons", [
 							m(".tag.is-primary", "conch-ui"),
-							m("a", { href: conchUIReleaseUrl, target: "_blank" },
-								m(".tag.is-dark", conchUIVersion)
-							)
+							m(".tag.is-dark", conchUIVersion)
 						])
 					])
 				])
