@@ -1,5 +1,6 @@
 FROM node:10-alpine
 RUN apk add --no-cache --update python make
+RUN apk add --no-cache git
 
 USER node
 RUN mkdir /home/node/.npm-global
