@@ -20,7 +20,13 @@ export default id => {
 				method: "GET",
 				url: "/workspace"
 			})
-			.then(workspaces);
+			.then(workspaces)
+			.catch(response => {
+				// If 401 (Unauthorized) is returned, clear the stale token.
+				if (response.error === 'unauthorized') {
+					r.clearToken();
+				}
+			});
 	};
 
 	const findWorkspaceById = id => workspaces().find(w => w.id === id);
