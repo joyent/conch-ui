@@ -7,7 +7,7 @@ export default () => {
 		},
 		setToken(token) {
 			localStorage.setItem("token", token);
-            return Promise.resolve(true);
+			return Promise.resolve(true);
 		},
 		clearToken() {
 			return localStorage.removeItem("token");
@@ -25,7 +25,10 @@ export default () => {
 			args.headers = {
 				Authorization: "Bearer " + token
 			};
-			return this.request(args);
+			return this.request(args).catch(e => {
+				this.clearToken();
+				Promise.reject(e);
+			});
 		},
 		refreshToken() {
 			return this.requestWithToken({
@@ -34,9 +37,9 @@ export default () => {
 			}).then(result => {
 				if (result && result.jwt_token) {
 					this.setToken(result.jwt_token);
-                    return Promise.resolve(result.jwt_token);
+					return Promise.resolve(result.jwt_token);
 				}
-                this.clearToken();
+				this.clearToken();
 				return Promise.reject(false);
 			});
 		}

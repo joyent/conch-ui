@@ -30,8 +30,9 @@ export default () => {
 		},
 
 		logout() {
+            //TODO As of this moment the server doesn't require authentication for `/logout` but it probably should.
 			return r
-				.request({
+				.requestWithToken({
 					method: "POST",
 					url: "/logout"
 				})
