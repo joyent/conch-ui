@@ -51,12 +51,6 @@ export default () => {
 
 	let filteredDevices;
 
-	//const selectedProgress = stream("all");
-	//const rackProgressFilter = rack =>
-	//selectedProgress() === "all" ||
-	//selectedProgress() === rackToProgress(rack);
-	//let availableRackProgress;
-
 	return {
 		oninit: ({ attrs: { workspaceDevices, hardwareProductLookup } }) => {
 			availableDeviceProgress = workspaceDevices.map(devices =>
@@ -89,6 +83,7 @@ export default () => {
 				selectedProgress("all");
 				deviceSearchText("");
 			});
+            workspaceDevices.map(() => console.log("workspaceDevices updated"));
 			filteredDevices = stream.combine(
 				(devices, filter) => devices().filter(filter()),
 				[workspaceDevices, deviceFilter]
