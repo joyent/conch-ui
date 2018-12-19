@@ -6,7 +6,7 @@ import stream from "mithril/stream";
 export default () => {
 	const r = new Request();
 	return {
-		loggedIn: () => (r.getToken() ? true : false),
+		loggedIn: () => !!r.getToken(),
 
 		login(email, pass) {
 			return r
@@ -30,7 +30,7 @@ export default () => {
 		},
 
 		logout() {
-            //TODO As of this moment the server doesn't require authentication for `/logout` but it probably should.
+			//TODO As of this moment the server doesn't require authentication for `/logout` but it probably should.
 			return r
 				.requestWithToken({
 					method: "POST",
