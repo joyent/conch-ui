@@ -10,31 +10,38 @@ const workspaces = stream();
 const Workspace = id => {
 	if (!id) throw "ID required";
 
-	const currentWorkspace = workspaces.map(
-		ws => ws && Workspace.findCurrentWorkspace(ws, id)
-	);
+	const currentWorkspace = workspaces.map(ws => {
+		if (!ws) return;
+		// check for the passed in workspace ID
+		if (id) {
+			let found = ws.find(w => w.id === id);
+			if (found) return found;
+		}
+		return Workspace.findBestWorkspace(ws);
+	});
 
 	currentWorkspace.map(ws => {
 		if (ws) localStorage.setItem("currentWorkspace", ws.id);
 	});
 
+	const getDevices = () =>
+		r.requestWithToken({
+			method: "GET",
+			url: `/workspace/${id}/device`
+		});
+
 	return {
 		currentWorkspace,
 		workspaces,
 		getAll: () => Workspace.loadAllWorkspaces(),
-		loadCurrentWorkspace: () => Workspace.loadAllWorkspaces(),
-		getDevices: () =>
-			r.requestWithToken({
-				method: "GET",
-				url: `/workspace/${id}/device`
-			}),
+		getDevices,
 		getAllRacks: () =>
 			r.requestWithToken({
 				method: "GET",
 				url: `/workspace/${id}/rack`
 			}),
 
-        // TODO: replace this with a method in `model/Racks.js` that calls the `/rack` endpoint instead
+		// TODO: replace this with a method in `model/Racks.js` that calls the `/rack` endpoint instead
 		getRackById: rackId =>
 			r
 				.requestWithToken({
@@ -49,7 +56,7 @@ const Workspace = id => {
 					return Promise.resolve(res);
 				}),
 
-        // TODO: replace this with a method in `model/Racks.js` that calls the `/rack` endpoint instead
+		// TODO: replace this with a method in `model/Racks.js` that calls the `/rack` endpoint instead
 		setRackLayout: (rackId, layout) =>
 			r.requestWithToken({
 				method: "POST",
@@ -59,15 +66,7 @@ const Workspace = id => {
 	};
 };
 
-Workspace.findCurrentWorkspace = (ws, id) => {
-	if (!ws) throw "Must supply workspaces";
-
-	// check for the passed in workspace ID
-	if (id) {
-		let found = ws.find(w => w.id === id);
-		if (found) return found;
-	}
-
+Workspace.findBestWorkspace = ws => {
 	// check for a stored ID
 	const storedId = localStorage.getItem("currentWorkspace");
 

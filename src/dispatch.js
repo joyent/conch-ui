@@ -54,10 +54,10 @@ const dispatch = (() => {
 					if (!user.loggedIn()) return m.route.set("/login");
 					return Workspace.loadAllWorkspaces()
 						.then(() => new Workspace(args.wid))
-						.then(ws =>
+						.then(({currentWorkspace, workspaces}) =>
 							m(view, {
-								currentWorkspace: ws.currentWorkspace,
-								workspaces: ws.workspaces,
+								currentWorkspace,
+								workspaces,
 								user
 							})
 						)
@@ -90,7 +90,7 @@ const dispatch = (() => {
 				if (!user.loggedIn()) return m.route.set("/login");
 
 				return Workspace.loadAllWorkspaces()
-					.then(ws => Workspace.findCurrentWorkspace(ws, ""))
+					.then(Workspace.findBestWorkspace)
 					.then(w => m.route.set(`/${w.id}/status`))
 					.catch(m.route.set("/login"));
 			}
