@@ -13,7 +13,8 @@ export default () => {
 
 			activeTab(showTab);
 
-			activeTab.map(tab => {
+/*
+            activeTab.map(tab => {
 				let route = m.route.get();
 				let [mainRoute, queryS] = route.split("?");
 				let queryParams;
@@ -23,6 +24,7 @@ export default () => {
 				let newQueryS = m.buildQueryString(queryParams);
 				m.route.set(`${mainRoute}?${newQueryS}`);
 			});
+*/
 		},
 		view: ({
 			attrs: { tabs, activeDevice, activeDeviceId, deviceSettings }

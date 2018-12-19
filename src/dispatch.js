@@ -43,50 +43,41 @@ const dispatch = (() => {
 	const user = new User();
 
 	function dispatch(root, routes) {
-		let layout;
-		let view;
 		const table = Object.keys(routes).reduce((accTable, route) => {
-			let workspacePrefixedRoute = "/:wid" + route;
-			let ws;
+			const workspacePrefixedRoute = "/:wid" + route;
+			const comp = routes[route];
+			const layout = comp.layout;
+			const view = comp.view;
+
 			accTable[workspacePrefixedRoute] = {
 				onmatch(args, pendingRoute) {
-					ws = new Workspace(args.wid);
-					const matcher = () => {
-						let comp = routes[route];
-						layout = comp.layout;
-						view = comp.view;
-						return {
-							view: () =>
-								m(comp.view || comp, {
-									currentWorkspace: ws.currentWorkspace,
-									workspaces: ws.workspaces,
-									user
-								})
-						};
-					};
-
-					if (!user.loggedIn()) return m.route.set("/");
-					return ws
-						.loadCurrentWorkspace()
-						.catch(WorkspaceNotFound(args.wid))
-						.then(matcher);
+					if (!user.loggedIn()) return m.route.set("/login");
+					return Workspace.loadAllWorkspaces()
+						.then(() => new Workspace(args.wid))
+						.then(ws =>
+							m(view, {
+								currentWorkspace: ws.currentWorkspace,
+								workspaces: ws.workspaces,
+								user
+							})
+						)
+						.catch(WorkspaceNotFound(args.wid));
 				},
-				render(vnode) {
-					return layout && view
-						? m(
-								layout,
-								{
-									currentWorkspace: ws.currentWorkspace,
-									workspaces: ws.workspaces,
-									user
-								},
-								m(view, {
-									currentWorkspace: ws.currentWorkspace,
-									workspaces: ws.workspaces,
-									user
-								})
-						  )
-						: vnode;
+				render({ attrs: { wid } }) {
+					const ws = new Workspace(wid);
+					return m(
+						layout,
+						{
+							currentWorkspace: ws.currentWorkspace,
+							workspaces: ws.workspaces,
+							user
+						},
+						m(view, {
+							currentWorkspace: ws.currentWorkspace,
+							workspaces: ws.workspaces,
+							user
+						})
+					);
 				}
 			};
 
@@ -98,10 +89,10 @@ const dispatch = (() => {
 			onmatch() {
 				if (!user.loggedIn()) return m.route.set("/login");
 
-				const ws = new Workspace();
-				return ws
-					.loadCurrentWorkspace()
-					.then(w => m.route.set(`/${w.id}/status`));
+				return Workspace.loadAllWorkspaces()
+					.then(ws => Workspace.findCurrentWorkspace(ws, ""))
+					.then(w => m.route.set(`/${w.id}/status`))
+					.catch(m.route.set("/login"));
 			}
 		};
 

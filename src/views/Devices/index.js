@@ -21,6 +21,7 @@ export default () => {
 
 	return {
 		oninit: ({ attrs: { currentWorkspace } }) => {
+/*
 			activeDeviceId.map(deviceId => {
 				const route = m.route.get();
 				const routePrefix = route.substring(
@@ -32,11 +33,12 @@ export default () => {
 
 				if (deviceId)
 					m.route.set(`${routePrefix}/device/${deviceId}${queryS}`);
-				else m.route.set(`${routePrefix}/device`);
+		//		else m.route.set(`${routePrefix}/device`);
 			});
-
-			m.route.param("deviceId") &&
+*/
+			m.route.param("deviceId") !== null &&
 				activeDeviceId(m.route.param("deviceId"));
+
 			hardwareProducts.get().then(hardwareProducts => {
 				hardwareProductLookup = keyBy(hardwareProducts, "id");
 			});
