@@ -41,6 +41,7 @@ import Workspace from "models/Workspace";
 /// IIFE to prevent escaping scope
 const dispatch = (() => {
 	const user = new User();
+	const currentWorkspace = stream();
 
 	function dispatch(root, routes) {
 		const table = Object.keys(routes).reduce((accTable, route) => {
@@ -54,27 +55,27 @@ const dispatch = (() => {
 					if (!user.loggedIn()) return m.route.set("/login");
 					return Workspace.loadAllWorkspaces()
 						.then(() => new Workspace(args.wid))
-						.then(({currentWorkspace, workspaces}) =>
+						.then(currentWorkspace)
+						.then(() =>
 							m(view, {
 								currentWorkspace,
-								workspaces,
+								workspaces: Workspace.workspaces,
 								user
 							})
 						)
 						.catch(WorkspaceNotFound(args.wid));
 				},
-				render({ attrs: { wid } }) {
-					const ws = new Workspace(wid);
+				render() {
 					return m(
 						layout,
 						{
-							currentWorkspace: ws.currentWorkspace,
-							workspaces: ws.workspaces,
+							currentWorkspace,
+							workspaces: Workspace.workspaces,
 							user
 						},
 						m(view, {
-							currentWorkspace: ws.currentWorkspace,
-							workspaces: ws.workspaces,
+							currentWorkspace,
+							workspaces: Workspace.workspaces,
 							user
 						})
 					);
