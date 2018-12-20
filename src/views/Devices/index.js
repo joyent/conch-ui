@@ -32,10 +32,8 @@ export default () => {
 				.get()
 				.then(hardwareProducts => keyBy(hardwareProducts, "id"))
 				.then(hardwareProductLookup);
-            console.log(JSON.stringify(currentWorkspace));
-			currentWorkspace.map( ws  => {
-				console.log(JSON.stringify(ws));
-				const workspace = new Workspace(ws.id);
+
+			currentWorkspace.map(workspace => {
 				workspace
 					.getDevices()
 					.then(devices => devices.sort((a, b) => a.id - b.id))

@@ -112,18 +112,20 @@ export default () => {
 
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
-			currentWorkspace.map(({ id }) => {
+			currentWorkspace.map(workspace => {
 				devices(null);
-				const workspace = new Workspace(id);
-				workspace.getDevices().then(res => {
-					devices(res.sort((a, b) => a.id - b.id));
-					const newProgress = { pass: 0, total: 0 };
-					devices().forEach(device => {
-						if (device.health === "PASS") newProgress.pass++;
-						newProgress.total++;
+				workspace
+					.getDevices()
+					.then(res => res.sort((a, b) => a.id - b.id))
+					.then(devices)
+					.then(res => {
+						const newProgress = { pass: 0, total: 0 };
+						res.forEach(device => {
+							if (device.health === "PASS") newProgress.pass++;
+							newProgress.total++;
+						});
+						progress(newProgress);
 					});
-					progress(newProgress);
-				});
 
 				rackCount = null;
 				rackRooms = null;

@@ -83,7 +83,6 @@ export default () => {
 				selectedProgress("all");
 				deviceSearchText("");
 			});
-            workspaceDevices.map(() => console.log("workspaceDevices updated"));
 			filteredDevices = stream.combine(
 				(devices, filter) => devices().filter(filter()),
 				[workspaceDevices, deviceFilter]
