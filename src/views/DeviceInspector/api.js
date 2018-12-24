@@ -38,3 +38,11 @@ export const setAssetTag = (id, assetTag) => {
         background: true
     });
 };
+
+export default {
+    getLocation,
+    getDeviceDetails,
+    getDeviceSettings,
+    getDeviceValidations,
+    setAssetTag,
+};
