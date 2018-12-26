@@ -16,7 +16,7 @@ export default new Router({
             component: SignIn,
         },
         {
-            path: '/status',
+            path: '/:currentWorkspace/status',
             component: Status,
             children: [
                 {
@@ -27,7 +27,7 @@ export default new Router({
             ],
         },
         {
-            path: '/device',
+            path: '/:currentWorkspace/device',
             component: Devices,
             children: [
                 {
@@ -38,7 +38,7 @@ export default new Router({
             ]
         },
         {
-            path: '/datacenter',
+            path: '/:currentWorkspace/datacenter',
             component: DataCenterBrowser,
             children: [
                 {

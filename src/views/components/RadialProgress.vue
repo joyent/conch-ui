@@ -6,7 +6,7 @@
             fill="none"
             :style="{ 'stroke-width': strokeWidth }"
             style="will-change: auto; transitions: stroke-dashoffset 850ms ease-in-out;"
-        >
+        ></path>
         <path
             d="M41 149.5a77 77 0 1 1 117.93 0"
             fill="none"
@@ -15,8 +15,8 @@
             :class="meterStyle"
             :style="{ strokeWidth }"
             style="will-change: auto; transition: stroke-dashoffset 850ms ease-in-out"
-        >
-        <text class="is-size-2 has-text-weight-bol" x="102" y="110" text-anchor="middle" fill="#dee5ed">
+        ></path>
+        <text class="is-size-2 has-text-weight-bol" x="102" y="110" text-anchor="middle" fill="#dee5ed"></text>
     </svg>
 </template>
 

@@ -54,7 +54,7 @@
                 </div>
             </div>
         </section>
-        <DeviceModal :active-device-id="activeDeviceId" />
+        <!-- <DeviceModal :active-device-id="activeDeviceId" /> -->
     </div>
 </template>
 
@@ -63,14 +63,10 @@ import DeviceModal from '../components/DeviceModal.vue';
 import PageHeader from '../components/PageHeader.vue';
 import RackProgress from './RackProgress.vue';
 import Spinner from '../components/Spinner.vue';
-import { getDevices, getAllRacks } from '../../api/workspace.js';
+import { getDevices, getAllRacks } from '../../api/workspaces.js';
+import { mapActions, mapState } from 'vuex';
 
 export default {
-    props: {
-        currentWorkspace: {
-            required: true,
-        },
-    },
     components: {
         DeviceModal,
         PageHeader,
@@ -80,7 +76,6 @@ export default {
     data() {
         return {
             activeDeviceId: '',
-            currentWorkspaceName: '',
             devices: [],
             rackCount: 0,
             rackRooms: 0,
@@ -88,46 +83,60 @@ export default {
         };
     },
     computed: {
+        currentWorkspaceId() {
+            return this.currentWorkspace.id;
+        },
+        currentWorkspaceName() {
+            return this.currentWorkspace.name;
+        },
         progressPercent() {
-            return this.progress.map(p => (p.total ? p.pass / p.total * 100 : 0));
+            let progress = this.progress;
+
+            return progress.total ? progress.pass / progress.total * 100 : 0;
         },
         title() {
             return `${this.currentWorkspaceName} workspace status`;
         },
+        ...mapState([
+            'currentWorkspace',
+        ]),
+    },
+    methods: {
     },
     created() {
-        currentWorkspace.map(({ id }) => {
-            this.devices = [];
+        this.devices = [];
 
-            getDevices(id)
-                .then(response => {
-                    const newProgress = {pass: 0, total: 0 };
+        getDevices(this.currentWorkspaceId)
+            .then(response => {
+                const newProgress = {pass: 0, total: 0 };
 
-                    this.devices = response.sort((a, b) => a.id - b.id);
-                    this.devices.forEach(device => {
-                        if (device.health === 'PASS') {
-                            newProgress.pass++;
-                        }
-                    });
+                this.devices = response.data.sort((a, b) => a.id - b.id);
+                this.devices.forEach(device => {
+                    if (device.health === 'PASS') {
+                        newProgress.pass++;
+                    }
 
-                    this.progress = newProgress;
+                    newProgress.total++;
                 });
 
-            this.rackCount = 0;
-            this.rackRooms = 0;
+                this.progress = newProgress;
+            });
 
-            getAllRacks(id)
-                .then(response => {
-                    // sort and assign the rack rooms
-                    this.rackRooms = Object.keys(response)
-                        .sort()
-                        .reduce((acc, room) => {
-                            acc[room] = response[room];
-                            this.rackCount += response[room].length;
-                            return acc;
-                        }, {});
-                });
-        });
+        this.rackCount = 0;
+        this.rackRooms = 0;
+
+        getAllRacks(this.currentWorkspaceId)
+            .then(response => {
+                let data = response.data;
+                // sort and assign the rack rooms
+                this.rackRooms = Object.keys(data)
+                    .sort()
+                    .reduce((acc, room) => {
+                        acc[room] = data[room];
+                        this.rackCount += data[room].length;
+                        return acc;
+                    }, {});
+            });
     },
 };
 </script>

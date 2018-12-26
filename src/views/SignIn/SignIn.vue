@@ -44,18 +44,35 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import { login, setToken } from '../../api/authentication.js';
+import { loadAllWorkspaces } from '../../api/workspaces.js';
 
 export default {
     data() {
         return {
             badLoginAttempt: false,
+            currentWorkspace: {},
             emailAddress: '',
             isLoading: false,
             password: '',
         };
     },
     methods: {
+        ...mapActions([
+            'setCurrentWorkspace',
+            'setWorkspaces',
+        ]),
+        initWorkspaceData() {
+            return loadAllWorkspaces()
+                .then(response => {
+                    this.setWorkspaces(response.data);
+                    this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
+                    this.currentWorkspace = this.$store.state.currentWorkspace;
+
+                    return Promise.resolve();
+                });
+        },
         signIn() {
             this.isLoading = true;
 
@@ -66,18 +83,25 @@ export default {
 
             login(data)
                 .then(response => {
-                    this.isLoading = false;
-
                     if (response && response.jwt_token) {
                         setToken(response.jwt_token);
                     }
 
-                    this.$router.push({ path: '/status'})
+                    this.initWorkspaceData()
+                        .then(() => {
+                            this.$router.push({ path: `/${this.currentWorkspaceId}/status`});
+                        });
+
                 })
                 .catch((error) => {
                     this.isLoading = false;
                     this.badLoginAttempt = true;
                 });
+        },
+    },
+    computed: {
+        currentWorkspaceId() {
+            return this.currentWorkspace.id;
         },
     },
 };
