@@ -5,6 +5,15 @@ export const login = (data) => {
         method: 'POST',
         url: '/login',
         data
+    })
+    .then(response => {
+        let data = response.data;
+
+        if (data && data.jwt_token) {
+            setToken(data.jwt_token);
+        }
+
+        return data;
     });
 };
 

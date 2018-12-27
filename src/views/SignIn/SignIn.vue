@@ -45,7 +45,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { login, setToken } from '../../api/authentication.js';
+import { login } from '../../api/authentication.js';
 import { loadAllWorkspaces } from '../../api/workspaces.js';
 
 export default {
@@ -70,6 +70,8 @@ export default {
                     this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
                     this.currentWorkspace = this.$store.state.currentWorkspace;
 
+                    localStorage.setItem('currentWorkspace', this.currentWorkspaceId);
+
                     return Promise.resolve();
                 });
         },
@@ -83,10 +85,6 @@ export default {
 
             login(data)
                 .then(response => {
-                    if (response && response.jwt_token) {
-                        setToken(response.jwt_token);
-                    }
-
                     this.initWorkspaceData()
                         .then(() => {
                             this.$router.push({ path: `/${this.currentWorkspaceId}/status`});

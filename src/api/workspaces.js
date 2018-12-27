@@ -20,12 +20,14 @@ export const getRackById = (id, rackId) => {
         url: `/workspace/${id}/rack/${rackId}`
     })
     .then(response => {
-        response.slots = response.slots.reduce((obj, curr) => {
+        let data = response.data;
+
+        data.slots = data.slots.reduce((obj, curr) => {
             obj[curr.rack_unit_start] = curr;
             return obj;
         }, {});
 
-        return Promise.resolve(response);
+        return Promise.resolve(data);
     });
 };
 

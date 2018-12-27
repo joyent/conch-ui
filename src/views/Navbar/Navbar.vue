@@ -63,7 +63,7 @@ export default {
             const route = this.$route.path;
             const routeSuffix = route.substring(route.indexOf('/', 1));
 
-            this.$router.push({ path: `/${this.workspaceId}/${routeSuffix}` })
+            this.$router.push({ path: `/${workspaceId}${routeSuffix}` })
         },
         sortedWorkspaceGraph(workspaceId) {
             return sortBy(this.workspaceGraph.graph[workspaceId], ['name']);
