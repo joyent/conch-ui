@@ -6,6 +6,9 @@ import DataCenterBrowser from './views/DataCenterBrowser/DataCenterBrowser.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import Status from './views/Status/Status.vue';
 import UserProfile from './views/User/UserProfile.vue';
+import Navbar from './views/Navbar/Navbar.vue';
+import Sidebar from './views/Sidebar/Sidebar.vue';
+
 
 Vue.use(Router);
 
@@ -13,11 +16,17 @@ export default new Router({
     routes: [
         {
             path: '/',
+            name: 'signIn',
             component: SignIn,
         },
         {
             path: '/:currentWorkspace/status',
-            component: Status,
+            name: 'status',
+            components: {
+                default: Status,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
             children: [
                 {
                     // when /status/device/:deviceId is matched
@@ -28,7 +37,12 @@ export default new Router({
         },
         {
             path: '/:currentWorkspace/device',
-            component: Devices,
+            name: 'device',
+            components: {
+                default: Devices,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
             children: [
                 {
                     // when /device/:deviceId is matched
@@ -39,7 +53,12 @@ export default new Router({
         },
         {
             path: '/:currentWorkspace/datacenter',
-            component: DataCenterBrowser,
+            name: 'datacenter',
+            components: {
+                default: DataCenterBrowser,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
             children: [
                 {
                     // when /datacenter/:roomName/rack is matched
@@ -64,7 +83,12 @@ export default new Router({
         },
         {
             path: '/user',
-            component: UserProfile,
+            name: 'user',
+            components: {
+                default: UserProfile,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
         },
     ]
 });
