@@ -21,7 +21,7 @@
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <Spinner v-if="devices.length > 0" />
+                        <Spinner v-if="devices.length === 0" />
                         <div class="device-count" v-else>
                             <p class="title">{{ devices.length }}</p>
                             <p class="subtitle">Devices</p>

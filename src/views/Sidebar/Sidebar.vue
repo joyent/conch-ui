@@ -3,15 +3,19 @@
         <p class="menu-label">Datacenter Builds</p>
         <ul class="menu-list">
             <li>
-                <router-link to="/status" @click="setActiveItem('status')">Status</router-link>
-                <router-link to="/datacenter" @click="setActiveItem('datacenter')">Browse</router-link>
-                <router-link to="/device" @click="setActiveItem('device')">Devices</router-link>
+                <router-link :to="{ name: 'status', params: { currentWorkspace: currentWorkspaceId }}" active-class="is-active">Status</router-link>
+            </li>
+            <li>
+                <router-link :to="{ name: 'datacenter', params: { currentWorkspace: currentWorkspaceId }}" active-class="is-active">Browse</router-link>
+            </li>
+            <li>
+                <router-link :to="{ name: 'device', params: { currentWorkspace: currentWorkspaceId }}" active-class="is-active">Devices</router-link>
             </li>
         </ul>
         <p class="menu-label">Conch</p>
         <ul class="menu-list">
             <li>
-                <router-link to="/user" @click="setActiveItem('user')">Profile</router-link>
+                <router-link :to="{ name: 'user' }" active-class="is-active">Profile</router-link>
             </li>
             <li>
                 <a @click="signOut">Log out</a>
@@ -37,14 +41,22 @@
 <script>
 import * as ConchApiVersion from '../../api/conchApiVersion.js';
 import { logout } from '../../api/authentication.js';
+import { mapState } from 'vuex';
 
 export default {
     data() {
         return {
-            activeItem: '',
             conchVersion: '',
             conchUIVersion: '',
         };
+    },
+    computed: {
+        ...mapState([
+            'currentWorkspace',
+        ]),
+        currentWorkspaceId() {
+            return this.currentWorkspace.id;
+        },
     },
     methods: {
         signOut() {
@@ -52,9 +64,6 @@ export default {
                 .then(() => {
                     this.$router.push({ path: '/' });
                 });
-        },
-        setActiveItem(item) {
-            this.activeItem = activeItem;
         },
     },
     created() {
