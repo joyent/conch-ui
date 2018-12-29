@@ -46,7 +46,7 @@
                         <div class="box" style="background-color:rgba(28%, 61%, 91%, 0.4)">
                             <Spinner v-if="rackRooms === 0" />
                             <div class="rack-rooms-role" v-else>
-                                <p class="subtitle">Rack Validation Role</p>
+                                <p class="subtitle">Validation Status by Role</p>
                                 <RackProgress :rack-rooms="rackRooms" :group="'role'" />
                             </div>
                         </div>
