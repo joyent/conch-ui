@@ -40,9 +40,18 @@ export const getToken = () => {
 
 export const isLoggedIn = () => (getToken() ? true : false);
 
+export const updatePassword = (password) => {
+    return axios({
+        method: 'POST',
+        url: '/user/me/password',
+        data: { password }
+    })
+};
+
 export default {
     getToken,
     isLoggedIn,
     login,
     setToken,
+    updatePassword,
 };
