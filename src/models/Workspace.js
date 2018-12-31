@@ -9,7 +9,7 @@ const workspaces = stream([]);
 
 const findBestWorkspace = ws => {
 	// check for a stored ID
-	const storedId = localStorage.getItem("currentWorkspace");
+	const storedId = sessionStorage.getItem("currentWorkspace");
 
 	if (storedId) {
 		let found = ws.find(w => w.id === storedId);
@@ -33,7 +33,7 @@ const Workspace = id => {
 		workspaces().find(w => w.id === id) || bestFallback();
 
 	if (currentWorkspace)
-		localStorage.setItem("currentWorkspace", currentWorkspace.id);
+		sessionStorage.setItem("currentWorkspace", currentWorkspace.id);
 
 	const getDevices = () =>
 		r.requestWithToken({
