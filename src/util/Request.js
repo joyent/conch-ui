@@ -26,7 +26,7 @@ export default () => {
 				Authorization: "Bearer " + token
 			};
 			return this.request(args).catch(e => {
-				if (e.code === 401) this.clearToken();
+				this.clearToken();
 				Promise.reject(e);
 			});
 		},
