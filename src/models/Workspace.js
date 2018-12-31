@@ -7,7 +7,7 @@ import moment from "moment";
 const r = new Request();
 const workspaces = stream([]);
 
-const bestFallback = workspaces.map(ws => {
+const findBestWorkspace = ws => {
 	// check for a stored ID
 	const storedId = localStorage.getItem("currentWorkspace");
 
@@ -22,7 +22,9 @@ const bestFallback = workspaces.map(ws => {
 
 	// just return the first one
 	return ws[0];
-});
+};
+
+const bestFallback = workspaces.map(findBestWorkspace);
 
 const Workspace = id => {
 	if (!id) throw "ID required";
@@ -83,9 +85,7 @@ const Workspace = id => {
 	);
 };
 
-Workspace.findBestWorkspace = () => {
-	bestFallback();
-};
+Workspace.findBestWorkspace = findBestWorkspace;
 
 Workspace.loadAllWorkspaces = () => {
 	return r
