@@ -63,16 +63,19 @@ export default new Router({
                 {
                     // when /datacenter/:roomName/rack is matched
                     path: ':roomName/rack',
+                    name: 'room',
                     component: DataCenterBrowser,
                     children: [
                         {
                             // when /datacenter/:roomName/rack/:rackId/device is matched
                             path: ':rackId/device',
+                            name: 'rack',
                             component: DataCenterBrowser,
                             children: [
                                 {
                                     // when /datacenter/:roomName/rack/:rackId/device/:deviceId is matched
                                     path: ':deviceId',
+                                    name: 'device',
                                     component: DataCenterBrowser,
                                 },
                             ],

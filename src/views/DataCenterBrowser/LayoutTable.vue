@@ -11,7 +11,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr :class="{ 'is-selected': slot.occupant && highlightDeviceId && slot.occupant.id === highlightDeviceId }" v-for="(slot, index) in deviceSlots" :key="index" :style="{ 'cursor: pointer': slot.occupant }">
+            <tr :class="{ 'is-selected': slot.occupant && highlightDeviceId && slot.occupant.id === highlightDeviceId }" v-for="(slot, index) in deviceSlots" :key="index" style="cursor: pointer;">
                 <th>{{ slot.id }}</th>
                 <td>
                     <p>
@@ -47,10 +47,10 @@ export default {
             required: true,
         },
         activeDeviceId: {
-            required: true,
+            required: false,
         },
         highlightDeviceId: {
-            required: true,
+            required: false,
         },
     },
     components: {

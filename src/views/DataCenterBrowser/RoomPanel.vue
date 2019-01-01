@@ -1,6 +1,6 @@
 <template>
     <nav class="panel">
-        <p class="panel-heading">Datacenter Rooms</p>
+        <p class="panel-heading has-text-centered">Datacenter Rooms</p>
         <div class="panel-block">
             <p class="control has-icons-left">
                 <input type="text" class="input is-small" placeholder="Search Rooms" v-model="roomFilterText">
@@ -19,10 +19,11 @@
                 {{ progress }}
             </a>
         </p>
-        <a v-for="(room, index) in rackRooms" :key="index" class="panel-block" :class="{ 'is-active': activeRoomName }" @click="activeRoomName = room.name">
+        <a v-for="(room, index) in filteredRackRooms" :key="index" class="panel-block" :class="{ 'is-active': activeRoomName === room.name }" @click="activateRoom(room)">
             <div class="panel-icon">
                 <ProgressIcon :progress="room.progress" />
             </div>
+            {{ room.name }}
         </a>
     </nav>
 </template>
@@ -30,6 +31,7 @@
 <script>
 import search from "fuzzysearch";
 import ProgressIcon from './ProgressIcon.vue';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     props: {
@@ -37,31 +39,56 @@ export default {
             required: true,
         },
     },
+    components: {
+        ProgressIcon,
+    },
     data() {
         return {
-            activeRoomName: '',
             roomFilterText: '',
             selectedProgress: 'all',
         };
     },
     computed: {
+        ...mapGetters([
+            'activeRoomName',
+        ]),
         availableRoomProgress() {
-            return this.rackRooms.map(rooms => {
-                Array.from(rooms.reduce((acc, room) => {
-                    acc.add(room.progress);
+            return Array.from(
+                this.rackRooms.reduce((acc, room) => {
+                    if (!acc.has(room.progress)) {
+                        acc.add(room.progress);
+                    }
 
                     return acc;
-                }, new Set['all'])).sort();
-            });
+                }, new Set(['all']))
+            ).sort();
+        },
+        filteredRackRooms() {
+            return this.rackRooms.reduce((acc, room) => {
+                if (this.roomNameFilter(room.name) && this.roomProgressFilter(room.progress)) {
+                    acc.push(room)
+                }
+
+                return acc;
+            }, []);
+        },
+    },
+    methods: {
+        ...mapActions([
+            'setActiveRoom',
+        ]),
+        activateRoom(room) {
+            this.setActiveRoom(room);
+            this.$router.push({ name: 'room', params: { roomName: `${this.activeRoomName}` } });
         },
         roomFilterTextLowerCase() {
-            return roomFilterText.map(t => t.toLowerCase());
+            return this.roomFilterText.toLowerCase();
         },
         roomNameFilter(roomName) {
             return search(this.roomFilterTextLowerCase(), roomName.toLowerCase())
         },
-        roomProgressFilter(p) {
-            return this.selectedProgress === 'all' || this.selectedProgress === p
+        roomProgressFilter(progress) {
+            return this.selectedProgress === 'all' || this.selectedProgress === progress;
         },
     },
 };

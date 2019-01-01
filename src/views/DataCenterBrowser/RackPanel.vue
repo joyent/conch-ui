@@ -1,6 +1,6 @@
 <template>
     <nav class="panel">
-        <p class="panel-heading">{{ this.activeRoomName }} Racks</p>
+        <p class="panel-heading has-text-centered">{{ this.activeRoomName }} Racks</p>
         <div class="panel-block">
             <p class="control has-icons-left">
                 <input type="text" class="input is-small" placeholder="Search Racks" v-model="rackFilterText">
@@ -15,7 +15,6 @@
                 :key="index"
                 :class="{ 'is-active': selectedProgress === progress }"
                 @click="selectedProgress = progress"
-                style="white-space:pre"
             >
                 {{ progress }}
             </a>
@@ -35,7 +34,7 @@
             :key="index"
             class="panel-block"
             :class="{ 'is-active': activeRackId === rack.id }"
-            @click="activeRackId = rack.id"
+            @click="activateRack(rack)"
         >
             <div class="panel-icon">
                 <ProgressIcon :progress="rackToProgress(rack)" />
@@ -48,7 +47,7 @@
 <script>
 import search from "fuzzysearch";
 import ProgressIcon from './ProgressIcon.vue';
-import { rackToProgress } from './util.js';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     props: {
@@ -56,11 +55,11 @@ export default {
             required: true,
         },
     },
+    components: {
+        ProgressIcon,
+    },
     data() {
         return {
-            activeRackId: '',
-            activeRacks: '',
-            activeRoomName: '',
             availableRackRoles: '',
             availableRackProgress: '',
             rackFilterText: '',
@@ -69,6 +68,10 @@ export default {
         };
     },
     computed: {
+        ...mapGetters([
+            'activeRackId',
+            'activeRoomName',
+        ]),
         filteredActiveRacks() {
             return this.activeRacks.reduce((acc, rack) => {
                 if (this.rackFilterMatch(rack)) {
@@ -76,52 +79,65 @@ export default {
                 }
 
                 return acc;
-            })
+            }, []);
         },
         rackFilterTextLowerCase() {
-            return this.rackFilterText.map(t => t.toLowerCase());
+            return this.rackFilterText.toLowerCase();
         },
     },
     methods: {
+        ...mapActions([
+            'setActiveRack',
+        ]),
+        activateRack(rack) {
+            this.setActiveRack(rack);
+            this.$router.push({ name: 'rack', params: { rackId: `${this.activeRackId}` } })
+        },
         rackFilterMatch(rack) {
             return this.rackNameFilter(rack.name) && this.rackRoleFilter(rack.role) && this.rackProgressFilter(rack);
         },
         rackNameFilter(rackName) {
-            return search(this.rackFilterTextLowerCase(), rackName.toLowerCase());
+            return search(this.rackFilterTextLowerCase, rackName.toLowerCase());
+        },
+        rackToProgress(rack) {
+            if (rack["device_progress"]["FAIL"]) {
+                return "failing";
+            } else if (rack["device_progress"]["PASS"]) {
+                return "in progress";
+            } else if (rack["device_progress"]["VALID"]) {
+                return "validated";
+            } else {
+                return "not started";
+            }
         },
         rackRoleFilter(role) {
             return this.selectedRole === 'all' || this.selectedRole === role.toLowerCase();
         },
         rackProgressFilter(rack) {
-            return this.selectedProgress === 'all' || this.selectedProgress === rackToProgress(rack);
+            return this.selectedProgress === 'all' || this.selectedProgress === this.rackToProgress(rack);
         },
     },
     created() {
         // get the list of available rack roles
-        this.availableRackRoles = this.activeRacks.map(racks => {
-            Array.from(
-                racks.reduce((acc, rack) => {
-                    acc.add(rack.role.toLowerCase());
+        this.availableRackRoles = Array.from(
+            this.activeRacks.reduce((acc, rack) => {
+                let rackRole = rack.role.toLowerCase();
 
-                    return acc;
-                }, new Set(['all']))
-            ).sort();
-        });
+                if (!acc.has(rackRole)) {
+                    acc.add(rackRole);
+                }
 
-        this.availableRackProgress = activeRacks.map(racks => {
-            Array.from(
-                racks.reduce((acc, rack) => {
-                    acc.add(rackToProgress(rack));
-                    return acc;
-                }, new Set(["all"]))
-            ).sort();
-        });
+                return acc;
+            }, new Set(['all']))
+        ).sort();
 
-        activeRacks.map(() => {
-            selectedRole("all");
-            selectedProgress("all");
-            rackFilterText("");
-        });
+        this.availableRackProgress = Array.from(
+            this.activeRacks.reduce((acc, rack) => {
+                acc.add(this.rackToProgress(rack));
+
+                return acc;
+            }, new Set(["all"]))
+        ).sort();
     },
 };
 </script>

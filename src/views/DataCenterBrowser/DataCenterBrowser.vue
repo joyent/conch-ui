@@ -1,21 +1,23 @@
 <template>
     <div class="data-center-browser">
-        <PanelHeader :title="`${currentWorkspace.name} workspace datacenters`" :subtitle="'Browse datacenter rooms, racks and devices'" />
+        <PageHeader :title="`${currentWorkspace.name} workspace datacenters`" :subtitle="'Browse datacenter rooms, racks and devices'" />
         <section class="info-tiles">
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
                     <article class="tile is-child box" style="padding: 0.75rem;">
-                        <div class="dropdown-trigger">
-                            <div class="control" :class="{ 'is-loading': !this.workspaceDevices && searchText }">
-                                <input type="text" class="input" placeholder="Search for Device" v-model="searchText">
+                        <div class="dropdown is-right" :class="{ 'is-active': searchText }">
+                            <div class="dropdown-trigger">
+                                <div class="control" :class="{ 'is-loading': !this.workspaceDevices && searchText }">
+                                    <input type="text" class="input" placeholder="Search for Device" v-model="searchText">
+                                </div>
                             </div>
-                        </div>
-                        <div class="dropdown-menu is-paddingless">
-                            <div class="dropdown-content">
-                                <a class="dropdown-item" v-for="(device, index) in foundDevices" :key="index">
-                                    {{ device.id }}
-                                    <span class="has-text-grey-light">{{ device.asset_tag }}</span>
-                                </a>
+                            <div class="dropdown-menu is-paddingless">
+                                <div class="dropdown-content" v-if="foundDevices">
+                                    <a class="dropdown-item" v-for="(device, index) in foundDevices" :key="index" @click="searchedDevice = device">
+                                        {{ device.id }}
+                                        <span class="has-text-grey-light">{{ device.asset_tag }}</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </article>
@@ -25,18 +27,19 @@
                 <div class="tile is-parent">
                     <article class="tile is-child">
                         <DeviceModal v-if="activeDeviceId" :active-device-id="activeDeviceId" />
-                        <section class="section" v-if="rackRooms == null">
+                        <section class="section" v-if="!rackRooms.length">
                             <Spinner/>
                         </section>
-                        <div class="columns is-gapless">
+                        <div class="columns is-gapless" v-else>
                             <div class="column is-3">
-                                <RoomPanel :rack-rooms="rackRooms" :active-room-name="activeRoomName" />
+                                <RoomPanel :rack-rooms="rackRooms" />
                             </div>
                             <div class="column is-3">
-                                <RackPanel :active-room-name="activeRoomName" :active-racks="activeRacks" :active-rack-id="activeRackId" />
+                                <RackPanel v-if="activeRacks" :active-racks="activeRacks" />
                             </div>
                             <div class="column is-6">
                                 <LayoutPanel
+                                    v-if="hasRackLayout"
                                     :current-workspace="currentWorkspace"
                                     :active-rack="activeRack"
                                     :rack-loading="rackLoading"
@@ -62,7 +65,10 @@ import RoomPanel from './RoomPanel.vue';
 import Spinner from '../components/Spinner.vue';
 import { getRackById, getDevices, getAllRacks } from '../../api/workspaces.js';
 import { getLocation } from '../../api/device.js';
-import { mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import isEmpty from 'lodash/isEmpty'
+
+const maxFoundDevices = 12;
 
 export default {
     components: {
@@ -75,21 +81,24 @@ export default {
     },
     data() {
         return {
-            activeDeviceId: '',
-            activeRoomName: '',
-            activeRackId: '',
-            highlightDeviceId: '',
-            maxFoundDevices: 12,
+            activeDeviceId: null,
+            foundDevices: null,
+            highlightDeviceId: null,
             rackFilterText: '',
-            rackLayout: {},
             rackLoading: false,
             rackRooms: [],
-            searchText: '',
-            searchedDevice: '',
-            workspaceDevices: [],
+            searchedDevice: null,
+            searchText: null,
+            workspaceDevices: null,
+
         };
     },
     methods: {
+        ...mapActions([
+            'clearActiveRack',
+            'clearActiveRoom',
+            'setRackLayout'
+        ]),
         roomToProgress(racks) {
             if (racks.some(rack => rack["device_progress"]["FAIL"])) {
                 return "failing";
@@ -102,63 +111,62 @@ export default {
             }
         },
     },
-    computed: {
-        ...mapState([
-            'currentWorkspace',
-        ]),
-        activeRacks() {
-            return this.activeRoom.map(room => {
-                this.rackLayout = '';
-                // return room ? room.racks.sort((a, b) => (a.name > b.name ? 1 : -1)) : STREAM.HALT
-            })
-        },
-        activeRack() {
-            // ??
-        },
-        foundDevices() {
-            // ??
-        },
-        activeRoom() {
-
+    watch: {
+        searchedDevice(newDevice) {
+            let deviceId = newDevice.id;
+            getLocation(deviceId)
+                .then(deviceLocation => {
+                    // this.activeRoomName = deviceLocation.datacenter.name;
+                    // this.activeRackId = deviceLocation.rack.id;
+                    this.hightlightDeviceId = deviceId;
+                });
         },
     },
-    created() {
-        this.activeRack.map(rack => {
+    computed: {
+        ...mapGetters([
+            'activeRackId',
+            // 'activeRoomName',
+            'currentWorkspaceId',
+        ]),
+        ...mapState([
+            'activeRack',
+            'activeRoom',
+            'rackLayout',
+            'currentWorkspace',
+        ]),
+        hasRackLayout() {
+            return !isEmpty(this.rackLayout);
+        },
+        activeRacks() {
+            if (!isEmpty(this.activeRoom)) {
+                return this.activeRoom.racks.sort((a, b) => {
+                    a.name > b.name ? 1 : -1
+                });
+            }
+
+            return null;
+        },
+    },
+    watch: {
+        activeRack() {
             this.rackLoading = true;
 
-            getRackById(rack.id)
+            getRackById(this.currentWorkspaceId, this.activeRackId)
                 .then(response => {
-                    this.rackLayout = response.data;
+                    this.setRackLayout(response);
                     this.rackLoading = false;
                 });
-        });
-
-        this.activeRoomName = this.$route.params.roomName;
-        this.activeRackId = this.$route.params.rackId;
-        this.activeDeviceId = this.$route.params.deviceId;
-
-        activeRoomName.map(name => {
-
-        });
-
-        activeRackId.map(rackId => {
-
-        });
-
-        activeDeviceId.map(deviceId => {
-
-        });
-
-        let id = this.currentWorkspace.id;
-
-        getDevices(id)
+        }
+    },
+    created() {
+        getDevices(this.currentWorkspace.id)
             .then(response => {
                 let devices = response.data;
-                devices.sort((a, b) => a.id - b.id);
-                this.workspaceDevices = devices;
+
+                this.workspaceDevices = devices.sort((a, b) => a.id = b.id);
             });
 
-        getAllRacks(id)
+        getAllRacks(this.currentWorkspace.id)
             .then(response => {
                 let data = response.data;
 
@@ -166,25 +174,26 @@ export default {
                     .sort()
                     .reduce((acc, name) => {
                         let racks = data[name];
+                        let progress = this.roomToProgress(racks);
                         acc.push({
                             name,
                             racks,
-                            progress: this.roomToProgress(racks)
+                            progress,
                         });
 
                         return acc;
                     }, []);
-            });
 
-        this.searchedDevice.map(device => {
-            getLocation(device.id)
-                .then(response => {
-                    let location = response.data;
-                    this.activeRoomName = location.datacenter.name;
-                    this.activeRackId = location.rack.id;
-                    this.highlightDeviceId = device.id;
-                });
-        });
-    }
+
+            });
+    },
+    updated() {
+        if (this.$route.params.activeDeviceId) {
+            this.activeDeviceId = this.$route.params.activeDeviceId;
+        }
+    },
+    destroyed() {
+        this.clearActiveRoom();
+    },
 };
 </script>

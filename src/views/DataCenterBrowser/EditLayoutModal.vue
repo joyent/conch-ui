@@ -62,9 +62,6 @@ export default {
         currentWorkspace: {
             required: true,
         },
-        editLayout: {
-            required: true,
-        },
         activeRack: {
             required: true,
         },

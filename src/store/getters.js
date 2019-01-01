@@ -1,4 +1,8 @@
 export const getters = {
+    activeRackId: state => (state.activeRack.id),
+    activeRoomName: state => (state.activeRoom.name),
+    activeRoomId: state => (state.activeRoom.id),
+    currentWorkspaceId: state => (state.currentWorkspace.id),
     findWorkspaceById: state => id => (state.workspaces.find(w => w.id === id)),
     findWorkspaceByName: state => name => (state.workspaces.find(w => w.name === name)),
     loadCurrentWorkspace: (state, getters) => (id) => {
