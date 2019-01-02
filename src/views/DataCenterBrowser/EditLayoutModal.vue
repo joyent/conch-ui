@@ -56,13 +56,13 @@ import { setRackLayout } from '../../api/workspaces.js';
 
 export default {
     props: {
-        deviceSlots: {
+        activeRack: {
             required: true,
         },
         currentWorkspace: {
             required: true,
         },
-        activeRack: {
+        deviceSlots: {
             required: true,
         },
     },

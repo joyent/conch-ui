@@ -37,7 +37,7 @@ export default new Router({
         },
         {
             path: '/:currentWorkspace/device',
-            name: 'device',
+            name: 'workspace',
             components: {
                 default: Devices,
                 sidebar: Sidebar,

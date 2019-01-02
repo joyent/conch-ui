@@ -5,7 +5,6 @@
                 <th>Slot</th>
                 <th></th>
                 <th>Product Name</th>
-                <th></th>
                 <th class="has-text-right">Assigned Device</th>
                 <th class="has-text-right">Asset Tag</th>
             </tr>
@@ -19,7 +18,9 @@
                     </p>
                 </td>
                 <td>{{ slot.name }}</td>
-                <td class="has-text-right has-text-light">{{ slot.occupant.id }}</td>
+                <td class="has-text-right ">
+                    <span class="has-text-light" v-if="slot.occupant">{{ slot.occupant.id }}</span>
+                </td>
                 <td class="has-text-right">
                     <span class="has-text-grey-light" v-if="slot.occupant">{{ slot.occupant.asset_tag }}</span>
                 </td>
@@ -30,7 +31,6 @@
                 <th>Slot</th>
                 <th></th>
                 <th>Product Name</th>
-                <th></th>
                 <th class="has-text-right">Assigned Device</th>
                 <th class="has-text-right">Asset Tag</th>
             </tr>

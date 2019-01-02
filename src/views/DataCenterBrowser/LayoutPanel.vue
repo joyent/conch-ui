@@ -26,7 +26,7 @@
             <Spinner v-if="rackLoading" />
             <LayoutTable v-else :device-slots="filteredSlots" :active-device-id="activeDeviceId" :highlight-device-id="highlightDeviceId" />
         </nav>
-        <EditLayoutModal :device-slots="normalizedSlots" :active-rack="activeRack" :current-workspace="currentWorkspace" />
+        <EditLayoutModal :active-rack="activeRack" :current-workspace="currentWorkspace" :device-slots="normalizedSlots" />
     </div>
 </template>
 
@@ -105,7 +105,7 @@ export default {
                         occupant: occupant
                     };
                 });
-        }
+        },
     },
     methods: {
         deviceFilter(occupant) {
