@@ -9,7 +9,7 @@
                 <button class="delete" aria-label="close" @click="closeModal"></button>
             </header>
             <section class="modal-card-body">
-                <DeviceInspector v-if="activeDeviceId"/>
+                <DeviceInspector/>
             </section>
             <footer class="modal-card-foot is-right"></footer>
         </div>

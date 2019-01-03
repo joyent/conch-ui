@@ -4,6 +4,7 @@ export const getters = {
     activeRoomName: state => (state.activeRoom.name),
     activeRoomId: state => (state.activeRoom.id),
     currentWorkspaceId: state => (state.currentWorkspace.id),
+    currentWorkspaceName: state => (state.currentWorkspace.name),
     findWorkspaceById: state => id => (state.workspaces.find(w => w.id === id)),
     findWorkspaceByName: state => name => (state.workspaces.find(w => w.name === name)),
     loadCurrentWorkspace: (state, getters) => (id) => {
@@ -24,7 +25,7 @@ export const getters = {
         }
 
         return currentWorkspace;
-    }
+    },
 };
 
 export default {

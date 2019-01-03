@@ -11,6 +11,12 @@ export const actions = {
     setActiveDevice({ commit }, activeDevice) {
         commit('setActiveDevice', activeDevice);
     },
+    setActiveDeviceDetails({ commit }, activeDeviceDetails) {
+        commit('setActiveDeviceDetails', activeDeviceDetails);
+    },
+    setActiveDeviceSettings({ commit }, activeDeviceSettings) {
+        commit('setActiveDeviceSettings', activeDeviceSettings);
+    },
     setActiveRack({ commit }, activeRack) {
         commit('setActiveRack', activeRack);
     },
@@ -25,7 +31,7 @@ export const actions = {
     },
     setWorkspaces({ commit }, workspaces) {
         commit('setWorkspaces', workspaces);
-    }
+    },
 };
 
 export default {

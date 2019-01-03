@@ -1,5 +1,7 @@
 export const state = {
-    activeDevice: '',
+    activeDevice: {},
+    activeDeviceDetails: {},
+    activeDeviceSettings: {},
     activeRack: {},
     activeRoom: {},
     currentWorkspace: {},

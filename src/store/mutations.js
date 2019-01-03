@@ -11,6 +11,12 @@ export const mutations = {
     setActiveDevice(state, activeDevice) {
         state.activeDevice = activeDevice;
     },
+    setActiveDeviceDetails(state, activeDeviceDetails) {
+        state.activeDeviceDetails = activeDeviceDetails;
+    },
+    setActiveDeviceSettings(state, activeDeviceSettings) {
+        state.activeDeviceSettings = activeDeviceSettings;
+    },
     setActiveRack(state, activeRack) {
         state.activeRack = activeRack;
     },
