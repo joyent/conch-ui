@@ -1,4 +1,5 @@
 export const state = {
+    activeDevice: '',
     activeRack: {},
     activeRoom: {},
     currentWorkspace: {},

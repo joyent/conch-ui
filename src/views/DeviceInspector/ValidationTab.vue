@@ -71,21 +71,15 @@
 </template>
 
 <script>
-import Spinner from '../components/Spinner.vue';
-
 import sortBy from 'lodash/sortBy';
 import countBy from 'lodash/countBy';
 import groupBy from 'lodash/groupBy';
-
+import Spinner from '../components/Spinner.vue';
 import { getDeviceValidations } from './api.js';
 import { get } from '../../api/validations.js';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
-    props: {
-        activeDevice: {
-            required: true,
-        },
-    },
     components: {
         Spinner,
     },
@@ -93,13 +87,18 @@ export default {
         return {
             results: [],
             revealDetails: false,
-            validationStates: '',
-            validations: '',
+            validationStates: [],
+            validations: [],
         };
     },
     computed: {
         // TODO: Need to translate resultsToCountTags
-
+        ...mapGetters([
+            'activeDeviceId',
+        ]),
+        ...mapState([
+            'activeDevice',
+        ]),
         resultsByOrder() {
             return sortBy(this.results, 'order');
         },
@@ -122,10 +121,8 @@ export default {
         },
     },
     created() {
-        activeDevice.map(device => {
-            validationStates.push(getDeviceValidations(device.id));
-            validations.push(get(device.id));
-        });
+        this.validationStates = getDeviceValidations(this.activeDeviceId);
+        this.validations = get();
     },
 };
 </script>

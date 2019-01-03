@@ -25,6 +25,7 @@
 import moment from 'moment';
 import RadialProgress from '../components/RadialProgress.vue';
 import Spinner from '../components/RadialProgress.vue';
+import { mapState } from 'vuex';
 
 const numReboots = 3;
 const maxBurnin = 21600;
@@ -32,9 +33,6 @@ const burninStageTime = maxBurnin / numReboots;
 
 export default {
     props: {
-        activeDevice: {
-            required: true,
-        },
         deviceSettings: {
             required: true,
         },
@@ -48,36 +46,38 @@ export default {
         };
     },
     computed: {
+        ...mapState([
+            'activeDevice',
+        ]),
         timeToBurnin() {
             return moment.duration(time, 'seconds').humanize(true);
         },
         sinceLastReboot() {
-            return uptimeSince ? moment().diff(moment(uptimeSince), 'seconds') : moment().diff(moment(lastSeen), 'seconds');
+            return this.uptimeSince ? moment().diff(moment(this.uptimeSince), 'seconds') : moment().diff(moment(this.lastSeen), 'seconds');
         },
         percentage() {
-            if (rebootCount === numReboots) {
+            if (this.rebootCount === numReboots) {
                 return 100;
-            } else if (time < 0) {
-                return Math.trunc(rebootCount / numReboots * 100);
+            } else if (this.time < 0) {
+                return Math.trunc(this.rebootCount / numReboots * 100);
             }
 
-            return Math.trunc((maxBurnin - time) / time * 100);
+            return Math.trunc((maxBurnin - this.time) / this.time * 100);
         },
         time() {
-            return maxBurnin - (rebootCount * burninStageTime + sinceLastReboot);
+            return maxBurnin - (this.rebootCount * burninStageTime + this.sinceLastReboot);
         },
-        // Can these simply be data?
         rebootCount() {
-            return deviceSettings.build.reboot_count || 0;
+            return this.deviceSettings.build.reboot_count || 0;
         },
         uptimeSince() {
-            return activeDevice.uptime_since;
+            return this.activeDevice.uptime_since;
         },
         health() {
-            return activeDevice.health;
+            return this.activeDevice.health;
         },
         lastSeen() {
-            return activeDevice.last_seen;
+            return this.activeDevice.last_seen;
         }
     },
 };

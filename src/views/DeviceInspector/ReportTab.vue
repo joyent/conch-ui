@@ -7,15 +7,15 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
-    props: {
-        activeDevice: {
-            required: true,
-        },
-    },
     computed: {
+        ...mapState([
+            'activeDevice',
+        ]),
         latestReport() {
-            return JSON.stringify(activeDevice.latest_report || {}, null, '  ');
+            return JSON.stringify(this.activeDevice.latest_report || {}, null, '  ');
         },
     },
 };

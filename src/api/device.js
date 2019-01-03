@@ -28,7 +28,7 @@ export const getLocation = (id) => {
     });
 };
 
-export const setAssetTag = (id) => {
+export const setAssetTag = (id, assetTag) => {
     return axios({
         method: "POST",
         url: `/device/${id}/asset_tag`,

@@ -1,6 +1,15 @@
 export const mutations = {
+    clearActiveDevice(state) {
+        state.activeDevice = '';
+    },
     clearActiveRoom(state) {
         state.activeRoom = {};
+    },
+    clearRackLayout(state) {
+        state.rackLayout = {};
+    },
+    setActiveDevice(state, activeDevice) {
+        state.activeDevice = activeDevice;
     },
     setActiveRack(state, activeRack) {
         state.activeRack = activeRack;

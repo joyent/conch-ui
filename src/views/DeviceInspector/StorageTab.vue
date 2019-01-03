@@ -1,7 +1,7 @@
 <template>
     <div class="storage-tab">
-        <Spinner v-if="disks == null" />
-        <table class="table is-narrow is-fullwidth">
+        <Spinner v-if="!hasDisks" />
+        <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
                     <th></th>
@@ -80,13 +80,10 @@
 
 <script>
 import Spinner from '../components/Spinner.vue';
+import isEmpty from 'lodash/isEmpty';
+import { mapState } from 'vuex';
 
 export default {
-    props: {
-        activeDevice: {
-            required: true,
-        },
-    },
     components: {
         Spinner,
     },
@@ -96,13 +93,19 @@ export default {
         };
     },
     computed: {
+        ...mapState([
+            'activeDevice',
+        ]),
         disks() {
-            return activeDevice.map(device => {
-                (device.latest_report && device.latest_report.disks) || {}
-            })
+            const activeDevice = this.activeDevice;
+
+            return activeDevice.latest_report && activeDevice.latest_report.disks ? activeDevice.latest_report.disks : {};
+        },
+        hasDisks() {
+            return !isEmpty(this.disks);
         },
         sortedDisks() {
-            return Object.entries(disks)
+            return Object.entries(this.disks)
                 .map(([id, disk]) => {
                     disk.id = id;
 
@@ -113,6 +116,6 @@ export default {
                 })
                 .sort((a, b) => a.sortKey - b.sortKey);
         }
-    }
+    },
 };
 </script>

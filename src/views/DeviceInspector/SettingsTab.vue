@@ -1,7 +1,7 @@
 <template>
     <div class="settings-tab">
-        <Spinner v-if="deviceSettings == null" />
-        <table class="table is-narrow is-fullwidth">
+        <Spinner v-if="!hasDeviceSettings" />
+        <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
                     <th>Name</th>
@@ -23,16 +23,25 @@
 </template>
 
 <script>
+import Spinner from '../components/Spinner.vue';
+import isEmpty from 'lodash/isEmpty';
+
 export default {
     props: {
         deviceSettings: {
             required: true,
         },
     },
+    components: {
+        Spinner,
+    },
     computed: {
+        hasDeviceSettings() {
+            return !isEmpty(this.deviceSettings);
+        },
         sortedDeviceSettings() {
-            return Object.entries(deviceSettings).sort();
-        }
-    }
+            return Object.entries(this.deviceSettings).sort();
+        },
+    },
 };
 </script>

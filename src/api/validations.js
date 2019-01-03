@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const get = (id) => {
+export const get = () => {
     return axios({
         method: 'GET',
         url: '/validation'

@@ -2,7 +2,21 @@
     <div class="overview-tab">
         <div class="level">
             <div class="level-left">
-                <div class="level-item tags">{{ deviceTags }}</div>
+                <div class="level-item tags">
+                    <div
+                        class="tag"
+                        v-for="(tag, index) in deviceTags"
+                        :key="index"
+                        :class="{
+                            'is-danger': tag.state === 'fail',
+                            'is-info': tag.state === 'pass',
+                            'is-warning': tag.state === 'unknown' || tag.state === 'updating',
+                            'is-success': tag.state === 'validated' || tag.state === 'graduated' || tag.state === 'triton_setup'
+                        }"
+                    >
+                        {{ tag.title }}
+                    </div>
+                </div>
             </div>
             <div class="level-right" v-if="activeDevice.location">
                 <div class="level-item">
@@ -25,14 +39,14 @@
                     </article>
                     <article class="tile is-child box">
                         <p class="subtitle">BIOS Version</p>
-                        <p class="title" v-if="this.activeDevice.latest_report.bios_version">{{ this.activeDevice.latest_report.bios_version }}</p>
+                        <p class="title" v-if="activeDevice.latest_report">{{ activeDevice.latest_report.bios_version }}</p>
                         <p class="title" v-else>Unknown</p>
                     </article>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
                         <p class="subtitle">Time for Burn-in</p>
-                        <TimeToBurnin :active-device="activeDevice" :device-settings="deviceSettings" />
+                        <!-- <TimeToBurnin :device-settings="deviceSettings" /> -->
                     </article>
                 </div>
             </div>
@@ -43,26 +57,17 @@
 <script>
 import moment from 'moment';
 import TimeToBurnin from './TimeToBurnin.vue';
+import { mapGetters, mapState } from 'vuex';
 
+// TODO: Fix Device Tags and Show Device In Rack button
 export default {
     props: {
-        activeDevice: {
-            required: true,
-        },
-        activeDeviceId: {
-            required: true,
-        },
         deviceSettings: {
-            required: true,
+            required: false,
         },
     },
     components: {
         TimeToBurnin,
-    },
-    data() {
-        return {
-            deviceTags: [],
-        };
     },
     methods: {
         showDeviceInRack() {
@@ -70,6 +75,59 @@ export default {
         },
     },
     computed: {
+        ...mapGetters([
+            'activeDeviceId',
+        ]),
+        ...mapState([
+            'activeDevice',
+        ]),
+        deviceTags() {
+            let tags = [];
+            let health = this.activeDevice.health.toLowerCase();
+
+            if (health === 'fail') {
+                tags.push({
+                    state: 'fail',
+                    title: 'Failing Validation'
+                });
+            } else if (health === 'pass') {
+                tags.push({
+                    state: 'pass',
+                    title: 'Passing Validation'
+                });
+            } else if (health === 'unknown') {
+                tags.push({
+                    state: 'unknown',
+                    title: 'No Report'
+                });
+            }
+
+            // if (this.deviceSettings.firmware === 'updating') {
+            //     tags.push({
+            //         state: 'updating',
+            //         title: 'Firmware Updating'
+            //     });
+            // }
+
+            if (this.activeDevice.validated) {
+                tags.push({
+                    state: 'validated',
+                    title: 'Validated'
+                });
+            } else if (this.activeDevice.graduated) {
+                tags.push({
+                    state: 'graduated',
+                    title: 'Graduated'
+                });
+            } else if (this.activeDevice.triton_setup) {
+                tags.push({
+                    state: 'tritonSetup',
+                    title: 'Triton Setup'
+                });
+            }
+
+            return tags;
+        },
         lastSeen() {
             return moment(this.activeDevice.last_seen).fromNow();
         },
@@ -77,8 +135,5 @@ export default {
             return moment(this.activeDevice.uptime_since).fromNow(true);
         },
     },
-    created: {
-        // TODO: Need to implement deviceTags
-    }
 };
 </script>

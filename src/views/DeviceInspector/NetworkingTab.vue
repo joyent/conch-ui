@@ -1,6 +1,6 @@
 <template>
     <div class="networking-tab">
-        <Spinner v-if="nics === null" />
+        <Spinner v-if="!hasNics" />
         <table class="table is-narrow-is-fullwidth" v-else>
             <thead>
                 <tr>
@@ -63,13 +63,10 @@
 
 <script>
 import Spinner from '../components/Spinner.vue';
+import isEmpty from 'lodash/isEmpty';
+import { mapState } from 'vuex';
 
 export default {
-    props: {
-        activeDevice: {
-            required: true,
-        },
-    },
     components: {
         Spinner,
     },
@@ -83,13 +80,19 @@ export default {
                 'MAC',
             ],
             ifaces: [],
-            nics: {},
+            nics: null,
         };
     },
+    computed: {
+        ...mapState([
+            'activeDevice',
+        ]),
+        hasNics() {
+            return !isEmpty(this.nics);
+        }
+    },
     created() {
-        this.nics = activeDevice.map(device => {
-            (device.latest_report && device.latest_report.interfaces) || {}
-        });
+        this.nics = this.activeDevice.latest_report && this.activeDevice.latest_report.interfaces || {};
 
         this.ifaces = Object.entries(this.nics)
             .sort()

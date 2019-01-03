@@ -24,7 +24,7 @@
                 <button class="button is-primary is-outlined is-fullwidth is-small" @click="openModal">Edit Assignments</button>
             </div>
             <Spinner v-if="rackLoading" />
-            <LayoutTable v-else :device-slots="filteredSlots" :active-device-id="activeDeviceId" :highlight-device-id="highlightDeviceId" />
+            <LayoutTable v-else :device-slots="filteredSlots" :highlight-device-id="highlightDeviceId" />
         </nav>
         <EditLayoutModal :active-rack="activeRack" :current-workspace="currentWorkspace" :device-slots="normalizedSlots" />
     </div>
@@ -35,14 +35,12 @@ import search from "fuzzysearch";
 import EditLayoutModal from './EditLayoutModal.vue';
 import LayoutTable from './LayoutTable.vue';
 import Spinner from '../components/Spinner.vue';
+import { EventBus } from '../../eventBus.js';
 import { deviceToProgress } from './util.js';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
     props: {
-        activeDeviceId: {
-            required: false,
-        },
         highlightDeviceId: {
             required: false,
         },
@@ -67,6 +65,9 @@ export default {
         };
     },
     computed: {
+        ...mapGetters([
+            'activeDeviceId',
+        ]),
         ...mapState([
             'activeRack',
             'currentWorkspace',
@@ -117,7 +118,7 @@ export default {
             return progressFilter && searchFilter;
         },
         openModal() {
-
+            EventBus.$emit('openModal:editLayoutModal');
         },
     },
 };

@@ -54,7 +54,7 @@
                 </div>
             </div>
         </section>
-        <!-- <DeviceModal :active-device-id="activeDeviceId" /> -->
+        <DeviceModal/>
     </div>
 </template>
 
@@ -64,7 +64,7 @@ import PageHeader from '../components/PageHeader.vue';
 import RackProgress from './RackProgress.vue';
 import Spinner from '../components/Spinner.vue';
 import { getDevices, getAllRacks } from '../../api/workspaces.js';
-import { mapActions, mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
     components: {
@@ -75,7 +75,6 @@ export default {
     },
     data() {
         return {
-            activeDeviceId: '',
             devices: [],
             rackCount: 0,
             rackRooms: 0,
@@ -83,6 +82,9 @@ export default {
         };
     },
     computed: {
+        ...mapGetters([
+            'activeDeviceId',
+        ]),
         currentWorkspaceId() {
             return this.currentWorkspace.id;
         },
@@ -100,8 +102,6 @@ export default {
         ...mapState([
             'currentWorkspace',
         ]),
-    },
-    methods: {
     },
     created() {
         this.devices = [];

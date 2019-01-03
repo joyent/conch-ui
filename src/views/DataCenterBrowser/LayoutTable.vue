@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr :class="{ 'is-selected': slot.occupant && highlightDeviceId && slot.occupant.id === highlightDeviceId }" v-for="(slot, index) in deviceSlots" :key="index" style="cursor: pointer;">
+            <tr :class="{ 'is-selected': slot.occupant && highlightDeviceId && slot.occupant.id === highlightDeviceId }" v-for="(slot, index) in deviceSlots" :key="index" @click="activateDevice(slot)" style="cursor: pointer;">
                 <th>{{ slot.id }}</th>
                 <td>
                     <p>
@@ -40,14 +40,13 @@
 
 <script>
 import ProgressIcon from './ProgressIcon.vue'
+import { mapActions, mapGetters } from 'vuex';
+import { EventBus } from '../../eventBus.js';
 
 export default {
     props: {
         deviceSlots: {
             required: true,
-        },
-        activeDeviceId: {
-            required: false,
         },
         highlightDeviceId: {
             required: false,
@@ -56,10 +55,22 @@ export default {
     components: {
         ProgressIcon,
     },
-    data() {
-        return {
-            currentActiveDeviceId: '',
-        };
+    methods: {
+        ...mapActions([
+            'setActiveDevice',
+        ]),
+        activateDevice(slot) {
+            if (slot.occupant) {
+                this.setActiveDevice(slot.occupant);
+            }
+
+            EventBus.$emit('openModal:deviceModal');
+        },
+    },
+    computed: {
+        ...mapGetters([
+            'activeDeviceId',
+        ]),
     },
 };
 </script>

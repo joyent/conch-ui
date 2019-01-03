@@ -2,47 +2,17 @@
     <div class="tabs-container">
         <div class="tabs is-centered is-boxed is-small">
             <ul>
-                <li v-for="(tab, index) in tabTitles" :key="index">
-                    <a @click="setActiveTab(tab)" :class="{ 'is-active': activeTab === tab }">{{ tab }}</a>
+                <li v-for="(tab, index) in tabTitles" :key="index" :class="{ 'is-active': activeTab === tab }">
+                    <a @click="setActiveTab(tab)">{{ tab }}</a>
                 </li>
             </ul>
         </div>
-        <OverviewTab
-            v-if="activeTab === 'Overview'"
-            :active-device="activeDevice"
-            :active-device-id="activeDeviceId"
-            :device-settings="deviceSettings"
-        />
-        <ValidationTab
-            v-else-if="activeTab === 'Validation'"
-            :active-device="activeDevice"
-            :active-device-id="activeDeviceId"
-            :device-settings="deviceSettings"
-        />
-        <SettingsTab
-            v-else-if="activeTab === 'Settings'"
-            :active-device="activeDevice"
-            :active-device-id="activeDeviceId"
-            :device-settings="deviceSettings"
-        />
-        <StorageTab
-            v-else-if="activeTab === 'Storage'"
-            :active-device="activeDevice"
-            :active-device-id="activeDeviceId"
-            :device-settings="deviceSettings"
-        />
-        <NetworkingTab
-            v-else-if="activeTab === 'Networking'"
-            :active-device="activeDevice"
-            :active-device-id="activeDeviceId"
-            :device-settings="deviceSettings"
-        />
-        <ReportTab
-            v-else-if="activeTab === 'Latest Report'"
-            :active-device="activeDevice"
-            :active-device-id="activeDeviceId"
-            :device-settings="deviceSettings"
-        />
+        <OverviewTab v-if="activeTabOverview" :device-settings="deviceSettings"/>
+        <ValidationTab v-else-if="activeTabValidation" :device-settings="deviceSettings" />
+        <SettingsTab v-else-if="activeTabSettings" :device-settings="deviceSettings" />
+        <StorageTab v-else-if="activeTabStorage" :device-settings="deviceSettings" />
+        <NetworkingTab v-else-if="activeTabNetworking" :device-settings="deviceSettings" />
+        <ReportTab v-else-if="activeTabLatestReport" :device-settings="deviceSettings" />
     </div>
 </template>
 
@@ -56,12 +26,6 @@ import ReportTab from './ReportTab.vue';
 
 export default {
     props: {
-        activeDevice: {
-            required: true,
-        },
-        activeDeviceId: {
-            required: true,
-        },
         deviceSettings: {
             required: true,
         },
@@ -76,7 +40,7 @@ export default {
     },
     data() {
         return {
-            activeTab: '',
+            activeTab: 'Storage',
             tabTitles: [
                 'Overview',
                 'Validation',
@@ -88,8 +52,28 @@ export default {
         };
     },
     methods: {
-        setActiveTab(title) {
-            this.activeTab = title;
+        setActiveTab(tab) {
+            this.activeTab = tab;
+        },
+    },
+    computed: {
+        activeTabOverview() {
+            return this.activeTab === 'Overview';
+        },
+        activeTabNetworking() {
+            return this.activeTab === 'Networking';
+        },
+        activeTabValidation() {
+            return this.activeTab === 'Validation';
+        },
+        activeTabSettings() {
+            return this.activeTab === 'Settings';
+        },
+        activeTabStorage() {
+            return this.activeTab === 'Storage';
+        },
+        activeTabLatestReport() {
+            return this.activeTab === 'Latest Report';
         },
     },
 };

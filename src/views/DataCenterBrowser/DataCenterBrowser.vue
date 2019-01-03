@@ -26,7 +26,7 @@
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
                     <article class="tile is-child">
-                        <DeviceModal v-if="activeDeviceId" :active-device-id="activeDeviceId" />
+                        <DeviceModal/>
                         <section class="section" v-if="!rackRooms.length">
                             <Spinner/>
                         </section>
@@ -44,7 +44,6 @@
                                     :active-rack="activeRack"
                                     :rack-loading="rackLoading"
                                     :rack-layout="rackLayout"
-                                    :active-device-id="activeDeviceId"
                                     :highlight-device-id="highlightDeviceId"
                                 />
                             </div>
@@ -81,7 +80,6 @@ export default {
     },
     data() {
         return {
-            activeDeviceId: null,
             foundDevices: null,
             highlightDeviceId: null,
             rackFilterText: '',
@@ -95,9 +93,9 @@ export default {
     },
     methods: {
         ...mapActions([
-            'clearActiveRack',
             'clearActiveRoom',
-            'setRackLayout'
+            'clearRackLayout',
+            'setRackLayout',
         ]),
         roomToProgress(racks) {
             if (racks.some(rack => rack["device_progress"]["FAIL"])) {
@@ -124,6 +122,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'activeDeviceId',
             'activeRackId',
             // 'activeRoomName',
             'currentWorkspaceId',
@@ -159,7 +158,7 @@ export default {
         }
     },
     created() {
-        getDevices(this.currentWorkspace.id)
+        getDevices(this.currentWorkspaceId)
             .then(response => {
                 let devices = response.data;
 
@@ -187,13 +186,14 @@ export default {
 
             });
     },
-    updated() {
-        if (this.$route.params.activeDeviceId) {
-            this.activeDeviceId = this.$route.params.activeDeviceId;
-        }
-    },
     destroyed() {
-        this.clearActiveRoom();
+        if (!isEmpty(this.activeRoom)) {
+            this.clearActiveRoom();
+        }
+
+        if (!isEmpty(this.rackLayout)) {
+            this.clearRackLayout();
+        }
     },
 };
 </script>

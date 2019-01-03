@@ -1,4 +1,5 @@
 export const getters = {
+    activeDeviceId: state => (state.activeDevice.id),
     activeRackId: state => (state.activeRack.id),
     activeRoomName: state => (state.activeRoom.name),
     activeRoomId: state => (state.activeRoom.id),

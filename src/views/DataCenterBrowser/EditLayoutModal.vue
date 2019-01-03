@@ -1,9 +1,9 @@
 <template>
-    <div class="modal" id="device-editor-modal">
+    <div class="modal" :class="{ 'is-active': isActive }" id="device-editor-modal">
         <div class="modal-background" @click="closeModal"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title">Assign Rack {{ activeRack.name }}</p>
+                <p class="modal-card-title has-text-centered">Assign Rack {{ activeRack.name }}</p>
                 <button class="delete" aria-label="close" @click="closeModal"></button>
             </header>
             <section class="modal-card-body">
@@ -30,7 +30,7 @@
                                 </div>
                                 <div class="control has-icons-left">
                                     <input type="text" class="input is-small" placeholder="Asset Tag" pattern="[a-zA-Z0-9]+" :disabled="assignments[slot.id] == null">
-                                    <span class="icon is-lef">
+                                    <span class="icon is-left">
                                         <i class="fas fa-tag"></i>
                                     </span>
                                 </div>
@@ -52,7 +52,10 @@
 </template>
 
 <script>
+import { setAssetTag } from '../../api/device.js';
 import { setRackLayout } from '../../api/workspaces.js';
+import { EventBus } from '../../eventBus.js';
+import { mapGetters } from 'vuex';
 
 export default {
     props: {
@@ -70,46 +73,75 @@ export default {
         return {
             assignments: [],
             duplicateSerials: [],
+            isActive: false,
         };
+    },
+    computed: {
+        ...mapGetters([
+            'currentWorkspaceId',
+        ]),
     },
     methods: {
         closeModal() {
-
+            EventBus.$emit('closeModal:editLayoutModal');
         },
         save(event) {
-            const layout = {};
-            const duplicates = {};
-            const assignments = this.assignments;
+                const layout = {};
+                const duplicates = {};
+                const assignments = this.assignments;
 
-            Object.keys(assignments).forEach(slot => {
-                if (layout[assignments[slot].id]) {
-                    duplicates[slot] = true;
-                    duplicates[layout[assignments[slot].id]] = true;
-                }
-                layout[assignments[slot].id] = slot;
-            });
+                Object.keys(assignments).forEach(slot => {
+                    if (layout[assignments[slot].id]) {
+                        duplicates[slot] = true;
+                        duplicates[layout[assignments[slot].id]] = true;
+                    }
 
-            this.duplicateSerials = duplicates;
+                    layout[assignments[slot].id] = slot;
+                });
 
-            if (Object.keys(this.duplicateSerials.length === 0)) {
-                event.target.classList.add("is-loading");
+                this.duplicateSerials = duplicates;
 
-                setRackLayout(this.activeRack.id, layout)
-                    .then(() => {
-                        Promise.all(
-                            Object.values(assignments).map(assignment => {
-                                if (!assignment.assetTag)
-                                    return Promise.resolve();
+                if (Object.keys(duplicates).length === 0) {
+                    // TODO: use :class to trigger this change
+                    event.target.classList.add("is-loading");
 
-                                const device = new Device(assignment.id);
-                                return device.setAssetTag(assignment.assetTag);
-                            })
-                        ).then(() => {
-                            this.closeModal();
+                    setRackLayout(this.currentWorkspaceId, this.activeRack.id, layout)
+                        .then(() => {
+                            Promise.all(
+                                Object.values(assignments).map(assignment => {
+                                    if (!assignment.assetTag) {
+                                        return Promise.resolve();
+                                    }
+
+                                    return setAssetTag(assignment.id, assignment.assetTag);
+                                })
+                            ).then(() => {
+                                this.closeModal();
+                                this.activeRack = {};
+                            });
                         });
-                    });
-            }
+                }
         },
+    },
+    created() {
+        this.deviceSlots.map(slot => {
+            let occupant = slot.occupant;
+            if (occupant) {
+                this.assignments[slot.id] = {
+                    id: occupant.id,
+                    assetTag: occupant.asset_tag
+                };
+            }
+        });
+    },
+    mounted() {
+        EventBus.$on('closeModal:editLayoutModal', () => {
+            this.isActive = false;
+        });
+
+        EventBus.$on('openModal:editLayoutModal', () => {
+            this.isActive = true;
+        });
     },
 };
 </script>
