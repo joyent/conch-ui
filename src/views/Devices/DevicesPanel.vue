@@ -36,6 +36,7 @@
             :key="index"
             class="panel-block"
             :class="{ 'is-active': activeDeviceId === device.id }"
+            @click="activateDevice(device)"
         >
             <div class="panel-icon">
                 <ProgressIcon :progress="deviceToProgress(device)" />
@@ -53,7 +54,8 @@ import ProgressIcon from '../components/ProgressIcon.vue';
 import search from 'fuzzysearch';
 import sortBy from 'lodash/sortBy';
 import moment from 'moment';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+import { getDeviceDetails, getDeviceSettings } from '../DeviceInspector/api';
 
 export default {
     props: {
@@ -75,6 +77,28 @@ export default {
         };
     },
     methods: {
+        ...mapActions([
+            'setActiveDevice',
+            'setActiveDeviceDetails',
+            'setActiveDeviceSettings',
+        ]),
+        activateDevice(device) {
+            this.setActiveDevice(device);
+            this.setDeviceDetails(device.id);
+            this.setDeviceSettings(device.id)
+        },
+        setDeviceDetails(activeDeviceId) {
+            getDeviceDetails(activeDeviceId)
+                .then(response => {
+                    this.setActiveDeviceDetails(response.data);
+                });
+        },
+        setDeviceSettings(activeDeviceId) {
+            getDeviceSettings(activeDeviceId)
+                .then(response => {
+                    this.setActiveDeviceSettings(response.data);
+                });
+        },
         deviceFilter(device) {
             const deviceId = device ? device.id.toLowerCase() : '';
             const assetTag = device && device.asset_tag ? device.asset_tag.toLowerCase() : '';

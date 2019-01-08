@@ -10,7 +10,13 @@
             </tr>
         </thead>
         <tbody>
-            <tr :class="{ 'is-selected': slot.occupant && highlightDeviceId && slot.occupant.id === highlightDeviceId }" v-for="(slot, index) in deviceSlots" :key="index" @click="activateDevice(slot)" style="cursor: pointer;">
+            <tr
+                :class="{ 'is-selected': slot.occupant && highlightDeviceId && slot.occupant.id === highlightDeviceId }"
+                v-for="(slot, index) in deviceSlots"
+                :key="index"
+                @click="activateDevice(slot)"
+                style="cursor: pointer;"
+            >
                 <th>{{ slot.id }}</th>
                 <td>
                     <p>
@@ -42,6 +48,7 @@
 import ProgressIcon from '../components/ProgressIcon.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { EventBus } from '../../eventBus.js';
+import { getDeviceDetails, getDeviceSettings } from '../DeviceInspector/api';
 
 export default {
     props: {
@@ -58,13 +65,31 @@ export default {
     methods: {
         ...mapActions([
             'setActiveDevice',
+            'setActiveDeviceDetails',
+            'setActiveDeviceSettings',
         ]),
         activateDevice(slot) {
-            if (slot.occupant) {
-                this.setActiveDevice(slot.occupant);
+            const device = slot.occupant;
+
+            if (device) {
+                this.setActiveDevice(device);
+                this.setDeviceDetails(device.id);
+                this.setDeviceSettings(device.id)
             }
 
             EventBus.$emit('openModal:deviceModal');
+        },
+        setDeviceDetails(activeDeviceId) {
+            getDeviceDetails(activeDeviceId)
+                .then(response => {
+                    this.setActiveDeviceDetails(response.data);
+                });
+        },
+        setDeviceSettings(activeDeviceId) {
+            getDeviceSettings(activeDeviceId)
+                .then(response => {
+                    this.setActiveDeviceSettings(response.data);
+                });
         },
     },
     computed: {
