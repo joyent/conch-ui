@@ -3,17 +3,7 @@
         <div class="level">
             <div class="level-left">
                 <div class="level-item tags">
-                    <div
-                        class="tag"
-                        v-for="(tag, index) in deviceTags"
-                        :key="index"
-                        :class="{
-                            'is-danger': tag.state === 'fail',
-                            'is-info': tag.state === 'pass',
-                            'is-warning': tag.state === 'unknown' || tag.state === 'updating',
-                            'is-success': tag.state === 'validated' || tag.state === 'graduated' || tag.state === 'triton_setup'
-                        }"
-                    >
+                    <div class="tag" v-for="(tag, index) in deviceTags" :key="index" :class="tag.style">
                         {{ tag.title }}
                     </div>
                 </div>
@@ -87,41 +77,41 @@ export default {
 
             if (health === 'fail') {
                 tags.push({
-                    state: 'fail',
+                    style: 'is-danger',
                     title: 'Failing Validation'
                 });
             } else if (health === 'pass') {
                 tags.push({
-                    state: 'pass',
+                    style: 'is-info',
                     title: 'Passing Validation'
                 });
             } else if (health === 'unknown') {
                 tags.push({
-                    state: 'unknown',
+                    style: 'is-warning',
                     title: 'No Report'
                 });
             }
 
             if (this.activeDeviceSettings.firmware === 'updating') {
                 tags.push({
-                    state: 'updating',
+                    style: 'is-warning',
                     title: 'Firmware Updating'
                 });
             }
 
             if (this.activeDeviceDetails.validated) {
                 tags.push({
-                    state: 'validated',
+                    style: 'is-success',
                     title: 'Validated'
                 });
             } else if (this.activeDeviceDetails.graduated) {
                 tags.push({
-                    state: 'graduated',
+                    style: 'is-success',
                     title: 'Graduated'
                 });
             } else if (this.activeDeviceDetails.triton_setup) {
                 tags.push({
-                    state: 'tritonSetup',
+                    style: 'is-success',
                     title: 'Triton Setup'
                 });
             }
