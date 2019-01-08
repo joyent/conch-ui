@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import ProgressIcon from './ProgressIcon.vue'
+import ProgressIcon from '../components/ProgressIcon.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { EventBus } from '../../eventBus.js';
 

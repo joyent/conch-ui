@@ -30,7 +30,7 @@
 
 <script>
 import search from "fuzzysearch";
-import ProgressIcon from './ProgressIcon.vue';
+import ProgressIcon from '../components/ProgressIcon.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
