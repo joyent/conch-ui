@@ -17,6 +17,9 @@ export const mutations = {
     setActiveDeviceSettings(state, activeDeviceSettings) {
         state.activeDeviceSettings = activeDeviceSettings;
     },
+    setActiveDeviceValidations(state, activeDeviceValidations) {
+        state.activeDeviceValidations = activeDeviceValidations;
+    },
     setActiveRack(state, activeRack) {
         state.activeRack = activeRack;
     },
@@ -31,6 +34,9 @@ export const mutations = {
     },
     setWorkspaces(state, workspaces) {
         state.workspaces = workspaces;
+    },
+    setValidations(state, validations) {
+        state.validations = validations;
     },
 };
 

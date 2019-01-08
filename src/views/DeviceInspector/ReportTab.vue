@@ -12,10 +12,10 @@ import { mapState } from 'vuex';
 export default {
     computed: {
         ...mapState([
-            'activeDevice',
+            'activeDeviceDetails',
         ]),
         latestReport() {
-            return JSON.stringify(this.activeDevice.latest_report || {}, null, '  ');
+            return JSON.stringify(this.activeDeviceDetails.latest_report || {}, null, '  ');
         },
     },
 };

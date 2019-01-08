@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const get = () => {
+export const getValidations = () => {
     return axios({
         method: 'GET',
         url: '/validation'
@@ -8,5 +8,5 @@ export const get = () => {
 };
 
 export default {
-    get,
+    getValidations,
 };

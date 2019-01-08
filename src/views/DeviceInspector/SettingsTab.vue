@@ -1,6 +1,6 @@
 <template>
     <div class="settings-tab">
-        <Spinner v-if="!hasDeviceSettings" />
+        <Spinner v-if="!hasActiveDeviceSettings" />
         <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
@@ -8,9 +8,9 @@
                     <th>Value</th>
                 </tr>
             </thead>
-            <tr v-for="(value, key, index) in sortedDeviceSettings" :key="index">
-                <td class="has-text-weight-semibold">{{ value }}</td>
-                <td>{{ key }}</td>
+            <tr v-for="(value, key, index) in activeDeviceSettings" :key="index">
+                <td class="has-text-weight-semibold">{{ key }}</td>
+                <td>{{ value }}</td>
             </tr>
             <tfoot>
                 <tr>
@@ -25,22 +25,18 @@
 <script>
 import Spinner from '../components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
+import { mapState } from 'vuex';
 
 export default {
-    props: {
-        deviceSettings: {
-            required: true,
-        },
-    },
     components: {
         Spinner,
     },
     computed: {
-        hasDeviceSettings() {
-            return !isEmpty(this.deviceSettings);
-        },
-        sortedDeviceSettings() {
-            return Object.entries(this.deviceSettings).sort();
+        ...mapState([
+            'activeDeviceSettings',
+        ]),
+        hasActiveDeviceSettings() {
+            return !isEmpty(this.activeDeviceSettings);
         },
     },
 };

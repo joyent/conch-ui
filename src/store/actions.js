@@ -17,6 +17,9 @@ export const actions = {
     setActiveDeviceSettings({ commit }, activeDeviceSettings) {
         commit('setActiveDeviceSettings', activeDeviceSettings);
     },
+    setActiveDeviceValidations({ commit }, activeDeviceValidations) {
+        commit('setActiveDeviceValidations', activeDeviceValidations);
+    },
     setActiveRack({ commit }, activeRack) {
         commit('setActiveRack', activeRack);
     },
@@ -31,6 +34,9 @@ export const actions = {
     },
     setWorkspaces({ commit }, workspaces) {
         commit('setWorkspaces', workspaces);
+    },
+    setValidations({ commit }, validations) {
+        commit('setValidations', validations);
     },
 };
 

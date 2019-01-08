@@ -1,6 +1,6 @@
 <template>
     <div class="storage-tab">
-        <Spinner v-if="!hasDisks" />
+        <Spinner v-if="disks == null" />
         <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
@@ -12,58 +12,60 @@
                     <th>Slot Number</th>
                 </tr>
             </thead>
-            <tr :class="{ 'is-selected': revealDetails }" v-for="(disk, index) in sortedDisks" :key="index" @click="revealDetails = !revealDetails" style="cursor: pointer">
-                <td>
-                    <div class="icon">
-                        <i class="fas fa-caret-down" v-if="revealDetails"></i>
-                        <i class="fas fa-caret-right" v-else></i>
-                    </div>
-                </td>
-                <td>{{ disk.disk.health }}</td>
-                <td>{{ disk.disk.id }}</td>
-                <td>{{ disk.disk.enclosure }}</td>
-                <td>{{ disk.disk.hba }}</td>
-                <td>{{ disk.disk.slot }}</td>
-            </tr>
-            <tr v-if="revealDetails" v-for="(disk, index) in sortedDisks" :key="index">
-                <td></td>
-                <td colspan="5">
-                    <div class="content">
-                        <table class="table is-narrow is-marginless">
-                            <tbody>
-                                <tr>
-                                    <td class="has-text-weight-semibold">Vendor</td>
-                                    <td>{{ disk.disk.vendor }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="has-text-weight-semibold">Model</td>
-                                    <td>{{ disk.disk.model }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="has-text-weight-semibold">Size</td>
-                                    <td>{{ disk.disk.size }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="has-text-weight-semibold">Drive Type</td>
-                                    <td>{{ disk.disk.drive_type }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="has-text-weight-semibold">Transport</td>
-                                    <td>{{ disk.disk.transport }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="has-text-weight-semibold">Firmware</td>
-                                    <td>{{ disk.disk.firmware }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="has-text-weight-semibold">Temperature</td>
-                                    <td>{{ disk.disk.temperature }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </td>
-            </tr>
+            <template v-for="(disk, index) in sortedDisks">
+                <tr :class="{ 'is-selected': isRowSelected(index) }" @click="revealDiskDetails(index)" style="cursor: pointer" :key="index">
+                    <td>
+                        <div class="icon">
+                            <i class="fas fa-caret-down" v-if="isRowSelected(index)"></i>
+                            <i class="fas fa-caret-right" v-else></i>
+                        </div>
+                    </td>
+                    <td>{{ disk.health }}</td>
+                    <td>{{ disk.id }}</td>
+                    <td>{{ disk.enclosure }}</td>
+                    <td>{{ disk.hba }}</td>
+                    <td>{{ disk.slot }}</td>
+                </tr>
+                <tr v-if="isRowSelected(index)" :key="`${index}a`">
+                    <td></td>
+                    <td colspan="5">
+                        <div class="content">
+                            <table class="table is-narrow is-marginless">
+                                <tbody>
+                                    <tr>
+                                        <td class="has-text-weight-semibold">Vendor</td>
+                                        <td>{{ disk.vendor }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="has-text-weight-semibold">Model</td>
+                                        <td>{{ disk.model }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="has-text-weight-semibold">Size</td>
+                                        <td>{{ disk.size }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="has-text-weight-semibold">Drive Type</td>
+                                        <td>{{ disk.drive_type }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="has-text-weight-semibold">Transport</td>
+                                        <td>{{ disk.transport }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="has-text-weight-semibold">Firmware</td>
+                                        <td>{{ disk.firmware }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="has-text-weight-semibold">Temperature</td>
+                                        <td>{{ disk.temperature }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </template>
             <tfoot>
                 <tr>
                     <th></th>
@@ -89,20 +91,37 @@ export default {
     },
     data() {
         return {
-            revealDetails: false,
+            headers: [
+                '',
+                'Health',
+                'Serial Number',
+                'Enclosure',
+                'HBA',
+                'Slot Number'
+            ],
+            diskDetailsRows: [],
         };
+    },
+    methods: {
+        isRowSelected(index) {
+            return this.diskDetailsRows.indexOf(index) >= 0;
+        },
+        revealDiskDetails(index) {
+            if (this.diskDetailsRows.indexOf(index) === -1) {
+                this.diskDetailsRows.push(index);
+            } else {
+                this.diskDetailsRows.splice(this.diskDetailsRows.indexOf(index), 1);
+            }
+        },
     },
     computed: {
         ...mapState([
-            'activeDevice',
+            'activeDeviceDetails',
         ]),
         disks() {
-            const activeDevice = this.activeDevice;
+            const activeDeviceDetails = this.activeDeviceDetails;
 
-            return activeDevice.latest_report && activeDevice.latest_report.disks ? activeDevice.latest_report.disks : {};
-        },
-        hasDisks() {
-            return !isEmpty(this.disks);
+            return activeDeviceDetails.latest_report && activeDeviceDetails.latest_report.disks ? activeDeviceDetails.latest_report.disks : {};
         },
         sortedDisks() {
             return Object.entries(this.disks)
@@ -110,12 +129,23 @@ export default {
                     disk.id = id;
 
                     return {
+                        drive_type: disk.drive_type,
+                        enclosure: disk.enclosure,
+                        firmware: disk.firmware,
+                        hba: disk.hba,
+                        health: disk.health,
+                        id: disk.id,
+                        model: disk.model,
+                        size: disk.size,
+                        slot: disk.slot,
                         sortKey: 100 * (parseInt(disk.hba) || 0) + (parseInt(disk.slot) || 0),
-                        disk
+                        temperature: disk.temperature,
+                        transport: disk.transport,
+                        vendor: disk.vendor,
                     }
                 })
                 .sort((a, b) => a.sortKey - b.sortKey);
-        }
+        },
     },
 };
 </script>

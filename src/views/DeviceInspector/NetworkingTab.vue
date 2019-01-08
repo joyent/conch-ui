@@ -1,19 +1,17 @@
 <template>
     <div class="networking-tab">
-        <Spinner v-if="!hasNics" />
-        <table class="table is-narrow-is-fullwidth" v-else>
+        <Spinner v-if="nics == null" />
+        <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
-                    <th v-for="(header, index) in headers" :key="index">
-                        {{ header }}
-                    </th>
+                    <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
                 </tr>
             </thead>
-            <div class="networking-row" v-for="(iface, index) in ifaces" :key="index">
-                <tr @click="revealDetails = !revealDetails" :class="{ 'is-selected': revealDetails }" style="cursor: pointer;">
+            <template v-for="(iface, index) in ifaces">
+                <tr :class="{ 'is-selected': isRowSelected(index) }" @click="revealIfaceDetails(index)" style="cursor: pointer;" :key="index">
                     <td>
                         <div class="icon">
-                            <i class="fas fa-caret-down" v-if="revealDetails"></i>
+                            <i class="fas fa-caret-down" v-if="isRowSelected(index)"></i>
                             <i class="fas fa-caret-right" v-else></i>
                         </div>
                     </td>
@@ -22,7 +20,7 @@
                     <td>{{ iface.ipaddr }}</td>
                     <td>{{ iface.mac }}</td>
                 </tr>
-                <tr v-if="revealDetails">
+                <tr v-if="isRowSelected(index)" :key="`${index}a`">
                     <td></td>
                     <td colspan="4">
                         <div class="content">
@@ -49,12 +47,10 @@
                         </div>
                     </td>
                 </tr>
-            </div>
+            </template>
             <tfoot>
                 <tr>
-                    <th v-for="(header, index) in headers" :key="index">
-                        {{ header }}
-                    </th>
+                    <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
                 </tr>
             </tfoot>
         </table>
@@ -63,7 +59,6 @@
 
 <script>
 import Spinner from '../components/Spinner.vue';
-import isEmpty from 'lodash/isEmpty';
 import { mapState } from 'vuex';
 
 export default {
@@ -80,26 +75,36 @@ export default {
                 'MAC',
             ],
             ifaces: [],
+            ifaceDetailsRows: [],
             nics: null,
         };
     },
+    methods: {
+        isRowSelected(index) {
+            return this.ifaceDetailsRows.indexOf(index) >= 0;
+        },
+        revealIfaceDetails(index) {
+            if (this.ifaceDetailsRows.indexOf(index) === -1) {
+                this.ifaceDetailsRows.push(index);
+            } else {
+                this.ifaceDetailsRows.splice(this.ifaceDetailsRows.indexOf(index), 1);
+            }
+        },
+    },
     computed: {
         ...mapState([
-            'activeDevice',
+            'activeDeviceDetails',
         ]),
-        hasNics() {
-            return !isEmpty(this.nics);
-        }
     },
     created() {
-        this.nics = this.activeDevice.latest_report && this.activeDevice.latest_report.interfaces || {};
+        this.nics = this.activeDeviceDetails.latest_report && this.activeDeviceDetails.latest_report.interfaces || {};
 
         this.ifaces = Object.entries(this.nics)
             .sort()
             .map(([id, iface]) => {
                 iface.id = id;
                 return iface;
-            })
-    }
+            });
+    },
 };
 </script>

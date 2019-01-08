@@ -16,7 +16,7 @@
             :style="{ strokeWidth }"
             style="will-change: auto; transition: stroke-dashoffset 850ms ease-in-out"
         ></path>
-        <text class="is-size-2 has-text-weight-bol" x="102" y="110" text-anchor="middle" fill="#dee5ed"></text>
+        <text class="is-size-2 has-text-weight-bol" x="102" y="110" text-anchor="middle" fill="#dee5ed">{{ percentage }}%</text>
     </svg>
 </template>
 
@@ -37,11 +37,11 @@ export default {
     computed: {
         meterStyle() {
             return {
-                'has-stroke-danger': failing,
-                'has-stroke-success': percentage === 100,
-                'has-stroke-info': percentage !== 100
+                'has-stroke-danger': this.failing,
+                'has-stroke-success': this.percentage === 100,
+                'has-stroke-info': this.percentage !== 100
             };
         }
-    }
+    },
 }
 </script>
