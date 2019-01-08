@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </div>
-            <div class="level-right" v-if="activeDevice.location">
+            <div class="level-right" v-if="activeDeviceDetails.location">
                 <div class="level-item">
                     <button class="button is-small is-link is-rounded" @click="showDeviceInRack">Show Device in Rack</button>
                 </div>
@@ -29,24 +29,24 @@
                 <div class="tile is-parent is-vertical">
                     <article class="tile is-child box">
                         <p class="subtitle">Last Reported</p>
-                        <p class="title" v-if="activeDevice.last_seen">{{ lastSeen }}</p>
+                        <p class="title" v-if="activeDeviceDetails.last_seen">{{ lastSeen }}</p>
                         <p class="title" v-else>Never</p>
                     </article>
                     <article class="tile is-child box">
                         <p class="subtitle">Uptime</p>
-                        <p class="title" v-if="activeDevice.uptime_since">{{ uptimeSince }}</p>
+                        <p class="title" v-if="activeDeviceDetails.uptime_since">{{ uptimeSince }}</p>
                         <p class="title" v-else>Unknown</p>
                     </article>
                     <article class="tile is-child box">
                         <p class="subtitle">BIOS Version</p>
-                        <p class="title" v-if="activeDevice.latest_report">{{ activeDevice.latest_report.bios_version }}</p>
+                        <p class="title" v-if="activeDeviceDetails.latest_report">{{ activeDeviceDetails.latest_report.bios_version }}</p>
                         <p class="title" v-else>Unknown</p>
                     </article>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
                         <p class="subtitle">Time for Burn-in</p>
-                        <!-- <TimeToBurnin :device-settings="deviceSettings" /> -->
+                        <TimeToBurnin/>
                     </article>
                 </div>
             </div>
@@ -59,19 +59,17 @@ import moment from 'moment';
 import TimeToBurnin from './TimeToBurnin.vue';
 import { mapGetters, mapState } from 'vuex';
 
-// TODO: Fix Device Tags and Show Device In Rack button
 export default {
-    props: {
-        deviceSettings: {
-            required: false,
-        },
-    },
     components: {
         TimeToBurnin,
     },
     methods: {
         showDeviceInRack() {
+            let { datacenter, rack } = this.activeDeviceDetails.location;
+            let route = this.$route.path;
+            let workspaceRoute = route.substring(0, route.indexOf("/", 1));
 
+            this.$router.push({path: `${workspaceRoute}/datacenter/${datacenter.name}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}` });
         },
     },
     computed: {
@@ -80,10 +78,12 @@ export default {
         ]),
         ...mapState([
             'activeDevice',
+            'activeDeviceDetails',
+            'activeDeviceSettings',
         ]),
         deviceTags() {
             let tags = [];
-            let health = this.activeDevice.health.toLowerCase();
+            let health = this.activeDeviceDetails.health.toLowerCase();
 
             if (health === 'fail') {
                 tags.push({
@@ -102,24 +102,24 @@ export default {
                 });
             }
 
-            // if (this.deviceSettings.firmware === 'updating') {
-            //     tags.push({
-            //         state: 'updating',
-            //         title: 'Firmware Updating'
-            //     });
-            // }
+            if (this.activeDeviceSettings.firmware === 'updating') {
+                tags.push({
+                    state: 'updating',
+                    title: 'Firmware Updating'
+                });
+            }
 
-            if (this.activeDevice.validated) {
+            if (this.activeDeviceDetails.validated) {
                 tags.push({
                     state: 'validated',
                     title: 'Validated'
                 });
-            } else if (this.activeDevice.graduated) {
+            } else if (this.activeDeviceDetails.graduated) {
                 tags.push({
                     state: 'graduated',
                     title: 'Graduated'
                 });
-            } else if (this.activeDevice.triton_setup) {
+            } else if (this.activeDeviceDetails.triton_setup) {
                 tags.push({
                     state: 'tritonSetup',
                     title: 'Triton Setup'
@@ -129,10 +129,10 @@ export default {
             return tags;
         },
         lastSeen() {
-            return moment(this.activeDevice.last_seen).fromNow();
+            return moment(this.activeDeviceDetails.last_seen).fromNow();
         },
         uptimeSince() {
-            return moment(this.activeDevice.uptime_since).fromNow(true);
+            return moment(this.activeDeviceDetails.uptime_since).fromNow(true);
         },
     },
 };

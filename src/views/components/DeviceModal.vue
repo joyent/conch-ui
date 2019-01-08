@@ -9,7 +9,8 @@
                 <button class="delete" aria-label="close" @click="closeModal"></button>
             </header>
             <section class="modal-card-body">
-                <DeviceInspector/>
+                <DeviceInspector v-if="activeDeviceId"/>
+                <Spinner v-else/>
             </section>
             <footer class="modal-card-foot is-right"></footer>
         </div>
@@ -18,12 +19,14 @@
 
 <script>
 import DeviceInspector from '../DeviceInspector/DeviceInspector.vue';
+import Spinner from './Spinner.vue';
 import { EventBus } from '../../eventBus.js';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
     components: {
         DeviceInspector,
+        Spinner,
     },
     data() {
         return {

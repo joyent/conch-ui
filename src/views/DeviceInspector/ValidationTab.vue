@@ -1,6 +1,6 @@
 <template>
     <div class="validation-tab">
-        <Spinner v-if="validationStates == null && validations == null" />
+        <Spinner v-if="activeDeviceValidations == undefined && validations == undefined" />
         <table class="table is-narrow is-marginless is-fullwidth" v-else>
             <thead>
                 <tr>
@@ -11,52 +11,54 @@
                 </tr>
             </thead>
             <tbody>
-                <tr :class="{ 'is-selected': revealDetails }" @click="revealDetails = !revealDetails" style="cursor: pointer;">
-                    <td>
-                        <div class="icon">
-                            <i class="fas fa-caret-down" v-if="revealDetails"></i>
-                            <i class="fas fa-caret-right" v-else></i>
-                        </div>
-                    </td>
-                    <td class="has-text-centered">
-                        <!-- <span class="tag" :class="" v-for="(status, index) in counts" :key="index">
-
-                        </span> -->
-                    </td>
-                    <td>{{ validation.name }}</td>
-                    <td>
-                        <span v-if="validation.description" v-html="validation.description"></span>
-                        <span class="has-text-grey" v-else>No Description</span>
-                    </td>
-                </tr>
-                <tr v-if="revealDetails">
-                    <td></td>
-                    <td colspan="3">
-                        <div class="content">
-                            <table class="table is-narrow is-marginless is-fullwidth">
-                                <thead>
-                                    <tr>
-                                        <th>Order</th>
-                                        <th>Results</th>
-                                        <th>Message</th>
-                                        <th>Hint</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr :class="{ 'has-backgroud-warning has-text-dard': result.status !== 'pass' }" v-for="(result, index) in resultsByOrder" :key="index">
-                                        <td>{{ result.order + 1 }}</td>
-                                        <td>{{ result.status }}</td>
-                                        <td>{{ result.message }}</td>
-                                        <td v-if="result.hint">{{ result.hint }}</td>
-                                        <td v-else>
-                                            <span class="has-text-grey">No Hint</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
+                <template v-for="(validation, index) in deviceValidations">
+                    <tr :class="{ 'is-selected': isRowSelected(index) }" @click="revealValidationDetails(index)" style="cursor: pointer;" :key="index">
+                        <td>
+                            <div class="icon">
+                                <i class="fas fa-caret-down" v-if="isRowSelected(index)"></i>
+                                <i class="fas fa-caret-right" v-else></i>
+                            </div>
+                        </td>
+                        <td class="has-text-centered">
+                            <template v-for="(result, index) in resultCount(validation.results)">
+                                <span class="tag" :class="resultCountStyle(result[0])" :key="index">{{ result[1] }}</span>
+                            </template>
+                        </td>
+                        <td>{{ validation.name }}</td>
+                        <td>
+                            <span v-if="validation.description" v-html="validation.description"></span>
+                            <span class="has-text-grey" v-else>No Description</span>
+                        </td>
+                    </tr>
+                    <tr v-if="isRowSelected(index)" :key="`${index}a`">
+                        <td></td>
+                        <td colspan="3">
+                            <div class="content">
+                                <table class="table is-narrow is-marginless is-fullwidth">
+                                    <thead>
+                                        <tr>
+                                            <th>Order</th>
+                                            <th>Results</th>
+                                            <th>Message</th>
+                                            <th>Hint</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr :class="{ 'has-background-warning has-text-dark': result.status !== 'pass' }" v-for="(result, index) in validation.results" :key="index">
+                                            <td>{{ result.order + 1 }}</td>
+                                            <td>{{ result.status }}</td>
+                                            <td>{{ result.message }}</td>
+                                            <td v-if="result.hint">{{ result.hint }}</td>
+                                            <td v-else>
+                                                <span class="has-text-grey">No Hint</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
             </tbody>
             <tfoot>
                 <tr>
@@ -75,9 +77,7 @@ import sortBy from 'lodash/sortBy';
 import countBy from 'lodash/countBy';
 import groupBy from 'lodash/groupBy';
 import Spinner from '../components/Spinner.vue';
-import { getDeviceValidations } from './api.js';
-import { get } from '../../api/validations.js';
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 
 export default {
     components: {
@@ -85,44 +85,70 @@ export default {
     },
     data() {
         return {
-            results: [],
-            revealDetails: false,
-            validationStates: [],
-            validations: [],
+            validationDetailsRows: [],
         };
     },
-    computed: {
-        // TODO: Need to translate resultsToCountTags
-        ...mapGetters([
-            'activeDeviceId',
-        ]),
-        ...mapState([
-            'activeDevice',
-        ]),
-        resultsByOrder() {
-            return sortBy(this.results, 'order');
-        },
-        groupedValidationStateResults() {
-            return this.validationStates.map(states => {
-                states.map(state => {
-                    groupBy(state.results, 'validation_id');
-                });
+    methods: {
+        getValidation(validationId) {
+            return this.validations.find(validation => {
+                return validation.id === validationId;
             });
         },
-        idToValidation() {
-            return this.validations.map(vs => {
-                let map = vs.reduce((acc, v) => {
-                    acc[v.id] = v;
-                    return acc;
-                }, {});
+        isRowSelected(index) {
+            return this.validationDetailsRows.indexOf(index) >= 0;
+        },
+        revealValidationDetails(index) {
+            if (this.validationDetailsRows.indexOf(index) === -1) {
+                this.validationDetailsRows.push(index);
+            } else {
+                this.validationDetailsRows.splice(this.validationDetailsRows.indexOf(index), 1);
+            }
+        },
+        resultCount(results) {
+            let counts = countBy(results, 'status');
+            return Object.entries(counts);
+        },
+        resultCountStyle(status) {
+            if (status === 'fail') {
+                return 'is-warning';
+            } else if (status === 'error') {
+                return 'is-danger';
+            }
 
-                return id => map[id];
-            });
+            return 'is-info';
         },
     },
-    created() {
-        this.validationStates = getDeviceValidations(this.activeDeviceId);
-        this.validations = get();
+    computed: {
+        ...mapState([
+            'activeDeviceValidations',
+            'validations',
+        ]),
+        deviceValidations() {
+            let validations = [];
+
+            this.validationStateResultsById.map(validationResults => {
+                Object.keys(validationResults).map(validationId => {
+                    let { created, description, id, name, updated, version } = this.getValidation(validationId);
+
+                    validations.push({
+                        results: validationResults[validationId],
+                        created,
+                        description,
+                        id,
+                        name,
+                        updated,
+                        version
+                    });
+                });
+            });
+
+            return sortBy(validations, validation => validation.name);
+        },
+        validationStateResultsById() {
+            return this.activeDeviceValidations.map(state => {
+                return groupBy(state.results, 'validation_id');
+            });
+        },
     },
 };
 </script>
