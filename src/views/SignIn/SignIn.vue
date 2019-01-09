@@ -28,7 +28,7 @@
                                 </div>
                             </div>
                             <button
-                                type="submit"
+                                type="button"
                                 class="button is-primary is-fullwidth"
                                 :class="{ 'is-loading': isLoading }"
                                 @click="signIn"
