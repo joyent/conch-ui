@@ -60,10 +60,12 @@ export default {
         changeWorkspace(workspaceId) {
             this.menuActive = false;
 
-            const route = this.$route.path;
-            const routeSuffix = route.substring(route.indexOf('/', 1));
+            const name = this.$route.name;
+            const params = this.$route.params;
 
-            this.$router.push({ path: `/${workspaceId}${routeSuffix}` })
+            params.currentWorkspace = workspaceId;
+
+            this.$router.push({ name: name, params: params });
         },
         sortedWorkspaceGraph(workspaceId) {
             return sortBy(this.workspaceGraph.graph[workspaceId], ['name']);

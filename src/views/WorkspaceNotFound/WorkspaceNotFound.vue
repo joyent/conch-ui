@@ -21,7 +21,7 @@ export default {
     },
     methods: {
         navigate() {
-            this.$router.push({ path: '/' });
+            this.$router.push({ name: 'signIn' });
         },
     },
 };

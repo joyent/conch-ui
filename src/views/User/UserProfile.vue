@@ -37,7 +37,7 @@ export default {
         savePassword() {
             updatePassword(this.password)
                 .then(() => {
-                    this.$router.push({ path: '/' });
+                    this.$router.push({ name: 'signIn' });
                 });
         },
     },

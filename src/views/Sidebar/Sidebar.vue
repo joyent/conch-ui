@@ -59,7 +59,7 @@ export default {
         signOut() {
             logout()
                 .then(() => {
-                    this.$router.push({ path: '/' });
+                    this.$router.push({ name: 'signIn' });
                 });
         },
     },
