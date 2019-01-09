@@ -14,7 +14,7 @@
         <div class="navbar-end">
             <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">
-                    {{ this.currentWorkspace.name }}
+                    {{ this.currentWorkspaceName }}
                 </a>
                 <div class="navbar-dropdown is-right">
                     <ul v-if="sortedWorkspaceRoots.length">
@@ -48,7 +48,7 @@
 <script>
 import keyBy from 'lodash/keyBy';
 import sortBy from 'lodash/sortBy';
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
     data() {
@@ -70,13 +70,12 @@ export default {
         },
     },
     computed: {
+        ...mapGetters([
+            'currentWorkspaceName',
+        ]),
         ...mapState([
-            'currentWorkspace',
             'workspaces',
         ]),
-        currentWorkspaceId() {
-            return this.currentWorkspace.id;
-        },
         sortedWorkspaceRoots() {
             return sortBy(this.workspaceGraph.roots, ['name'])
         },

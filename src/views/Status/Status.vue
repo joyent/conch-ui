@@ -84,10 +84,8 @@ export default {
     computed: {
         ...mapGetters([
             'activeDeviceId',
+            'currentWorkspaceId',
         ]),
-        currentWorkspaceId() {
-            return this.currentWorkspace.id;
-        },
         currentWorkspaceName() {
             return this.currentWorkspace.name;
         },

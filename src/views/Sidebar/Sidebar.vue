@@ -41,7 +41,7 @@
 <script>
 import * as ConchApiVersion from '../../api/conchApiVersion.js';
 import { logout } from '../../api/authentication.js';
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
     data() {
@@ -51,12 +51,9 @@ export default {
         };
     },
     computed: {
-        ...mapState([
-            'currentWorkspace',
+        ...mapGetters([
+            'currentWorkspaceId',
         ]),
-        currentWorkspaceId() {
-            return this.currentWorkspace.id;
-        },
     },
     methods: {
         signOut() {

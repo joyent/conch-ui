@@ -87,9 +87,8 @@ export default {
                 .then(response => {
                     this.initWorkspaceData()
                         .then(() => {
-                            this.$router.push({ path: `/${this.currentWorkspaceId}/status`});
+                            this.$router.push({ name: 'status', params: { currentWorkspace: this.currentWorkspaceId } });
                         });
-
                 })
                 .catch((error) => {
                     this.isLoading = false;
