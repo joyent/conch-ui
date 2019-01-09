@@ -13,54 +13,31 @@ import DeviceInspector from "views/DeviceInspector";
 import HardwareProducts from "models/HardwareProduct";
 import Workspace from "models/Workspace";
 
+let workspaceDevices = stream();
+
 export default () => {
-	let workspaceDevices = stream();
-	let hardwareProductLookup;
-	const activeDeviceId = stream();
+	const hardwareProductLookup = stream();
 	const hardwareProducts = new HardwareProducts();
+
+	const activeDeviceId = workspaceDevices.map(devices => {
+		const activeDevice = devices.find(
+			d => d && d.id === m.route.param("deviceId")
+		);
+		return activeDevice && activeDevice.id;
+	});
 
 	return {
 		oninit: ({ attrs: { currentWorkspace } }) => {
-			activeDeviceId.map(deviceId => {
-				const route = m.route.get();
-				const routePrefix = route.substring(
-					0,
-					route.indexOf("/device")
-				);
-				let [_, queryS] = route.split("?");
-				queryS ? (queryS = `?${queryS}`) : (queryS = "");
+			hardwareProducts
+				.get()
+				.then(hardwareProducts => keyBy(hardwareProducts, "id"))
+				.then(hardwareProductLookup);
 
-				if (deviceId)
-					m.route.set(`${routePrefix}/device/${deviceId}${queryS}`);
-				else m.route.set(`${routePrefix}/device`);
-			});
-
-			m.route.param("deviceId") &&
-				activeDeviceId(m.route.param("deviceId"));
-			hardwareProducts.get().then(hardwareProducts => {
-				hardwareProductLookup = keyBy(hardwareProducts, "id");
-			});
-
-			currentWorkspace.map(({ id }) => {
-				// drop the previous stream
-				workspaceDevices = stream();
-				const workspace = new Workspace(id);
-				workspace.getDevices().then(devices => {
-					let foundActiveDevice = false;
-					// sort and attempt to find the currently active device ID
-					devices.sort((a, b) => {
-						if (
-							activeDeviceId() != null &&
-							(activeDeviceId() === a.id ||
-								activeDeviceId() === b.id)
-						)
-							foundActiveDevice = true;
-						// negative == a, 0, postiive == b
-						return a.id - b.id;
-					});
-					workspaceDevices(devices);
-					if (!foundActiveDevice) activeDeviceId(null);
-				});
+			currentWorkspace.map(workspace => {
+				workspace
+					.getDevices()
+					.then(devices => devices.sort((a, b) => a.id - b.id))
+					.then(workspaceDevices);
 			});
 		},
 		view: ({ attrs: { currentWorkspace } }) => {
@@ -78,7 +55,7 @@ export default () => {
 							m(
 								"article.tile.is-child",
 								workspaceDevices() == null ||
-								hardwareProductLookup == null
+								hardwareProductLookup() == null
 									? m("section.section", m(Spinner))
 									: m(
 											".columns",
@@ -86,7 +63,7 @@ export default () => {
 												".column.is-4",
 												m(DevicesPanel, {
 													workspaceDevices,
-													hardwareProductLookup,
+													hardwareProductLookup: hardwareProductLookup(),
 													activeDeviceId
 												})
 											),

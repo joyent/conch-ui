@@ -33,7 +33,7 @@ const SaveEditButton = {
 					duplicateSerials(duplicates);
 					if (Object.keys(duplicateSerials()).length === 0) {
 						e.target.classList.add("is-loading");
-						const workspace = new Workspace(currentWorkspace().id);
+						const workspace = currentWorkspace();
 						workspace
 							.setRackLayout(activeRack().id, layout)
 							.then(res => {

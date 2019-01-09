@@ -4,83 +4,98 @@ import Request from "util/Request";
 import stream from "mithril/stream";
 import moment from "moment";
 
-export default id => {
-	const r = new Request();
+const r = new Request();
+const workspaces = stream([]);
 
-	const workspaces = stream([]);
+const findBestWorkspace = ws => {
+	// check for a stored ID
+	const storedId = sessionStorage.getItem("currentWorkspace");
 
-	const currentWorkspace = stream();
-	currentWorkspace.map(ws => {
-		if (ws) localStorage.setItem("currentWorkspace", ws.id);
-	});
+	if (storedId) {
+		let found = ws.find(w => w.id === storedId);
+		if (found) return found;
+	}
 
-	const loadAllWorkspaces = () => {
-		return r
-			.requestWithToken({
-				method: "GET",
-				url: "/workspace"
-			})
-			.then(workspaces);
-	};
+	// check for GLOBAL
+	const global = ws.find(w => w.name === "GLOBAL");
+	if (global) return global;
 
-	const findWorkspaceById = id => workspaces().find(w => w.id === id);
-	const findWorkspaceByName = name => workspaces().find(w => w.name === name);
+	// just return the first one
+	return ws[0];
+};
 
-	// TODO: I'm not sure this is really the right logic we should be using here
-	// seems that we should just throw an error if we can't find the workspace in
-	// question or return null or something
-	const loadCurrentWorkspace = () =>
-		loadAllWorkspaces().then(() => {
-			let found;
-			if (id) found = findWorkspaceById(id);
-			if (!found)
-				found = findWorkspaceById(
-					localStorage.getItem("currentWorkspace")
-				);
-			if (!found) found = findWorkspaceByName("GLOBAL");
-			if (!found) found = workspaces()[0];
-			if (!found) return Promise.reject(id);
-			return currentWorkspace(found);
+const bestFallback = workspaces.map(findBestWorkspace);
+
+const Workspace = id => {
+	if (!id) throw "ID required";
+
+	const currentWorkspace =
+		workspaces().find(w => w.id === id) || bestFallback();
+
+	if (currentWorkspace)
+		sessionStorage.setItem("currentWorkspace", currentWorkspace.id);
+
+	const getDevices = () =>
+		r.requestWithToken({
+			method: "GET",
+			url: `/workspace/${id}/device`
 		});
 
-	return {
-		currentWorkspace,
-		workspaces,
-		getAll: loadAllWorkspaces,
-		loadAllWorkspaces,
-		loadCurrentWorkspace,
-		getDevices() {
-			return r.requestWithToken({
+	const getAllRacks = () =>
+		r.requestWithToken({
+			method: "GET",
+			url: `/workspace/${id}/rack`
+		});
+
+	const getAll = () => Workspace.loadAllWorkspaces();
+
+	// TODO: replace this with a method in `model/Racks.js` that calls the `/rack` endpoint instead
+	const getRackById = rackId =>
+		r
+			.requestWithToken({
 				method: "GET",
-				url: `/workspace/${id}/device`
+				url: `/workspace/${id}/rack/${rackId}`
+			})
+			.then(res => {
+				res.slots = res.slots.reduce((obj, curr) => {
+					obj[curr.rack_unit_start] = curr;
+					return obj;
+				}, {});
+				return Promise.resolve(res);
 			});
+
+	// TODO: replace this with a method in `model/Racks.js` that calls the `/rack` endpoint instead
+	const setRackLayout = (rackId, layout) =>
+		r.requestWithToken({
+			method: "POST",
+			url: `/workspace/${id}/rack/${rackId}/layout`,
+			data: layout
+		});
+
+	return Object.assign(
+		{
+			workspaces,
+			getAllRacks,
+			getDevices,
+			getAll,
+			getRackById,
+			setRackLayout
 		},
-		getAllRacks() {
-			return r.requestWithToken({
-				method: "GET",
-				url: `/workspace/${id}/rack`
-			});
-		},
-		getRackById(rackId) {
-			return r
-				.requestWithToken({
-					method: "GET",
-					url: `/workspace/${id}/rack/${rackId}`
-				})
-				.then(res => {
-					res.slots = res.slots.reduce((obj, curr) => {
-						obj[curr.rack_unit_start] = curr;
-						return obj;
-					}, {});
-					return Promise.resolve(res);
-				});
-		},
-		setRackLayout(rackId, layout) {
-			return r.requestWithToken({
-				method: "POST",
-				url: `/workspace/${id}/rack/${rackId}/layout`,
-				data: layout
-			});
-		}
-	};
+		currentWorkspace
+	);
 };
+
+Workspace.findBestWorkspace = findBestWorkspace;
+
+Workspace.loadAllWorkspaces = () => {
+	return r
+		.requestWithToken({
+			method: "GET",
+			url: "/workspace"
+		})
+		.then(workspaces);
+};
+
+Workspace.workspaces = workspaces;
+
+export { Workspace as default };

@@ -3,14 +3,14 @@ import m from "mithril";
 export default () => {
 	return {
 		getToken() {
-			return localStorage.getItem("token");
+			return sessionStorage.getItem("token");
 		},
 		setToken(token) {
-			localStorage.setItem("token", token);
+			sessionStorage.setItem("token", token);
 			return Promise.resolve(true);
 		},
 		clearToken() {
-			return localStorage.removeItem("token");
+			return sessionStorage.removeItem("token");
 		},
 		request(args) {
 			args.withCredentials = true;

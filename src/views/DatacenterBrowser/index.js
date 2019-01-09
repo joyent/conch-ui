@@ -71,7 +71,7 @@ export default () => {
 	return {
 		oninit({ attrs: { currentWorkspace } }) {
 			// side-effect: load the rack whenever activeRack updates
-			const workspace = new Workspace(currentWorkspace().id);
+			const workspace = currentWorkspace();
 			activeRack.map(rack => {
 				rackLoading(true);
 				workspace.getRackById(rack.id).then(res => {
