@@ -52,7 +52,7 @@ export default {
     data() {
         return {
             badLoginAttempt: false,
-            currentWorkspace: {},
+            currentWorkspaceId: '',
             emailAddress: '',
             isLoading: false,
             password: '',
@@ -68,7 +68,7 @@ export default {
                 .then(response => {
                     this.setWorkspaces(response.data);
                     this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
-                    this.currentWorkspace = this.$store.state.currentWorkspace;
+                    this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
 
                     localStorage.setItem('currentWorkspace', this.currentWorkspaceId);
 
@@ -94,11 +94,6 @@ export default {
                     this.isLoading = false;
                     this.badLoginAttempt = true;
                 });
-        },
-    },
-    computed: {
-        currentWorkspaceId() {
-            return this.currentWorkspace.id;
         },
     },
 };
