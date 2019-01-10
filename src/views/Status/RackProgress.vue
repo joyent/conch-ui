@@ -18,14 +18,6 @@ roleSortOrder["MANTA"] = 2;
 roleSortOrder["MANTA_TALL"] = 3;
 roleSortOrder["CERES"] = 4;
 
-const sortNodes = sortOrder => nodes =>
-	nodes.sort((a, b) => {
-		if (sortOrder[a.parent] === sortOrder[b.parent])
-			// sort by percentage validated within groups
-			return b.value - a.value;
-		else return sortOrder[a.parent] > sortOrder[b.parent] ? 1 : -1;
-	});
-
 export default {
     props: {
         rackRooms: {
@@ -81,33 +73,45 @@ export default {
 
             // normalize to 100 percent. 0 if total is 0
             const score = total ? Math.trunc(100 * (points / 2 / total)) : 0;
-
             return score;
         },
-        // sortNodes(sortOrder) {
-        //     return function(nodes) {
-        //         nodes.sort((a, b) => {
-        //             if (sortOrder[a.parent] === sortOrder[b.parent]) {
-        //                 return b.value - a.value;
-        //             } else {
-        //                 return sortOrder[a.parent] > sortOrder[b.parent] ? 1 : -1;
-        //             }
-        //         });
-        //     };
-        // },
-        selectParent(rack) {
-            if (this.group === undefined || this.group === 'status') {
-                return this.nodeParent(rack.device_progress);
-            }
-
+        selectParentRole(rack) {
             return rack.role;
         },
-        sortFunction(nodes) {
-            if (this.group === undefined || this.group === 'status') {
-                return sortNodes(statusSortOrder);
-            }
+        selectParentStatus(rack) {
+            return this.nodeParent(rack.device_progress);
+        },
+        sortNodesRole(nodes) {
+            let sortOrder = {
+                'TRITON': 1,
+                'MANTA': 2,
+                'MANTA_TALL': 3,
+                'CERES': 4
+            };
 
-            return sortNodes(roleSortOrder);
+            nodes.sort((a, b) => {
+                if (sortOrder[a.parent] === sortOrder[b.parent]) {
+                    return b.value - a.value;
+                }
+
+                return sortOrder[a.parent] > sortOrder[b.parent] ? 1 : -1;
+            });
+        },
+        sortNodesStatus(nodes) {
+            let sortOrder = {
+                'Validated': 1,
+                'Failing': 2,
+                'In Progress': 3,
+                'Not Started': 4
+            };
+
+            nodes.sort((a, b) => {
+                if (sortOrder[a.parent] === sortOrder[b.parent]) {
+                    return b.value - a.value;
+                }
+
+                return sortOrder[a.parent] > sortOrder[b.parent] ? 1 : -1;
+            });
         },
     },
     computed: {
@@ -119,7 +123,7 @@ export default {
                         "Rack Name": rack.name,
                         "Rack Role": rack.role,
                         "Rack size": rack.size,
-                        parent: this.selectParent(rack),
+                        parent: this.group === 'status' ? this.selectParentStatus(rack) : this.selectParentRole(rack),
                         value: this.nodeValue(rack.device_progress),
                         _private_: {
                             room_name: room,
@@ -137,7 +141,7 @@ export default {
             showTooltips: true,
             maxChildCount: 10,
             showKeys: true,
-            sortFunction: this.sortFunction,
+            sortFunction: this.group === 'status' ? this.sortNodesStatus : this.sortNodesRole,
             thresholds: [-1, 0, 25, 50, 75, 99, 100],
             colors: [
                 "hsl(0, 80%, 60%)",
@@ -153,12 +157,7 @@ export default {
                     let path = window.location.href.split("/");
                     path.pop();
                     path = path.join("/");
-                    window.open(
-                        `${path}/datacenter/${
-                            _private_.room_name
-                        }/rack/${_private_.rack_id}/device`,
-                        "_blank"
-                    );
+                    window.open(`${path}/datacenter/${_private_.room_name}/rack/${_private_.rack_id}/device`, "_blank");
                 }
             }
         }).data(this.rackStatus);
