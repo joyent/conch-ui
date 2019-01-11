@@ -4,7 +4,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const GitRevisionWebpackPlugin = require('git-revision-webpack-plugin');
 const webpack = require('webpack');
-
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const package = require('./package.json');
 
 const gitRevisionPlugin = new GitRevisionWebpackPlugin();
@@ -18,12 +18,13 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist'),
 	},
 	resolve: {
-        modules: [path.join(__dirname, "src"), "node_modules"],
+		modules: [path.join(__dirname, "src"), "node_modules"],
 		alias: {
 			// allow `import from 'config'` to be mapped to the config.js file
 			// in the directory root
-			config: path.join(__dirname, 'config.js')
-		}
+			config: path.join(__dirname, 'config.js'),
+			'vue$': 'vue/dist/vue.esm.js',
+		},
 	},
 	// disable warnings about bundle sizes
 	performance: { hints: false },
@@ -44,6 +45,10 @@ module.exports = {
 				},
 			},
 			{
+				test: /\.vue$/,
+				loader: 'vue-loader',
+			},
+			{
 				test: /\.(png|jpg|gif|svg)$/,
 				loader: 'file-loader',
 				options: {
@@ -51,7 +56,7 @@ module.exports = {
 					outputPath: 'images/',
 					publicPath: '../images/',
 				},
-			}
+			},
 		],
 	},
 	optimization: {
@@ -59,7 +64,7 @@ module.exports = {
 		runtimeChunk: true,
 		// enable chunking
 		splitChunks: {
-			chunks: 'all'
+			chunks: 'all',
 		},
 	},
 	plugins: [
@@ -75,9 +80,10 @@ module.exports = {
 				GLOBALS: {
 					apiUrl: JSON.stringify("http://localhost:5001"),
 					conchUIVersion: JSON.stringify(gitRevisionPlugin.version()),
-				}
+				},
 			},
 		}),
+		new VueLoaderPlugin(),
 	],
 };
 
