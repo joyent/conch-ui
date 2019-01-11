@@ -35,10 +35,11 @@ import PageHeader from '../components/PageHeader.vue';
 import Spinner from '../components/Spinner.vue';
 import DeviceInspector from '../DeviceInspector/DeviceInspector.vue';
 import DevicesPanel from './DevicesPanel.vue';
-import { mapGetters, mapActions } from 'vuex';
-import { get } from '../../api/hardwareProduct.js';
-import { getDevices } from '../../api/workspaces.js';
 import keyBy from 'lodash/keyBy';
+import { EventBus } from '../../eventBus.js';
+import { mapActions, mapGetters } from 'vuex';
+import { getHardwareProduct } from '../../api/hardwareProduct.js';
+import { getDevices } from '../../api/workspaces.js';
 
 export default {
     components: {
@@ -47,16 +48,44 @@ export default {
         PageHeader,
         Spinner,
     },
-    methods: {
-        ...mapActions([
-            'clearActiveDevice',
-        ]),
-    },
     data() {
         return {
             workspaceDevices: [],
             hardWareProductLookup: {},
         };
+    },
+    methods: {
+        ...mapActions([
+            'clearActiveDevice',
+        ]),
+        setHardwareProductLookup() {
+            getHardwareProduct().then(response => {
+                let hardwareProducts = response.data;
+                this.hardWareProductLookup = keyBy(hardwareProducts, 'id');
+            });
+        },
+        setWorkspaceDevices() {
+            getDevices(this.currentWorkspaceId)
+                .then(response => {
+                    let devices = response.data;
+                    let foundActiveDevice = false;
+                    let activeDeviceId = this.activeDeviceId;
+
+                    devices.sort((a, b) => {
+                        if (activeDeviceId != null && (activeDeviceId === a.id || activeDeviceId === b.id)) {
+                            foundActiveDevice = true;
+                        }
+
+                        return a.id - b.id;
+                    });
+
+                    if (!foundActiveDevice) {
+                        this.clearActiveDevice();
+                    }
+
+                    this.workspaceDevices =  devices;
+                });
+        },
     },
     computed: {
         ...mapGetters([
@@ -79,30 +108,13 @@ export default {
             this.$router.push({ path: `${routePrefix}/device` });
         }
 
-        getDevices(this.currentWorkspaceId)
-            .then(response => {
-                let devices = response.data;
-                let foundActiveDevice = false;
-                let activeDeviceId = this.activeDeviceId;
-
-                devices.sort((a, b) => {
-                    if (activeDeviceId != null && (activeDeviceId === a.id || activeDeviceId === b.id)) {
-                        foundActiveDevice = true;
-                    }
-
-                    return a.id - b.id;
-                });
-
-                if (!foundActiveDevice) {
-                    this.clearActiveDevice();
-                }
-
-                this.workspaceDevices =  devices;
-            });
-
-        get().then(response => {
-            let hardwareProducts = response.data;
-            this.hardWareProductLookup = keyBy(hardwareProducts, 'id');
+        this.setWorkspaceDevices();
+        this.setHardwareProductLookup();
+    },
+    mounted() {
+        EventBus.$on('changeWorkspace:devices', () => {
+            this.setWorkspaceDevices();
+            this.setHardwareProductLookup();
         });
     },
 };

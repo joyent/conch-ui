@@ -63,6 +63,7 @@ import DeviceModal from '../components/DeviceModal.vue';
 import PageHeader from '../components/PageHeader.vue';
 import RackProgress from './RackProgress.vue';
 import Spinner from '../components/Spinner.vue';
+import { EventBus } from '../../eventBus.js';
 import { getDevices, getAllRacks } from '../../api/workspaces.js';
 import { mapState, mapGetters } from 'vuex';
 
@@ -80,6 +81,44 @@ export default {
             rackRooms: 0,
             progress: [],
         };
+    },
+    methods: {
+        getWorkspaceDevices() {
+            this.devices = [];
+
+            getDevices(this.currentWorkspaceId)
+                .then(response => {
+                    const newProgress = {pass: 0, total: 0 };
+
+                    this.devices = response.data.sort((a, b) => a.id - b.id);
+                    this.devices.forEach(device => {
+                        if (device.health === 'PASS') {
+                            newProgress.pass++;
+                        }
+
+                        newProgress.total++;
+                    });
+
+                    this.progress = newProgress;
+                });
+        },
+        getAllWorkspaceRacks() {
+            this.rackCount = 0;
+            this.rackRooms = 0;
+
+            getAllRacks(this.currentWorkspaceId)
+                .then(response => {
+                    let data = response.data;
+                    // sort and assign the rack rooms
+                    this.rackRooms = Object.keys(data)
+                        .sort()
+                        .reduce((acc, room) => {
+                            acc[room] = data[room];
+                            this.rackCount += data[room].length;
+                            return acc;
+                        }, {});
+                });
+        },
     },
     computed: {
         ...mapGetters([
@@ -102,39 +141,14 @@ export default {
         ]),
     },
     created() {
-        this.devices = [];
-
-        getDevices(this.currentWorkspaceId)
-            .then(response => {
-                const newProgress = {pass: 0, total: 0 };
-
-                this.devices = response.data.sort((a, b) => a.id - b.id);
-                this.devices.forEach(device => {
-                    if (device.health === 'PASS') {
-                        newProgress.pass++;
-                    }
-
-                    newProgress.total++;
-                });
-
-                this.progress = newProgress;
-            });
-
-        this.rackCount = 0;
-        this.rackRooms = 0;
-
-        getAllRacks(this.currentWorkspaceId)
-            .then(response => {
-                let data = response.data;
-                // sort and assign the rack rooms
-                this.rackRooms = Object.keys(data)
-                    .sort()
-                    .reduce((acc, room) => {
-                        acc[room] = data[room];
-                        this.rackCount += data[room].length;
-                        return acc;
-                    }, {});
-            });
+        this.getWorkspaceDevices();
+        this.getAllWorkspaceRacks();
+    },
+    mounted() {
+        EventBus.$on('changeWorkspace:status', () => {
+            this.getWorkspaceDevices();
+            this.getAllWorkspaceRacks();
+        });
     },
 };
 </script>

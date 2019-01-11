@@ -62,11 +62,12 @@ import PageHeader from '../components/PageHeader.vue';
 import RackPanel from './RackPanel.vue';
 import RoomPanel from './RoomPanel.vue';
 import Spinner from '../components/Spinner.vue';
+import isEmpty from 'lodash/isEmpty';
+import search from 'fuzzysearch';
+import { EventBus } from '../../eventBus.js';
 import { getRackById, getDevices, getAllRacks } from '../../api/workspaces.js';
 import { getLocation } from '../../api/device.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import isEmpty from 'lodash/isEmpty';
-import search from 'fuzzysearch';
 
 export default {
     components: {
@@ -96,6 +97,36 @@ export default {
             'clearRackLayout',
             'setRackLayout',
         ]),
+        getWorkspaceDevices() {
+            getDevices(this.currentWorkspaceId)
+                .then(response => {
+                    let devices = response.data;
+
+                    devices.sort((a, b) => a.id - b.id);
+
+                    this.workspaceDevices = devices;
+                });
+        },
+        getAllWorkspaceRacks() {
+            getAllRacks(this.currentWorkspaceId)
+                .then(response => {
+                    let data = response.data;
+
+                    this.rackRooms = Object.keys(data)
+                        .sort()
+                        .reduce((acc, name) => {
+                            let racks = data[name];
+                            let progress = this.roomToProgress(racks);
+                            acc.push({
+                                name,
+                                racks,
+                                progress,
+                            });
+
+                            return acc;
+                        }, []);
+                });
+        },
         roomToProgress(racks) {
             if (racks.some(rack => rack["device_progress"]["FAIL"])) {
                 return "failing";
@@ -168,33 +199,16 @@ export default {
         },
     },
     created() {
-        getDevices(this.currentWorkspaceId)
-            .then(response => {
-                let devices = response.data;
-
-                devices.sort((a, b) => a.id - b.id);
-
-                this.workspaceDevices = devices;
-            });
-
-        getAllRacks(this.currentWorkspaceId)
-            .then(response => {
-                let data = response.data;
-
-                this.rackRooms = Object.keys(data)
-                    .sort()
-                    .reduce((acc, name) => {
-                        let racks = data[name];
-                        let progress = this.roomToProgress(racks);
-                        acc.push({
-                            name,
-                            racks,
-                            progress,
-                        });
-
-                        return acc;
-                    }, []);
-            });
+        this.getWorkspaceDevices();
+        this.getAllWorkspaceRacks();
+    },
+    mounted() {
+        EventBus.$on('changeWorkspace:datacenter', () => {
+            this.getWorkspaceDevices();
+            this.getAllWorkspaceRacks();
+            this.clearRackLayout();
+            this.clearActiveRoom();
+        });
     },
     destroyed() {
         if (!isEmpty(this.activeRoom)) {

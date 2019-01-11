@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const get = () => {
+export const getHardwareProduct = () => {
     return axios({
         method: 'GET',
         url: '/hardware_product',
@@ -8,5 +8,5 @@ export const get = () => {
 };
 
 export default {
-    get,
+    getHardwareProduct,
 };

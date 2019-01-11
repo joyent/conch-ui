@@ -79,7 +79,7 @@ export default {
         ]),
         activateRoom(room) {
             this.setActiveRoom(room);
-            this.$router.push({ name: 'room', params: { roomName: `${this.activeRoomName}` } });
+            this.$router.push({ name: 'datacenterRoom', params: { roomName: `${this.activeRoomName}` } });
         },
         roomFilterTextLowerCase() {
             return this.roomFilterText.toLowerCase();

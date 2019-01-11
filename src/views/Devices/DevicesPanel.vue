@@ -87,7 +87,7 @@ export default {
             this.setDeviceDetails(device.id);
             this.setDeviceSettings(device.id);
 
-            this.$router.push({ name: 'workspaceDevice', params: { deviceId: this.activeDeviceId } });
+            this.$router.push({ name: 'device', params: { deviceId: this.activeDeviceId } });
         },
         setDeviceDetails(activeDeviceId) {
             getDeviceDetails(activeDeviceId)

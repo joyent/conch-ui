@@ -48,7 +48,8 @@
 <script>
 import keyBy from 'lodash/keyBy';
 import sortBy from 'lodash/sortBy';
-import { mapGetters, mapState } from 'vuex';
+import { EventBus } from '../../eventBus.js';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
     data() {
@@ -57,13 +58,34 @@ export default {
         };
     },
     methods: {
+        ...mapActions([
+            'setCurrentWorkspace',
+        ]),
         changeWorkspace(workspaceId) {
             this.menuActive = false;
 
-            const name = this.$route.name;
-            const params = this.$route.params;
+            this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace(workspaceId));
 
-            params.currentWorkspace = workspaceId;
+            let name = this.$route.name;
+            let params = {
+                currentWorkspace: workspaceId,
+            };
+
+            if (name === 'status') {
+                EventBus.$emit('changeWorkspace:status');
+            } else if (name === 'devices' || name === 'device') {
+                if (name === 'device') {
+                    name = 'devices';
+                }
+
+                EventBus.$emit('changeWorkspace:devices');
+            } else {
+                if (name === 'datacenterRoom' || name === 'datacenterRack' || name === 'datacenterDevice') {
+                    name = 'datacenter';
+                }
+
+                EventBus.$emit('changeWorkspace:datacenter');
+            }
 
             this.$router.push({ name: name, params: params });
         },

@@ -35,7 +35,7 @@ export default new Router({
         },
         {
             path: '/:currentWorkspace/device',
-            name: 'workspace',
+            name: 'devices',
             components: {
                 default: Devices,
                 sidebar: Sidebar,
@@ -45,7 +45,7 @@ export default new Router({
                 {
                     // when /device/:deviceId is matched
                     path: ':deviceId',
-                    name: 'workspaceDevice',
+                    name: 'device',
                     component: Devices,
                 }
             ]
@@ -62,19 +62,19 @@ export default new Router({
                 {
                     // when /datacenter/:roomName/rack is matched
                     path: ':roomName/rack',
-                    name: 'room',
+                    name: 'datacenterRoom',
                     component: DataCenterBrowser,
                     children: [
                         {
                             // when /datacenter/:roomName/rack/:rackId/device is matched
                             path: ':rackId/device',
-                            name: 'rack',
+                            name: 'datacenterRack',
                             component: DataCenterBrowser,
                             children: [
                                 {
                                     // when /datacenter/:roomName/rack/:rackId/device/:deviceId is matched
                                     path: ':deviceId',
-                                    name: 'device',
+                                    name: 'datacenterDevice',
                                     component: DataCenterBrowser,
                                 },
                             ],

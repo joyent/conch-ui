@@ -91,7 +91,7 @@ export default {
         ]),
         activateRack(rack) {
             this.setActiveRack(rack);
-            this.$router.push({ name: 'rack', params: { rackId: `${this.activeRackId}` } })
+            this.$router.push({ name: 'datacenterRack', params: { rackId: `${this.activeRackId}` } })
         },
         rackFilterMatch(rack) {
             return this.rackNameFilter(rack.name) && this.rackRoleFilter(rack.role) && this.rackProgressFilter(rack);
