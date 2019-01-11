@@ -45,6 +45,7 @@ export default new Router({
                 {
                     // when /device/:deviceId is matched
                     path: ':deviceId',
+                    name: 'workspaceDevice',
                     component: Devices,
                 }
             ]

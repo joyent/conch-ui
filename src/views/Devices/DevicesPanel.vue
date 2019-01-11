@@ -54,7 +54,7 @@ import ProgressIcon from '../components/ProgressIcon.vue';
 import search from 'fuzzysearch';
 import sortBy from 'lodash/sortBy';
 import moment from 'moment';
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters, mapState  } from 'vuex';
 import { getDeviceDetails, getDeviceSettings } from '../DeviceInspector/api';
 
 export default {
@@ -85,7 +85,9 @@ export default {
         activateDevice(device) {
             this.setActiveDevice(device);
             this.setDeviceDetails(device.id);
-            this.setDeviceSettings(device.id)
+            this.setDeviceSettings(device.id);
+
+            this.$router.push({ name: 'workspaceDevice', params: { deviceId: this.activeDeviceId } });
         },
         setDeviceDetails(activeDeviceId) {
             getDeviceDetails(activeDeviceId)
@@ -128,6 +130,9 @@ export default {
     computed: {
         ...mapGetters([
             'activeDeviceId',
+        ]),
+        ...mapState([
+            'activeDeviceDetails',
         ]),
         availableDeviceProgress() {
             return Array.from(
