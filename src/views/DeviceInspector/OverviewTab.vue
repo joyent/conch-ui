@@ -73,7 +73,14 @@ export default {
         ]),
         deviceTags() {
             let tags = [];
-            let health = this.activeDeviceDetails.health.toLowerCase();
+            let health;
+
+            // Todo: Look into loading activeDeviceDetails data faster
+            //       If a user clicks through the UI fast, health may
+            //       not exist yet
+            if (this.activeDeviceDetails.health) {
+                health = this.activeDeviceDetails.health.toLowerCase();
+            }
 
             if (health === 'fail') {
                 tags.push({
