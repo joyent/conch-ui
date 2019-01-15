@@ -1,6 +1,6 @@
 <template>
     <div class="settings-tab">
-        <Spinner v-if="!hasActiveDeviceSettings" />
+        <p class="has-text-centered" v-if="!hasActiveDeviceSettings">No settings available.</p>
         <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
@@ -23,14 +23,10 @@
 </template>
 
 <script>
-import Spinner from '../components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapState } from 'vuex';
 
 export default {
-    components: {
-        Spinner,
-    },
     computed: {
         ...mapState([
             'activeDeviceSettings',
