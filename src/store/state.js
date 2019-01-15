@@ -6,6 +6,7 @@ export const state = {
     activeRack: {},
     activeRoom: {},
     currentWorkspace: {},
+    highlightDeviceId: '',
     rackLayout: {},
     workspaces: [],
     validations: [],

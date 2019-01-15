@@ -47,17 +47,25 @@
 <script>
 import moment from 'moment';
 import TimeToBurnin from './TimeToBurnin.vue';
-import { mapGetters, mapState } from 'vuex';
+import { EventBus } from '../../eventBus.js';
+import { mapGetters, mapState, mapActions } from 'vuex';
 
 export default {
     components: {
         TimeToBurnin,
     },
     methods: {
+        ...mapActions([
+            'setHighlightDeviceId',
+        ]),
         showDeviceInRack() {
             let { datacenter, rack } = this.activeDeviceDetails.location;
             let route = this.$route.path;
             let workspaceRoute = route.substring(0, route.indexOf("/", 1));
+
+            this.setHighlightDeviceId(this.activeDeviceId);
+
+            EventBus.$emit('closeModal:deviceModal');
 
             this.$router.push({path: `${workspaceRoute}/datacenter/${datacenter.name}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}` });
         },

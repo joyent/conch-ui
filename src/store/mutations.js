@@ -29,6 +29,9 @@ export const mutations = {
     setCurrentWorkspace(state, workspace) {
         state.currentWorkspace = workspace;
     },
+    setHighlightDeviceId(state, highlightDeviceId) {
+        state.highlightDeviceId = highlightDeviceId;
+    },
     setRackLayout(state, rackLayout) {
         state.rackLayout = rackLayout;
     },

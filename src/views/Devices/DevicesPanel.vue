@@ -84,8 +84,11 @@ export default {
         ]),
         activateDevice(device) {
             this.setActiveDevice(device);
-            this.setDeviceDetails(device.id);
-            this.setDeviceSettings(device.id);
+
+            if (device.id) {
+                this.setDeviceDetails(device.id);
+                this.setDeviceSettings(device.id);
+            }
 
             this.$router.push({ name: 'device', params: { deviceId: this.activeDeviceId } });
         },
@@ -102,7 +105,7 @@ export default {
                 });
         },
         deviceFilter(device) {
-            const deviceId = device ? device.id.toLowerCase() : '';
+            const deviceId = device && device.id ? device.id.toLowerCase() : '';
             const assetTag = device && device.asset_tag ? device.asset_tag.toLowerCase() : '';
 
             const progressFilter = this.selectedProgress === 'all' || this.selectedProgress === this.deviceToProgress(device);

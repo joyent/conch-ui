@@ -24,7 +24,7 @@
                 <button class="button is-primary is-outlined is-fullwidth is-small" @click="openModal">Edit Assignments</button>
             </div>
             <Spinner v-if="rackLoading" />
-            <LayoutTable v-else :device-slots="filteredSlots" :highlight-device-id="highlightDeviceId" />
+            <LayoutTable v-else :device-slots="filteredSlots" />
         </nav>
         <EditLayoutModal :active-rack="activeRack" :current-workspace="currentWorkspace" :device-slots="normalizedSlots" />
     </div>
@@ -37,13 +37,10 @@ import LayoutTable from './LayoutTable.vue';
 import Spinner from '../components/Spinner.vue';
 import { EventBus } from '../../eventBus.js';
 import { deviceToProgress } from './util.js';
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
     props: {
-        highlightDeviceId: {
-            required: false,
-        },
         rackLayout: {
             required: true,
         },

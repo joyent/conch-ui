@@ -44,7 +44,6 @@
                                     :active-rack="activeRack"
                                     :rack-loading="rackLoading"
                                     :rack-layout="rackLayout"
-                                    :highlight-device-id="highlightDeviceId"
                                 />
                             </div>
                         </div>
@@ -81,7 +80,6 @@ export default {
     data() {
         return {
             foundDevices: [],
-            highlightDeviceId: null,
             maxFoundDevices: 12,
             rackFilterText: '',
             rackLoading: false,

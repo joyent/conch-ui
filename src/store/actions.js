@@ -29,6 +29,9 @@ export const actions = {
     setCurrentWorkspace({ commit }, workspace) {
         commit('setCurrentWorkspace', workspace);
     },
+    setHighlightDeviceId({ commit }, highlightDeviceId) {
+        commit('setHighlightDeviceId', highlightDeviceId);
+    },
     setRackLayout({ commit }, rackLayout) {
         commit('setRackLayout', rackLayout);
     },
