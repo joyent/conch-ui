@@ -41,52 +41,44 @@ import Workspace from "models/Workspace";
 /// IIFE to prevent escaping scope
 const dispatch = (() => {
 	const user = new User();
+	const currentWorkspace = stream();
 
 	function dispatch(root, routes) {
-		let layout;
-		let view;
 		const table = Object.keys(routes).reduce((accTable, route) => {
-			let workspacePrefixedRoute = "/:wid" + route;
-			let ws;
+			const workspacePrefixedRoute = "/:wid" + route;
+			const comp = routes[route];
+			const layout = comp.layout;
+			const view = comp.view;
+
 			accTable[workspacePrefixedRoute] = {
 				onmatch(args, pendingRoute) {
-					ws = new Workspace(args.wid);
-					const matcher = () => {
-						let comp = routes[route];
-						layout = comp.layout;
-						view = comp.view;
-						return {
-							view: () =>
-								m(comp.view || comp, {
-									currentWorkspace: ws.currentWorkspace,
-									workspaces: ws.workspaces,
-									user
-								})
-						};
-					};
-
-					if (!user.loggedIn()) return m.route.set("/");
-					return ws
-						.loadCurrentWorkspace()
-						.catch(WorkspaceNotFound(args.wid))
-						.then(matcher);
+					if (!user.loggedIn()) return m.route.set("/login");
+					return Workspace.loadAllWorkspaces()
+						.then(() => new Workspace(args.wid))
+						.then(currentWorkspace)
+						.then(() =>
+							m(view, {
+								currentWorkspace,
+								workspaces: Workspace.workspaces,
+								user
+							})
+						)
+						.catch(WorkspaceNotFound(args.wid));
 				},
-				render(vnode) {
-					return layout && view
-						? m(
-								layout,
-								{
-									currentWorkspace: ws.currentWorkspace,
-									workspaces: ws.workspaces,
-									user
-								},
-								m(view, {
-									currentWorkspace: ws.currentWorkspace,
-									workspaces: ws.workspaces,
-									user
-								})
-						  )
-						: vnode;
+				render() {
+					return m(
+						layout,
+						{
+							currentWorkspace,
+							workspaces: Workspace.workspaces,
+							user
+						},
+						m(view, {
+							currentWorkspace,
+							workspaces: Workspace.workspaces,
+							user
+						})
+					);
 				}
 			};
 
@@ -98,10 +90,10 @@ const dispatch = (() => {
 			onmatch() {
 				if (!user.loggedIn()) return m.route.set("/login");
 
-				const ws = new Workspace();
-				return ws
-					.loadCurrentWorkspace()
-					.then(w => m.route.set(`/${w.id}/status`));
+				return Workspace.loadAllWorkspaces()
+					.then(Workspace.findBestWorkspace)
+					.then(w => m.route.set(`/${w.id}/status`))
+					.catch(m.route.set("/login"));
 			}
 		};
 

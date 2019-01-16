@@ -9,6 +9,15 @@ import {
 	deviceToProgress
 } from "views/DatacenterBrowser/Progress";
 
+const routeFor = deviceId => {
+	const route = m.route.get();
+	const routePrefix = route.substring(0, route.indexOf("/device"));
+	let [_, queryS] = route.split("?");
+	queryS ? (queryS = `?${queryS}`) : (queryS = "");
+
+	return `${routePrefix}/device/${deviceId}${queryS}`;
+};
+
 export default () => {
 	const deviceSearchText = stream("");
 	const deviceSearchTextLC = deviceSearchText.map(t => t.toLowerCase());
@@ -41,12 +50,6 @@ export default () => {
 	);
 
 	let filteredDevices;
-
-	//const selectedProgress = stream("all");
-	//const rackProgressFilter = rack =>
-	//selectedProgress() === "all" ||
-	//selectedProgress() === rackToProgress(rack);
-	//let availableRackProgress;
 
 	return {
 		oninit: ({ attrs: { workspaceDevices, hardwareProductLookup } }) => {
@@ -158,7 +161,7 @@ export default () => {
 								"a.panel-block",
 								{
 									onclick: e => {
-										activeDeviceId(device.id);
+										m.route.set(routeFor(device.id));
 									},
 									class:
 										activeDeviceId() === device.id &&

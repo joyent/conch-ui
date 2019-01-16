@@ -25,6 +25,11 @@ module.exports = merge(common, {
 		overlay: {
 			warnings: true,
 			errors: true
+		},
+		proxy: {
+			'/': {
+				target: 'http://localhost:5001',
+			}
 		}
 	},
 	module: {
