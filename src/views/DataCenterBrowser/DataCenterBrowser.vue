@@ -8,12 +8,12 @@
                         <div class="dropdown is-right" :class="{ 'is-active': searchText }">
                             <div class="dropdown-trigger">
                                 <div class="control" :class="{ 'is-loading': !this.workspaceDevices && searchText }">
-                                    <input class="input" placeholder="Search for Device" v-model="searchText">
+                                    <input class="input" placeholder="Search for Device" v-model="searchText" @focus="hideDropdown = false">
                                 </div>
                             </div>
                             <div class="dropdown-menu is-paddingless">
-                                <div class="dropdown-content" v-if="foundDevices.length">
-                                    <a class="dropdown-item" v-for="(device, index) in foundDevices" :key="index" @click="searchedDevice = device">
+                                <div class="dropdown-content" v-if="foundDevices.length && !hideDropdown">
+                                    <a class="dropdown-item" v-for="(device, index) in foundDevices" :key="index" @click="setSearchedDevice(device)">
                                         {{ device.id }}
                                         <span class="has-text-grey-light" v-if="device.asset_tag">{{ device.asset_tag }}</span>
                                     </a>
@@ -80,6 +80,7 @@ export default {
     data() {
         return {
             foundDevices: [],
+            hideDropdown: true,
             maxFoundDevices: 12,
             rackFilterText: '',
             rackLoading: false,
@@ -93,6 +94,9 @@ export default {
         ...mapActions([
             'clearActiveRoom',
             'clearRackLayout',
+            'setActiveRack',
+            'setActiveRoom',
+            'setHighlightDeviceId',
             'setRackLayout',
         ]),
         getWorkspaceDevices() {
@@ -154,6 +158,30 @@ export default {
 
                 return acc;
             }, []);
+        },
+        setSearchedDevice(device) {
+            this.hideDropdown = true;
+            this.setHighlightDeviceId(device.id);
+
+            getLocation(device.id)
+                .then(response => {
+                    let location = response.data;
+
+                    let activeRoom = this.rackRooms.find(room => {
+                        return room.name === location.datacenter.name;
+                    })
+
+                    this.setActiveRoom(activeRoom);
+
+                    this.rackLoading = true;
+
+                    getRackById(this.currentWorkspaceId, location.rack.id)
+                        .then(response => {
+                            this.setActiveRack(response);
+                            this.setRackLayout(response);
+                            this.rackLoading = false;
+                        });
+                });
         },
     },
     computed: {
