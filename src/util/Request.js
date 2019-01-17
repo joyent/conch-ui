@@ -25,9 +25,21 @@ export default () => {
 			args.headers = {
 				Authorization: "Bearer " + token
 			};
+			args.extract = xhr => {
+				const success =
+					(xhr.status >= 200 && xhr.status < 300) ||
+					xhr.status === 304;
+				if (success) {
+					return JSON.parse(xhr.responseText);
+				} else {
+					const error = new Error(xhr.responseText);
+					error.code = xhr.status;
+					return error;
+				}
+			};
 			return this.request(args).catch(e => {
-				this.clearToken();
-				Promise.reject(e);
+				if (e.code === 401) this.clearToken();
+				return Promise.reject(e);
 			});
 		},
 		refreshToken() {
