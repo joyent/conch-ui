@@ -26,6 +26,7 @@ import { isLoggedIn } from './api/authentication';
 import { loadAllWorkspaces, getRackById, getAllRacks } from './api/workspaces';
 import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from './views/DeviceInspector/api';
 import { getValidations } from './api/validations';
+import { roomToProgress } from './views/shared/utils.js';
 
 export default {
     components: {
@@ -39,6 +40,7 @@ export default {
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
             'setActiveDeviceValidations',
+            'setAllRooms',
             'setCurrentWorkspace',
             'setRackLayout',
             'setValidations',
@@ -67,34 +69,36 @@ export default {
                     this.setWorkspaces(response.data);
                     this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
 
+                    getAllRacks(this.currentWorkspaceId)
+                        .then(response => {
+                            let rooms = response.data;
+                            let rackRooms = Object.keys(rooms)
+                                .sort()
+                                .reduce((acc, name) => {
+                                    let racks = rooms[name];
+                                    let progress = roomToProgress(racks);
+                                    acc.push({
+                                        name,
+                                        racks,
+                                        progress,
+                                    });
+
+                                    return acc;
+                                }, []);
+
+                            this.setAllRooms(rackRooms);
+                        });
+
                     if (this.$route.params) {
                         if (this.$route.params.roomName) {
                             const roomName = this.$route.params.roomName;
-                            getAllRacks(this.currentWorkspaceId)
-                                .then(response => {
-                                    let name;
-                                    let progress;
-                                    let racks;
-                                    let rooms = response.data;
+                            let name = Object.keys(rooms).find(room => {
+                                return room === roomName;
+                            });
+                            let racks = rooms[name];
+                            let progress = roomToProgress(racks);
 
-                                    name = Object.keys(rooms).find(room => {
-                                        return room === roomName;
-                                    });
-
-                                    racks = rooms[name];
-
-                                    if (racks.some(rack => rack["device_progress"]["FAIL"])) {
-                                        progress = "failing";
-                                    } else if (racks.some(rack => rack["device_progress"]["PASS"])) {
-                                        progress = "in progress";
-                                    } else if (racks.every(rack => rack["device_progress"]["VALID"])) {
-                                        progress = "validated";
-                                    } else {
-                                        progress = "not started";
-                                    }
-
-                                    this.setActiveRoom({ name, racks, progress });
-                                });
+                            this.setActiveRoom({ name, racks, progress });
 
                             if (this.$route.params.rackId) {
                                 const rackId = this.$route.params.rackId;

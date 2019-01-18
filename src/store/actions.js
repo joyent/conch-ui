@@ -26,6 +26,9 @@ export const actions = {
     setActiveRoom({ commit }, activeRoom) {
         commit('setActiveRoom', activeRoom);
     },
+    setAllRooms({ commit }, allRooms) {
+        commit('setAllRooms', allRooms);
+    },
     setCurrentWorkspace({ commit }, workspace) {
         commit('setCurrentWorkspace', workspace);
     },

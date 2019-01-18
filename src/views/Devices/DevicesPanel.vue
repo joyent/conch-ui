@@ -56,6 +56,7 @@ import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import { mapActions, mapGetters, mapState  } from 'vuex';
 import { getDeviceDetails, getDeviceSettings } from '../DeviceInspector/api';
+import { getRackById } from '../../api/workspaces';
 
 export default {
     props: {
@@ -81,21 +82,36 @@ export default {
             'setActiveDevice',
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
+            'setActiveRack',
+            'setActiveRoom',
+            'setRackLayout',
         ]),
         activateDevice(device) {
             this.setActiveDevice(device);
+            this.setDeviceSettings(device.id);
+            this.setDeviceDetails(device.id)
+                .then(response => {
+                    let { datacenter, rack } = this.activeDeviceDetails.location;
+                    let activeRoom = this.getRoomByName(datacenter.name);
 
-            if (device.id) {
-                this.setDeviceDetails(device.id);
-                this.setDeviceSettings(device.id);
-            }
+                    this.setActiveRoom(activeRoom);
+
+                    getRackById(this.currentWorkspaceId, rack.id)
+                        .then(response => {
+                            this.setActiveRack(response);
+                            this.setRackLayout(response);
+                        });
+                });
 
             this.$router.push({ name: 'device', params: { deviceId: this.activeDeviceId } });
         },
         setDeviceDetails(activeDeviceId) {
-            getDeviceDetails(activeDeviceId)
+            return getDeviceDetails(activeDeviceId)
                 .then(response => {
-                    this.setActiveDeviceDetails(response.data);
+                    let deviceDetails = response.data;
+                    this.setActiveDeviceDetails(deviceDetails);
+
+                    return response.data;
                 });
         },
         setDeviceSettings(activeDeviceId) {
@@ -133,6 +149,8 @@ export default {
     computed: {
         ...mapGetters([
             'activeDeviceId',
+            'currentWorkspaceId',
+            'getRoomByName',
         ]),
         ...mapState([
             'activeDeviceDetails',

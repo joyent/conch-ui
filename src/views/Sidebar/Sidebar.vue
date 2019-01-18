@@ -70,6 +70,6 @@ export default {
             .then(response => {
                 this.conchVersion = response.data.version;
             });
-    }
+    },
 };
 </script>

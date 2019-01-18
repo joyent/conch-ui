@@ -44,9 +44,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 import { login } from '../../api/authentication.js';
-import { loadAllWorkspaces } from '../../api/workspaces.js';
+import { getAllRacks, loadAllWorkspaces } from '../../api/workspaces.js';
+import { roomToProgress } from '../shared/utils.js';
 
 export default {
     data() {
@@ -60,6 +61,7 @@ export default {
     },
     methods: {
         ...mapActions([
+            'setAllRooms',
             'setCurrentWorkspace',
             'setWorkspaces',
         ]),
@@ -71,6 +73,26 @@ export default {
                     this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
 
                     localStorage.setItem('currentWorkspace', this.currentWorkspaceId);
+
+                    getAllRacks(this.currentWorkspaceId)
+                        .then(response => {
+                            let rooms = response.data;
+                            let rackRooms = Object.keys(rooms)
+                                .sort()
+                                .reduce((acc, name) => {
+                                    let racks = rooms[name];
+                                    let progress = roomToProgress(racks);
+                                    acc.push({
+                                        name,
+                                        racks,
+                                        progress,
+                                    });
+
+                                    return acc;
+                                }, []);
+
+                            this.setAllRooms(rackRooms);
+                        });
 
                     return Promise.resolve();
                 });

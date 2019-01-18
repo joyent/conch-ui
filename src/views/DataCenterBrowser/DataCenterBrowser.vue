@@ -67,6 +67,7 @@ import { EventBus } from '../../eventBus.js';
 import { getRackById, getDevices, getAllRacks } from '../../api/workspaces.js';
 import { getLocation } from '../../api/device.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { roomToProgress } from '../shared/utils.js';
 
 export default {
     components: {
@@ -96,6 +97,7 @@ export default {
             'clearRackLayout',
             'setActiveRack',
             'setActiveRoom',
+            'setAllRooms',
             'setHighlightDeviceId',
             'setRackLayout',
         ]),
@@ -112,13 +114,13 @@ export default {
         getAllWorkspaceRacks() {
             getAllRacks(this.currentWorkspaceId)
                 .then(response => {
-                    let data = response.data;
+                    let rooms = response.data;
 
-                    this.rackRooms = Object.keys(data)
+                    this.rackRooms = Object.keys(rooms)
                         .sort()
                         .reduce((acc, name) => {
-                            let racks = data[name];
-                            let progress = this.roomToProgress(racks);
+                            let racks = rooms[name];
+                            let progress = roomToProgress(racks);
                             acc.push({
                                 name,
                                 racks,
@@ -127,18 +129,9 @@ export default {
 
                             return acc;
                         }, []);
+
+                    this.setAllRooms(this.rackRooms);
                 });
-        },
-        roomToProgress(racks) {
-            if (racks.some(rack => rack["device_progress"]["FAIL"])) {
-                return "failing";
-            } else if (racks.some(rack => rack["device_progress"]["PASS"])) {
-                return "in progress";
-            } else if (racks.every(rack => rack["device_progress"]["VALID"])) {
-                return "validated";
-            } else {
-                return "not started";
-            }
         },
         setFoundDevices(searchText) {
             let devices = this.workspaceDevices;

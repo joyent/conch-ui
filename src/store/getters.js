@@ -7,6 +7,7 @@ export const getters = {
     currentWorkspaceName: state => (state.currentWorkspace.name),
     findWorkspaceById: state => id => (state.workspaces.find(w => w.id === id)),
     findWorkspaceByName: state => name => (state.workspaces.find(w => w.name === name)),
+    getRoomByName: state => name => (state.allRooms.find(room => room.name === name)),
     loadCurrentWorkspace: (state, getters) => (id) => {
         let currentWorkspace = null;
 
