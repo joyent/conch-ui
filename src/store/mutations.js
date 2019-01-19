@@ -26,6 +26,9 @@ export const mutations = {
     setActiveRoom(state, activeRoom) {
         state.activeRoom = activeRoom;
     },
+    setDevicesByWorkspace(state, devices) {
+        state.devicesByWorkspace.push(devices);
+    },
     setAllRooms(state, allRooms) {
         state.allRooms = allRooms;
     },

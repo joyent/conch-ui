@@ -57,6 +57,7 @@ export default {
     methods: {
         ...mapActions([
             'clearActiveDevice',
+            'setDevicesByWorkspace',
         ]),
         setHardwareProductLookup() {
             getHardwareProduct().then(response => {
@@ -64,27 +65,41 @@ export default {
                 this.hardWareProductLookup = keyBy(hardwareProducts, 'id');
             });
         },
-        setWorkspaceDevices() {
-            getDevices(this.currentWorkspaceId)
-                .then(response => {
-                    let devices = response.data;
-                    let foundActiveDevice = false;
-                    let activeDeviceId = this.activeDeviceId;
+        handleActiveDevice(devices) {
+            let foundActiveDevice = false;
+            let activeDeviceId = this.activeDeviceId;
 
-                    devices.sort((a, b) => {
-                        if (activeDeviceId != null && (activeDeviceId === a.id || activeDeviceId === b.id)) {
-                            foundActiveDevice = true;
-                        }
+            devices.sort((a, b) => {
+                if (activeDeviceId != null && (activeDeviceId === a.id || activeDeviceId === b.id)) {
+                    foundActiveDevice = true;
+                }
 
-                        return a.id - b.id;
+                return a.id - b.id;
+            });
+
+            if (!foundActiveDevice) {
+                this.clearActiveDevice();
+            }
+        },
+        handleWorkspaceDevices() {
+            let currentWorkspaceId = this.currentWorkspaceId;
+            let workspaceDevicesFromState = this.getDevicesByWorkspace(currentWorkspaceId);
+
+            if (workspaceDevicesFromState) {
+                this.workspaceDevices = Object.values(workspaceDevicesFromState)[0];
+                this.handleActiveDevice(this.workspaceDevices)
+            } else {
+                getDevices(currentWorkspaceId)
+                    .then(response => {
+                        let devices = response.data;
+                        let workspace = {};
+                        this.workspaceDevices = devices;
+                        this.handleActiveDevice(this.workspaceDevices);
+
+                        workspace[currentWorkspaceId] = devices;
+                        this.setDevicesByWorkspace(workspace);
                     });
-
-                    if (!foundActiveDevice) {
-                        this.clearActiveDevice();
-                    }
-
-                    this.workspaceDevices =  devices;
-                });
+            }
         },
     },
     computed: {
@@ -92,6 +107,7 @@ export default {
             'activeDeviceId',
             'currentWorkspaceId',
             'currentWorkspaceName',
+            'getDevicesByWorkspace',
         ]),
     },
     created() {
@@ -108,13 +124,13 @@ export default {
             this.$router.push({ path: `${routePrefix}/device` });
         }
 
-        this.setWorkspaceDevices();
         this.setHardwareProductLookup();
+        this.handleWorkspaceDevices();
     },
     mounted() {
         EventBus.$on('changeWorkspace:devices', () => {
-            this.setWorkspaceDevices();
             this.setHardwareProductLookup();
+            this.handleWorkspaceDevices();
         });
     },
 };

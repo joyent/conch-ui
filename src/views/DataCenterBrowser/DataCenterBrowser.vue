@@ -98,18 +98,31 @@ export default {
             'setActiveRack',
             'setActiveRoom',
             'setAllRooms',
+            'setDevicesByWorkspace',
             'setHighlightDeviceId',
             'setRackLayout',
         ]),
-        getWorkspaceDevices() {
-            getDevices(this.currentWorkspaceId)
-                .then(response => {
-                    let devices = response.data;
+        handleWorkspaceDevices() {
+            let currentWorkspaceId = this.currentWorkspaceId;
+            let workspaceDevicesFromState = this.getDevicesByWorkspace(currentWorkspaceId);
 
-                    devices.sort((a, b) => a.id - b.id);
+            if (workspaceDevicesFromState) {
+                let devices = Object.values(workspaceDevicesFromState)[0];
+                devices.sort((a, b) => a.id - b.id);
+                this.workspaceDevices = devices;
+            } else {
+                getDevices(currentWorkspaceId)
+                    .then(response => {
+                        let devices = response.data;
+                        let workspace = {};
 
-                    this.workspaceDevices = devices;
-                });
+                        devices.sort((a, b) => a.id - b.id);
+                        this.workspaceDevices = devices;
+
+                        workspace[currentWorkspaceId] = devices;
+                        this.setDevicesByWorkspace(workspace);
+                    });
+            }
         },
         getAllWorkspaceRacks() {
             getAllRacks(this.currentWorkspaceId)
@@ -181,6 +194,7 @@ export default {
         ...mapGetters([
             'activeRackId',
             'currentWorkspaceId',
+            'getDevicesByWorkspace',
         ]),
         ...mapState([
             'activeRack',
@@ -218,12 +232,12 @@ export default {
         },
     },
     created() {
-        this.getWorkspaceDevices();
+        this.handleWorkspaceDevices();
         this.getAllWorkspaceRacks();
     },
     mounted() {
         EventBus.$on('changeWorkspace:datacenter', () => {
-            this.getWorkspaceDevices();
+            this.handleWorkspaceDevices();
             this.getAllWorkspaceRacks();
             this.clearRackLayout();
             this.clearActiveRoom();

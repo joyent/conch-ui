@@ -46,7 +46,7 @@
 <script>
 import { mapActions } from 'vuex';
 import { login } from '../../api/authentication.js';
-import { getAllRacks, loadAllWorkspaces } from '../../api/workspaces.js';
+import { getAllRacks, loadAllWorkspaces, getDevices } from '../../api/workspaces.js';
 import { roomToProgress } from '../shared/utils.js';
 
 export default {
@@ -61,6 +61,7 @@ export default {
     },
     methods: {
         ...mapActions([
+            'setAllDevices',
             'setAllRooms',
             'setCurrentWorkspace',
             'setWorkspaces',

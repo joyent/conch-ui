@@ -65,7 +65,7 @@ import RackProgress from './RackProgress.vue';
 import Spinner from '../components/Spinner.vue';
 import { EventBus } from '../../eventBus.js';
 import { getDevices, getAllRacks } from '../../api/workspaces.js';
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
     components: {
@@ -79,29 +79,12 @@ export default {
             devices: [],
             rackCount: 0,
             rackRooms: 0,
-            progress: [],
         };
     },
     methods: {
-        getWorkspaceDevices() {
-            this.devices = [];
-
-            getDevices(this.currentWorkspaceId)
-                .then(response => {
-                    const newProgress = {pass: 0, total: 0 };
-
-                    this.devices = response.data.sort((a, b) => a.id - b.id);
-                    this.devices.forEach(device => {
-                        if (device.health === 'PASS') {
-                            newProgress.pass++;
-                        }
-
-                        newProgress.total++;
-                    });
-
-                    this.progress = newProgress;
-                });
-        },
+        ...mapActions([
+            'setDevicesByWorkspace',
+        ]),
         getAllWorkspaceRacks() {
             this.rackCount = 0;
             this.rackRooms = 0;
@@ -119,14 +102,50 @@ export default {
                         }, {});
                 });
         },
+        handleWorkspaceDevices() {
+            let currentWorkspaceId = this.currentWorkspaceId;
+            let workspaceDevicesFromState = this.getDevicesByWorkspace(currentWorkspaceId);
+
+            if (workspaceDevicesFromState) {
+                this.devices = Object.values(workspaceDevicesFromState)[0];
+            } else {
+                getDevices(currentWorkspaceId)
+                    .then(response => {
+                        let workspaceDevices = {};
+                        let devices = response.data;
+                        this.devices = devices;
+
+                        workspaceDevices[currentWorkspaceId] = devices;
+                        this.setDevicesByWorkspace(workspaceDevices);
+                    });
+            }
+        },
     },
     computed: {
         ...mapGetters([
             'activeDeviceId',
             'currentWorkspaceId',
+            'getDevicesByWorkspace',
+        ]),
+        ...mapState([
+            'currentWorkspace',
+            'allDevices',
         ]),
         currentWorkspaceName() {
             return this.currentWorkspace.name;
+        },
+        progress() {
+            const newProgress = {pass: 0, total: 0 };
+
+            this.devices.forEach(device => {
+                if (device.health === 'PASS') {
+                    newProgress.pass++;
+                }
+
+                newProgress.total++;
+            });
+
+            return newProgress;
         },
         progressPercent() {
             let progress = this.progress;
@@ -136,17 +155,14 @@ export default {
         title() {
             return `${this.currentWorkspaceName} workspace status`;
         },
-        ...mapState([
-            'currentWorkspace',
-        ]),
     },
     created() {
-        this.getWorkspaceDevices();
+        this.handleWorkspaceDevices();
         this.getAllWorkspaceRacks();
     },
     mounted() {
         EventBus.$on('changeWorkspace:status', () => {
-            this.getWorkspaceDevices();
+            this.handleWorkspaceDevices();
             this.getAllWorkspaceRacks();
         });
     },

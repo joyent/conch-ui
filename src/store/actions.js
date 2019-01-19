@@ -26,6 +26,9 @@ export const actions = {
     setActiveRoom({ commit }, activeRoom) {
         commit('setActiveRoom', activeRoom);
     },
+    setDevicesByWorkspace({ commit }, devices) {
+        commit('setDevicesByWorkspace', devices);
+    },
     setAllRooms({ commit }, allRooms) {
         commit('setAllRooms', allRooms);
     },

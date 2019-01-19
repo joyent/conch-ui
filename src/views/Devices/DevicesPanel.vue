@@ -21,7 +21,7 @@
                 {{ progress }}
             </a>
         </p>
-        <p class="panel-tabs">
+        <p class="panel-tabs" v-if="availableProducts">
             <a
                 v-for="(product, index) in availableProducts"
                 :key="index"
@@ -53,6 +53,7 @@
 import ProgressIcon from '../components/ProgressIcon.vue';
 import search from 'fuzzysearch';
 import sortBy from 'lodash/sortBy';
+import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import { mapActions, mapGetters, mapState  } from 'vuex';
 import { getDeviceDetails, getDeviceSettings } from '../DeviceInspector/api';
@@ -164,18 +165,24 @@ export default {
             ).sort();
         },
         availableProducts() {
-            const products = sortBy(
-                Array.from(
-                    this.workspaceDevices.reduce((acc, device) => {
-                        acc.add(this.hardwareProductLookup[device.hardware_product]);
-                        return acc;
-                    }, new Set())
-                ), 'name'
-            );
+            if (!isEmpty(this.hardwareProductLookup) && this.workspaceDevices.length) {
+                const products = sortBy(
+                    Array.from(
+                        this.workspaceDevices.reduce((acc, device) => {
+                            acc.add(this.hardwareProductLookup[device.hardware_product]);
+                            return acc;
+                        }, new Set())
+                    ), 'name'
+                );
 
-            products.unshift({ id: 'all', name: 'all' })
+                if (products.length) {
+                    products.unshift({ id: 'all', name: 'all' })
+                }
 
-            return products;
+                return products;
+            }
+
+            return null;
         },
         deviceSearchTextLowerCase() {
             return this.deviceSearchText.toLowerCase();
