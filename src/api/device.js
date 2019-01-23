@@ -2,14 +2,14 @@ import { requestWithToken } from './request.js';
 
 export const getDeviceDetails = (id) => {
     return requestWithToken({
-        method: "GET",
-        url: `/device/ ${id}`
+        method: 'GET',
+        url: `/device/${id}`
     });
 };
 
 export const getDeviceSettings = (id) => {
     return requestWithToken({
-        method: "GET",
+        method: 'GET',
         url: `/device/${id}/settings`
     });
 };
@@ -23,14 +23,14 @@ export const getDeviceValidations = (id) => {
 
 export const getLocation = (id) => {
     return requestWithToken({
-        method: "GET",
+        method: 'GET',
         url: `/device/${id}/location`
     });
 };
 
 export const setAssetTag = (id, assetTag) => {
     return requestWithToken({
-        method: "POST",
+        method: 'POST',
         url: `/device/${id}/asset_tag`,
         data: {
             asset_tag: assetTag

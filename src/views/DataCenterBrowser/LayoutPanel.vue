@@ -36,7 +36,7 @@ import EditLayoutModal from './EditLayoutModal.vue';
 import LayoutTable from './LayoutTable.vue';
 import Spinner from '../components/Spinner.vue';
 import { EventBus } from '../../eventBus.js';
-import { deviceToProgress } from './util.js';
+import { deviceToProgress } from '../shared/utils.js';
 import { mapGetters, mapState } from 'vuex';
 
 export default {

@@ -58,6 +58,7 @@ import moment from 'moment';
 import { mapActions, mapGetters, mapState  } from 'vuex';
 import { getDeviceDetails, getDeviceSettings } from '../../api/device.js';
 import { getRackById } from '../../api/workspaces';
+import { deviceToProgress } from '../shared/utils.js';
 
 export default {
     props: {
@@ -106,6 +107,17 @@ export default {
 
             this.$router.push({ name: 'device', params: { deviceId: this.activeDeviceId } });
         },
+        deviceFilter(device) {
+            const deviceId = device && device.id ? device.id.toLowerCase() : '';
+            const assetTag = device && device.asset_tag ? device.asset_tag.toLowerCase() : '';
+
+            const progressFilter = this.selectedProgress === 'all' || this.selectedProgress === deviceToProgress(device);
+            const productFilter = this.selectedProductId === 'all' || this.selectedProductId === device.hardware_product;
+            const searchFilter = search(this.deviceSearchTextLowerCase, deviceId) || search(this.deviceSearchTextLowerCase, assetTag);
+
+            return progressFilter && productFilter && searchFilter;
+        },
+        deviceToProgress,
         setDeviceDetails(activeDeviceId) {
             return getDeviceDetails(activeDeviceId)
                 .then(response => {
@@ -121,31 +133,6 @@ export default {
                     this.setActiveDeviceSettings(response.data);
                 });
         },
-        deviceFilter(device) {
-            const deviceId = device && device.id ? device.id.toLowerCase() : '';
-            const assetTag = device && device.asset_tag ? device.asset_tag.toLowerCase() : '';
-
-            const progressFilter = this.selectedProgress === 'all' || this.selectedProgress === this.deviceToProgress(device);
-            const productFilter = this.selectedProductId === 'all' || this.selectedProductId === device.hardware_product;
-            const searchFilter = search(this.deviceSearchTextLowerCase, deviceId) || search(this.deviceSearchTextLowerCase, assetTag);
-
-            return progressFilter && productFilter && searchFilter;
-        },
-        deviceToProgress(device) {
-            if (device == null) {
-                return "unassigned";
-            } else if (device.graduated) {
-                return "graduated";
-            } else if (device.validated) {
-                return "validated";
-            } else if (device.health.toLowerCase() === "fail") {
-                return "failing";
-            } else if (moment().diff(moment(device.last_seen), "second") <= 300) {
-                return "active";
-            }
-
-            return "in progress";
-        },
     },
     computed: {
         ...mapGetters([
@@ -159,7 +146,7 @@ export default {
         availableDeviceProgress() {
             return Array.from(
                 this.workspaceDevices.reduce((acc, device) => {
-                    acc.add(this.deviceToProgress(device));
+                    acc.add(deviceToProgress(device));
                     return acc;
                 }, new Set(['all']))
             ).sort();
@@ -176,7 +163,7 @@ export default {
                 );
 
                 if (products.length) {
-                    products.unshift({ id: 'all', name: 'all' })
+                    products.unshift({ id: 'all', name: 'all' });
                 }
 
                 return products;
@@ -190,7 +177,7 @@ export default {
         filteredDevices() {
             return this.workspaceDevices.filter(device => {
                 return this.deviceFilter(device);
-            })
+            });
         },
     },
 };
