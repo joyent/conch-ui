@@ -46,6 +46,23 @@ export default {
             'setValidations',
             'setWorkspaces',
         ]),
+        setRooms(rooms) {
+            let rackRooms = Object.keys(rooms)
+                .sort()
+                .reduce((acc, name) => {
+                    let racks = rooms[name];
+                    let progress = roomToProgress(racks);
+                    acc.push({
+                        name,
+                        racks,
+                        progress,
+                    });
+
+                    return acc;
+                }, []);
+
+            this.setAllRooms(rackRooms);
+        },
     },
     computed: {
         ...mapGetters([
@@ -53,6 +70,7 @@ export default {
             'currentWorkspaceId',
         ]),
         ...mapState([
+            'allRacks',
             'currentWorkspace',
         ]),
         hasWorkspace() {
@@ -68,26 +86,18 @@ export default {
                 .then(response => {
                     this.setWorkspaces(response.data);
                     this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
+                    let rooms;
 
-                    getAllRacks(this.currentWorkspaceId)
-                        .then(response => {
-                            let rooms = response.data;
-                            let rackRooms = Object.keys(rooms)
-                                .sort()
-                                .reduce((acc, name) => {
-                                    let racks = rooms[name];
-                                    let progress = roomToProgress(racks);
-                                    acc.push({
-                                        name,
-                                        racks,
-                                        progress,
-                                    });
-
-                                    return acc;
-                                }, []);
-
-                            this.setAllRooms(rackRooms);
-                        });
+                    if (!isEmpty(this.allRacks)) {
+                        this.setRooms(this.allRacks);
+                        rooms = this.allRacks;
+                    } else {
+                        getAllRacks(this.currentWorkspaceId)
+                            .then(response => {
+                                this.setRooms(response.data);
+                                rooms = response.data;
+                            });
+                    }
 
                     if (this.$route.params) {
                         if (this.$route.params.roomName) {

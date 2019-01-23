@@ -29,11 +29,17 @@ export const mutations = {
     setDevicesByWorkspace(state, devices) {
         state.devicesByWorkspace.push(devices);
     },
+    setAllRacks(state, allRacks) {
+        state.allRacks = allRacks;
+    },
     setAllRooms(state, allRooms) {
         state.allRooms = allRooms;
     },
     setCurrentWorkspace(state, workspace) {
         state.currentWorkspace = workspace;
+    },
+    setHardwareProducts(state, hardwareProducts) {
+        state.hardwareProducts = hardwareProducts;
     },
     setHighlightDeviceId(state, highlightDeviceId) {
         state.highlightDeviceId = highlightDeviceId;

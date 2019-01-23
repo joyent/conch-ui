@@ -35,9 +35,10 @@ import PageHeader from '../components/PageHeader.vue';
 import Spinner from '../components/Spinner.vue';
 import DeviceInspector from '../DeviceInspector/DeviceInspector.vue';
 import DevicesPanel from './DevicesPanel.vue';
+import isEmpty from 'lodash/isEmpty';
 import keyBy from 'lodash/keyBy';
 import { EventBus } from '../../eventBus.js';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { getHardwareProduct } from '../../api/hardwareProduct.js';
 import { getDevices } from '../../api/workspaces.js';
 
@@ -58,12 +59,18 @@ export default {
         ...mapActions([
             'clearActiveDevice',
             'setDevicesByWorkspace',
+            'setHardwareProducts',
         ]),
-        setHardwareProductLookup() {
-            getHardwareProduct().then(response => {
-                let hardwareProducts = response.data;
-                this.hardWareProductLookup = keyBy(hardwareProducts, 'id');
-            });
+        handleHardwareProductLookup() {
+            if (!isEmpty(this.hardwareProducts)) {
+                this.hardWareProductLookup = this.hardwareProducts;
+            } else {
+                getHardwareProduct().then(response => {
+                    let hardwareProducts = keyBy(response.data, 'id');
+                    this.hardWareProductLookup = hardwareProducts;
+                    this.setHardwareProducts(hardwareProducts);
+                });
+            }
         },
         handleActiveDevice(devices) {
             let foundActiveDevice = false;
@@ -109,6 +116,9 @@ export default {
             'currentWorkspaceName',
             'getDevicesByWorkspace',
         ]),
+        ...mapState([
+            'hardwareProducts',
+        ]),
     },
     created() {
         const route = this.$route.path;
@@ -124,12 +134,12 @@ export default {
             this.$router.push({ path: `${routePrefix}/device` });
         }
 
-        this.setHardwareProductLookup();
+        this.handleHardwareProductLookup();
         this.handleWorkspaceDevices();
     },
     mounted() {
         EventBus.$on('changeWorkspace:devices', () => {
-            this.setHardwareProductLookup();
+            this.handleHardwareProductLookup();
             this.handleWorkspaceDevices();
         });
     },

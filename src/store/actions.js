@@ -29,11 +29,17 @@ export const actions = {
     setDevicesByWorkspace({ commit }, devices) {
         commit('setDevicesByWorkspace', devices);
     },
+    setAllRacks({ commit }, allRacks) {
+        commit('setAllRacks', allRacks);
+    },
     setAllRooms({ commit }, allRooms) {
         commit('setAllRooms', allRooms);
     },
     setCurrentWorkspace({ commit }, workspace) {
         commit('setCurrentWorkspace', workspace);
+    },
+    setHardwareProducts({ commit }, hardwareProducts) {
+        commit('setHardwareProducts', hardwareProducts);
     },
     setHighlightDeviceId({ commit }, highlightDeviceId) {
         commit('setHighlightDeviceId', highlightDeviceId);

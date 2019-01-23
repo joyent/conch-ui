@@ -44,7 +44,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import isEmpty from 'lodash/isEmpty';
+import { mapActions, mapState } from 'vuex';
 import { login } from '../../api/authentication.js';
 import { getAllRacks, loadAllWorkspaces, getDevices } from '../../api/workspaces.js';
 import { roomToProgress } from '../shared/utils.js';
@@ -62,6 +63,7 @@ export default {
     methods: {
         ...mapActions([
             'setAllDevices',
+            'setAllRacks',
             'setAllRooms',
             'setCurrentWorkspace',
             'setWorkspaces',
@@ -75,28 +77,35 @@ export default {
 
                     localStorage.setItem('currentWorkspace', this.currentWorkspaceId);
 
-                    getAllRacks(this.currentWorkspaceId)
-                        .then(response => {
-                            let rooms = response.data;
-                            let rackRooms = Object.keys(rooms)
-                                .sort()
-                                .reduce((acc, name) => {
-                                    let racks = rooms[name];
-                                    let progress = roomToProgress(racks);
-                                    acc.push({
-                                        name,
-                                        racks,
-                                        progress,
-                                    });
-
-                                    return acc;
-                                }, []);
-
-                            this.setAllRooms(rackRooms);
-                        });
+                    if (!isEmpty(this.allRacks)) {
+                        this.setRooms(this.allRacks);
+                    } else {
+                        getAllRacks(this.currentWorkspaceId)
+                            .then(response => {
+                                this.setAllRacks(response.data);
+                                this.setRooms(response.data);
+                            });
+                    }
 
                     return Promise.resolve();
                 });
+        },
+        setRooms(rooms) {
+            let rackRooms = Object.keys(rooms)
+                .sort()
+                .reduce((acc, name) => {
+                    let racks = rooms[name];
+                    let progress = roomToProgress(racks);
+                    acc.push({
+                        name,
+                        racks,
+                        progress,
+                    });
+
+                    return acc;
+                }, []);
+
+            this.setAllRooms(rackRooms);
         },
         signIn() {
             this.isLoading = true;
@@ -118,6 +127,11 @@ export default {
                     this.badLoginAttempt = true;
                 });
         },
+    },
+    computed: {
+        ...mapState([
+            'allRacks',
+        ]),
     },
 };
 </script>

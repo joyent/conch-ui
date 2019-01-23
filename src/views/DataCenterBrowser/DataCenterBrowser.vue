@@ -97,6 +97,7 @@ export default {
             'clearRackLayout',
             'setActiveRack',
             'setActiveRoom',
+            'setAllRacks',
             'setAllRooms',
             'setDevicesByWorkspace',
             'setHighlightDeviceId',
@@ -124,27 +125,15 @@ export default {
                     });
             }
         },
-        getAllWorkspaceRacks() {
-            getAllRacks(this.currentWorkspaceId)
-                .then(response => {
-                    let rooms = response.data;
-
-                    this.rackRooms = Object.keys(rooms)
-                        .sort()
-                        .reduce((acc, name) => {
-                            let racks = rooms[name];
-                            let progress = roomToProgress(racks);
-                            acc.push({
-                                name,
-                                racks,
-                                progress,
-                            });
-
-                            return acc;
-                        }, []);
-
-                    this.setAllRooms(this.rackRooms);
-                });
+        handleWorkspaceRacks() {
+            if (!isEmpty(this.allRacks)) {
+                this.setRooms(this.allRacks);
+            } else {
+                getAllRacks(this.currentWorkspaceId)
+                    .then(response => {
+                        this.setRooms(response.data);
+                    });
+            }
         },
         setFoundDevices(searchText) {
             let devices = this.workspaceDevices;
@@ -164,6 +153,23 @@ export default {
 
                 return acc;
             }, []);
+        },
+        setRooms(rooms) {
+            this.rackRooms = Object.keys(rooms)
+                .sort()
+                .reduce((acc, name) => {
+                    let racks = rooms[name];
+                    let progress = roomToProgress(racks);
+                    acc.push({
+                        name,
+                        racks,
+                        progress,
+                    });
+
+                    return acc;
+                }, []);
+
+            this.setAllRooms(this.rackRooms);
         },
         setSearchedDevice(device) {
             this.hideDropdown = true;
@@ -197,6 +203,7 @@ export default {
             'getDevicesByWorkspace',
         ]),
         ...mapState([
+            'allRacks',
             'activeRack',
             'activeRoom',
             'rackLayout',
@@ -233,12 +240,12 @@ export default {
     },
     created() {
         this.handleWorkspaceDevices();
-        this.getAllWorkspaceRacks();
+        this.handleWorkspaceRacks();
     },
     mounted() {
         EventBus.$on('changeWorkspace:datacenter', () => {
             this.handleWorkspaceDevices();
-            this.getAllWorkspaceRacks();
+            this.handleWorkspaceRacks();
             this.clearRackLayout();
             this.clearActiveRoom();
         });

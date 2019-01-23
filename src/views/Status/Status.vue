@@ -63,6 +63,7 @@ import DeviceModal from '../components/DeviceModal.vue';
 import PageHeader from '../components/PageHeader.vue';
 import RackProgress from './RackProgress.vue';
 import Spinner from '../components/Spinner.vue';
+import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '../../eventBus.js';
 import { getDevices, getAllRacks } from '../../api/workspaces.js';
 import { mapState, mapGetters, mapActions } from 'vuex';
@@ -85,22 +86,18 @@ export default {
         ...mapActions([
             'setDevicesByWorkspace',
         ]),
-        getAllWorkspaceRacks() {
+        handleWorkspaceRacks() {
             this.rackCount = 0;
             this.rackRooms = 0;
 
-            getAllRacks(this.currentWorkspaceId)
-                .then(response => {
-                    let data = response.data;
-                    // sort and assign the rack rooms
-                    this.rackRooms = Object.keys(data)
-                        .sort()
-                        .reduce((acc, room) => {
-                            acc[room] = data[room];
-                            this.rackCount += data[room].length;
-                            return acc;
-                        }, {});
-                });
+            if (!isEmpty(this.allRacks)) {
+                this.setRackRooms(this.allRacks);
+            } else {
+                getAllRacks(this.currentWorkspaceId)
+                    .then(response => {
+                        this.setRackRooms(response.data);
+                    });
+            }
         },
         handleWorkspaceDevices() {
             let currentWorkspaceId = this.currentWorkspaceId;
@@ -120,6 +117,16 @@ export default {
                     });
             }
         },
+        setRackRooms(rooms) {
+            // sort and assign the rack rooms
+            this.rackRooms = Object.keys(rooms)
+                .sort()
+                .reduce((acc, room) => {
+                    acc[room] = rooms[room];
+                    this.rackCount += rooms[room].length;
+                    return acc;
+                }, {});
+        },
     },
     computed: {
         ...mapGetters([
@@ -130,6 +137,7 @@ export default {
         ...mapState([
             'currentWorkspace',
             'allDevices',
+            'allRacks',
         ]),
         currentWorkspaceName() {
             return this.currentWorkspace.name;
@@ -158,12 +166,12 @@ export default {
     },
     created() {
         this.handleWorkspaceDevices();
-        this.getAllWorkspaceRacks();
+        this.handleWorkspaceRacks();
     },
     mounted() {
         EventBus.$on('changeWorkspace:status', () => {
             this.handleWorkspaceDevices();
-            this.getAllWorkspaceRacks();
+            this.handleWorkspaceRacks();
         });
     },
 };
