@@ -56,7 +56,7 @@ import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import { mapActions, mapGetters, mapState  } from 'vuex';
-import { getDeviceDetails, getDeviceSettings } from '../DeviceInspector/api';
+import { getDeviceDetails, getDeviceSettings } from '../../api/device.js';
 import { getRackById } from '../../api/workspaces';
 
 export default {

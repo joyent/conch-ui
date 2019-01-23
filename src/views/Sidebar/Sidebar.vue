@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import * as ConchApiVersion from '../../api/conchApiVersion.js';
+import { getApiVersion } from '../../api/conchApiVersion.js';
 import { logout } from '../../api/authentication.js';
 import { mapGetters } from 'vuex';
 
@@ -66,10 +66,9 @@ export default {
     created() {
         this.conchUIVersion = CONCH.GLOBALS.conchUIVersion;
 
-        ConchApiVersion.get()
-            .then(response => {
-                this.conchVersion = response.data.version;
-            });
+        getApiVersion().then(response => {
+            this.conchVersion = response.data.version;
+        });
     },
 };
 </script>

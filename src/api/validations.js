@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { requestWithToken } from './request.js';
 
 export const getValidations = () => {
-    return axios({
+    return requestWithToken({
         method: 'GET',
         url: '/validation'
     });

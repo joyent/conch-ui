@@ -48,7 +48,7 @@
 import ProgressIcon from '../components/ProgressIcon.vue';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { EventBus } from '../../eventBus.js';
-import { getDeviceDetails, getDeviceSettings } from '../DeviceInspector/api';
+import { getDeviceDetails, getDeviceSettings } from '../../api/device.js';
 
 export default {
     props: {

@@ -1,21 +1,21 @@
-import axios from 'axios';
+import { requestWithToken } from './request.js';
 
 export const getAllRacks = (id) => {
-    return axios({
+    return requestWithToken({
         method: 'GET',
         url: `/workspace/${id}/rack`
     });
 };
 
 export const getDevices = (id) => {
-    return axios({
+    return requestWithToken({
         method: 'GET',
         url: `/workspace/${id}/device`
     });
 };
 
 export const getRackById = (id, rackId) => {
-    return axios({
+    return requestWithToken({
         method: 'GET',
         url: `/workspace/${id}/rack/${rackId}`
     })
@@ -32,14 +32,14 @@ export const getRackById = (id, rackId) => {
 };
 
 export const loadAllWorkspaces = () => {
-    return axios({
+    return requestWithToken({
         method: 'GET',
         url: '/workspace'
     });
 };
 
 export const setRackLayout = (id, rackId, layout) => {
-    return axios({
+    return requestWithToken({
         method: 'POST',
         url: `/workspace/${id}/rack/${rackId}/layout`,
         data: layout

@@ -1,12 +1,12 @@
-import axios from 'axios';
+import { request } from './request.js';
 
-export const get = () => {
-    return axios({
+export const getApiVersion = () => {
+    return request({
         method: 'GET',
         url: '/version'
     });
 };
 
 export default {
-    get,
+    getApiVersion,
 };

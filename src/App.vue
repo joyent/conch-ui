@@ -22,10 +22,10 @@ import Layout from './views/Layout/Layout.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { isLoggedIn } from './api/authentication';
-import { loadAllWorkspaces, getRackById, getAllRacks } from './api/workspaces';
-import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from './views/DeviceInspector/api';
-import { getValidations } from './api/validations';
+import { isLoggedIn } from './api/authentication.js';
+import { loadAllWorkspaces, getRackById, getAllRacks } from './api/workspaces.js';
+import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from './api/device.js';
+import { getValidations } from './api/validations.js';
 import { roomToProgress } from './views/shared/utils.js';
 
 export default {

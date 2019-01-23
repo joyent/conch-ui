@@ -31,7 +31,7 @@ import StorageTab from './StorageTab.vue';
 import ValidationTab from './ValidationTab.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from './api';
+import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '../../api/device.js';
 import { getValidations } from '../../api/validations.js';
 
 export default {
