@@ -26,7 +26,7 @@ import { isLoggedIn } from './api/authentication.js';
 import { loadAllWorkspaces, getRackById, getAllRacks } from './api/workspaces.js';
 import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from './api/device.js';
 import { getValidations } from './api/validations.js';
-import { roomToProgress } from './views/shared/utils.js';
+import { getRackRooms, roomToProgress } from './views/shared/utils.js';
 
 export default {
     components: {
@@ -43,34 +43,18 @@ export default {
             'setAllRooms',
             'setCurrentWorkspace',
             'setRackLayout',
+            'setRackRoomsByWorkspace',
             'setValidations',
             'setWorkspaces',
         ]),
-        setRooms(rooms) {
-            let rackRooms = Object.keys(rooms)
-                .sort()
-                .reduce((acc, name) => {
-                    let racks = rooms[name];
-                    let progress = roomToProgress(racks);
-                    acc.push({
-                        name,
-                        racks,
-                        progress,
-                    });
-
-                    return acc;
-                }, []);
-
-            this.setAllRooms(rackRooms);
-        },
     },
     computed: {
         ...mapGetters([
             'activeDeviceId',
             'currentWorkspaceId',
+            'getRackRoomsByWorkspace',
         ]),
         ...mapState([
-            'allRacks',
             'currentWorkspace',
         ]),
         hasWorkspace() {
@@ -88,14 +72,21 @@ export default {
                     this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
                     let rooms;
 
-                    if (!isEmpty(this.allRacks)) {
-                        this.setRooms(this.allRacks);
-                        rooms = this.allRacks;
+                    let currentWorkspaceId = this.currentWorkspaceId;
+                    let workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
+
+                    if (!isEmpty(workspaceRackRooms)) {
+                        rooms = Object.values(workspaceRackRooms)[0];
+                        this.setAllRooms(getRackRooms(rooms));
                     } else {
-                        getAllRacks(this.currentWorkspaceId)
+                        getAllRacks(currentWorkspaceId)
                             .then(response => {
-                                this.setRooms(response.data);
                                 rooms = response.data;
+                                let workspaceRackRooms = {};
+
+                                workspaceRackRooms[currentWorkspaceId] = rooms;
+                                this.setRackRoomsByWorkspace(workspaceRackRooms);
+                                this.setAllRooms(getRackRooms(rooms));
                             });
                     }
 

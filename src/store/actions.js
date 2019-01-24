@@ -29,9 +29,6 @@ export const actions = {
     setDevicesByWorkspace({ commit }, devices) {
         commit('setDevicesByWorkspace', devices);
     },
-    setAllRacks({ commit }, allRacks) {
-        commit('setAllRacks', allRacks);
-    },
     setAllRooms({ commit }, allRooms) {
         commit('setAllRooms', allRooms);
     },
@@ -46,6 +43,9 @@ export const actions = {
     },
     setRackLayout({ commit }, rackLayout) {
         commit('setRackLayout', rackLayout);
+    },
+    setRackRoomsByWorkspace({ commit }, rackRooms) {
+        commit('setRackRoomsByWorkspace', rackRooms);
     },
     setWorkspaces({ commit }, workspaces) {
         commit('setWorkspaces', workspaces);

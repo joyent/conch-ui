@@ -6,12 +6,12 @@ export const state = {
     activeRack: {},
     activeRoom: {},
     devicesByWorkspace: [],
-    allRacks: [],
     allRooms: {},
     currentWorkspace: {},
     hardwareProducts: [],
     highlightDeviceId: '',
     rackLayout: {},
+    rackRoomsByWorkspace: [],
     workspaces: [],
     validations: [],
 };

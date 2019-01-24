@@ -14,6 +14,13 @@ export const getters = {
 
         return workspaceDevices ? workspaceDevices : null;
     },
+    getRackRoomsByWorkspace: state => workspaceId => {
+        let workspaceRackRooms = state.rackRoomsByWorkspace.find(workspace => {
+            return Object.keys(workspace)[0] === workspaceId
+        })
+
+        return workspaceRackRooms ? workspaceRackRooms : null;
+    },
     getRoomByName: state => name => (state.allRooms.find(room => room.name === name)),
     loadCurrentWorkspace: (state, getters) => id => {
         let currentWorkspace = null;

@@ -45,10 +45,10 @@
 
 <script>
 import isEmpty from 'lodash/isEmpty';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { login } from '../../api/authentication.js';
 import { getAllRacks, loadAllWorkspaces, getDevices } from '../../api/workspaces.js';
-import { roomToProgress } from '../shared/utils.js';
+import { getRackRooms, roomToProgress } from '../shared/utils.js';
 
 export default {
     data() {
@@ -63,9 +63,9 @@ export default {
     methods: {
         ...mapActions([
             'setAllDevices',
-            'setAllRacks',
             'setAllRooms',
             'setCurrentWorkspace',
+            'setRackRoomsByWorkspace',
             'setWorkspaces',
         ]),
         initWorkspaceData() {
@@ -77,35 +77,26 @@ export default {
 
                     localStorage.setItem('currentWorkspace', this.currentWorkspaceId);
 
-                    if (!isEmpty(this.allRacks)) {
-                        this.setRooms(this.allRacks);
+                    let currentWorkspaceId = this.currentWorkspaceId;
+                    let workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
+
+                    if (!isEmpty(workspaceRackRooms)) {
+                        let rooms = Object.values(workspaceRackRooms)[0];
+                        this.setAllRooms(getRackRooms(rooms));
                     } else {
-                        getAllRacks(this.currentWorkspaceId)
+                        getAllRacks(currentWorkspaceId)
                             .then(response => {
-                                this.setAllRacks(response.data);
-                                this.setRooms(response.data);
+                                let rooms = response.data;
+                                let workspaceRackRooms = {};
+
+                                workspaceRackRooms[currentWorkspaceId] = rooms;
+                                this.setRackRoomsByWorkspace(workspaceRackRooms);
+                                this.setAllRooms(getRackRooms(rooms));
                             });
                     }
 
                     return Promise.resolve();
                 });
-        },
-        setRooms(rooms) {
-            let rackRooms = Object.keys(rooms)
-                .sort()
-                .reduce((acc, name) => {
-                    let racks = rooms[name];
-                    let progress = roomToProgress(racks);
-                    acc.push({
-                        name,
-                        racks,
-                        progress,
-                    });
-
-                    return acc;
-                }, []);
-
-            this.setAllRooms(rackRooms);
         },
         signIn() {
             this.isLoading = true;
@@ -129,8 +120,8 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            'allRacks',
+        ...mapGetters([
+            'getRackRoomsByWorkspace',
         ]),
     },
 };

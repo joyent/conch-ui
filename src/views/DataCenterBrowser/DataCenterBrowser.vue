@@ -67,7 +67,7 @@ import { EventBus } from '../../eventBus.js';
 import { getRackById, getDevices, getAllRacks } from '../../api/workspaces.js';
 import { getLocation } from '../../api/device.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { roomToProgress } from '../shared/utils.js';
+import { getRackRooms, roomToProgress } from '../shared/utils.js';
 
 export default {
     components: {
@@ -97,9 +97,9 @@ export default {
             'clearRackLayout',
             'setActiveRack',
             'setActiveRoom',
-            'setAllRacks',
             'setAllRooms',
             'setDevicesByWorkspace',
+            'setRackRoomsByWorkspace',
             'setHighlightDeviceId',
             'setRackLayout',
         ]),
@@ -126,12 +126,23 @@ export default {
             }
         },
         handleWorkspaceRacks() {
-            if (!isEmpty(this.allRacks)) {
-                this.setRooms(this.allRacks);
+            let currentWorkspaceId = this.currentWorkspaceId;
+            let workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
+
+            if (!isEmpty(workspaceRackRooms)) {
+                let rooms = Object.values(workspaceRackRooms)[0];
+                this.rackRooms = getRackRooms(rooms);
+                this.setAllRooms(this.rackRooms);
             } else {
-                getAllRacks(this.currentWorkspaceId)
+                getAllRacks(currentWorkspaceId)
                     .then(response => {
-                        this.setRooms(response.data);
+                        let rooms = response.data;
+                        let workspaceRackRooms = {};
+
+                        workspaceRackRooms[currentWorkspaceId] = rooms;
+                        this.setRackRoomsByWorkspace(workspaceRackRooms);
+                        this.rackRooms = getRackRooms(rooms);
+                        this.setAllRooms(this.rackRooms);
                     });
             }
         },
@@ -153,23 +164,6 @@ export default {
 
                 return acc;
             }, []);
-        },
-        setRooms(rooms) {
-            this.rackRooms = Object.keys(rooms)
-                .sort()
-                .reduce((acc, name) => {
-                    let racks = rooms[name];
-                    let progress = roomToProgress(racks);
-                    acc.push({
-                        name,
-                        racks,
-                        progress,
-                    });
-
-                    return acc;
-                }, []);
-
-            this.setAllRooms(this.rackRooms);
         },
         setSearchedDevice(device) {
             this.hideDropdown = true;
@@ -201,9 +195,9 @@ export default {
             'activeRackId',
             'currentWorkspaceId',
             'getDevicesByWorkspace',
+            'getRackRoomsByWorkspace',
         ]),
         ...mapState([
-            'allRacks',
             'activeRack',
             'activeRoom',
             'rackLayout',

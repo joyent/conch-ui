@@ -16,6 +16,22 @@ export const deviceToProgress = device => {
 	return 'in progress';
 };
 
+export const getRackRooms = rooms => {
+    return Object.keys(rooms)
+        .sort()
+        .reduce((acc, name) => {
+            let racks = rooms[name];
+            let progress = roomToProgress(racks);
+            acc.push({
+                name,
+                racks,
+                progress,
+            });
+
+            return acc;
+        }, []);
+};
+
 export const roomToProgress = racks => {
     if (racks.some(rack => rack['device_progress']['FAIL'])) {
         return 'failing';
@@ -30,5 +46,6 @@ export const roomToProgress = racks => {
 
 export default {
     deviceToProgress,
+    getRackRooms,
     roomToProgress,
 };

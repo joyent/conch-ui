@@ -85,17 +85,24 @@ export default {
     methods: {
         ...mapActions([
             'setDevicesByWorkspace',
+            'setRackRoomsByWorkspace',
         ]),
         handleWorkspaceRacks() {
-            this.rackCount = 0;
-            this.rackRooms = 0;
+            let currentWorkspaceId = this.currentWorkspaceId;
+            let workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
 
-            if (!isEmpty(this.allRacks)) {
-                this.setRackRooms(this.allRacks);
+            if (!isEmpty(workspaceRackRooms)) {
+                let rooms = Object.values(workspaceRackRooms)[0];
+                this.setRackRooms(rooms);
             } else {
-                getAllRacks(this.currentWorkspaceId)
+                getAllRacks(currentWorkspaceId)
                     .then(response => {
-                        this.setRackRooms(response.data);
+                        let rackRooms = response.data;
+                        let workspaceRackRooms = {};
+
+                        workspaceRackRooms[currentWorkspaceId] = rackRooms;
+                        this.setRackRoomsByWorkspace(workspaceRackRooms);
+                        this.setRackRooms(rackRooms);
                     });
             }
         },
@@ -119,6 +126,7 @@ export default {
         },
         setRackRooms(rooms) {
             // sort and assign the rack rooms
+            this.rackCount = 0;
             this.rackRooms = Object.keys(rooms)
                 .sort()
                 .reduce((acc, room) => {
@@ -133,11 +141,11 @@ export default {
             'activeDeviceId',
             'currentWorkspaceId',
             'getDevicesByWorkspace',
+            'getRackRoomsByWorkspace',
         ]),
         ...mapState([
-            'currentWorkspace',
             'allDevices',
-            'allRacks',
+            'currentWorkspace',
         ]),
         currentWorkspaceName() {
             return this.currentWorkspace.name;

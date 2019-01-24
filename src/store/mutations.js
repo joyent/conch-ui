@@ -29,9 +29,6 @@ export const mutations = {
     setDevicesByWorkspace(state, devices) {
         state.devicesByWorkspace.push(devices);
     },
-    setAllRacks(state, allRacks) {
-        state.allRacks = allRacks;
-    },
     setAllRooms(state, allRooms) {
         state.allRooms = allRooms;
     },
@@ -46,6 +43,9 @@ export const mutations = {
     },
     setRackLayout(state, rackLayout) {
         state.rackLayout = rackLayout;
+    },
+    setRackRoomsByWorkspace(state, rackRooms) {
+        state.rackRoomsByWorkspace.push(rackRooms);
     },
     setWorkspaces(state, workspaces) {
         state.workspaces = workspaces;
