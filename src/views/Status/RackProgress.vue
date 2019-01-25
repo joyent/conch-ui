@@ -1,10 +1,18 @@
 <template>
-    <div class="rack-progress-graph"></div>
+    <div class="rack-progress">
+        <Spinner v-if="!graph" />
+        <div class="rack-progress-graph" v-else></div>
+    </div>
 </template>
 
 <script>
-import { select, selectAll } from 'd3-selection';
 import RelationshipGraph from 'd3-relationshipgraph';
+import Spinner from '../components/Spinner.vue';
+import isEmpty from 'lodash/isEmpty';
+import { EventBus } from '../../eventBus.js';
+import { select, selectAll } from 'd3-selection';
+import { getAllRacks } from '../../api/workspaces';
+import { mapGetters, mapActions } from 'vuex';
 
 const statusSortOrder = {};
 statusSortOrder["Validated"] = 1;
@@ -20,19 +28,23 @@ roleSortOrder["CERES"] = 4;
 
 export default {
     props: {
-        rackRooms: {
-            required: true,
-        },
         group: {
             required: false,
         },
     },
+    components: {
+        Spinner,
+    },
     data() {
         return {
             graph: null,
+            rackRooms: [],
         };
     },
     methods: {
+        ...mapActions([
+            'setRackRoomsByWorkspace',
+        ]),
         nodeParent(device_progress) {
             // If there's any failing devices, the whole rack is Failing
             if (device_progress.FAIL) {
@@ -113,8 +125,67 @@ export default {
                 return sortOrder[a.parent] > sortOrder[b.parent] ? 1 : -1;
             });
         },
+        setGraph() {
+            this.graph = new RelationshipGraph(select(this.$el), {
+                showTooltips: true,
+                maxChildCount: 10,
+                showKeys: true,
+                sortFunction: this.group === 'status' ? this.sortNodesStatus : this.sortNodesRole,
+                thresholds: [-1, 0, 25, 50, 75, 99, 100],
+                colors: [
+                    "hsl(0, 80%, 60%)",
+                    "hsl(225, 20%, 85%)",
+                    "hsl(225, 50%, 80%)",
+                    "hsl(225, 80%, 70%)",
+                    "hsl(190, 60%, 60%)",
+                    "hsl(160, 60%, 60%)",
+                    "hsl(130, 60%, 60%)"
+                ],
+                onClick: {
+                    child: ({ _private_ }) => {
+                        let path = window.location.href.split("/");
+                        path.pop();
+                        path = path.join("/");
+                        window.open(`${path}/datacenter/${_private_.room_name}/rack/${_private_.rack_id}/device`, "_blank");
+                    }
+                }
+            }).data(this.rackStatus);
+        },
+        setRackRooms(rackRooms) {
+            this.rackRooms = Object.keys(rackRooms)
+                .sort()
+                .reduce((acc, room) => {
+                    acc[room] = rackRooms[room];
+                    return acc;
+                }, {});
+        },
+        setRackProgress() {
+            let currentWorkspaceId = this.currentWorkspaceId;
+            let workspaceRackRooms = this.getRackRoomsByWorkspace(this.currentWorkspaceId);
+
+            if (!isEmpty(workspaceRackRooms)) {
+                let rackRooms = Object.values(workspaceRackRooms)[0];
+                this.setRackRooms(rackRooms);
+                this.setGraph();
+            } else {
+                getAllRacks(currentWorkspaceId)
+                    .then(response => {
+                        let rackRooms = response.data;
+                        let workspaceRackRooms = {};
+
+                        workspaceRackRooms[currentWorkspaceId] = rackRooms;
+                        this.setRackRoomsByWorkspace(workspaceRackRooms);
+                        this.setRackRooms(rackRooms);
+                        this.setGraph();
+                    });
+            }
+        },
     },
     computed: {
+        ...mapGetters([
+            'currentWorkspaceId',
+            'getRackRoomsByWorkspace',
+        ]),
         rackStatus() {
             return Object.keys(this.rackRooms).reduce((acc, room) => {
                 this.rackRooms[room].forEach(rack => {
@@ -137,34 +208,17 @@ export default {
         },
     },
     mounted() {
-        this.graph = new RelationshipGraph(select(this.$el), {
-            showTooltips: true,
-            maxChildCount: 10,
-            showKeys: true,
-            sortFunction: this.group === 'status' ? this.sortNodesStatus : this.sortNodesRole,
-            thresholds: [-1, 0, 25, 50, 75, 99, 100],
-            colors: [
-                "hsl(0, 80%, 60%)",
-                "hsl(225, 20%, 85%)",
-                "hsl(225, 50%, 80%)",
-                "hsl(225, 80%, 70%)",
-                "hsl(190, 60%, 60%)",
-                "hsl(160, 60%, 60%)",
-                "hsl(130, 60%, 60%)"
-            ],
-            onClick: {
-                child: ({ _private_ }) => {
-                    let path = window.location.href.split("/");
-                    path.pop();
-                    path = path.join("/");
-                    window.open(`${path}/datacenter/${_private_.room_name}/rack/${_private_.rack_id}/device`, "_blank");
-                }
-            }
-        }).data(this.rackStatus);
+        this.setRackProgress();
+
+        EventBus.$on('changeWorkspace:status', () => {
+            this.setRackProgress();
+        });
     },
     updated() {
-        this.graph.configuration.sortFunction = this.sortFunction;
-        this.graph.data(this.rackStatus);
+        if (this.graph) {
+            this.graph.configuration.sortFunction = this.group === 'status' ? this.sortNodesStatus : this.sortNodesRole;
+            this.graph.data(this.rackStatus);
+        }
     },
     beforeDestroy() {
         selectAll('svg').remove();

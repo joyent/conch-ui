@@ -33,10 +33,9 @@
                 <div class="tile is-parent">
                     <article class="tile is-child box">
                         <div class="box" style="background-color:rgba(28%, 61%, 91%, 0.4)">
-                            <Spinner v-if="rackRooms === 0" />
-                            <div class="rack-rooms-status" v-else>
+                            <div class="rack-rooms-status">
                                 <p class="subtitle">Rack Validation Status</p>
-                                <RackProgress :rack-rooms="rackRooms" :group="'status'" />
+                                <RackProgress :group="'status'" />
                             </div>
                         </div>
                     </article>
@@ -44,10 +43,9 @@
                 <div class="tile is-parent">
                     <article class="tile is-child box">
                         <div class="box" style="background-color:rgba(28%, 61%, 91%, 0.4)">
-                            <Spinner v-if="rackRooms === 0" />
-                            <div class="rack-rooms-role" v-else>
+                            <div class="rack-rooms-role">
                                 <p class="subtitle">Validation Status by Role</p>
-                                <RackProgress :rack-rooms="rackRooms" :group="'role'" />
+                                <RackProgress :group="'role'" />
                             </div>
                         </div>
                     </article>
@@ -78,8 +76,7 @@ export default {
     data() {
         return {
             devices: [],
-            rackCount: 0,
-            rackRooms: 0,
+            rackRooms: [],
         };
     },
     methods: {
@@ -87,25 +84,6 @@ export default {
             'setDevicesByWorkspace',
             'setRackRoomsByWorkspace',
         ]),
-        handleWorkspaceRacks() {
-            let currentWorkspaceId = this.currentWorkspaceId;
-            let workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
-
-            if (!isEmpty(workspaceRackRooms)) {
-                let rooms = Object.values(workspaceRackRooms)[0];
-                this.setRackRooms(rooms);
-            } else {
-                getAllRacks(currentWorkspaceId)
-                    .then(response => {
-                        let rackRooms = response.data;
-                        let workspaceRackRooms = {};
-
-                        workspaceRackRooms[currentWorkspaceId] = rackRooms;
-                        this.setRackRoomsByWorkspace(workspaceRackRooms);
-                        this.setRackRooms(rackRooms);
-                    });
-            }
-        },
         handleWorkspaceDevices() {
             let currentWorkspaceId = this.currentWorkspaceId;
             let workspaceDevicesFromState = this.getDevicesByWorkspace(currentWorkspaceId);
@@ -124,29 +102,30 @@ export default {
                     });
             }
         },
-        setRackRooms(rooms) {
-            // sort and assign the rack rooms
-            this.rackCount = 0;
-            this.rackRooms = Object.keys(rooms)
-                .sort()
-                .reduce((acc, room) => {
-                    acc[room] = rooms[room];
-                    this.rackCount += rooms[room].length;
-                    return acc;
-                }, {});
-        },
     },
     computed: {
         ...mapGetters([
-            'activeDeviceId',
             'currentWorkspaceId',
             'getDevicesByWorkspace',
             'getRackRoomsByWorkspace',
         ]),
         ...mapState([
-            'allDevices',
             'currentWorkspace',
         ]),
+        rackCount() {
+            let rackCount = 0;
+            let workspace = this.getRackRoomsByWorkspace(this.currentWorkspaceId);
+
+            if (!isEmpty(workspace)) {
+                let rooms = Object.values(workspace)[0];
+
+                Object.values(rooms).forEach(room => {
+                    rackCount += room.length
+                });
+            }
+
+            return rackCount;
+        },
         currentWorkspaceName() {
             return this.currentWorkspace.name;
         },
@@ -174,12 +153,10 @@ export default {
     },
     created() {
         this.handleWorkspaceDevices();
-        this.handleWorkspaceRacks();
     },
     mounted() {
         EventBus.$on('changeWorkspace:status', () => {
             this.handleWorkspaceDevices();
-            this.handleWorkspaceRacks();
         });
     },
 };
