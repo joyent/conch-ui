@@ -109,7 +109,6 @@ export default {
 
             if (workspaceDevicesFromState) {
                 let devices = Object.values(workspaceDevicesFromState)[0];
-                devices.sort((a, b) => a.id - b.id);
                 this.workspaceDevices = devices;
             } else {
                 getDevices(currentWorkspaceId)

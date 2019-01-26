@@ -1,6 +1,6 @@
 <template>
     <div class="validation-tab">
-        <Spinner v-if="activeDeviceValidations == undefined && validations == undefined" />
+        <Spinner v-if="!activeDeviceValidations.length && !validations.length" />
         <table class="table is-narrow is-marginless is-fullwidth" v-else>
             <thead>
                 <tr>
