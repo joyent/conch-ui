@@ -1,7 +1,6 @@
 <template>
     <div class="settings-tab">
-        <p class="has-text-centered" v-if="!hasActiveDeviceSettings">No settings available.</p>
-        <table class="table is-narrow is-fullwidth" v-else>
+        <table class="table is-narrow is-fullwidth">
             <thead>
                 <tr>
                     <th>Name</th>
