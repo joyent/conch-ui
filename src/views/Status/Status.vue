@@ -12,7 +12,7 @@
             <div class="tile is-ancestor has-text-centered">
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <Spinner v-if="rackCount === 0" />
+                        <Spinner v-if="!rackCount" />
                         <div class="rack-count" v-else>
                             <p class="title">{{ rackCount }}</p>
                             <p class="subtitle">Racks</p>
@@ -21,7 +21,7 @@
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <Spinner v-if="devices.length === 0" />
+                        <Spinner v-if="!devices" />
                         <div class="device-count" v-else>
                             <p class="title">{{ devices.length }}</p>
                             <p class="subtitle">Devices</p>
@@ -75,7 +75,7 @@ export default {
     },
     data() {
         return {
-            devices: [],
+            devices: null,
             rackRooms: [],
             workspaceId: '',
         };
@@ -136,15 +136,17 @@ export default {
             return this.currentWorkspace.name;
         },
         progress() {
-            const newProgress = {pass: 0, total: 0 };
+            const newProgress = { pass: 0, total: 0 };
 
-            this.devices.forEach(device => {
-                if (device.health === 'PASS') {
-                    newProgress.pass++;
-                }
+            if (this.devices) {
+                this.devices.forEach(device => {
+                    if (device.health === 'PASS') {
+                        newProgress.pass++;
+                    }
 
-                newProgress.total++;
-            });
+                    newProgress.total++;
+                });
+            }
 
             return newProgress;
         },
