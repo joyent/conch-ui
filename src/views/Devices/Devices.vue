@@ -5,7 +5,7 @@
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
                     <article class="tile is-child">
-                        <section class="section" v-if="!workspaceDevices.length || hardWareProductLookup == undefined">
+                        <section class="section" v-if="!workspaceDevices || !hardWareProductLookup">
                             <Spinner/>
                         </section>
                         <div class="columns" v-else>
@@ -51,8 +51,8 @@ export default {
     },
     data() {
         return {
-            workspaceDevices: [],
-            hardWareProductLookup: {},
+            workspaceDevices: null,
+            hardWareProductLookup: null,
         };
     },
     methods: {
