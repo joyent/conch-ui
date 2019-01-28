@@ -56,7 +56,7 @@ import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import { mapActions, mapGetters, mapState  } from 'vuex';
-import { getDeviceDetails, getDeviceSettings } from '../../api/device.js';
+import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '../../api/device.js';
 import { getRackById } from '../../api/workspaces';
 import { deviceToProgress } from '../shared/utils.js';
 
@@ -84,6 +84,7 @@ export default {
             'setActiveDevice',
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
+            'setActiveDeviceValidations',
             'setActiveRack',
             'setActiveRoom',
             'setRackLayout',
@@ -104,6 +105,7 @@ export default {
                             this.setRackLayout(response);
                         });
                 });
+            this.setDeviceValidations(device.id);
 
             this.$router.push({ name: 'device', params: { deviceId: this.activeDeviceId } });
         },
@@ -131,6 +133,12 @@ export default {
             getDeviceSettings(activeDeviceId)
                 .then(response => {
                     this.setActiveDeviceSettings(response.data);
+                });
+        },
+        setDeviceValidations(activeDeviceId) {
+            getDeviceValidations(activeDeviceId)
+                .then(response => {
+                    this.setActiveDeviceValidations(response.data);
                 });
         },
     },

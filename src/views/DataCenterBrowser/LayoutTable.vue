@@ -48,7 +48,7 @@
 import ProgressIcon from '../components/ProgressIcon.vue';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { EventBus } from '../../eventBus.js';
-import { getDeviceDetails, getDeviceSettings } from '../../api/device.js';
+import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '../../api/device.js';
 
 export default {
     props: {
@@ -64,6 +64,7 @@ export default {
             'setActiveDevice',
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
+            'setActiveDeviceValidations',
         ]),
         activateDevice(slot) {
             const device = slot.occupant;
@@ -71,7 +72,8 @@ export default {
             if (device) {
                 this.setActiveDevice(device);
                 this.setDeviceDetails(device.id);
-                this.setDeviceSettings(device.id)
+                this.setDeviceSettings(device.id);
+                this.setDeviceValidations(device.id);
             }
 
             EventBus.$emit('openModal:deviceModal');
@@ -86,6 +88,12 @@ export default {
             getDeviceSettings(activeDeviceId)
                 .then(response => {
                     this.setActiveDeviceSettings(response.data);
+                });
+        },
+        setDeviceValidations(activeDeviceId) {
+            getDeviceValidations(activeDeviceId)
+                .then(response => {
+                    this.setActiveDeviceValidations(response.data);
                 });
         },
     },
