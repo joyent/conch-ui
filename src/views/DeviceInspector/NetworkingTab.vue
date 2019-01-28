@@ -74,9 +74,7 @@ export default {
                 'IP Address',
                 'MAC',
             ],
-            ifaces: [],
             ifaceDetailsRows: [],
-            nics: null,
         };
     },
     methods: {
@@ -95,16 +93,17 @@ export default {
         ...mapState([
             'activeDeviceDetails',
         ]),
-    },
-    created() {
-        this.nics = this.activeDeviceDetails.latest_report && this.activeDeviceDetails.latest_report.interfaces || {};
-
-        this.ifaces = Object.entries(this.nics)
-            .sort()
-            .map(([id, iface]) => {
-                iface.id = id;
-                return iface;
-            });
+        nics() {
+            return this.activeDeviceDetails.latest_report && this.activeDeviceDetails.latest_report.interfaces || {};
+        },
+        ifaces() {
+            return Object.entries(this.nics)
+                .sort()
+                .map(([id, iface]) => {
+                    iface.id = id;
+                    return iface;
+                });
+        },
     },
 };
 </script>
