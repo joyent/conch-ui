@@ -77,6 +77,7 @@ export default {
         return {
             devices: [],
             rackRooms: [],
+            workspaceId: '',
         };
     },
     methods: {
@@ -85,19 +86,24 @@ export default {
             'setRackRoomsByWorkspace',
         ]),
         handleWorkspaceDevices() {
-            let currentWorkspaceId = this.currentWorkspaceId;
-            let workspaceDevicesFromState = this.getDevicesByWorkspace(currentWorkspaceId);
+            this.workspaceId = this.currentWorkspaceId;
+
+            if (!this.workspaceId) {
+                this.workspaceId = this.$route.params.currentWorkspace;
+            }
+
+            let workspaceDevicesFromState = this.getDevicesByWorkspace(this.workspaceId);
 
             if (workspaceDevicesFromState) {
                 this.devices = Object.values(workspaceDevicesFromState)[0];
             } else {
-                getDevices(currentWorkspaceId)
+                getDevices(this.workspaceId)
                     .then(response => {
                         let workspaceDevices = {};
                         let devices = response.data;
                         this.devices = devices;
 
-                        workspaceDevices[currentWorkspaceId] = devices;
+                        workspaceDevices[this.workspaceId] = devices;
                         this.setDevicesByWorkspace(workspaceDevices);
                     });
             }
@@ -114,7 +120,7 @@ export default {
         ]),
         rackCount() {
             let rackCount = 0;
-            let workspace = this.getRackRoomsByWorkspace(this.currentWorkspaceId);
+            let workspace = this.getRackRoomsByWorkspace(this.workspaceId);
 
             if (!isEmpty(workspace)) {
                 let rooms = Object.values(workspace)[0];
