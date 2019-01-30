@@ -51,16 +51,24 @@ export default {
     },
     data() {
         return {
-            workspaceDevices: null,
             hardWareProductLookup: null,
+            showDeviceInRack: false,
+            workspaceDevices: null,
         };
     },
     methods: {
         ...mapActions([
             'clearActiveDevice',
+            'clearActiveRoom',
+            'clearRackLayout',
             'setDevicesByWorkspace',
             'setHardwareProducts',
         ]),
+        clearActiveData() {
+            this.clearActiveDevice();
+            this.clearActiveRoom();
+            this.clearRackLayout();
+        },
         handleHardwareProductLookup() {
             if (!isEmpty(this.hardwareProducts)) {
                 this.hardWareProductLookup = this.hardwareProducts;
@@ -142,6 +150,15 @@ export default {
             this.handleHardwareProductLookup();
             this.handleWorkspaceDevices();
         });
+
+        EventBus.$on('showDeviceInRack', () => {
+            this.showDeviceInRack = true;
+        });
+    },
+    destroyed() {
+        if (!this.showDeviceInRack) {
+            this.clearActiveData();
+        }
     },
 };
 </script>

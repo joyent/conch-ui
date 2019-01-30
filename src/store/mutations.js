@@ -1,6 +1,6 @@
 export const mutations = {
     clearActiveDevice(state) {
-        state.activeDevice = '';
+        state.activeDevice = {};
     },
     clearActiveRoom(state) {
         state.activeRoom = {};

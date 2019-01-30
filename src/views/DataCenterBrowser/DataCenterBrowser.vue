@@ -93,6 +93,7 @@ export default {
     },
     methods: {
         ...mapActions([
+            'clearActiveDevice',
             'clearActiveRoom',
             'clearRackLayout',
             'setActiveRack',
@@ -103,6 +104,11 @@ export default {
             'setHighlightDeviceId',
             'setRackLayout',
         ]),
+        clearActiveData() {
+            this.clearActiveDevice();
+            this.clearActiveRoom();
+            this.clearRackLayout();
+        },
         handleWorkspaceDevices() {
             let currentWorkspaceId = this.currentWorkspaceId;
             let workspaceDevicesFromState = this.getDevicesByWorkspace(currentWorkspaceId);
@@ -239,18 +245,11 @@ export default {
         EventBus.$on('changeWorkspace:datacenter', () => {
             this.handleWorkspaceDevices();
             this.handleWorkspaceRacks();
-            this.clearRackLayout();
-            this.clearActiveRoom();
+            this.clearActiveData();
         });
     },
     destroyed() {
-        if (!isEmpty(this.activeRoom)) {
-            this.clearActiveRoom();
-        }
-
-        if (!isEmpty(this.rackLayout)) {
-            this.clearRackLayout();
-        }
+        this.clearActiveData();
     },
 };
 </script>
