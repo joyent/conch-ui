@@ -12,7 +12,7 @@ import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '../../eventBus.js';
 import { select, selectAll } from 'd3-selection';
 import { getAllRacks } from '../../api/workspaces';
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 const statusSortOrder = {};
 statusSortOrder["Validated"] = 1;

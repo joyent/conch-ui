@@ -25,7 +25,7 @@ import Spinner from '../components/Spinner.vue';
 import StorageTab from './StorageTab.vue';
 import ValidationTab from './ValidationTab.vue';
 import isEmpty from 'lodash/isEmpty';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '../../api/device.js';
 import { getValidations } from '../../api/validations.js';
 

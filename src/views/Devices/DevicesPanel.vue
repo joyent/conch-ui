@@ -55,7 +55,7 @@ import search from 'fuzzysearch';
 import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
-import { mapActions, mapGetters, mapState  } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '../../api/device.js';
 import { getRackById } from '../../api/workspaces';
 import { deviceToProgress } from '../shared/utils.js';
@@ -93,7 +93,7 @@ export default {
             this.setDeviceSettings(device.id);
             this.setDeviceDetails(device.id)
                 .then(response => {
-                    let { datacenter, rack } = this.activeDeviceDetails.location;
+                    let { datacenter, rack } = response.location;
                     let activeRoom = this.getRoomByName(datacenter.name);
 
                     this.setActiveRoom(activeRoom);
@@ -145,9 +145,6 @@ export default {
             'activeDeviceId',
             'currentWorkspaceId',
             'getRoomByName',
-        ]),
-        ...mapState([
-            'activeDeviceDetails',
         ]),
         availableDeviceProgress() {
             return Array.from(

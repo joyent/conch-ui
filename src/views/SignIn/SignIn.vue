@@ -47,7 +47,7 @@
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters } from 'vuex';
 import { login } from '../../api/authentication.js';
-import { getAllRacks, loadAllWorkspaces, getDevices } from '../../api/workspaces.js';
+import { getAllRacks, getDevices, loadAllWorkspaces } from '../../api/workspaces.js';
 import { getRackRooms, roomToProgress } from '../shared/utils.js';
 
 export default {
@@ -62,7 +62,6 @@ export default {
     },
     methods: {
         ...mapActions([
-            'setAllDevices',
             'setAllRooms',
             'setCurrentWorkspace',
             'setRackRoomsByWorkspace',

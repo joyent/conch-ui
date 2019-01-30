@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import isEmpty from 'lodash/isEmpty';
 import { mapState } from 'vuex';
 
 export default {
@@ -30,9 +29,6 @@ export default {
         ...mapState([
             'activeDeviceSettings',
         ]),
-        hasActiveDeviceSettings() {
-            return !isEmpty(this.activeDeviceSettings);
-        },
     },
 };
 </script>

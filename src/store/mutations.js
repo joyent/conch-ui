@@ -23,14 +23,14 @@ export const mutations = {
     setActiveRoom(state, activeRoom) {
         state.activeRoom = activeRoom;
     },
-    setDevicesByWorkspace(state, devices) {
-        state.devicesByWorkspace.push(devices);
-    },
     setAllRooms(state, allRooms) {
         state.allRooms = allRooms;
     },
     setCurrentWorkspace(state, workspace) {
         state.currentWorkspace = workspace;
+    },
+    setDevicesByWorkspace(state, devices) {
+        state.devicesByWorkspace.push(devices);
     },
     setHardwareProducts(state, hardwareProducts) {
         state.hardwareProducts = hardwareProducts;

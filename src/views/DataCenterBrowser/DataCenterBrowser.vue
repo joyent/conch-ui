@@ -93,9 +93,9 @@ export default {
             'setActiveRoom',
             'setAllRooms',
             'setDevicesByWorkspace',
-            'setRackRoomsByWorkspace',
             'setHighlightDeviceId',
             'setRackLayout',
+            'setRackRoomsByWorkspace',
         ]),
         clearActiveData() {
             this.clearActiveDevice();
@@ -189,14 +189,12 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'activeRackId',
             'currentWorkspaceId',
             'getDevicesByWorkspace',
             'getRackRoomsByWorkspace',
         ]),
         ...mapState([
             'activeRoom',
-            'rackLayout',
             'currentWorkspace',
         ]),
         activeRacks() {

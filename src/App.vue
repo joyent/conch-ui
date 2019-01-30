@@ -21,7 +21,7 @@
 import Layout from './views/Layout/Layout.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { isLoggedIn } from './api/authentication.js';
 import { loadAllWorkspaces, getRackById, getAllRacks } from './api/workspaces.js';
 import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from './api/device.js';
@@ -35,10 +35,10 @@ export default {
     },
     methods: {
         ...mapActions([
-            'setActiveRoom',
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
             'setActiveDeviceValidations',
+            'setActiveRoom',
             'setAllRooms',
             'setCurrentWorkspace',
             'setRackLayout',
@@ -131,8 +131,8 @@ export default {
             'loadCurrentWorkspace',
         ]),
         ...mapState([
-            'workspaces',
             'currentWorkspace',
+            'workspaces',
         ]),
         hasWorkspace() {
             return !isEmpty(this.currentWorkspace);

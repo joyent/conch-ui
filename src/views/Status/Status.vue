@@ -63,8 +63,8 @@ import RackProgress from './RackProgress.vue';
 import Spinner from '../components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '../../eventBus.js';
-import { getDevices, getAllRacks } from '../../api/workspaces.js';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { getAllRacks, getDevices } from '../../api/workspaces.js';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     components: {
@@ -111,11 +111,9 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspaceId',
+            'currentWorkspaceName',
             'getDevicesByWorkspace',
             'getRackRoomsByWorkspace',
-        ]),
-        ...mapState([
-            'currentWorkspace',
         ]),
         rackCount() {
             let rackCount = 0;
@@ -130,9 +128,6 @@ export default {
             }
 
             return rackCount;
-        },
-        currentWorkspaceName() {
-            return this.currentWorkspace.name;
         },
         progress() {
             const newProgress = { pass: 0, total: 0 };

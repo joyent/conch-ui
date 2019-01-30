@@ -55,7 +55,7 @@
 import { setAssetTag } from '../../api/device.js';
 import { setRackLayout } from '../../api/workspaces.js';
 import { EventBus } from '../../eventBus.js';
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
     props: {

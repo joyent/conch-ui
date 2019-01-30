@@ -48,7 +48,7 @@
 import moment from 'moment';
 import TimeToBurnin from './TimeToBurnin.vue';
 import { EventBus } from '../../eventBus.js';
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
     components: {
@@ -76,7 +76,6 @@ export default {
             'activeDeviceId',
         ]),
         ...mapState([
-            'activeDevice',
             'activeDeviceDetails',
             'activeDeviceSettings',
         ]),
