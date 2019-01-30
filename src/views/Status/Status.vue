@@ -126,7 +126,7 @@ export default {
                 let rooms = Object.values(workspace)[0];
 
                 Object.values(rooms).forEach(room => {
-                    rackCount += room.length
+                    rackCount += room.length;
                 });
             }
 

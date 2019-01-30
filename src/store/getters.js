@@ -10,14 +10,14 @@ export const getters = {
     getDevicesByWorkspace: state => workspaceId => {
         let workspaceDevices = state.devicesByWorkspace.find(workspace => {
             return Object.keys(workspace)[0] === workspaceId
-        })
+        });
 
         return workspaceDevices ? workspaceDevices : null;
     },
     getRackRoomsByWorkspace: state => workspaceId => {
         let workspaceRackRooms = state.rackRoomsByWorkspace.find(workspace => {
             return Object.keys(workspace)[0] === workspaceId
-        })
+        });
 
         return workspaceRackRooms ? workspaceRackRooms : null;
     },
