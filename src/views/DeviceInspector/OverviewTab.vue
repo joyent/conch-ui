@@ -119,12 +119,16 @@ export default {
                     style: 'is-success',
                     title: 'Validated'
                 });
-            } else if (this.activeDeviceDetails.graduated) {
+            }
+
+            if (this.activeDeviceDetails.graduated) {
                 tags.push({
                     style: 'is-success',
                     title: 'Graduated'
                 });
-            } else if (this.activeDeviceDetails.triton_setup) {
+            }
+
+            if (this.activeDeviceDetails.triton_setup) {
                 tags.push({
                     style: 'is-success',
                     title: 'Triton Setup'
