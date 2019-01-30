@@ -83,7 +83,6 @@ export default {
     methods: {
         ...mapActions([
             'setDevicesByWorkspace',
-            'setRackRoomsByWorkspace',
         ]),
         handleWorkspaceDevices() {
             this.workspaceId = this.currentWorkspaceId;
