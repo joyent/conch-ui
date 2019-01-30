@@ -3,20 +3,15 @@
         <section class="section" v-if="!hasActiveDevice">
             <Spinner/>
         </section>
-        <div class="tabs-container">
+        <div class="tabs-container" v-else>
             <div class="tabs is-centered is-boxed is-small">
                 <ul>
-                    <li v-for="(tab, index) in tabTitles" :key="index" :class="{ 'is-active': activeTab === tab }">
-                        <a @click="setActiveTab(tab)">{{ tab }}</a>
+                    <li v-for="(tab, index) in tabs" :key="index" :class="{ 'is-active': activeTab === tab.component }">
+                        <a @click="setActiveTab(tab.component)">{{ tab.title }}</a>
                     </li>
                 </ul>
             </div>
-            <OverviewTab v-if="activeTabOverview" />
-            <ValidationTab v-else-if="activeTabValidation" />
-            <SettingsTab v-else-if="activeTabSettings" />
-            <StorageTab v-else-if="activeTabStorage" />
-            <NetworkingTab v-else-if="activeTabNetworking" />
-            <ReportTab v-else-if="activeTabLatestReport" />
+            <component :is="activeTab"></component>
         </div>
     </div>
 </template>
@@ -46,14 +41,32 @@ export default {
     },
     data() {
         return {
-            activeTab: 'Overview',
-            tabTitles: [
-                'Overview',
-                'Validation',
-                'Settings',
-                'Storage',
-                'Networking',
-                'Latest Report',
+            activeTab: 'OverviewTab',
+            tabs: [
+                {
+                    component: 'OverviewTab',
+                    title: 'Overview',
+                },
+                {
+                    component: 'ValidationTab',
+                    title: 'Validation',
+                },
+                {
+                    component: 'SettingsTab',
+                    title: 'Settings',
+                },
+                {
+                    component: 'StorageTab',
+                    title: 'Storage',
+                },
+                {
+                    component: 'NetworkingTab',
+                    title: 'Networking',
+                },
+                {
+                    component: 'ReportTab',
+                    title: 'Latest Report',
+                },
             ],
         };
     },
@@ -75,24 +88,6 @@ export default {
         ...mapState([
             'activeDevice',
         ]),
-        activeTabOverview() {
-            return this.activeTab === 'Overview';
-        },
-        activeTabNetworking() {
-            return this.activeTab === 'Networking';
-        },
-        activeTabValidation() {
-            return this.activeTab === 'Validation';
-        },
-        activeTabSettings() {
-            return this.activeTab === 'Settings';
-        },
-        activeTabStorage() {
-            return this.activeTab === 'Storage';
-        },
-        activeTabLatestReport() {
-            return this.activeTab === 'Latest Report';
-        },
         hasActiveDevice() {
             return !isEmpty(this.activeDevice);
         },
