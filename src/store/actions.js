@@ -20,9 +20,6 @@ export const actions = {
     setActiveDeviceValidations({ commit }, activeDeviceValidations) {
         commit('setActiveDeviceValidations', activeDeviceValidations);
     },
-    setActiveRack({ commit }, activeRack) {
-        commit('setActiveRack', activeRack);
-    },
     setActiveRoom({ commit }, activeRoom) {
         commit('setActiveRoom', activeRoom);
     },

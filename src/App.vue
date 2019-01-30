@@ -35,7 +35,6 @@ export default {
     },
     methods: {
         ...mapActions([
-            'setActiveRack',
             'setActiveRoom',
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
@@ -90,7 +89,6 @@ export default {
                     const rackId = this.$route.params.rackId;
                     getRackById(this.currentWorkspaceId, rackId)
                         .then(response => {
-                            this.setActiveRack(response);
                             this.setRackLayout(response);
                             this.rackLoading = false;
                         });

@@ -1,7 +1,7 @@
 <template>
-    <div class="layout-panel">
+    <div class="layout-panel" v-if="hasRackLayout">
         <nav class="panel">
-            <div class="panel-heading has-text-centered">Rack {{ activeRack.name }}</div>
+            <div class="panel-heading has-text-centered">Rack {{ rackLayout.name }}</div>
             <div class="panel-block">
                 <p class="control has-icons-left">
                     <input type="text" class="input is-small" placeholder="Search Device" v-model="deviceSearchText">
@@ -26,7 +26,7 @@
             <Spinner v-if="rackLoading" />
             <LayoutTable v-else :device-slots="filteredSlots" />
         </nav>
-        <EditLayoutModal :active-rack="activeRack" :current-workspace="currentWorkspace" :device-slots="normalizedSlots" />
+        <EditLayoutModal :device-slots="normalizedSlots" />
     </div>
 </template>
 
@@ -35,15 +35,13 @@ import search from "fuzzysearch";
 import EditLayoutModal from './EditLayoutModal.vue';
 import LayoutTable from './LayoutTable.vue';
 import Spinner from '../components/Spinner.vue';
+import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '../../eventBus.js';
 import { deviceToProgress } from '../shared/utils.js';
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'vuex';
 
 export default {
     props: {
-        rackLayout: {
-            required: true,
-        },
         rackLoading: {
             required: true,
             default: false,
@@ -62,12 +60,8 @@ export default {
         };
     },
     computed: {
-        ...mapGetters([
-            'activeDeviceId',
-        ]),
         ...mapState([
-            'activeRack',
-            'currentWorkspace',
+            'rackLayout',
         ]),
         availableDeviceProgress() {
             return Array.from(
@@ -89,6 +83,9 @@ export default {
         },
         filteredSlots() {
             return this.normalizedSlots.filter(slot => this.deviceFilter(slot.occupant));
+        },
+        hasRackLayout() {
+            return !isEmpty(this.rackLayout);
         },
         normalizedSlots() {
             return Object.keys(this.rackLayout.slots || {})

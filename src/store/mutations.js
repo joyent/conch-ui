@@ -20,9 +20,6 @@ export const mutations = {
     setActiveDeviceValidations(state, activeDeviceValidations) {
         state.activeDeviceValidations = activeDeviceValidations;
     },
-    setActiveRack(state, activeRack) {
-        state.activeRack = activeRack;
-    },
     setActiveRoom(state, activeRoom) {
         state.activeRoom = activeRoom;
     },

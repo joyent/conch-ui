@@ -3,7 +3,7 @@
         <div class="modal-background" @click="closeModal"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title has-text-centered">Assign Rack {{ activeRack.name }}</p>
+                <p class="modal-card-title has-text-centered">Assign Rack {{ rackLayout.name }}</p>
                 <button class="delete" aria-label="close" @click="closeModal"></button>
             </header>
             <section class="modal-card-body">
@@ -55,16 +55,10 @@
 import { setAssetTag } from '../../api/device.js';
 import { setRackLayout } from '../../api/workspaces.js';
 import { EventBus } from '../../eventBus.js';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState, mapActions } from 'vuex';
 
 export default {
     props: {
-        activeRack: {
-            required: true,
-        },
-        currentWorkspace: {
-            required: true,
-        },
         deviceSlots: {
             required: true,
         },
@@ -80,8 +74,14 @@ export default {
         ...mapGetters([
             'currentWorkspaceId',
         ]),
+        ...mapState([
+            'rackLayout',
+        ]),
     },
     methods: {
+        ...mapActions([
+            'clearRackLayout',
+        ]),
         closeModal() {
             EventBus.$emit('closeModal:editLayoutModal');
         },
@@ -105,7 +105,7 @@ export default {
                     // TODO: use :class to trigger this change
                     event.target.classList.add("is-loading");
 
-                    setRackLayout(this.currentWorkspaceId, this.activeRack.id, layout)
+                    setRackLayout(this.currentWorkspaceId, this.rackLayout.id, layout)
                         .then(() => {
                             Promise.all(
                                 Object.values(assignments).map(assignment => {
@@ -117,7 +117,7 @@ export default {
                                 })
                             ).then(() => {
                                 this.closeModal();
-                                this.activeRack = {};
+                                this.clearRackLayout();
                             });
                         });
                 }

@@ -85,7 +85,6 @@ export default {
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
             'setActiveDeviceValidations',
-            'setActiveRack',
             'setActiveRoom',
             'setRackLayout',
         ]),
@@ -101,7 +100,6 @@ export default {
 
                     getRackById(this.currentWorkspaceId, rack.id)
                         .then(response => {
-                            this.setActiveRack(response);
                             this.setRackLayout(response);
                         });
                 });

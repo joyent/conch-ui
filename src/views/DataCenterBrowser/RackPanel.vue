@@ -48,6 +48,7 @@
 import search from "fuzzysearch";
 import ProgressIcon from '../components/ProgressIcon.vue';
 import { mapActions, mapGetters } from 'vuex';
+import { getRackById } from '../../api/workspaces';
 
 export default {
     props: {
@@ -71,6 +72,7 @@ export default {
         ...mapGetters([
             'activeRackId',
             'activeRoomName',
+            'currentWorkspaceId',
         ]),
         filteredActiveRacks() {
             return this.activeRacks.reduce((acc, rack) => {
@@ -87,10 +89,14 @@ export default {
     },
     methods: {
         ...mapActions([
-            'setActiveRack',
+            'setRackLayout',
         ]),
         activateRack(rack) {
-            this.setActiveRack(rack);
+            getRackById(this.currentWorkspaceId, rack.id)
+                .then(response => {
+                    this.setRackLayout(response);
+                });
+
             this.$router.push({ name: 'datacenterRack', params: { rackId: `${this.activeRackId}` } })
         },
         rackFilterMatch(rack) {

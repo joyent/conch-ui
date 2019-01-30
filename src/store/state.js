@@ -3,7 +3,6 @@ export const state = {
     activeDeviceDetails: {},
     activeDeviceSettings: {},
     activeDeviceValidations: [],
-    activeRack: {},
     activeRoom: {},
     devicesByWorkspace: [],
     allRooms: {},

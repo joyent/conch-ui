@@ -38,13 +38,7 @@
                                 <RackPanel v-if="activeRacks" :active-racks="activeRacks" />
                             </div>
                             <div class="column is-6">
-                                <LayoutPanel
-                                    v-if="hasRackLayout"
-                                    :current-workspace="currentWorkspace"
-                                    :active-rack="activeRack"
-                                    :rack-loading="rackLoading"
-                                    :rack-layout="rackLayout"
-                                />
+                                <LayoutPanel :rack-loading="rackLoading" />
                             </div>
                         </div>
                     </article>
@@ -96,7 +90,6 @@ export default {
             'clearActiveDevice',
             'clearActiveRoom',
             'clearRackLayout',
-            'setActiveRack',
             'setActiveRoom',
             'setAllRooms',
             'setDevicesByWorkspace',
@@ -188,7 +181,6 @@ export default {
 
                     getRackById(this.currentWorkspaceId, location.rack.id)
                         .then(response => {
-                            this.setActiveRack(response);
                             this.setRackLayout(response);
                             this.rackLoading = false;
                         });
@@ -203,14 +195,10 @@ export default {
             'getRackRoomsByWorkspace',
         ]),
         ...mapState([
-            'activeRack',
             'activeRoom',
             'rackLayout',
             'currentWorkspace',
         ]),
-        hasRackLayout() {
-            return !isEmpty(this.rackLayout);
-        },
         activeRacks() {
             if (!isEmpty(this.activeRoom)) {
                 return this.activeRoom.racks.sort((a, b) => {
@@ -222,15 +210,6 @@ export default {
         },
     },
     watch: {
-        activeRack() {
-            this.rackLoading = true;
-
-            getRackById(this.currentWorkspaceId, this.activeRackId)
-                .then(response => {
-                    this.setRackLayout(response);
-                    this.rackLoading = false;
-                });
-        },
         searchText(searchText) {
             if (searchText !== '') {
                 this.setFoundDevices(searchText);
