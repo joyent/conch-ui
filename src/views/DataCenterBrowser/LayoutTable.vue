@@ -46,9 +46,8 @@
 
 <script>
 import ProgressIcon from '../components/ProgressIcon.vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { EventBus } from '../../eventBus.js';
-import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '../../api/device.js';
 
 export default {
     props: {
@@ -62,45 +61,18 @@ export default {
     methods: {
         ...mapActions([
             'setActiveDevice',
-            'setActiveDeviceDetails',
-            'setActiveDeviceSettings',
-            'setActiveDeviceValidations',
         ]),
         activateDevice(slot) {
             const device = slot.occupant;
 
             if (device) {
                 this.setActiveDevice(device);
-                this.setDeviceDetails(device.id);
-                this.setDeviceSettings(device.id);
-                this.setDeviceValidations(device.id);
             }
 
             EventBus.$emit('openModal:deviceModal');
         },
-        setDeviceDetails(activeDeviceId) {
-            getDeviceDetails(activeDeviceId)
-                .then(response => {
-                    this.setActiveDeviceDetails(response.data);
-                });
-        },
-        setDeviceSettings(activeDeviceId) {
-            getDeviceSettings(activeDeviceId)
-                .then(response => {
-                    this.setActiveDeviceSettings(response.data);
-                });
-        },
-        setDeviceValidations(activeDeviceId) {
-            getDeviceValidations(activeDeviceId)
-                .then(response => {
-                    this.setActiveDeviceValidations(response.data);
-                });
-        },
     },
     computed: {
-        ...mapGetters([
-            'activeDeviceId',
-        ]),
         ...mapState([
             'highlightDeviceId',
         ]),

@@ -11,6 +11,7 @@ export const state = {
     highlightDeviceId: '',
     rackLayout: {},
     rackRoomsByWorkspace: [],
+    showDeviceInRack: false,
     workspaces: [],
     validations: [],
 };

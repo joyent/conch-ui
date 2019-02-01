@@ -56,8 +56,6 @@ import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import { mapActions, mapGetters } from 'vuex';
-import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '../../api/device.js';
-import { getRackById } from '../../api/workspaces';
 import { deviceToProgress } from '../shared/utils.js';
 
 export default {
@@ -82,29 +80,9 @@ export default {
     methods: {
         ...mapActions([
             'setActiveDevice',
-            'setActiveDeviceDetails',
-            'setActiveDeviceSettings',
-            'setActiveDeviceValidations',
-            'setActiveRoom',
-            'setRackLayout',
         ]),
         activateDevice(device) {
             this.setActiveDevice(device);
-            this.setDeviceSettings(device.id);
-            this.setDeviceDetails(device.id)
-                .then(response => {
-                    let { datacenter, rack } = response.location;
-                    let activeRoom = this.getRoomByName(datacenter.name);
-
-                    this.setActiveRoom(activeRoom);
-
-                    getRackById(this.currentWorkspaceId, rack.id)
-                        .then(response => {
-                            this.setRackLayout(response);
-                        });
-                });
-            this.setDeviceValidations(device.id);
-
             this.$router.push({ name: 'device', params: { deviceId: this.activeDeviceId } });
         },
         deviceFilter(device) {
@@ -118,33 +96,10 @@ export default {
             return progressFilter && productFilter && searchFilter;
         },
         deviceToProgress,
-        setDeviceDetails(activeDeviceId) {
-            return getDeviceDetails(activeDeviceId)
-                .then(response => {
-                    let deviceDetails = response.data;
-                    this.setActiveDeviceDetails(deviceDetails);
-
-                    return response.data;
-                });
-        },
-        setDeviceSettings(activeDeviceId) {
-            getDeviceSettings(activeDeviceId)
-                .then(response => {
-                    this.setActiveDeviceSettings(response.data);
-                });
-        },
-        setDeviceValidations(activeDeviceId) {
-            getDeviceValidations(activeDeviceId)
-                .then(response => {
-                    this.setActiveDeviceValidations(response.data);
-                });
-        },
     },
     computed: {
         ...mapGetters([
             'activeDeviceId',
-            'currentWorkspaceId',
-            'getRoomByName',
         ]),
         availableDeviceProgress() {
             return Array.from(

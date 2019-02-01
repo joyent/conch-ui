@@ -28,6 +28,7 @@ import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '../../api/device.js';
 import { getValidations } from '../../api/validations.js';
+import { getRackById } from '../../api/workspaces';
 
 export default {
     components: {
@@ -72,11 +73,53 @@ export default {
     },
     methods: {
         ...mapActions([
+            'clearShowDeviceInRack',
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
             'setActiveDeviceValidations',
+            'setActiveRoom',
+            'setRackLayout',
             'setValidations',
         ]),
+        setActiveDeviceData() {
+            getDeviceSettings(this.activeDeviceId)
+                .then(response => {
+                    this.setActiveDeviceSettings(response.data);
+                });
+
+            getDeviceDetails(this.activeDeviceId)
+                .then(response => {
+                    const deviceDetails = response.data;
+                    this.setActiveDeviceDetails(deviceDetails);
+
+                    if (deviceDetails.location) {
+                        const location = deviceDetails.location;
+
+                        if (location.datacenter && location.datacenter.name) {
+                            const activeRoom = this.getRoomByName(location.datacenter.name);
+                            this.setActiveRoom(activeRoom);
+                        }
+
+                        if (location.rack && location.rack.id) {
+                            getRackById(this.currentWorkspaceId, location.rack.id)
+                                .then(response => {
+                                    this.setRackLayout(response);
+                                });
+                        }
+                    }
+                });
+
+            getDeviceValidations(this.activeDeviceId)
+                .then(response => {
+                    this.setActiveDeviceValidations(response.data);
+                });
+
+            if (isEmpty(this.validations)) {
+                getValidations().then(response => {
+                    this.setValidations(response.data);
+                });
+            }
+        },
         setActiveTab(tab) {
             this.activeTab = tab;
         },
@@ -84,31 +127,29 @@ export default {
     computed: {
         ...mapGetters([
             'activeDeviceId',
+            'currentWorkspaceId',
+            'getRoomByName',
         ]),
         ...mapState([
             'activeDevice',
+            'activeRoom',
+            'rackLayout',
+            'showDeviceInRack',
+            'validations',
         ]),
         hasActiveDevice() {
             return !isEmpty(this.activeDevice);
         },
     },
-    created() {
-        getDeviceSettings(this.activeDeviceId)
-            .then(response => {
-                this.setActiveDeviceSettings(response.data);
-            });
-        getDeviceDetails(this.activeDeviceId)
-            .then(response => {
-                this.setActiveDeviceDetails(response.data);
-            });
-        getDeviceValidations(this.activeDeviceId)
-            .then(response => {
-                this.setActiveDeviceValidations(response.data);
-            });
-        getValidations()
-            .then(response => {
-                this.setValidations(response.data);
-            });
+    mounted() {
+        if (!this.showDeviceInRack && this.activeDeviceId) {
+            this.setActiveDeviceData();
+        } else if (this.showDeviceInRack) {
+            this.clearShowDeviceInRack();
+        }
+    },
+    updated() {
+        this.setActiveDeviceData();
     },
 };
 </script>

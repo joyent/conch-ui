@@ -8,6 +8,9 @@ export const mutations = {
     clearRackLayout(state) {
         state.rackLayout = {};
     },
+    clearShowDeviceInRack(state) {
+        state.showDeviceInRack = false;
+    },
     setActiveDevice(state, activeDevice) {
         state.activeDevice = activeDevice;
     },
@@ -43,6 +46,9 @@ export const mutations = {
     },
     setRackRoomsByWorkspace(state, rackRooms) {
         state.rackRoomsByWorkspace.push(rackRooms);
+    },
+    setShowDeviceInRack(state, showDeviceInRack) {
+        state.showDeviceInRack = showDeviceInRack;
     },
     setWorkspaces(state, workspaces) {
         state.workspaces = workspaces;

@@ -8,6 +8,9 @@ export const actions = {
     clearRackLayout({ commit }) {
         commit('clearRackLayout');
     },
+    clearShowDeviceInRack({ commit }) {
+        commit('clearShowDeviceInRack');
+    },
     setActiveDevice({ commit }, activeDevice) {
         commit('setActiveDevice', activeDevice);
     },
@@ -43,6 +46,9 @@ export const actions = {
     },
     setRackRoomsByWorkspace({ commit }, rackRooms) {
         commit('setRackRoomsByWorkspace', rackRooms);
+    },
+    setShowDeviceInRack({ commit }, showDeviceInRack) {
+        commit('setShowDeviceInRack', showDeviceInRack);
     },
     setWorkspaces({ commit }, workspaces) {
         commit('setWorkspaces', workspaces);

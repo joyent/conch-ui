@@ -57,6 +57,7 @@ export default {
     methods: {
         ...mapActions([
             'setHighlightDeviceId',
+            'setShowDeviceInRack',
         ]),
         showDeviceInRack() {
             let { datacenter, rack } = this.activeDeviceDetails.location;
@@ -67,6 +68,8 @@ export default {
 
             EventBus.$emit('closeModal:deviceModal');
             EventBus.$emit('showDeviceInRack');
+
+            this.setShowDeviceInRack(true);
 
             this.$router.push({ path: `${workspaceRoute}/datacenter/${datacenter.name}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}` });
         },
