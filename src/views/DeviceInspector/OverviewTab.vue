@@ -68,7 +68,7 @@ export default {
             EventBus.$emit('closeModal:deviceModal');
             EventBus.$emit('showDeviceInRack');
 
-            this.$router.push({path: `${workspaceRoute}/datacenter/${datacenter.name}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}` });
+            this.$router.push({ path: `${workspaceRoute}/datacenter/${datacenter.name}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}` });
         },
     },
     computed: {

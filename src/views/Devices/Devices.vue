@@ -80,36 +80,18 @@ export default {
                 });
             }
         },
-        handleActiveDevice(devices) {
-            let foundActiveDevice = false;
-            let activeDeviceId = this.activeDeviceId;
-
-            devices.sort((a, b) => {
-                if (activeDeviceId != null && (activeDeviceId === a.id || activeDeviceId === b.id)) {
-                    foundActiveDevice = true;
-                }
-
-                return a.id - b.id;
-            });
-
-            if (!foundActiveDevice) {
-                this.clearActiveDevice();
-            }
-        },
         handleWorkspaceDevices() {
             let currentWorkspaceId = this.currentWorkspaceId;
             let workspaceDevicesFromState = this.getDevicesByWorkspace(currentWorkspaceId);
 
             if (workspaceDevicesFromState) {
                 this.workspaceDevices = Object.values(workspaceDevicesFromState)[0];
-                this.handleActiveDevice(this.workspaceDevices)
             } else {
                 getDevices(currentWorkspaceId)
                     .then(response => {
                         let devices = response.data;
                         let workspace = {};
                         this.workspaceDevices = devices;
-                        this.handleActiveDevice(this.workspaceDevices);
 
                         workspace[currentWorkspaceId] = devices;
                         this.setDevicesByWorkspace(workspace);

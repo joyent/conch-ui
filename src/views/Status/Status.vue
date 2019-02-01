@@ -52,12 +52,10 @@
                 </div>
             </div>
         </section>
-        <DeviceModal/>
     </div>
 </template>
 
 <script>
-import DeviceModal from '../components/DeviceModal.vue';
 import PageHeader from '../components/PageHeader.vue';
 import RackProgress from './RackProgress.vue';
 import Spinner from '../components/Spinner.vue';
@@ -68,7 +66,6 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
     components: {
-        DeviceModal,
         PageHeader,
         RackProgress,
         Spinner,

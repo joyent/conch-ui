@@ -19,7 +19,12 @@
                 {{ progress }}
             </a>
         </p>
-        <a v-for="(room, index) in filteredRackRooms" :key="index" class="panel-block" :class="{ 'is-active': activeRoomName === room.name }" @click="activateRoom(room)">
+        <a
+            v-for="(room, index) in filteredRackRooms"
+            :key="index"
+            class="panel-block"
+            :class="{ 'is-active': activeRoomName === room.name }"
+            @click="activateRoom(room)">
             <div class="panel-icon">
                 <ProgressIcon :progress="room.progress" />
             </div>
@@ -30,8 +35,9 @@
 
 <script>
 import search from "fuzzysearch";
+import isEmpty from 'lodash/isEmpty';
 import ProgressIcon from '../components/ProgressIcon.vue';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
     props: {
@@ -51,6 +57,9 @@ export default {
     computed: {
         ...mapGetters([
             'activeRoomName',
+        ]),
+        ...mapState([
+            'rackLayout',
         ]),
         availableRoomProgress() {
             return Array.from(
@@ -75,10 +84,16 @@ export default {
     },
     methods: {
         ...mapActions([
+            'clearRackLayout',
             'setActiveRoom',
         ]),
         activateRoom(room) {
             this.setActiveRoom(room);
+
+            if (!isEmpty(this.rackLayout)) {
+                this.clearRackLayout();
+            }
+
             this.$router.push({ name: 'datacenterRoom', params: { roomName: `${this.activeRoomName}` } });
         },
         roomFilterTextLowerCase() {

@@ -91,7 +91,6 @@ export default {
             'clearActiveRoom',
             'clearRackLayout',
             'setActiveRoom',
-            'setAllRooms',
             'setDevicesByWorkspace',
             'setHighlightDeviceId',
             'setRackLayout',
@@ -130,7 +129,6 @@ export default {
             if (!isEmpty(workspaceRackRooms)) {
                 let rooms = Object.values(workspaceRackRooms)[0];
                 this.rackRooms = getRackRooms(rooms);
-                this.setAllRooms(this.rackRooms);
             } else {
                 getAllRacks(currentWorkspaceId)
                     .then(response => {
@@ -140,7 +138,6 @@ export default {
                         workspaceRackRooms[currentWorkspaceId] = rooms;
                         this.setRackRoomsByWorkspace(workspaceRackRooms);
                         this.rackRooms = getRackRooms(rooms);
-                        this.setAllRooms(this.rackRooms);
                     });
             }
         },
