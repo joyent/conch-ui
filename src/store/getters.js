@@ -25,7 +25,9 @@ export const getters = {
     loadCurrentWorkspace: (state, getters) => id => {
         let currentWorkspace = null;
 
-        currentWorkspace = getters.findWorkspaceById(id);
+        if (id) {
+            currentWorkspace = getters.findWorkspaceById(id);
+        }
 
         if (!currentWorkspace) {
             currentWorkspace = getters.findWorkspaceById(localStorage.getItem('currentWorkspace'));
