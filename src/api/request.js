@@ -1,15 +1,15 @@
 import axios from 'axios';
 
 export const clearToken = () => {
-    return localStorage.removeItem('token');
+    return sessionStorage.removeItem('token');
 };
 
 export const getToken = () => {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
 };
 
 export const setToken = (token) => {
-    localStorage.setItem('token', token);
+    sessionStorage.setItem('token', token);
 };
 
 export const request = (args) => {
