@@ -45,7 +45,7 @@
 
 <script>
 import isEmpty from 'lodash/isEmpty';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { login } from '../../api/authentication.js';
 import { getAllRacks, getDevices, loadAllWorkspaces } from '../../api/workspaces.js';
 import { getRackRooms, roomToProgress } from '../shared/utils.js';
@@ -70,32 +70,33 @@ export default {
         initWorkspaceData() {
             return loadAllWorkspaces()
                 .then(response => {
-                    this.setWorkspaces(response.data);
-                    this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
-                    this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
+                    let workspaces = response.data;
 
+                    this.setWorkspaces(workspaces);
+                    this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
+
+                    this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
                     localStorage.setItem('currentWorkspace', this.currentWorkspaceId);
 
-                    let currentWorkspaceId = this.currentWorkspaceId;
-                    let workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
-
-                    if (!isEmpty(workspaceRackRooms)) {
-                        let rooms = Object.values(workspaceRackRooms)[0];
-                        this.setAllRooms(getRackRooms(rooms));
-                    } else {
-                        getAllRacks(currentWorkspaceId)
-                            .then(response => {
-                                let rooms = response.data;
-                                let workspaceRackRooms = {};
-
-                                workspaceRackRooms[currentWorkspaceId] = rooms;
-                                this.setRackRoomsByWorkspace(workspaceRackRooms);
-                                this.setAllRooms(getRackRooms(rooms));
-                            });
-                    }
+                    this.setAllRackRoomsByWorkspace(workspaces);
 
                     return Promise.resolve();
                 });
+        },
+        setAllRackRoomsByWorkspace(workspaces) {
+            for (let i = 0; i < workspaces.length; i++) {
+                const workspaceId = workspaces[i].id;
+
+                getAllRacks(workspaceId)
+                    .then(response => {
+                        const racks = response.data;
+                        let workspaceRackRooms = {};
+
+                        workspaceRackRooms[workspaceId] = racks;
+                        this.setRackRoomsByWorkspace(workspaceRackRooms);
+                        this.setAllRooms(getRackRooms(racks));
+                    });
+            }
         },
         signIn() {
             this.isLoading = true;
@@ -107,10 +108,15 @@ export default {
 
             login(data)
                 .then(response => {
-                    this.initWorkspaceData()
-                        .then(() => {
-                            this.$router.push({ name: 'status', params: { currentWorkspace: this.currentWorkspaceId } });
-                        });
+                    if (isEmpty(this.workspaces)) {
+                        this.initWorkspaceData()
+                            .then(() => {
+                                this.$router.push({ name: 'status', params: { currentWorkspace: this.currentWorkspaceId } });
+                            });
+                    } else {
+                        this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
+                        this.$router.push({ name: 'status', params: { currentWorkspace: this.$store.getters.currentWorkspaceId } });
+                    }
                 })
                 .catch((error) => {
                     this.isLoading = false;
@@ -121,6 +127,10 @@ export default {
     computed: {
         ...mapGetters([
             'getRackRoomsByWorkspace',
+        ]),
+        ...mapState([
+            'rackRoomsByWorkspace',
+            'workspaces',
         ]),
     },
 };

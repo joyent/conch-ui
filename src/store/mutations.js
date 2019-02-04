@@ -44,6 +44,9 @@ export const mutations = {
     setRackLayout(state, rackLayout) {
         state.rackLayout = rackLayout;
     },
+    setRackRooms(state, rackRooms) {
+        state.rackRooms = rackRooms;
+    },
     setRackRoomsByWorkspace(state, rackRooms) {
         state.rackRoomsByWorkspace.push(rackRooms);
     },

@@ -10,6 +10,7 @@ export const state = {
     hardwareProducts: [],
     highlightDeviceId: '',
     rackLayout: {},
+    rackRooms: {},
     rackRoomsByWorkspace: [],
     showDeviceInRack: false,
     workspaces: [],

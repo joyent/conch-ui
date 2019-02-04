@@ -63,7 +63,7 @@ import Spinner from '../components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '../../eventBus.js';
 import { getAllRacks, getDevices } from '../../api/workspaces.js';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
     components: {
@@ -74,13 +74,14 @@ export default {
     data() {
         return {
             devices: null,
-            rackRooms: [],
+            rackCount: 0,
             workspaceId: '',
         };
     },
     methods: {
         ...mapActions([
             'setDevicesByWorkspace',
+            'setRackRooms',
         ]),
         handleWorkspaceDevices() {
             this.workspaceId = this.currentWorkspaceId;
@@ -105,6 +106,32 @@ export default {
                     });
             }
         },
+        handleWorkspaceRacks() {
+            const currentWorkspaceId = this.currentWorkspaceId;
+            const workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
+
+            if (!isEmpty(workspaceRackRooms)) {
+                this.getRackRooms(Object.values(workspaceRackRooms)[0]);
+            } else {
+                getAllRacks(this.currentWorkspaceId)
+                    .then(response => {
+                        this.getRackRooms(response.data)
+                    });
+            }
+        },
+        getRackRooms(rackRooms) {
+            let rackCount = 0;
+            const rooms = Object.keys(rackRooms)
+                .sort()
+                .reduce((acc, room) => {
+                    acc[room] = rackRooms[room];
+                    rackCount += rackRooms[room].length;
+                    return acc;
+                }, {});
+
+            this.rackCount = rackCount;
+            this.setRackRooms(rooms);
+        },
     },
     computed: {
         ...mapGetters([
@@ -113,19 +140,11 @@ export default {
             'getDevicesByWorkspace',
             'getRackRoomsByWorkspace',
         ]),
-        rackCount() {
-            let rackCount = 0;
-            let workspace = this.getRackRoomsByWorkspace(this.workspaceId);
-
-            if (!isEmpty(workspace)) {
-                let rooms = Object.values(workspace)[0];
-
-                Object.values(rooms).forEach(room => {
-                    rackCount += room.length;
-                });
-            }
-
-            return rackCount;
+        ...mapState([
+            'rackRooms',
+        ]),
+        hasRackRooms() {
+            return !isEmpty(this.rackRooms);
         },
         progress() {
             const newProgress = { pass: 0, total: 0 };
@@ -153,10 +172,12 @@ export default {
     },
     created() {
         this.handleWorkspaceDevices();
+        this.handleWorkspaceRacks();
     },
     mounted() {
         EventBus.$on('changeWorkspace:status', () => {
             this.handleWorkspaceDevices();
+            this.handleWorkspaceRacks();
         });
     },
 };

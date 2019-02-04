@@ -44,6 +44,9 @@ export const actions = {
     setRackLayout({ commit }, rackLayout) {
         commit('setRackLayout', rackLayout);
     },
+    setRackRooms({ commit }, rackRooms) {
+        commit('setRackRooms', rackRooms);
+    },
     setRackRoomsByWorkspace({ commit }, rackRooms) {
         commit('setRackRoomsByWorkspace', rackRooms);
     },
