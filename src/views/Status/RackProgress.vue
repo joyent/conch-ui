@@ -1,13 +1,11 @@
 <template>
     <div class="rack-progress">
-        <Spinner v-if="!graph" />
-        <div class="rack-progress-graph" v-else></div>
+        <div class="rack-progress-graph"></div>
     </div>
 </template>
 
 <script>
 import RelationshipGraph from 'd3-relationshipgraph';
-import Spinner from '../components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '../../eventBus.js';
 import { select, selectAll } from 'd3-selection';
@@ -31,9 +29,6 @@ export default {
         group: {
             required: false,
         },
-    },
-    components: {
-        Spinner,
     },
     data() {
         return {

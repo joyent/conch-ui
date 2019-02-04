@@ -12,8 +12,7 @@
             <div class="tile is-ancestor has-text-centered">
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <Spinner v-if="!rackCount" />
-                        <div class="rack-count" v-else>
+                        <div class="rack-count">
                             <p class="title">{{ rackCount }}</p>
                             <p class="subtitle">Racks</p>
                         </div>
@@ -35,7 +34,8 @@
                         <div class="box" style="background-color:rgba(28%, 61%, 91%, 0.4)">
                             <div class="rack-rooms-status">
                                 <p class="subtitle">Rack Validation Status</p>
-                                <RackProgress :group="'status'" />
+                                <Spinner v-if="!hasRackRooms" />
+                                <RackProgress :group="'status'" v-else />
                             </div>
                         </div>
                     </article>
@@ -45,7 +45,8 @@
                         <div class="box" style="background-color:rgba(28%, 61%, 91%, 0.4)">
                             <div class="rack-rooms-role">
                                 <p class="subtitle">Validation Status by Role</p>
-                                <RackProgress :group="'role'" />
+                                <Spinner v-if="!hasRackRooms" />
+                                <RackProgress :group="'role'" v-else />
                             </div>
                         </div>
                     </article>
