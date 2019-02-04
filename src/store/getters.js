@@ -30,7 +30,7 @@ export const getters = {
         }
 
         if (!currentWorkspace) {
-            currentWorkspace = getters.findWorkspaceById(localStorage.getItem('currentWorkspace'));
+            currentWorkspace = getters.findWorkspaceById(sessionStorage.getItem('currentWorkspace'));
         }
 
         if (!currentWorkspace) {

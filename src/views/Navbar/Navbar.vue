@@ -65,7 +65,7 @@ export default {
             this.menuActive = false;
 
             this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace(workspaceId));
-            localStorage.setItem('currentWorkspace', workspaceId);
+            sessionStorage.setItem('currentWorkspace', workspaceId);
 
             let name = this.$route.name;
             let params = {

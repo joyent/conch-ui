@@ -76,7 +76,7 @@ export default {
                     this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
 
                     this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
-                    localStorage.setItem('currentWorkspace', this.currentWorkspaceId);
+                    sessionStorage.setItem('currentWorkspace', this.currentWorkspaceId);
 
                     this.setAllRackRoomsByWorkspace(workspaces);
 
