@@ -13,7 +13,8 @@
                 <div class="tile is-parent">
                     <article class="tile is-child box">
                         <div class="rack-count">
-                            <p class="title">{{ rackCount }}</p>
+                            <Spinner v-if="!rackCount" />
+                            <p class="title" v-else>{{ rackCount }}</p>
                             <p class="subtitle">Racks</p>
                         </div>
                     </article>
@@ -21,10 +22,8 @@
                 <div class="tile is-parent">
                     <article class="tile is-child box">
                         <Spinner v-if="!devices" />
-                        <div class="device-count" v-else>
-                            <p class="title">{{ devices.length }}</p>
-                            <p class="subtitle">Devices</p>
-                        </div>
+                        <p class="title" v-else>{{ devices.length }}</p>
+                        <p class="subtitle">Devices</p>
                     </article>
                 </div>
             </div>
@@ -74,7 +73,7 @@ export default {
     data() {
         return {
             devices: null,
-            rackCount: 0,
+            rackCount: null,
             workspaceId: '',
         };
     },
