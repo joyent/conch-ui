@@ -84,32 +84,6 @@ export default {
         selectParentStatus(rack) {
             return this.nodeParent(rack.device_progress);
         },
-        setGraph() {
-            this.graph = new RelationshipGraph(select(this.$el), {
-                showTooltips: true,
-                maxChildCount: 10,
-                showKeys: true,
-                sortFunction: this.group === 'status' ? this.sortNodesStatus : this.sortNodesRole,
-                thresholds: [-1, 0, 25, 50, 75, 99, 100],
-                colors: [
-                    "hsl(0, 80%, 60%)",
-                    "hsl(225, 20%, 85%)",
-                    "hsl(225, 50%, 80%)",
-                    "hsl(225, 80%, 70%)",
-                    "hsl(190, 60%, 60%)",
-                    "hsl(160, 60%, 60%)",
-                    "hsl(130, 60%, 60%)"
-                ],
-                onClick: {
-                    child: ({ _private_ }) => {
-                        let path = window.location.href.split("/");
-                        path.pop();
-                        path = path.join("/");
-                        window.open(`${path}/datacenter/${_private_.room_name}/rack/${_private_.rack_id}/device`, "_blank");
-                    }
-                }
-            }).data(this.rackStatus);
-        },
         sortNodesRole(nodes) {
             let sortOrder = {
                 'TRITON': 1,
@@ -176,17 +150,42 @@ export default {
         },
     },
     mounted() {
-        this.setGraph();
+        this.graph = new RelationshipGraph(select(this.$el), {
+            showTooltips: true,
+            maxChildCount: 10,
+            showKeys: true,
+            sortFunction: this.group === 'status' ? this.sortNodesStatus : this.sortNodesRole,
+            thresholds: [-1, 0, 25, 50, 75, 99, 100],
+            colors: [
+                "hsl(0, 80%, 60%)",
+                "hsl(225, 20%, 85%)",
+                "hsl(225, 50%, 80%)",
+                "hsl(225, 80%, 70%)",
+                "hsl(190, 60%, 60%)",
+                "hsl(160, 60%, 60%)",
+                "hsl(130, 60%, 60%)"
+            ],
+            onClick: {
+                child: ({ _private_ }) => {
+                    let path = window.location.href.split("/");
+                    path.pop();
+                    path = path.join("/");
+                    window.open(`${path}/datacenter/${_private_.room_name}/rack/${_private_.rack_id}/device`, "_blank");
+                }
+            }
+        }).data(this.rackStatus);
+
+        // This forceUpdate fixes an issue with d3-relationshipgraph not displaying
+        // tooltips for both RackProgress graphs. If this forceUpdate is not called,
+        // tooltips will only display for the second graph (Validation Status by Role)
+        this.$forceUpdate();
 
         EventBus.$on('changeWorkspace:status', () => {
-            this.setGraph();
+            this.graph.data(this.rackStatus);
         });
     },
     updated() {
-        if (this.graph) {
-            this.graph.configuration.sortFunction = this.group === 'status' ? this.sortNodesStatus : this.sortNodesRole;
-            this.graph.data(this.rackStatus);
-        }
+        this.graph.data(this.rackStatus);
     },
     destroyed() {
         selectAll('svg').remove();
