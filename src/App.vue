@@ -23,10 +23,10 @@ import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { isLoggedIn } from './api/authentication.js';
-import { loadAllWorkspaces, getRackById, getAllRacks } from './api/workspaces.js';
+import { loadAllWorkspaces, getRackById } from './api/workspaces.js';
 import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from './api/device.js';
 import { getValidations } from './api/validations.js';
-import { getRackRooms, roomToProgress } from './views/shared/utils.js';
+import { getRackRooms, roomToProgress, getWorkspaceRacks } from './views/shared/utils.js';
 
 export default {
     components: {
@@ -35,6 +35,7 @@ export default {
     },
     methods: {
         ...mapActions([
+            'setActiveDevice',
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
             'setActiveDeviceValidations',
@@ -42,79 +43,67 @@ export default {
             'setAllRooms',
             'setCurrentWorkspace',
             'setRackLayout',
-            'setRackRoomsByWorkspace',
             'setValidations',
             'setWorkspaces',
         ]),
-        setRooms() {
-            let rooms;
-            let currentWorkspaceId = this.currentWorkspaceId;
-            let workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
+        setRoomsAndStore() {
+            const currentWorkspaceId = this.currentWorkspaceId;
 
-            if (!isEmpty(workspaceRackRooms)) {
-                rooms = Object.values(workspaceRackRooms)[0];
-                this.setAllRooms(getRackRooms(rooms));
+            getWorkspaceRacks(currentWorkspaceId)
+                .then(response => {
+                    const rooms = response;
 
-                if (this.$route.params) {
-                    this.setStoreFromParams(rooms);
-                }
-            } else {
-                getAllRacks(currentWorkspaceId)
-                    .then(response => {
-                        rooms = response.data;
-                        let workspaceRackRooms = {};
+                    this.setAllRooms(getRackRooms(rooms));
 
-                        workspaceRackRooms[currentWorkspaceId] = rooms;
-                        this.setRackRoomsByWorkspace(workspaceRackRooms);
-                        this.setAllRooms(getRackRooms(rooms));
+                    // Sets store based on params in current route URL
+                    if (this.$route.params) {
+                        const routeParams = this.$route.params;
 
-                        if (this.$route.params) {
-                            this.setStoreFromParams(rooms);
+                        if (routeParams.deviceId) {
+                            const activeDeviceId = routeParams.deviceId;
+
+                            getDeviceSettings(activeDeviceId)
+                                .then(response => {
+                                    this.setActiveDeviceSettings(response.data);
+                                });
+                            getDeviceDetails(activeDeviceId)
+                                .then(response => {
+                                    const activeDeviceDetails = response.data;
+                                    this.setActiveDevice(activeDeviceDetails)
+                                    this.setActiveDeviceDetails(activeDeviceDetails);
+                                });
+                            getDeviceValidations(activeDeviceId)
+                                .then(response => {
+                                    this.setActiveDeviceValidations(response.data);
+                                });
+                            getValidations()
+                                .then(response => {
+                                    this.setValidations(response.data);
+                                });
                         }
-                    });
-            }
-        },
-        setStoreFromParams(rooms) {
-            if (this.$route.params.roomName) {
-                const roomName = this.$route.params.roomName;
-                let name = Object.keys(rooms).find(room => {
-                    return room === roomName;
-                });
-                let racks = rooms[name];
-                let progress = roomToProgress(racks);
 
-                this.setActiveRoom({ name, racks, progress });
+                        if (routeParams.roomName) {
+                            const roomName = routeParams.roomName;
+                            const name = Object.keys(rooms).find(room => {
+                                return room === roomName;
+                            });
+                            const racks = rooms[name];
+                            const progress = roomToProgress(racks);
 
-                if (this.$route.params.rackId) {
-                    const rackId = this.$route.params.rackId;
-                    getRackById(this.currentWorkspaceId, rackId)
-                        .then(response => {
-                            this.setRackLayout(response);
-                            this.rackLoading = false;
-                        });
+                            this.setActiveRoom({ name, racks, progress });
+                        }
 
-                    if (this.$route.params.deviceId) {
-                        getDeviceSettings(this.activeDeviceId)
-                            .then(response => {
-                                this.setActiveDeviceSettings(response.data);
-                            });
-                        getDeviceDetails(this.activeDeviceId)
-                            .then(response => {
-                                this.setActiveDeviceDetails(response.data);
-                            });
-                        getDeviceValidations(this.activeDeviceId)
-                            .then(response => {
-                                this.setActiveDeviceValidations(response.data);
-                            });
-                        getValidations()
-                            .then(response => {
-                                this.setValidations(response.data);
-                            });
+                        if (routeParams.rackId) {
+                            getRackById(currentWorkspaceId, routeParams.rackId)
+                                .then(response => {
+                                    this.setRackLayout(response);
+                                    this.rackLoading = false;
+                                });
+                        }
                     }
-                }
-            }
+                });
         },
-        setCurrWorkspace(currentWorkspaceId) {
+        setWorkspace(currentWorkspaceId) {
             if (currentWorkspaceId) {
                 this.setCurrentWorkspace(this.findWorkspaceById(currentWorkspaceId));
             } else {
@@ -127,7 +116,6 @@ export default {
             'activeDeviceId',
             'currentWorkspaceId',
             'findWorkspaceById',
-            'getRackRoomsByWorkspace',
             'loadCurrentWorkspace',
         ]),
         ...mapState([
@@ -153,12 +141,12 @@ export default {
                 loadAllWorkspaces()
                     .then(response => {
                         this.setWorkspaces(response.data);
-                        this.setCurrWorkspace(currentWorkspaceId);
-                        this.setRooms();
+                        this.setWorkspace(currentWorkspaceId);
+                        this.setRoomsAndStore();
                     });
             } else {
-                this.setCurrWorkspace(currentWorkspaceId);
-                this.setRooms();
+                this.setWorkspace(currentWorkspaceId);
+                this.setRoomsAndStore();
             }
         }
     },
