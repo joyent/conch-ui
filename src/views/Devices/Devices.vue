@@ -99,7 +99,11 @@ export default {
     created() {
         const route = this.$route.path;
         const routePrefix = route.substring(0, route.indexOf('/device'));
-        const activeDeviceId = this.activeDeviceId;
+        let activeDeviceId = this.activeDeviceId;
+
+        if (!activeDeviceId && this.$route.params && this.$route.params.deviceId) {
+            activeDeviceId = this.$route.params.deviceId;
+        }
 
         let [_, queryS] = route.split('?');
         queryS ? (queryS = `?${queryS}`) : (queryS = '');
