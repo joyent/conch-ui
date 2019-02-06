@@ -5,12 +5,12 @@
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
                     <article class="tile is-child">
-                        <section class="section" v-if="!workspaceDevices || !hardWareProductLookup">
+                        <section class="section" v-if="!workspaceDevices || !hardwareProductLookup">
                             <Spinner/>
                         </section>
                         <div class="columns" v-else>
                             <div class="column is-4">
-                                 <DevicesPanel :hardware-product-lookup="hardWareProductLookup" :workspace-devices="workspaceDevices" />
+                                 <DevicesPanel :hardware-product-lookup="hardwareProductLookup" :workspace-devices="workspaceDevices" />
                             </div>
                             <div class="column is-6 container" v-if="activeDeviceId">
                                 <div class="div" style="position: -webkit-sticky; position: sticky; top: 0;">
@@ -40,7 +40,7 @@ import keyBy from 'lodash/keyBy';
 import { EventBus } from '../../eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { getHardwareProduct } from '../../api/hardwareProduct.js';
-import { getDevices } from '../../api/workspaces.js';
+import { getWorkspaceDevices } from '../shared/utils';
 
 export default {
     components: {
@@ -51,7 +51,7 @@ export default {
     },
     data() {
         return {
-            hardWareProductLookup: null,
+            hardwareProductLookup: null,
             showDeviceInRack: false,
             workspaceDevices: null,
         };
@@ -61,7 +61,6 @@ export default {
             'clearActiveDevice',
             'clearActiveRoom',
             'clearRackLayout',
-            'setDevicesByWorkspace',
             'setHardwareProducts',
         ]),
         clearActiveData() {
@@ -69,34 +68,22 @@ export default {
             this.clearActiveRoom();
             this.clearRackLayout();
         },
-        handleHardwareProductLookup() {
+        setHardwareProductLookup() {
             if (!isEmpty(this.hardwareProducts)) {
-                this.hardWareProductLookup = this.hardwareProducts;
+                this.hardwareProductLookup = this.hardwareProducts;
             } else {
                 getHardwareProduct().then(response => {
-                    let hardwareProducts = keyBy(response.data, 'id');
-                    this.hardWareProductLookup = hardwareProducts;
+                    const hardwareProducts = keyBy(response.data, 'id');
+                    this.hardwareProductLookup = hardwareProducts;
                     this.setHardwareProducts(hardwareProducts);
                 });
             }
         },
-        handleWorkspaceDevices() {
-            let currentWorkspaceId = this.currentWorkspaceId;
-            let workspaceDevicesFromState = this.getDevicesByWorkspace(currentWorkspaceId);
-
-            if (workspaceDevicesFromState) {
-                this.workspaceDevices = Object.values(workspaceDevicesFromState)[0];
-            } else {
-                getDevices(currentWorkspaceId)
-                    .then(response => {
-                        let devices = response.data;
-                        let workspace = {};
-                        this.workspaceDevices = devices;
-
-                        workspace[currentWorkspaceId] = devices;
-                        this.setDevicesByWorkspace(workspace);
-                    });
-            }
+        setWorkspaceDevices() {
+            getWorkspaceDevices(this.currentWorkspaceId)
+                .then(response => {
+                    this.workspaceDevices = response;
+                });
         },
     },
     computed: {
@@ -104,7 +91,6 @@ export default {
             'activeDeviceId',
             'currentWorkspaceId',
             'currentWorkspaceName',
-            'getDevicesByWorkspace',
         ]),
         ...mapState([
             'hardwareProducts',
@@ -124,13 +110,13 @@ export default {
             this.$router.push({ path: `${routePrefix}/device` });
         }
 
-        this.handleHardwareProductLookup();
-        this.handleWorkspaceDevices();
+        this.setHardwareProductLookup();
+        this.setWorkspaceDevices();
     },
     mounted() {
         EventBus.$on('changeWorkspace:devices', () => {
-            this.handleHardwareProductLookup();
-            this.handleWorkspaceDevices();
+            this.setHardwareProductLookup();
+            this.setWorkspaceDevices();
         });
 
         EventBus.$on('showDeviceInRack', () => {

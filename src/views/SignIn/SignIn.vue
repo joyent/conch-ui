@@ -45,10 +45,9 @@
 
 <script>
 import isEmpty from 'lodash/isEmpty';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { login } from '../../api/authentication.js';
-import { getAllRacks, getDevices, loadAllWorkspaces } from '../../api/workspaces.js';
-import { getRackRooms, roomToProgress } from '../shared/utils.js';
+import { loadAllWorkspaces } from '../../api/workspaces.js';
 
 export default {
     data() {
@@ -62,9 +61,7 @@ export default {
     },
     methods: {
         ...mapActions([
-            'setAllRooms',
             'setCurrentWorkspace',
-            'setRackRoomsByWorkspace',
             'setWorkspaces',
         ]),
         initWorkspaceData() {
@@ -78,25 +75,8 @@ export default {
                     this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
                     sessionStorage.setItem('currentWorkspace', this.currentWorkspaceId);
 
-                    this.setAllRackRoomsByWorkspace(workspaces);
-
                     return Promise.resolve();
                 });
-        },
-        setAllRackRoomsByWorkspace(workspaces) {
-            for (let i = 0; i < workspaces.length; i++) {
-                const workspaceId = workspaces[i].id;
-
-                getAllRacks(workspaceId)
-                    .then(response => {
-                        const racks = response.data;
-                        let workspaceRackRooms = {};
-
-                        workspaceRackRooms[workspaceId] = racks;
-                        this.setRackRoomsByWorkspace(workspaceRackRooms);
-                        this.setAllRooms(getRackRooms(racks));
-                    });
-            }
         },
         signIn() {
             this.isLoading = true;
@@ -125,11 +105,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'getRackRoomsByWorkspace',
-        ]),
         ...mapState([
-            'rackRoomsByWorkspace',
             'workspaces',
         ]),
     },

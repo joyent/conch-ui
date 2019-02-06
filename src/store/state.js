@@ -4,7 +4,7 @@ export const state = {
     activeDeviceSettings: {},
     activeDeviceValidations: [],
     activeRoom: {},
-    allRooms: {},
+    allRooms: [],
     currentWorkspace: {},
     devicesByWorkspace: [],
     hardwareProducts: [],

@@ -1,6 +1,6 @@
 <template>
     <div class="data-center-browser">
-        <PageHeader :title="`${currentWorkspace.name} workspace datacenters`" :subtitle="'Browse datacenter rooms, racks and devices'" />
+        <PageHeader :title="`${currentWorkspaceName} workspace datacenters`" :subtitle="'Browse datacenter rooms, racks and devices'" />
         <section class="info-tiles">
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
@@ -58,10 +58,10 @@ import Spinner from '../components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
 import search from 'fuzzysearch';
 import { EventBus } from '../../eventBus.js';
-import { getRackById, getDevices, getAllRacks } from '../../api/workspaces.js';
+import { getRackById } from '../../api/workspaces.js';
 import { getLocation } from '../../api/device.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getRackRooms, roomToProgress } from '../shared/utils.js';
+import { getRackRooms, getWorkspaceRacks, getWorkspaceDevices } from '../shared/utils.js';
 
 export default {
     components: {
@@ -91,55 +91,25 @@ export default {
             'clearActiveRoom',
             'clearRackLayout',
             'setActiveRoom',
-            'setDevicesByWorkspace',
             'setHighlightDeviceId',
             'setRackLayout',
-            'setRackRoomsByWorkspace',
         ]),
         clearActiveData() {
             this.clearActiveDevice();
             this.clearActiveRoom();
             this.clearRackLayout();
         },
-        handleWorkspaceDevices() {
-            let currentWorkspaceId = this.currentWorkspaceId;
-            let workspaceDevicesFromState = this.getDevicesByWorkspace(currentWorkspaceId);
-
-            if (workspaceDevicesFromState) {
-                let devices = Object.values(workspaceDevicesFromState)[0];
-                this.workspaceDevices = devices;
-            } else {
-                getDevices(currentWorkspaceId)
-                    .then(response => {
-                        let devices = response.data;
-                        let workspace = {};
-
-                        devices.sort((a, b) => a.id - b.id);
-                        this.workspaceDevices = devices;
-
-                        workspace[currentWorkspaceId] = devices;
-                        this.setDevicesByWorkspace(workspace);
-                    });
-            }
+        setWorkspaceDevices() {
+            getWorkspaceDevices(this.currentWorkspaceId)
+                .then(response => {
+                    this.workspaceDevices = response;
+                });
         },
-        handleWorkspaceRacks() {
-            let currentWorkspaceId = this.currentWorkspaceId;
-            let workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
-
-            if (!isEmpty(workspaceRackRooms)) {
-                let rooms = Object.values(workspaceRackRooms)[0];
-                this.rackRooms = getRackRooms(rooms);
-            } else {
-                getAllRacks(currentWorkspaceId)
-                    .then(response => {
-                        let rooms = response.data;
-                        let workspaceRackRooms = {};
-
-                        workspaceRackRooms[currentWorkspaceId] = rooms;
-                        this.setRackRoomsByWorkspace(workspaceRackRooms);
-                        this.rackRooms = getRackRooms(rooms);
-                    });
-            }
+        setWorkspaceRacks() {
+            getWorkspaceRacks(this.currentWorkspaceId)
+                .then(response => {
+                    this.rackRooms = getRackRooms(response);
+                });
         },
         setFoundDevices(searchText) {
             let devices = this.workspaceDevices;
@@ -187,12 +157,10 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspaceId',
-            'getDevicesByWorkspace',
-            'getRackRoomsByWorkspace',
+            'currentWorkspaceName',
         ]),
         ...mapState([
             'activeRoom',
-            'currentWorkspace',
         ]),
         activeRacks() {
             if (!isEmpty(this.activeRoom)) {
@@ -212,13 +180,13 @@ export default {
         },
     },
     created() {
-        this.handleWorkspaceDevices();
-        this.handleWorkspaceRacks();
+        this.setWorkspaceDevices();
+        this.setWorkspaceRacks();
     },
     mounted() {
         EventBus.$on('changeWorkspace:datacenter', () => {
-            this.handleWorkspaceDevices();
-            this.handleWorkspaceRacks();
+            this.setWorkspaceDevices();
+            this.setWorkspaceRacks();
             this.clearActiveData();
         });
     },

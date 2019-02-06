@@ -6,11 +6,8 @@
 
 <script>
 import RelationshipGraph from 'd3-relationshipgraph';
-import isEmpty from 'lodash/isEmpty';
-import { EventBus } from '../../eventBus.js';
 import { select, selectAll } from 'd3-selection';
-import { getAllRacks } from '../../api/workspaces';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapState } from 'vuex';
 
 const statusSortOrder = {};
 statusSortOrder["Validated"] = 1;
@@ -117,17 +114,15 @@ export default {
             });
         },
     },
+    watch: {
+        rackRooms() {
+            this.graph.data(this.rackStatus);
+        },
+    },
     computed: {
-        ...mapGetters([
-            'currentWorkspaceId',
-            'getRackRoomsByWorkspace',
-        ]),
         ...mapState([
             'rackRooms',
         ]),
-        hasRackRooms() {
-            return !isEmpty(this.rackRooms);
-        },
         rackStatus() {
             return Object.keys(this.rackRooms).reduce((acc, room) => {
                 this.rackRooms[room].forEach(rack => {
@@ -177,12 +172,8 @@ export default {
 
         // This forceUpdate fixes an issue with d3-relationshipgraph not displaying
         // tooltips for both RackProgress graphs. If this forceUpdate is not called,
-        // tooltips will only display for the second graph (Validation Status by Role)
+        // tooltips will only display for the last graph loaded on the page.
         this.$forceUpdate();
-
-        EventBus.$on('changeWorkspace:status', () => {
-            this.graph.data(this.rackStatus);
-        });
     },
     updated() {
         this.graph.data(this.rackStatus);

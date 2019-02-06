@@ -21,8 +21,8 @@
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <Spinner v-if="!devices" />
-                        <p class="title" v-else>{{ devices.length }}</p>
+                        <Spinner v-if="!workspaceDevices" />
+                        <p class="title" v-else>{{ workspaceDevices.length }}</p>
                         <p class="subtitle">Devices</p>
                     </article>
                 </div>
@@ -61,8 +61,8 @@ import RackProgress from './RackProgress.vue';
 import Spinner from '../components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '../../eventBus.js';
-import { getAllRacks, getDevices } from '../../api/workspaces.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { getWorkspaceRacks, getWorkspaceDevices } from '../shared/utils';
 
 export default {
     components: {
@@ -72,53 +72,27 @@ export default {
     },
     data() {
         return {
-            devices: null,
             rackCount: null,
-            workspaceId: '',
+            workspaceDevices: null,
         };
     },
     methods: {
         ...mapActions([
-            'setDevicesByWorkspace',
             'setRackRooms',
         ]),
-        handleWorkspaceDevices() {
-            this.workspaceId = this.currentWorkspaceId;
-
-            if (!this.workspaceId) {
-                this.workspaceId = this.$route.params.currentWorkspace;
-            }
-
-            let workspaceDevicesFromState = this.getDevicesByWorkspace(this.workspaceId);
-
-            if (workspaceDevicesFromState) {
-                this.devices = Object.values(workspaceDevicesFromState)[0];
-            } else {
-                getDevices(this.workspaceId)
-                    .then(response => {
-                        let workspaceDevices = {};
-                        let devices = response.data;
-                        this.devices = devices;
-
-                        workspaceDevices[this.workspaceId] = devices;
-                        this.setDevicesByWorkspace(workspaceDevices);
-                    });
-            }
+        setWorkspaceDevices() {
+            getWorkspaceDevices(this.currentWorkspaceId)
+                .then(response => {
+                    this.workspaceDevices = response;
+                });
         },
-        handleWorkspaceRacks() {
-            const currentWorkspaceId = this.currentWorkspaceId;
-            const workspaceRackRooms = this.getRackRoomsByWorkspace(currentWorkspaceId);
-
-            if (!isEmpty(workspaceRackRooms)) {
-                this.getRackRooms(Object.values(workspaceRackRooms)[0]);
-            } else {
-                getAllRacks(this.currentWorkspaceId)
-                    .then(response => {
-                        this.getRackRooms(response.data)
-                    });
-            }
+        setWorkspaceRacks() {
+            getWorkspaceRacks(this.currentWorkspaceId)
+                .then(response => {
+                    this.setRackRoomsData(response);
+                });
         },
-        getRackRooms(rackRooms) {
+        setRackRoomsData(rackRooms) {
             let rackCount = 0;
             const rooms = Object.keys(rackRooms)
                 .sort()
@@ -136,8 +110,6 @@ export default {
         ...mapGetters([
             'currentWorkspaceId',
             'currentWorkspaceName',
-            'getDevicesByWorkspace',
-            'getRackRoomsByWorkspace',
         ]),
         ...mapState([
             'rackRooms',
@@ -148,8 +120,8 @@ export default {
         progress() {
             const newProgress = { pass: 0, total: 0 };
 
-            if (this.devices) {
-                this.devices.forEach(device => {
+            if (this.workspaceDevices) {
+                this.workspaceDevices.forEach(device => {
                     if (device.health === 'PASS') {
                         newProgress.pass++;
                     }
@@ -161,8 +133,7 @@ export default {
             return newProgress;
         },
         progressPercent() {
-            let progress = this.progress;
-
+            const progress = this.progress;
             return progress.total ? progress.pass / progress.total * 100 : 0;
         },
         title() {
@@ -170,13 +141,13 @@ export default {
         },
     },
     created() {
-        this.handleWorkspaceDevices();
-        this.handleWorkspaceRacks();
+        this.setWorkspaceDevices();
+        this.setWorkspaceRacks();
     },
     mounted() {
         EventBus.$on('changeWorkspace:status', () => {
-            this.handleWorkspaceDevices();
-            this.handleWorkspaceRacks();
+            this.setWorkspaceDevices();
+            this.setWorkspaceRacks();
         });
     },
 };
