@@ -5,5 +5,12 @@
     "plugins": [
         "@babel/plugin-syntax-dynamic-import",
         "@babel/plugin-proposal-object-rest-spread"
-    ]
+    ],
+    "env": {
+        "test": {
+            "presets": [
+                ["@babel/env", { "targets": { "node": "current" }}]
+            ]
+        }
+    },
 }

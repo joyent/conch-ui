@@ -23,15 +23,18 @@ module.exports = {
   // collectCoverage: false,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: null,
+  collectCoverageFrom: [
+    "src/**/*.{js,vue}",
+    "!**/node_modules/**",
+  ],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
-   coveragePathIgnorePatterns: [
-     "/node_modules/"
-   ],
+  coveragePathIgnorePatterns: [
+    "/node_modules/"
+  ],
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -60,18 +63,17 @@ module.exports = {
   // globals: {},
 
   // An array of directory names to be searched recursively up from the requiring module's location
-   moduleDirectories: [
+  moduleDirectories: [
     "src",
-     "node_modules"
-   ],
+    "node_modules"
+  ],
 
   // An array of file extensions your modules use
-  // moduleFileExtensions: [
-  //   "js",
-  //   "json",
-  //   "jsx",
-  //   "node"
-  // ],
+  moduleFileExtensions: [
+    "js",
+    "json",
+    "vue"
+  ],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
@@ -124,7 +126,9 @@ module.exports = {
   // setupTestFrameworkScriptFile: null,
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
-  // snapshotSerializers: [],
+  snapshotSerializers: [
+    "jest-serializer-vue"
+  ],
 
   // The test environment that will be used for testing
   // testEnvironment: "jest-environment-jsdom",
@@ -162,7 +166,10 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  // transform: null,
+  transform: {
+    '^.+\\.js$': './node_modules/babel-jest',
+    '.*\\.(vue)$': './node_modules/vue-jest',
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
