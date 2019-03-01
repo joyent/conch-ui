@@ -6,6 +6,7 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "bulma": "^0.7.1",
+    "bulma-tooltip": "^2.0.2",
     "bulmaswatch": "^0.6.2",
     "d3": "^4.10.2",
     "d3-relationshipgraph": "^3.0.2",
