@@ -64,7 +64,7 @@ export default {
         changeWorkspace(workspaceId) {
             this.menuActive = false;
 
-            this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace(workspaceId));
+            this.setCurrentWorkspace(this.loadCurrentWorkspace(workspaceId));
             sessionStorage.setItem('currentWorkspace', workspaceId);
 
             let name = this.$route.name;
@@ -97,6 +97,7 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspaceName',
+            'loadCurrentWorkspace',
         ]),
         ...mapState([
             'workspaces',

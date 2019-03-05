@@ -1,6 +1,6 @@
 <template>
     <div class="networking-tab">
-        <Spinner v-if="nics == null" />
+        <Spinner v-if="!hasInterfaces" />
         <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
@@ -8,7 +8,7 @@
                 </tr>
             </thead>
             <template v-for="(iface, index) in ifaces">
-                <tr :class="{ 'is-selected': isRowSelected(index) }" @click="revealIfaceDetails(index)" style="cursor: pointer;" :key="index">
+                <tr :class="{ 'is-selected': isRowSelected(index) }" class="row" @click="revealIfaceDetails(index)" style="cursor: pointer;" :key="index">
                     <td>
                         <div class="icon">
                             <i class="fas fa-caret-down" v-if="isRowSelected(index)"></i>
@@ -59,6 +59,7 @@
 
 <script>
 import Spinner from '../components/Spinner.vue';
+import isEmpty from 'lodash/isEmpty';
 import { mapState } from 'vuex';
 
 export default {
@@ -93,8 +94,8 @@ export default {
         ...mapState([
             'activeDeviceDetails',
         ]),
-        nics() {
-            return this.activeDeviceDetails.latest_report && this.activeDeviceDetails.latest_report.interfaces || {};
+        hasInterfaces () {
+            return !isEmpty(this.nics);
         },
         ifaces() {
             return Object.entries(this.nics)
@@ -103,6 +104,9 @@ export default {
                     iface.id = id;
                     return iface;
                 });
+        },
+        nics() {
+            return this.activeDeviceDetails.latest_report && this.activeDeviceDetails.latest_report.interfaces || {};
         },
     },
 };

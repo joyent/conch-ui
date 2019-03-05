@@ -7,10 +7,12 @@
                     <th>Value</th>
                 </tr>
             </thead>
-            <tr v-for="(value, key, index) in activeDeviceSettings" :key="index">
-                <td class="has-text-weight-semibold">{{ key }}</td>
-                <td>{{ value }}</td>
-            </tr>
+            <tbody>
+                <tr v-for="(value, key, index) in activeDeviceSettings" :key="index">
+                    <td class="has-text-weight-semibold">{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            </tbody>
             <tfoot>
                 <tr>
                     <th>Name</th>

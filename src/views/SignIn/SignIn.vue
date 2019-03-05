@@ -81,27 +81,32 @@ export default {
         signIn() {
             this.isLoading = true;
 
-            let data = {
-                user: this.emailAddress,
-                password: this.password,
-            };
+            if (this.emailAddress && this.password) {
+                const data = {
+                    user: this.emailAddress,
+                    password: this.password,
+                };
 
-            login(data)
-                .then(response => {
-                    if (isEmpty(this.workspaces)) {
-                        this.initWorkspaceData()
-                            .then(() => {
-                                this.$router.push({ name: 'status', params: { currentWorkspace: this.currentWorkspaceId } });
-                            });
-                    } else {
-                        this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
-                        this.$router.push({ name: 'status', params: { currentWorkspace: this.$store.getters.currentWorkspaceId } });
-                    }
-                })
-                .catch((error) => {
-                    this.isLoading = false;
-                    this.badLoginAttempt = true;
-                });
+                login(data)
+                    .then(response => {
+                        if (isEmpty(this.workspaces)) {
+                            this.initWorkspaceData()
+                                .then(() => {
+                                    this.$router.push({ name: 'status', params: { currentWorkspace: this.currentWorkspaceId } });
+                                });
+                        } else {
+                            this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
+                            this.$router.push({ name: 'status', params: { currentWorkspace: this.$store.getters.currentWorkspaceId } });
+                        }
+                    })
+                    .catch((error) => {
+                        this.isLoading = false;
+                        this.badLoginAttempt = true;
+                    });
+            } else {
+                this.isLoading = false;
+                this.badLoginAttempt = true;
+            }
         },
     },
     computed: {

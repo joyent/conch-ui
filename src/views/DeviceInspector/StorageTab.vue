@@ -1,6 +1,6 @@
 <template>
     <div class="storage-tab">
-        <Spinner v-if="disks == null" />
+        <Spinner v-if="!hasDisks" />
         <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
@@ -13,7 +13,7 @@
                 </tr>
             </thead>
             <template v-for="(disk, index) in sortedDisks">
-                <tr :class="{ 'is-selected': isRowSelected(index) }" @click="revealDiskDetails(index)" style="cursor: pointer" :key="index">
+                <tr :class="{ 'is-selected': isRowSelected(index) }" class="row" @click="revealDiskDetails(index)" style="cursor: pointer" :key="index">
                     <td>
                         <div class="icon">
                             <i class="fas fa-caret-down" v-if="isRowSelected(index)"></i>
@@ -107,10 +107,12 @@ export default {
             return this.diskDetailsRows.indexOf(index) >= 0;
         },
         revealDiskDetails(index) {
-            if (this.diskDetailsRows.indexOf(index) === -1) {
+            const indexPos = this.diskDetailsRows.indexOf(index);
+
+            if (indexPos === -1) {
                 this.diskDetailsRows.push(index);
             } else {
-                this.diskDetailsRows.splice(this.diskDetailsRows.indexOf(index), 1);
+                this.diskDetailsRows.splice(indexPos, 1);
             }
         },
     },
@@ -122,6 +124,9 @@ export default {
             const activeDeviceDetails = this.activeDeviceDetails;
 
             return activeDeviceDetails.latest_report && activeDeviceDetails.latest_report.disks ? activeDeviceDetails.latest_report.disks : {};
+        },
+        hasDisks() {
+            return !isEmpty(this.disks);
         },
         sortedDisks() {
             return Object.entries(this.disks)

@@ -18,7 +18,7 @@
                 <router-link :to="{ name: 'user' }" active-class="is-active">Profile</router-link>
             </li>
             <li>
-                <a @click="signOut">Log out</a>
+                <a class="sign-out" @click="signOut">Log out</a>
             </li>
         </ul>
         <br />

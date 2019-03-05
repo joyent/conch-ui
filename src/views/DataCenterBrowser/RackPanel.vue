@@ -49,6 +49,7 @@ import search from "fuzzysearch";
 import ProgressIcon from '../components/ProgressIcon.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { getRackById } from '../../api/workspaces';
+import { EventBus } from '../../eventBus.js';
 
 export default {
     props: {
@@ -144,6 +145,11 @@ export default {
                 return acc;
             }, new Set(["all"]))
         ).sort();
+    },
+    mounted() {
+        EventBus.$on('refreshRackLayout', rack => {
+            this.activateRack(rack);
+        });
     },
 };
 </script>

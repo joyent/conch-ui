@@ -21,9 +21,11 @@
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <Spinner v-if="!workspaceDevices" />
-                        <p class="title" v-else>{{ workspaceDevices.length }}</p>
-                        <p class="subtitle">Devices</p>
+                        <div class="device-count">
+                            <Spinner v-if="!workspaceDevices" />
+                            <p class="title" v-else>{{ workspaceDevices.length }}</p>
+                            <p class="subtitle">Devices</p>
+                        </div>
                     </article>
                 </div>
             </div>

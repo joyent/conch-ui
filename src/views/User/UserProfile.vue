@@ -12,7 +12,7 @@
                                         <i class="fas fa-exclamation-circle" style="margin-right: 10px;"></i>
                                         Passwords must be at least 5 characters. Please enter a secure password.
                                     </p>
-                                    <button class="delete" aria-label="delete" @click="showWarning = false"></button>
+                                    <button class="delete" aria-label="delete" @click="showWarning = false" type="button"></button>
                                 </div>
                             </article>
                         </transition>
@@ -26,7 +26,7 @@
                                 v-model="password"
                             >
                             <button
-                                class="button is-primary"
+                                class="button save is-primary"
                                 :class="{ 'is-loading': isLoading }"
                                 :disabled="isLoading"
                                 @click="savePassword"

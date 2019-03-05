@@ -57,13 +57,15 @@ export default {
             return moment.duration(this.time, 'seconds').humanize(true);
         },
         sinceLastReboot() {
-            return this.uptimeSince ? moment().diff(moment(this.uptimeSince), 'seconds') : moment().diff(moment(this.lastSeen), 'seconds');
+            return this.uptimeSince ? moment().diff(moment(this.uptimeSince), 'seconds') : moment().diff(moment(this.activeDeviceDetails.last_seen), 'seconds');
         },
         percentage() {
-            if (this.rebootCount === this.numReboots) {
+            const rebootCount = Number(this.rebootCount);
+
+            if (rebootCount === this.numReboots) {
                 return 100;
             } else if (this.time < 0) {
-                return Math.trunc(this.rebootCount / this.numReboots * 100);
+                return Math.trunc(rebootCount / this.numReboots * 100);
             }
 
             return Math.trunc((this.maxBurnin - this.time) / this.time * 100);
@@ -80,17 +82,11 @@ export default {
 
             return 0;
         },
-        healthLowerCase() {
-            return this.health.toLowerCase();
-        },
         uptimeSince() {
             return this.activeDeviceDetails.uptime_since;
         },
         health() {
             return this.activeDeviceDetails.health;
-        },
-        lastSeen() {
-            return this.activeDeviceDetails.last_seen;
         },
     },
 };

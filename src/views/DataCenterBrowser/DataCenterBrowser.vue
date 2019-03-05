@@ -8,7 +8,7 @@
                         <div class="dropdown is-right" :class="{ 'is-active': searchText }">
                             <div class="dropdown-trigger">
                                 <div class="control" :class="{ 'is-loading': !this.workspaceDevices && searchText }">
-                                    <input class="input" placeholder="Search for Device" v-model="searchText" @focus="hideDropdown = false">
+                                    <input class="input search" placeholder="Search for Device" v-model="searchText" @focus="hideDropdown = false">
                                 </div>
                             </div>
                             <div class="dropdown-menu is-paddingless">
@@ -27,7 +27,7 @@
                 <div class="tile is-parent">
                     <article class="tile is-child">
                         <DeviceModal/>
-                        <section class="section" v-if="!rackRooms.length">
+                        <section class="section" v-if="!hasRackRooms">
                             <Spinner/>
                         </section>
                         <div class="columns is-gapless" v-else>
@@ -170,6 +170,9 @@ export default {
             }
 
             return null;
+        },
+        hasRackRooms() {
+            return !isEmpty(this.rackRooms);
         },
     },
     watch: {

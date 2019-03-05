@@ -14,7 +14,7 @@
             </thead>
             <tbody>
                 <template v-for="(validation, index) in deviceValidations">
-                    <tr :class="{ 'is-selected': isRowSelected(index) }" @click="revealValidationDetails(index)" style="cursor: pointer;" :key="index">
+                    <tr :class="{ 'is-selected': isRowSelected(index) }" class="row" @click="revealValidationDetails(index)" style="cursor: pointer;" :key="index">
                         <td>
                             <div class="icon">
                                 <i class="fas fa-caret-down" v-if="isRowSelected(index)"></i>
