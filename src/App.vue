@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import Layout from './views/Layout/Layout.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -30,7 +29,6 @@ import { getRackRooms, roomToProgress, getWorkspaceRacks } from './views/shared/
 
 export default {
     components: {
-        Layout,
         SignIn,
     },
     methods: {
