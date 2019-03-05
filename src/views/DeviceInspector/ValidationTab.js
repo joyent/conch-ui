@@ -54,7 +54,25 @@ const ValidationRow = () => {
 					"td",
 					validation.description ||
 						m("span.has-text-grey", "No Description")
-				)
+				),
+				m(
+					"td.has-text-centered",
+					validation.version
+				),
+				m(
+					"td",
+					validation.deactivated == null
+						? m(
+							"span.icon.is-medium.has-text-success.tooltip.is-tooltip-left.is-tooltip-success",
+							{ "data-tooltip": "Active Validation" },
+							m("i.fas.fa-lg.fa-check-circle")
+						  )
+						: m(
+							"span.icon.is-medium.has-text-warning.tooltip.is-tooltip-left.is-tooltip-warning",
+							{ "data-tooltip": "Inactive Validation" },
+							m("i.fas.fa-lg.fa-exclamation-triangle")
+						  )
+				),
 			),
 			revealDetails &&
 				m(
@@ -113,7 +131,9 @@ const ValidationTab = () => {
 		m("th", ""),
 		m("th", "Status"),
 		m("th", "Name"),
-		m("th", "Description")
+		m("th", "Description"),
+		m("th", "Version"),
+		m("th", "")
 	];
 	const validationStates = stream();
 	const validations = stream();
