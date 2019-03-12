@@ -27,7 +27,7 @@
                                         placeholder="Serial Number"
                                         pattern="[a-zA-Z0-9]+"
                                         v-on:input="serialNumberInput($event, slot.id)"
-                                        :value="assignments[slot.id].id"
+                                        :value="inputValue(slot, 'sn')"
                                     >
                                     <span class="icon is-left">
                                         <i class="fas fa-barcode"></i>
@@ -48,7 +48,7 @@
                                         pattern="[a-zA-Z0-9]+"
                                         :disabled="assignments[slot.id] == null"
                                         v-on:input="assetTagInput($event, slot.id)"
-                                        :value="assignments[slot.id].assetTag"
+                                        :value="inputValue(slot, 'at')"
                                     >
                                     <span class="icon is-left">
                                         <i class="fas fa-tag"></i>
@@ -118,16 +118,35 @@ export default {
     },
     methods: {
         assetTagInput: debounce(function(event, slotId) {
-            this.assignments[slotId].assetTag = event.target.value;
+            if (this.assignments[slotId]) {
+                this.assignments[slotId].assetTag = event.target.value;
+            }
         }, 750),
         closeModal() {
             EventBus.$emit('closeModal:editLayoutModal');
+        },
+        inputValue(slot, type) {
+            const assignment = this.assignments[slot.id];
+
+            if (assignment) {
+                if (type === 'sn' && assignment.id) {
+                    return assignment.id;
+                } else if (type === 'at' && assignment.assetTag) {
+                    return assignment.assetTag;
+                }
+
+                return '';
+            } else {
+                return '';
+            }
         },
         refreshRackLayout(rackLayout) {
             EventBus.$emit('refreshRackLayout', rackLayout);
         },
         serialNumberInput: debounce(function(event, slotId) {
-            this.assignments[slotId].id = event.target.value;
+            if (this.assignments[slotId]) {
+                this.assignments[slotId].id = event.target.value;
+            }
         }, 750),
         save() {
             const layout = {};
