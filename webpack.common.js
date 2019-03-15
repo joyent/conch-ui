@@ -38,8 +38,8 @@ module.exports = {
 					// configuration for babel. Add configuration here instead
 					// of a .babelrc file
 					options: {
-						presets: ['env'],
-						plugins: ['syntax-dynamic-import']
+						presets: ['@babel/preset-env'],
+						plugins: ['@babel/plugin-syntax-dynamic-import']
 					}
 				},
 			},

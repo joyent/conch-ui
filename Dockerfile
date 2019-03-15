@@ -1,6 +1,5 @@
-FROM node:10-alpine
-RUN apk add --no-cache --update python make
-RUN apk add --no-cache git
+FROM node:11-alpine
+RUN apk add --no-cache --update python2 make git
 
 USER node
 RUN mkdir /home/node/.npm-global
@@ -13,10 +12,9 @@ USER root
 RUN mkdir /home/node/conch-ui
 COPY . /home/node/conch-ui
 RUN chown -R node /home/node/conch-ui
-USER node
 
+USER node
 WORKDIR /home/node/conch-ui
-RUN make build
 
 ENTRYPOINT [ "make" ]
 CMD ["test"]
