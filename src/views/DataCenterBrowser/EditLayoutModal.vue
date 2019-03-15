@@ -102,7 +102,7 @@ export default {
     },
     data() {
         return {
-            assignments: [],
+            assignments: {},
             buttonLoading: false,
             duplicateSerials: [],
             isActive: false,
@@ -168,7 +168,7 @@ export default {
                 this.buttonLoading = true;
 
                 setRackLayout(this.currentWorkspaceId, this.rackLayout.id, layout)
-                    .then(response => {
+                    .then(() => {
                         Promise.all(
                             Object.values(assignments).map(assignment => {
                                 if (assignment.assetTag == null) {

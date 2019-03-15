@@ -114,7 +114,12 @@ export default {
                 const products = sortBy(
                     Array.from(
                         this.workspaceDevices.reduce((acc, device) => {
-                            acc.add(this.hardwareProductLookup[device.hardware_product]);
+                            const match = this.hardwareProductLookup[device.hardware_product];
+
+                            if (match) {
+                                acc.add(match);
+                            }
+
                             return acc;
                         }, new Set())
                     ), 'name'

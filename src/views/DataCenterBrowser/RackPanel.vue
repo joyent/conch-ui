@@ -1,5 +1,5 @@
 <template>
-    <nav class="panel">
+    <nav class="panel rack-panel">
         <p class="panel-heading has-text-centered">{{ this.activeRoomName }} Racks</p>
         <div class="panel-block">
             <p class="control has-icons-left">

@@ -46,9 +46,14 @@ export default {
             return 'has-stroke-info';
         }
     },
+    methods: {
+        getTotalLength() {
+            return this.$refs.meter.getTotalLength();
+        },
+    },
     mounted() {
         const path = this.$refs.meter;
-        let length = path.getTotalLength();
+        let length = this.getTotalLength();
         let strokeLength = length * ((100 - this.percentage) / 100);
         path.getBoundingClientRect(); // trigger layout for animation
         path.style.strokeDashoffset = Math.max(0, strokeLength);

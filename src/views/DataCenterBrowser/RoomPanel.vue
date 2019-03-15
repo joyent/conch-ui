@@ -1,5 +1,5 @@
 <template>
-    <nav class="panel">
+    <nav class="panel room-panel">
         <p class="panel-heading has-text-centered">Datacenter Rooms</p>
         <div class="panel-block">
             <p class="control has-icons-left">

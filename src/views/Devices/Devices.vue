@@ -5,7 +5,7 @@
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
                     <article class="tile is-child">
-                        <section class="section" v-if="!workspaceDevices || !hardwareProductLookup">
+                        <section class="section" v-if="isEmpty(workspaceDevices) || isEmpty(hardwareProductLookup)">
                             <Spinner/>
                         </section>
                         <div class="columns" v-else>
@@ -68,6 +68,7 @@ export default {
             this.clearActiveRoom();
             this.clearRackLayout();
         },
+        isEmpty,
         setHardwareProductLookup() {
             if (!isEmpty(this.hardwareProducts)) {
                 this.hardwareProductLookup = this.hardwareProducts;
