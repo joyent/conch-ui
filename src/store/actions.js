@@ -1,66 +1,102 @@
-export const actions = {
-    clearActiveDevice({ commit }) {
-        commit('clearActiveDevice');
-    },
-    clearActiveRoom({ commit }) {
-        commit('clearActiveRoom');
-    },
-    clearRackLayout({ commit }) {
-        commit('clearRackLayout');
-    },
-    clearShowDeviceInRack({ commit }) {
-        commit('clearShowDeviceInRack');
-    },
-    setActiveDevice({ commit }, activeDevice) {
-        commit('setActiveDevice', activeDevice);
-    },
-    setActiveDeviceDetails({ commit }, activeDeviceDetails) {
-        commit('setActiveDeviceDetails', activeDeviceDetails);
-    },
-    setActiveDeviceSettings({ commit }, activeDeviceSettings) {
-        commit('setActiveDeviceSettings', activeDeviceSettings);
-    },
-    setActiveDeviceValidations({ commit }, activeDeviceValidations) {
-        commit('setActiveDeviceValidations', activeDeviceValidations);
-    },
-    setActiveRoom({ commit }, activeRoom) {
-        commit('setActiveRoom', activeRoom);
-    },
-    setAllRooms({ commit }, allRooms) {
-        commit('setAllRooms', allRooms);
-    },
-    setCurrentWorkspace({ commit }, workspace) {
-        commit('setCurrentWorkspace', workspace);
-    },
-    setDevicesByWorkspace({ commit }, devices) {
-        commit('setDevicesByWorkspace', devices);
-    },
-    setHardwareProducts({ commit }, hardwareProducts) {
-        commit('setHardwareProducts', hardwareProducts);
-    },
-    setHighlightDeviceId({ commit }, highlightDeviceId) {
-        commit('setHighlightDeviceId', highlightDeviceId);
-    },
-    setRackLayout({ commit }, rackLayout) {
-        commit('setRackLayout', rackLayout);
-    },
-    setRackRooms({ commit }, rackRooms) {
-        commit('setRackRooms', rackRooms);
-    },
-    setRackRoomsByWorkspace({ commit }, rackRooms) {
-        commit('setRackRoomsByWorkspace', rackRooms);
-    },
-    setShowDeviceInRack({ commit }, showDeviceInRack) {
-        commit('setShowDeviceInRack', showDeviceInRack);
-    },
-    setWorkspaces({ commit }, workspaces) {
-        commit('setWorkspaces', workspaces);
-    },
-    setValidations({ commit }, validations) {
-        commit('setValidations', validations);
-    },
+export const clearActiveDevice = ({ commit }) => {
+    commit('clearActiveDevice');
+};
+
+export const clearActiveRoom = ({ commit }) => {
+    commit('clearActiveRoom');
+};
+
+export const clearRackLayout = ({ commit }) => {
+    commit('clearRackLayout');
+};
+
+export const clearShowDeviceInRack = ({ commit }) => {
+    commit('clearShowDeviceInRack');
+};
+
+export const setActiveDevice = ({ commit }, activeDevice) => {
+    commit('setActiveDevice', activeDevice);
+};
+
+export const setActiveDeviceDetails = ({ commit }, activeDeviceDetails) => {
+    commit('setActiveDeviceDetails', activeDeviceDetails);
+};
+
+export const setActiveDeviceSettings = ({ commit }, activeDeviceSettings) => {
+    commit('setActiveDeviceSettings', activeDeviceSettings);
+};
+
+export const setActiveDeviceValidations = ({ commit }, activeDeviceValidations) => {
+    commit('setActiveDeviceValidations', activeDeviceValidations);
+};
+
+export const setActiveRoom = ({ commit }, activeRoom) => {
+    commit('setActiveRoom', activeRoom);
+};
+
+export const setAllRooms = ({ commit }, allRooms) => {
+    commit('setAllRooms', allRooms);
+};
+
+export const setCurrentWorkspace = ({ commit }, workspace) => {
+    commit('setCurrentWorkspace', workspace);
+};
+
+export const setDevicesByWorkspace = ({ commit }, devices) => {
+    commit('setDevicesByWorkspace', devices);
+};
+
+export const setHardwareProducts = ({ commit }, hardwareProducts) => {
+    commit('setHardwareProducts', hardwareProducts);
+};
+
+export const setHighlightDeviceId = ({ commit }, highlightDeviceId) => {
+    commit('setHighlightDeviceId', highlightDeviceId);
+};
+
+export const setRackLayout = ({ commit }, rackLayout) => {
+    commit('setRackLayout', rackLayout);
+};
+
+export const setRackRooms = ({ commit }, rackRooms) => {
+    commit('setRackRooms', rackRooms);
+};
+
+export const setRackRoomsByWorkspace = ({ commit }, rackRooms) => {
+    commit('setRackRoomsByWorkspace', rackRooms);
+};
+
+export const setShowDeviceInRack = ({ commit }, showDeviceInRack) => {
+    commit('setShowDeviceInRack', showDeviceInRack);
+};
+
+export const setWorkspaces = ({ commit }, workspaces) => {
+    commit('setWorkspaces', workspaces);
+};
+
+export const setValidations = ({ commit }, validations) => {
+    commit('setValidations', validations);
 };
 
 export default {
-    actions,
+    clearActiveDevice,
+    clearActiveRoom,
+    clearRackLayout,
+    clearShowDeviceInRack,
+    setActiveDevice,
+    setActiveDeviceDetails,
+    setActiveDeviceSettings,
+    setActiveDeviceValidations,
+    setActiveRoom,
+    setAllRooms,
+    setCurrentWorkspace,
+    setDevicesByWorkspace,
+    setHardwareProducts,
+    setHighlightDeviceId,
+    setRackLayout,
+    setRackRooms,
+    setRackRoomsByWorkspace,
+    setShowDeviceInRack,
+    setWorkspaces,
+    setValidations,
 };
