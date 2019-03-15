@@ -1,23 +1,29 @@
 <template>
-    <div id="app" v-if="this.$route.path === '/'">
-        <SignIn/>
-    </div>
-    <div id="app" v-else-if="hasWorkspace">
-        <router-view name="navbar"></router-view>
-        <div class="section">
-            <div class="columns">
-                <div class="column is-2">
-                    <router-view name="sidebar"></router-view>
-                </div>
-                <div class="column is-10">
-                    <router-view></router-view>
+    <div id="app">
+        <div v-if="this.$route.path === '/'">
+            <SignIn/>
+        </div>
+        <div v-else-if="this.$route.params.currentWorkspace">
+            <router-view name="navbar"></router-view>
+            <div class="section">
+                <div class="columns">
+                    <div class="column is-2">
+                        <router-view name="sidebar"></router-view>
+                    </div>
+                    <div class="column is-10">
+                        <router-view></router-view>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div v-else>
+            <PageNotFound/>
         </div>
     </div>
 </template>
 
 <script>
+import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -29,6 +35,7 @@ import { getRackRooms, roomToProgress, getWorkspaceRacks } from './views/shared/
 
 export default {
     components: {
+        PageNotFound,
         SignIn,
     },
     methods: {

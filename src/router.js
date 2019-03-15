@@ -7,6 +7,7 @@ import Status from './views/Status/Status.vue';
 import UserProfile from './views/User/UserProfile.vue';
 import Navbar from './views/Navbar/Navbar.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
+import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 
 Vue.use(Router);
 
@@ -92,5 +93,10 @@ export default new Router({
                 navbar: Navbar,
             },
         },
-    ]
+        {
+            path: '/*',
+            name: '404',
+            component: PageNotFound,
+        },
+    ],
 });

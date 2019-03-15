@@ -100,17 +100,41 @@ progress::-webkit-progress-value {
 		display: flex;
 		flex-direction: column;
 		margin: 0 auto;
-		
+
 		.tags {
 			display: inline-block;
 			margin-bottom: 0;
-	
+
 			.tag {
 				margin-bottom: 0;
 			}
 
 			&:first-of-type {
 				margin-bottom: 5px;
+			}
+		}
+	}
+}
+
+.page-not-found {
+	hr {
+		max-width: 474px;
+	}
+
+	.subtitle {
+		margin-bottom: 30px;
+	}
+
+	.title {
+		font-size: 6rem;
+	}
+
+	.action {
+		.text {
+			margin: 25px 0;
+
+			p:first-child() {
+				margin-bottom: 0.25em;
 			}
 		}
 	}
