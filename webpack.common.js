@@ -39,7 +39,7 @@ module.exports = {
 					// of a .babelrc file
 					options: {
 						presets: ['@babel/preset-env'],
-						plugins: ['syntax-dynamic-import']
+						plugins: ['@babel/plugin-syntax-dynamic-import']
 					}
 				},
 			},
