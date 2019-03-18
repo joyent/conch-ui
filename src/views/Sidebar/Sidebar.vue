@@ -39,8 +39,8 @@
 </template>
 
 <script>
-import { getApiVersion } from '../../api/conchApiVersion.js';
-import { logout } from '../../api/authentication.js';
+import { getApiVersion } from '@api/conchApiVersion.js';
+import { logout } from '@api/authentication.js';
 import { mapGetters } from 'vuex';
 
 export default {

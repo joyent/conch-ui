@@ -50,13 +50,13 @@
 </template>
 
 <script>
-import ProgressIcon from '../components/ProgressIcon.vue';
+import ProgressIcon from '@views/components/ProgressIcon.vue';
 import search from 'fuzzysearch';
 import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import { mapActions, mapGetters } from 'vuex';
-import { deviceToProgress } from '../shared/utils.js';
+import { deviceToProgress } from '@views/shared/utils.js';
 
 export default {
     props: {

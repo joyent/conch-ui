@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import DeviceInspector from '../DeviceInspector/DeviceInspector.vue';
+import DeviceInspector from '@views/DeviceInspector/DeviceInspector.vue';
 import Spinner from './Spinner.vue';
-import { EventBus } from '../../eventBus.js';
+import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {

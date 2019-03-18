@@ -23,8 +23,8 @@
 
 <script>
 import moment from 'moment';
-import RadialProgress from '../components/RadialProgress.vue';
-import Spinner from '../components/RadialProgress.vue';
+import RadialProgress from '@views/components/RadialProgress.vue';
+import Spinner from '@views/components/RadialProgress.vue';
 import { mapState } from 'vuex';
 
 export default {

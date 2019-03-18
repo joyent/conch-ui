@@ -89,9 +89,9 @@
 
 <script>
 import debounce from 'lodash/debounce';
-import { setAssetTag } from '../../api/device.js';
-import { setRackLayout } from '../../api/workspaces.js';
-import { EventBus } from '../../eventBus.js';
+import { setAssetTag } from '@api/device.js';
+import { setRackLayout } from '@api/workspaces.js';
+import { EventBus } from '@src/eventBus.js';
 import { mapGetters, mapState } from 'vuex';
 
 export default {

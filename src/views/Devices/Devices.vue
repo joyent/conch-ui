@@ -31,16 +31,16 @@
 </template>
 
 <script>
-import PageHeader from '../components/PageHeader.vue';
-import Spinner from '../components/Spinner.vue';
-import DeviceInspector from '../DeviceInspector/DeviceInspector.vue';
+import PageHeader from '@views/components/PageHeader.vue';
+import Spinner from '@views/components/Spinner.vue';
+import DeviceInspector from '@views/DeviceInspector/DeviceInspector.vue';
 import DevicesPanel from './DevicesPanel.vue';
 import isEmpty from 'lodash/isEmpty';
 import keyBy from 'lodash/keyBy';
-import { EventBus } from '../../eventBus.js';
+import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getHardwareProduct } from '../../api/hardwareProduct.js';
-import { getWorkspaceDevices } from '../shared/utils';
+import { getHardwareProduct } from '@api/hardwareProduct.js';
+import { getWorkspaceDevices } from '@views/shared/utils';
 
 export default {
     components: {

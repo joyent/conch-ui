@@ -49,19 +49,19 @@
 </template>
 
 <script>
-import DeviceModal from '../components/DeviceModal.vue';
-import LayoutPanel from './LayoutPanel.vue';
-import PageHeader from '../components/PageHeader.vue';
-import RackPanel from './RackPanel.vue';
-import RoomPanel from './RoomPanel.vue';
-import Spinner from '../components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
 import search from 'fuzzysearch';
-import { EventBus } from '../../eventBus.js';
-import { getRackById } from '../../api/workspaces.js';
-import { getLocation } from '../../api/device.js';
+import DeviceModal from '@views/components/DeviceModal.vue';
+import LayoutPanel from './LayoutPanel.vue';
+import PageHeader from '@views/components/PageHeader.vue';
+import RackPanel from './RackPanel.vue';
+import RoomPanel from './RoomPanel.vue';
+import Spinner from '@views/components/Spinner.vue';
+import { EventBus } from '@src/eventBus.js';
+import { getRackById } from '@api/workspaces.js';
+import { getLocation } from '@api/device.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getRackRooms, getWorkspaceRacks, getWorkspaceDevices } from '../shared/utils.js';
+import { getRackRooms, getWorkspaceRacks, getWorkspaceDevices } from '@views/shared/utils.js';
 
 export default {
     components: {

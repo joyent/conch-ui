@@ -36,7 +36,7 @@
 <script>
 import search from "fuzzysearch";
 import isEmpty from 'lodash/isEmpty';
-import ProgressIcon from '../components/ProgressIcon.vue';
+import ProgressIcon from '@views/components/ProgressIcon.vue';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {

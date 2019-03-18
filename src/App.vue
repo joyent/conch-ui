@@ -27,11 +27,11 @@ import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { isLoggedIn } from './api/authentication.js';
-import { loadAllWorkspaces, getRackById } from './api/workspaces.js';
-import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from './api/device.js';
-import { getValidations } from './api/validations.js';
-import { getRackRooms, roomToProgress, getWorkspaceRacks } from './views/shared/utils.js';
+import { isLoggedIn } from '@api/authentication.js';
+import { loadAllWorkspaces, getRackById } from '@api/workspaces.js';
+import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from '@api/device.js';
+import { getValidations } from '@api/validations.js';
+import { getRackRooms, roomToProgress, getWorkspaceRacks } from '@views/shared/utils.js';
 
 export default {
     components: {

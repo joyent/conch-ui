@@ -46,10 +46,10 @@
 
 <script>
 import search from "fuzzysearch";
-import ProgressIcon from '../components/ProgressIcon.vue';
+import ProgressIcon from '@views/components/ProgressIcon.vue';
 import { mapActions, mapGetters } from 'vuex';
-import { getRackById } from '../../api/workspaces';
-import { EventBus } from '../../eventBus.js';
+import { getRackById } from '@api/workspaces';
+import { EventBus } from '@src/eventBus.js';
 
 export default {
     props: {

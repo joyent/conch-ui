@@ -34,10 +34,10 @@
 import search from "fuzzysearch";
 import EditLayoutModal from './EditLayoutModal.vue';
 import LayoutTable from './LayoutTable.vue';
-import Spinner from '../components/Spinner.vue';
+import Spinner from '@views/components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
-import { EventBus } from '../../eventBus.js';
-import { deviceToProgress } from '../shared/utils.js';
+import { EventBus } from '@src/eventBus.js';
+import { deviceToProgress } from '@views/shared/utils.js';
 import { mapState } from 'vuex';
 
 export default {

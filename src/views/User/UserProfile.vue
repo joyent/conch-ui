@@ -43,8 +43,8 @@
 </template>
 
 <script>
-import PageHeader from '../components/PageHeader.vue';
-import { updatePassword } from '../../api/authentication.js';
+import PageHeader from '@views/components/PageHeader.vue';
+import { updatePassword } from '@api/authentication.js';
 
 export default {
     components: {

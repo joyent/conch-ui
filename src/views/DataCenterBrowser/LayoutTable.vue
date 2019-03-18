@@ -45,9 +45,9 @@
 </template>
 
 <script>
-import ProgressIcon from '../components/ProgressIcon.vue';
+import ProgressIcon from '@views/components/ProgressIcon.vue';
 import { mapActions, mapState } from 'vuex';
-import { EventBus } from '../../eventBus.js';
+import { EventBus } from '@src/eventBus.js';
 
 export default {
     props: {

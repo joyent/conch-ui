@@ -48,7 +48,7 @@
 <script>
 import keyBy from 'lodash/keyBy';
 import sortBy from 'lodash/sortBy';
-import { EventBus } from '../../eventBus.js';
+import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {

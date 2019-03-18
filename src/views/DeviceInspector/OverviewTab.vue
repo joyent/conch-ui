@@ -47,7 +47,7 @@
 <script>
 import moment from 'moment';
 import TimeToBurnin from './TimeToBurnin.vue';
-import { EventBus } from '../../eventBus.js';
+import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {

@@ -97,7 +97,7 @@
 import sortBy from 'lodash/sortBy';
 import countBy from 'lodash/countBy';
 import groupBy from 'lodash/groupBy';
-import Spinner from '../components/Spinner.vue';
+import Spinner from '@views/components/Spinner.vue';
 import { mapState } from 'vuex';
 
 export default {

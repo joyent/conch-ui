@@ -21,14 +21,14 @@ import NetworkingTab from './NetworkingTab.vue';
 import OverviewTab from './OverviewTab.vue';
 import ReportTab from './ReportTab.vue';
 import SettingsTab from './SettingsTab.vue';
-import Spinner from '../components/Spinner.vue';
+import Spinner from '@views/components/Spinner.vue';
 import StorageTab from './StorageTab.vue';
 import ValidationTab from './ValidationTab.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '../../api/device.js';
-import { getValidations } from '../../api/validations.js';
-import { getRackById } from '../../api/workspaces';
+import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '@api/device.js';
+import { getValidations } from '@api/validations.js';
+import { getRackById } from '@api/workspaces';
 
 export default {
     components: {

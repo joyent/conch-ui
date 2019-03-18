@@ -58,13 +58,13 @@
 </template>
 
 <script>
-import PageHeader from '../components/PageHeader.vue';
+import PageHeader from '@views/components/PageHeader.vue';
 import RackProgress from './RackProgress.vue';
-import Spinner from '../components/Spinner.vue';
+import Spinner from '@views/components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
-import { EventBus } from '../../eventBus.js';
+import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getWorkspaceRacks, getWorkspaceDevices } from '../shared/utils';
+import { getWorkspaceRacks, getWorkspaceDevices } from '@views/shared/utils';
 
 export default {
     components: {

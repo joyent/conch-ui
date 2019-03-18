@@ -46,8 +46,8 @@
 <script>
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapState } from 'vuex';
-import { login } from '../../api/authentication.js';
-import { loadAllWorkspaces } from '../../api/workspaces.js';
+import { login } from '@api/authentication.js';
+import { loadAllWorkspaces } from '@api/workspaces.js';
 
 export default {
     data() {

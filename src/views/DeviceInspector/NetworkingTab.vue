@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import Spinner from '../components/Spinner.vue';
+import Spinner from '@views/components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapState } from 'vuex';
 

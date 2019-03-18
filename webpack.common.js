@@ -20,9 +20,9 @@ module.exports = {
 	resolve: {
 		modules: [path.join(__dirname, "src"), "node_modules"],
 		alias: {
-			// allow `import from 'config'` to be mapped to the config.js file
-			// in the directory root
-			config: path.join(__dirname, 'config.js'),
+			'@api': path.join(__dirname, 'src/api'),
+			'@src': path.join(__dirname, 'src'),
+			'@views': path.join(__dirname, 'src/views'),
 			'vue$': 'vue/dist/vue.esm.js',
 		},
 	},

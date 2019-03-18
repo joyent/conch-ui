@@ -1,7 +1,7 @@
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
-import { getAllRacks, getDevices } from '../../api/workspaces.js';
-import store from '../../store/store.js';
+import { getAllRacks, getDevices } from '@api/workspaces.js';
+import store from '@src/store/store.js';
 
 export const deviceToProgress = device => {
 	if (device == null) {
