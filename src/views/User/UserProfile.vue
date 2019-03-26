@@ -24,6 +24,7 @@
                                 :class="{ 'is-loading': isLoading }"
                                 placeholder="New Password"
                                 v-model="password"
+                                ref="passwordInput"
                             >
                             <button
                                 class="button save is-primary"
@@ -39,12 +40,41 @@
                 </div>
             </div>
         </section>
+        <div class="modal is-active" v-if="showModal">
+            <div class="modal-background" @click="closeModal()"></div>
+            <div class="modal-card">
+                <section class="modal-card-body" style="padding: 0px">
+                    <article class="message is-danger is-medium">
+                        <div class="message-header">
+                            <p>Password Update Required</p>
+                            <button
+                                class="delete is-medium"
+                                aria-label="delete"
+                                @click="closeModal()"
+                            ></button>
+                        </div>
+                        <div class="message-body">
+                            <p style="margin-bottom: 20px;">
+                                Your password needs to be updated immediately.
+                            </p>
+                            <a
+                                class="button is-danger"
+                                @click="closeModal()"
+                            >
+                                Update Password
+                            </a>
+                        </div>
+                    </article>
+                </section>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import PageHeader from '@views/components/PageHeader.vue';
 import { updatePassword } from '@api/authentication.js';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
@@ -54,10 +84,19 @@ export default {
         return {
             isLoading: false,
             password: '',
+            showModal: false,
             showWarning: false,
         };
     },
     methods: {
+        ...mapActions([
+            'clearForcePasswordChange',
+        ]),
+        closeModal() {
+            this.showModal = false;
+            this.clearForcePasswordChange();
+            this.$refs.passwordInput.focus();
+        },
         savePassword() {
             this.isLoading = true;
             const password = this.password;
@@ -77,6 +116,16 @@ export default {
                     });
             }
         },
+    },
+    computed: {
+        ...mapState([
+            'forcePasswordChange',
+        ]),
+    },
+    mounted() {
+        if (this.forcePasswordChange) {
+            this.showModal = true;
+        }
     },
 };
 </script>

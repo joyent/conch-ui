@@ -9,6 +9,7 @@ export const state = {
     devicesByWorkspace: [],
     hardwareProducts: [],
     highlightDeviceId: '',
+    forcePasswordChange: false,
     rackLayout: {},
     rackRooms: {},
     rackRoomsByWorkspace: [],

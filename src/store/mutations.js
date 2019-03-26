@@ -6,6 +6,10 @@ export const clearActiveRoom = (state) => {
     state.activeRoom = {};
 };
 
+export const clearForcePasswordChange = (state) => {
+    state.forcePasswordChange = false;
+};
+
 export const clearRackLayout = (state) => {
     state.rackLayout = {};
 };
@@ -46,6 +50,10 @@ export const setDevicesByWorkspace = (state, devices) => {
     state.devicesByWorkspace.push(devices);
 };
 
+export const setForcePasswordChange = (state) => {
+    state.forcePasswordChange = true;
+};
+
 export const setHardwareProducts = (state, hardwareProducts) => {
     state.hardwareProducts = hardwareProducts;
 };
@@ -81,6 +89,7 @@ export const setValidations = (state, validations) => {
 export default {
     clearActiveDevice,
     clearActiveRoom,
+    clearForcePasswordChange,
     clearRackLayout,
     clearShowDeviceInRack,
     setActiveDevice,
@@ -91,6 +100,7 @@ export default {
     setAllRooms,
     setCurrentWorkspace,
     setDevicesByWorkspace,
+    setForcePasswordChange,
     setHardwareProducts,
     setHighlightDeviceId,
     setRackLayout,

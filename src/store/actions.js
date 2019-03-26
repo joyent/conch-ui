@@ -6,6 +6,10 @@ export const clearActiveRoom = ({ commit }) => {
     commit('clearActiveRoom');
 };
 
+export const clearForcePasswordChange = ({ commit }) => {
+    commit('clearForcePasswordChange');
+};
+
 export const clearRackLayout = ({ commit }) => {
     commit('clearRackLayout');
 };
@@ -46,6 +50,10 @@ export const setDevicesByWorkspace = ({ commit }, devices) => {
     commit('setDevicesByWorkspace', devices);
 };
 
+export const setForcePasswordChange = ({ commit }) => {
+    commit('setForcePasswordChange');
+};
+
 export const setHardwareProducts = ({ commit }, hardwareProducts) => {
     commit('setHardwareProducts', hardwareProducts);
 };
@@ -81,6 +89,7 @@ export const setValidations = ({ commit }, validations) => {
 export default {
     clearActiveDevice,
     clearActiveRoom,
+    clearForcePasswordChange,
     clearRackLayout,
     clearShowDeviceInRack,
     setActiveDevice,
@@ -91,6 +100,7 @@ export default {
     setAllRooms,
     setCurrentWorkspace,
     setDevicesByWorkspace,
+    setForcePasswordChange,
     setHardwareProducts,
     setHighlightDeviceId,
     setRackLayout,

@@ -37,7 +37,18 @@ export const updatePassword = (password) => {
     .then(clearToken());
 };
 
+export const isForcePasswordChange = () => {
+    return request({
+        method: "GET",
+        url: "/user/me",
+    })
+    .then(response => {
+        return Promise.resolve(response.data.force_password_change);
+    });
+};
+
 export default {
+    isForcePasswordChange,
     isLoggedIn,
     login,
     logout,

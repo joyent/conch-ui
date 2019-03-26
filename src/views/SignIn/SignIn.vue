@@ -46,7 +46,7 @@
 <script>
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapState } from 'vuex';
-import { login } from '@api/authentication.js';
+import { isForcePasswordChange, login } from '@api/authentication.js';
 import { loadAllWorkspaces } from '@api/workspaces.js';
 
 export default {
@@ -62,6 +62,7 @@ export default {
     methods: {
         ...mapActions([
             'setCurrentWorkspace',
+            'setForcePasswordChange',
             'setWorkspaces',
         ]),
         initWorkspaceData() {
@@ -89,15 +90,33 @@ export default {
 
                 login(data)
                     .then(response => {
-                        if (isEmpty(this.workspaces)) {
-                            this.initWorkspaceData()
-                                .then(() => {
-                                    this.$router.push({ name: 'status', params: { currentWorkspace: this.currentWorkspaceId } });
-                                });
-                        } else {
-                            this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
-                            this.$router.push({ name: 'status', params: { currentWorkspace: this.$store.getters.currentWorkspaceId } });
-                        }
+                        isForcePasswordChange()
+                            .then(forcePasswordChange => {
+                                if (forcePasswordChange) {
+                                    this.setForcePasswordChange();
+                                    this.$router.push({ name: 'user' });
+                                } else {
+                                    if (isEmpty(this.workspaces)) {
+                                        this.initWorkspaceData()
+                                            .then(() => {
+                                                this.$router.push({
+                                                    name: 'status',
+                                                    params: {
+                                                        currentWorkspace: this.currentWorkspaceId
+                                                    }
+                                                });
+                                            });
+                                    } else {
+                                        this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
+                                        this.$router.push({
+                                            name: 'status',
+                                            params: {
+                                                currentWorkspace: this.$store.getters.currentWorkspaceId
+                                            }
+                                        });
+                                    }
+                                }
+                            });
                     })
                     .catch((error) => {
                         this.isLoading = false;
