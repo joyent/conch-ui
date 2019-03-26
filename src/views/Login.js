@@ -1,6 +1,7 @@
 import m from "mithril";
 
 import User from "models/User";
+import Workspace from "models/Workspace";
 
 export default () => {
 	let badLoginAttempt = false;
@@ -79,7 +80,18 @@ export default () => {
 													)
 													.then(() => {
 														badLoginAttempt = false;
-														m.route.set("/");
+														user.isForcePasswordChange()
+															.then(isForcePasswordChange => {
+																if (isForcePasswordChange) {
+																	Workspace.loadAllWorkspaces()
+																		.then(Workspace.findBestWorkspace)
+																		.then(w => m.route.set(`/${w.id}/user`, {
+																			forcePasswordUpdate: true
+																		}));
+																} else {
+																	m.route.set("/");
+																}
+															});
 													})
 													.catch(() => {
 														badLoginAttempt = true;

@@ -6,6 +6,17 @@ import stream from "mithril/stream";
 export default () => {
 	const r = new Request();
 	return {
+		isForcePasswordChange() {
+			return r
+				.request({
+					method: "GET",
+					url: "/user/me",
+				})
+				.then(response => {
+					return Promise.resolve(response.force_password_change);
+				});
+		},
+
 		loggedIn: () => !!r.getToken(),
 
 		login(email, pass) {
