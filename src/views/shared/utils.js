@@ -10,7 +10,7 @@ export const deviceToProgress = device => {
         return 'graduated';
     } else if (device.validated) {
         return 'validated';
-    } else if (device.health.toLowerCase() === 'fail') {
+    } else if (device.health === 'fail') {
         return 'failing';
     } else if (moment().diff(moment(device.last_seen), 'second') <= 300) {
         return 'active';

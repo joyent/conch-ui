@@ -90,7 +90,7 @@ export default {
             //       If a user clicks through the UI fast, health may
             //       not exist yet
             if (this.activeDeviceDetails.health) {
-                health = this.activeDeviceDetails.health.toLowerCase();
+                health = this.activeDeviceDetails.health;
             }
 
             if (health === 'fail') {

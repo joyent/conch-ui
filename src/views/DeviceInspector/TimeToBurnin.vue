@@ -47,7 +47,7 @@ export default {
             return this.maxBurnin / this.numReboots;
         },
         failing() {
-            if (this.health.toLowerCase() === 'fail') {
+            if (this.health === 'fail') {
                 return true;
             }
 
