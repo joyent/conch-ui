@@ -8,9 +8,10 @@ export default {
 		const device = attrs.device;
 		if (device) {
 			let healthIcon;
-			if (device.health === "PASS") {
+			const health = device.health.toLowerCase();
+			if (health === "pass") {
 				healthIcon = Icons.passValidation;
-			} else if (device.health === "FAIL") {
+			} else if (health === "fail") {
 				healthIcon = Icons.failValidation;
 			} else {
 				healthIcon = Icons.noReport;
