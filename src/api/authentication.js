@@ -15,7 +15,7 @@ export const login = (data) => {
         data
     })
     .then(response => {
-        let data = response.data;
+        const data = response.data;
 
         if (data && data.jwt_token) {
             setToken(data.jwt_token);

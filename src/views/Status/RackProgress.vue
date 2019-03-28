@@ -82,7 +82,7 @@ export default {
             return this.nodeParent(rack.device_progress);
         },
         sortNodesRole(nodes) {
-            let sortOrder = {
+            const sortOrder = {
                 'TRITON': 1,
                 'MANTA': 2,
                 'MANTA_TALL': 3,
@@ -98,7 +98,7 @@ export default {
             });
         },
         sortNodesStatus(nodes) {
-            let sortOrder = {
+            const sortOrder = {
                 'Validated': 1,
                 'Failing': 2,
                 'In Progress': 3,

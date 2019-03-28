@@ -112,16 +112,16 @@ export default {
                 });
         },
         setFoundDevices(searchText) {
-            let devices = this.workspaceDevices;
-            let text = searchText.toLowerCase();
+            const devices = this.workspaceDevices;
+            const text = searchText.toLowerCase();
 
             this.foundDevices = devices.reduce((acc, device) => {
                 if (acc.length > this.maxFoundDevices) {
                     return acc;
                 }
 
-                let deviceId = device.id.toLowerCase();
-                let assetTag = device.asset_tag ? device.asset_tag.toLowerCase() : false;
+                const deviceId = device.id.toLowerCase();
+                const assetTag = device.asset_tag ? device.asset_tag.toLowerCase() : false;
 
                 if (search(text, deviceId) || (assetTag && search(text, assetTag))) {
                     acc.push(device);
@@ -136,11 +136,10 @@ export default {
 
             getLocation(device.id)
                 .then(response => {
-                    let location = response.data;
-
-                    let activeRoom = this.rackRooms.find(room => {
+                    const location = response.data;
+                    const activeRoom = this.rackRooms.find(room => {
                         return room.name === location.datacenter.name;
-                    })
+                    });
 
                     this.setActiveRoom(activeRoom);
 

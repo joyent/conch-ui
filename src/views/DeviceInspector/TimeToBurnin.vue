@@ -74,7 +74,7 @@ export default {
             return this.maxBurnin - (this.rebootCount * this.burninStageTime + this.sinceLastReboot);
         },
         rebootCount() {
-            let deviceSettings = this.activeDeviceSettings;
+            const deviceSettings = this.activeDeviceSettings;
 
             if (deviceSettings && deviceSettings['build.reboot_count']) {
                 return deviceSettings['build.reboot_count'];

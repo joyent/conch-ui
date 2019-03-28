@@ -79,9 +79,9 @@ export default {
             'setShowDeviceInRack',
         ]),
         showDeviceInRack() {
-            let { datacenter, rack } = this.activeDeviceDetails.location;
-            let route = this.$route.path;
-            let workspaceRoute = route.substring(0, route.indexOf("/", 1));
+            const { datacenter, rack } = this.activeDeviceDetails.location;
+            const route = this.$route.path;
+            const workspaceRoute = route.substring(0, route.indexOf("/", 1));
 
             this.setHighlightDeviceId(this.activeDeviceId);
 
@@ -102,7 +102,7 @@ export default {
             'activeDeviceSettings',
         ]),
         deviceTags() {
-            let tags = [];
+            const tags = [];
             let health;
 
             // Todo: Look into loading activeDeviceDetails data faster

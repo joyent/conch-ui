@@ -73,7 +73,7 @@ export default {
         initWorkspaceData() {
             return loadAllWorkspaces()
                 .then(response => {
-                    let workspaces = response.data;
+                    const workspaces = response.data;
 
                     this.setWorkspaces(workspaces);
                     this.setCurrentWorkspace(this.loadCurrentWorkspace());

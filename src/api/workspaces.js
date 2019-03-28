@@ -20,7 +20,7 @@ export const getRackById = (id, rackId) => {
         url: `/workspace/${id}/rack/${rackId}`
     })
     .then(response => {
-        let data = response.data;
+        const data = response.data;
 
         if (data.slots) {
             data.slots = data.slots.reduce((obj, curr) => {

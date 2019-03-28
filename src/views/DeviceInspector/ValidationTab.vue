@@ -126,7 +126,7 @@ export default {
             }
         },
         resultCount(results) {
-            let counts = countBy(results, 'status');
+            const counts = countBy(results, 'status');
             return Object.entries(counts);
         },
         resultCountStyle(status) {
@@ -145,7 +145,7 @@ export default {
             'validations',
         ]),
         deviceValidations() {
-            let validations = [];
+            const validations = [];
 
             this.validationStateResultsById.map(validationResults => {
                 Object.keys(validationResults).map(validationId => {

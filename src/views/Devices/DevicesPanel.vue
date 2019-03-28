@@ -99,7 +99,6 @@ export default {
         deviceFilter(device) {
             const deviceId = device && device.id ? device.id.toLowerCase() : '';
             const assetTag = device && device.asset_tag ? device.asset_tag.toLowerCase() : '';
-
             const progressFilter = this.selectedProgress === 'all' || this.selectedProgress === deviceToProgress(device);
             const productFilter = this.selectedProductId === 'all' || this.selectedProductId === device.hardware_product;
             const searchFilter = search(this.deviceSearchTextLowerCase, deviceId) || search(this.deviceSearchTextLowerCase, assetTag);

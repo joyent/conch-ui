@@ -128,7 +128,7 @@ export default {
         // get the list of available rack roles
         this.availableRackRoles = Array.from(
             this.activeRacks.reduce((acc, rack) => {
-                let rackRole = rack.role.toLowerCase();
+                const rackRole = rack.role.toLowerCase();
 
                 if (!acc.has(rackRole)) {
                     acc.add(rackRole);

@@ -78,7 +78,7 @@ export default {
         availableDeviceProgress() {
             return Array.from(
                 Object.keys(this.rackLayout.slots || {}).reduce((acc, slotId) => {
-                    let occupant = this.rackLayout.slots[slotId].occupant;
+                    const occupant = this.rackLayout.slots[slotId].occupant;
 
                     if (occupant) {
                         acc.add(deviceToProgress(occupant));
@@ -103,8 +103,9 @@ export default {
             return Object.keys(this.rackLayout.slots || {})
                 .reverse()
                 .map(slotId => {
-                    let slot = this.rackLayout.slots[slotId];
-                    let occupant = slot.occupant;
+                    const slot = this.rackLayout.slots[slotId];
+                    const occupant = slot.occupant;
+
                     return {
                         id: slotId,
                         name: slot.name,

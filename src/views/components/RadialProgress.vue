@@ -53,8 +53,8 @@ export default {
     },
     mounted() {
         const path = this.$refs.meter;
-        let length = this.getTotalLength();
-        let strokeLength = length * ((100 - this.percentage) / 100);
+        const length = this.getTotalLength();
+        const strokeLength = length * ((100 - this.percentage) / 100);
         path.getBoundingClientRect(); // trigger layout for animation
         path.style.strokeDashoffset = Math.max(0, strokeLength);
     },

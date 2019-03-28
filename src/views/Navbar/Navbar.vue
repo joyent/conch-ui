@@ -68,7 +68,7 @@ export default {
             sessionStorage.setItem('currentWorkspace', workspaceId);
 
             let name = this.$route.name;
-            let params = {
+            const params = {
                 currentWorkspace: workspaceId,
             };
 
@@ -119,7 +119,7 @@ export default {
                     acc.graph[workspace.parent_id] = [workspace];
                 }
 
-                let workspaceIdToWorkspace = keyBy(this.workspaces, 'id');
+                const workspaceIdToWorkspace = keyBy(this.workspaces, 'id');
 
                 // if the parent isn't present, then the workspace is a root
                 if (!workspaceIdToWorkspace[workspace.parent_id]) {

@@ -204,7 +204,7 @@ export default {
     },
     created() {
         this.deviceSlots.map(slot => {
-            let occupant = slot.occupant;
+            const occupant = slot.occupant;
             if (occupant) {
                 this.assignments[slot.id] = {
                     id: occupant.id,
