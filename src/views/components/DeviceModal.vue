@@ -1,18 +1,18 @@
 <template>
     <div class="modal device-modal" :class="{ 'is-active': isActive }" style="align-items: start;">
-        <div class="modal-background" @click="closeModal"></div>
+        <div class="modal-background" @click="closeModal()"></div>
         <div class="modal-card" style="margin-top: 5vh">
             <header class="modal-card-head">
                 <p class="modal-card-title has-text-left">
                     Device {{ activeDeviceId }}
                 </p>
-                <button class="delete" aria-label="close" @click="closeModal"></button>
+                <button class="delete" aria-label="close" @click="closeModal()"></button>
             </header>
             <section class="modal-card-body">
                 <DeviceInspector v-if="activeDeviceId"/>
                 <Spinner v-else/>
             </section>
-            <footer class="modal-card-foot is-right"></footer>
+            <footer class="modal-card-foot"></footer>
         </div>
     </div>
 </template>

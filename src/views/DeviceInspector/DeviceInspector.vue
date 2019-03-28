@@ -6,8 +6,14 @@
         <div class="tabs-container" v-else>
             <div class="tabs is-centered is-boxed is-small">
                 <ul>
-                    <li v-for="(tab, index) in tabs" :key="index" :class="{ 'is-active': activeTab === tab.component }">
-                        <a @click="setActiveTab(tab.component)">{{ tab.title }}</a>
+                    <li
+                        v-for="(tab, index) in tabs"
+                        :key="index"
+                        :class="{ 'is-active': activeTab === tab.component }"
+                    >
+                        <a @click="setActiveTab(tab.component)">
+                            {{ tab.title }}
+                        </a>
                     </li>
                 </ul>
             </div>

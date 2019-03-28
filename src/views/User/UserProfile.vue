@@ -1,22 +1,38 @@
 <template>
     <div class="user-profile">
-        <PageHeader :title="'User Profile'" :subtitle="'Update password and profile settings'" />
+        <PageHeader
+            :title="'User Profile'"
+            :subtitle="'Update password and profile settings'"
+        />
         <section class="info-tiles" style="margin-top: 0.75rem;">
             <div class="tile is-ancestor">
                 <div class="tile is-parent">
                     <article class="tile is-child box">
                         <transition name="fade">
-                            <article class="message is-danger" v-if="showWarning">
+                            <article
+                                class="message is-danger"
+                                v-if="showWarning"
+                            >
                                 <div class="message-header">
                                     <p>
-                                        <i class="fas fa-exclamation-circle" style="margin-right: 10px;"></i>
+                                        <i
+                                            class="fas fa-exclamation-circle"
+                                            style="margin-right: 10px;"
+                                        ></i>
                                         Passwords must be at least 5 characters. Please enter a secure password.
                                     </p>
-                                    <button class="delete" aria-label="delete" @click="showWarning = false" type="button"></button>
+                                    <button
+                                        class="delete"
+                                        aria-label="delete"
+                                        @click="showWarning = false"
+                                        type="button"
+                                    ></button>
                                 </div>
                             </article>
                         </transition>
-                        <p class="subtitle" style="margin-bottom: 0.75rem;">New Password</p>
+                        <p class="subtitle" style="margin-bottom: 0.75rem;">
+                            New Password
+                        </p>
                         <form>
                             <input
                                 type="password"
@@ -30,7 +46,7 @@
                                 class="button save is-primary"
                                 :class="{ 'is-loading': isLoading }"
                                 :disabled="isLoading"
-                                @click="savePassword"
+                                @click="savePassword()"
                                 style="margin-top: 0.75rem;"
                                 type="button">
                                 Save
@@ -58,7 +74,7 @@
                                 Your password needs to be updated immediately.
                             </p>
                             <a
-                                class="button is-danger"
+                                class="button is-danger update-password"
                                 @click="closeModal()"
                             >
                                 Update Password

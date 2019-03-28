@@ -1,4 +1,10 @@
-import { clearToken, getToken, setToken, request, requestWithToken } from './request.js';
+import {
+    clearToken,
+    getToken,
+    setToken,
+    request,
+    requestWithToken
+} from './request.js';
 
 export const isLoggedIn = () => !!getToken();
 

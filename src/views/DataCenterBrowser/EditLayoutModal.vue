@@ -1,18 +1,34 @@
 <template>
-    <div class="modal" :class="{ 'is-active': isActive }" id="device-editor-modal">
-        <div class="modal-background" @click="closeModal"></div>
+    <div
+        class="modal"
+        :class="{ 'is-active': isActive }"
+        id="device-editor-modal"
+    >
+        <div class="modal-background" @click="closeModal()"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title has-text-centered">Assign Rack {{ rackLayout.name }}</p>
-                <button class="delete" aria-label="close" @click="closeModal" type="button"></button>
+                <p class="modal-card-title has-text-centered">
+                    Assign Rack {{ rackLayout.name }}
+                </p>
+                <button
+                    class="delete"
+                    aria-label="close"
+                    @click="closeModal()"
+                    type="button"
+                ></button>
             </header>
             <section class="modal-card-body">
-                <table class="table is-fullwidth is-marginless" id="edit-layout-table">
+                <table
+                    class="table is-fullwidth is-marginless"
+                    id="edit-layout-table"
+                >
                     <thead>
                         <tr>
                             <th>Slot</th>
                             <th>Product Name</th>
-                            <th class="has-text-right">Device Identification</th>
+                            <th class="has-text-right">
+                                Device Identification
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,14 +88,14 @@
                         <button
                             class="button save is-primary"
                             :class="{ 'is-loading': buttonLoading }"
-                            @click="save"
+                            @click="save()"
                             type="button"
                         >
                             Save
                         </button>
                     </p>
                     <p class="control">
-                        <button class="button cancel" @click="closeModal" type="button">Cancel</button>
+                        <button class="button cancel" @click="closeModal()" type="button">Cancel</button>
                     </p>
                 </div>
             </footer>

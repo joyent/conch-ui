@@ -5,7 +5,12 @@
                 <div class="column is-4 is-offset-4">
                     <div class="box">
                         <div class="h3 title">Login to Conch</div>
-                        <p class="subtitle has-text-warning" v-if="badLoginAttempt">Invalid email address or password</p>
+                        <p
+                            class="subtitle has-text-warning"
+                            v-if="badLoginAttempt"
+                        >
+                            Invalid email address or password
+                        </p>
                         <form>
                             <div class="field">
                                 <div class="control">
@@ -31,9 +36,9 @@
                                 type="button"
                                 class="button is-primary is-fullwidth"
                                 :class="{ 'is-loading': isLoading }"
-                                @click="signIn"
+                                @click="signIn()"
                             >
-                            Login
+                                Login
                             </button>
                         </form>
                     </div>
@@ -45,7 +50,7 @@
 
 <script>
 import isEmpty from 'lodash/isEmpty';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { isForcePasswordChange, login } from '@api/authentication.js';
 import { loadAllWorkspaces } from '@api/workspaces.js';
 
@@ -71,7 +76,7 @@ export default {
                     let workspaces = response.data;
 
                     this.setWorkspaces(workspaces);
-                    this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
+                    this.setCurrentWorkspace(this.loadCurrentWorkspace());
 
                     this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
                     sessionStorage.setItem('currentWorkspace', this.currentWorkspaceId);
@@ -107,7 +112,7 @@ export default {
                                                 });
                                             });
                                     } else {
-                                        this.setCurrentWorkspace(this.$store.getters.loadCurrentWorkspace());
+                                        this.setCurrentWorkspace(this.loadCurrentWorkspace());
                                         this.$router.push({
                                             name: 'status',
                                             params: {
@@ -129,6 +134,9 @@ export default {
         },
     },
     computed: {
+        ...mapGetters([
+            'loadCurrentWorkspace'
+        ]),
         ...mapState([
             'workspaces',
         ]),

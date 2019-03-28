@@ -83,13 +83,13 @@ export default {
             'setRackRooms',
         ]),
         setWorkspaceDevices() {
-            getWorkspaceDevices(this.currentWorkspaceId)
+            getWorkspaceDevices(this.workspaceId)
                 .then(response => {
                     this.workspaceDevices = response;
                 });
         },
         setWorkspaceRacks() {
-            getWorkspaceRacks(this.currentWorkspaceId)
+            getWorkspaceRacks(this.workspaceId)
                 .then(response => {
                     this.setRackRoomsData(response);
                 });
@@ -114,6 +114,7 @@ export default {
             'currentWorkspaceName',
         ]),
         ...mapState([
+            'currentWorkspace',
             'rackRooms',
         ]),
         hasRackRooms() {
@@ -122,7 +123,7 @@ export default {
         progress() {
             const newProgress = { pass: 0, total: 0 };
 
-            if (this.workspaceDevices) {
+            if (this.workspaceDevices && this.workspaceDevices.length) {
                 this.workspaceDevices.forEach(device => {
                     if (device.health === 'pass') {
                         newProgress.pass++;
@@ -140,6 +141,25 @@ export default {
         },
         title() {
             return `${this.currentWorkspaceName} workspace status`;
+        },
+        workspaceId() {
+            let workspaceId = this.currentWorkspaceId;
+
+            if (!workspaceId && !isEmpty(this.currentWorkspace)) {
+                workspaceId = this.currentWorkspace.id;
+            }
+
+            if (!workspaceId) {
+                if (
+                    this.$route &&
+                    this.$route.params &&
+                    this.$route.params.currentWorkspace
+                ) {
+                    workspaceId = this.$route.params.currentWorkspace;
+                }
+            }
+
+            return workspaceId;
         },
     },
     created() {

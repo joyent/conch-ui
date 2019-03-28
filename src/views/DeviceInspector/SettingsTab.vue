@@ -1,6 +1,9 @@
 <template>
     <div class="settings-tab">
-        <table class="table is-narrow is-fullwidth">
+        <p class="has-text-centered" v-if="isEmpty(this.activeDeviceSettings)">
+            No settings details available.
+        </p>
+        <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
                     <th>Name</th>
@@ -24,9 +27,13 @@
 </template>
 
 <script>
+import isEmpty from 'lodash/isEmpty';
 import { mapState } from 'vuex';
 
 export default {
+    methods: {
+        isEmpty,
+    },
     computed: {
         ...mapState([
             'activeDeviceSettings',

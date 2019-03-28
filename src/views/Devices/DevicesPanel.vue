@@ -5,7 +5,12 @@
         </p>
         <div class="panel-block">
             <p class="control has-icons-left">
-                <input type="text" class="input is-small" placeholder="Search Devices" v-model="deviceSearchText">
+                <input
+                    type="text"
+                    class="input is-small"
+                    placeholder="Search Devices"
+                    v-model="deviceSearchText"
+                >
                 <span class="icon is-small is-left">
                     <i class="fas fa-search"></i>
                 </span>
@@ -15,6 +20,7 @@
             <a
                 v-for="(progress, index) in availableDeviceProgress"
                 :key="index"
+                class="device-progress"
                 :class="{ 'is-active': selectedProgress === progress }"
                 @click="selectedProgress = progress"
             >
@@ -25,6 +31,7 @@
             <a
                 v-for="(product, index) in availableProducts"
                 :key="index"
+                class="hardware-product"
                 :class="{ 'is-active': selectedProductId === product.id }"
                 @click="selectedProductId = product.id"
             >
@@ -42,7 +49,11 @@
                 <ProgressIcon :progress="deviceToProgress(device)" />
             </div>
             <p>{{ device.id }}</p>
-            <p class="has-text-grey-light" v-if="device.asset_tag" style="flex-grow: 1;">
+            <p
+                class="has-text-grey-light"
+                v-if="device.asset_tag"
+                style="flex-grow: 1;"
+            >
                 {{ device.asset_tag }}
             </p>
         </a>

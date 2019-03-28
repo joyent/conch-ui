@@ -121,12 +121,16 @@ progress::-webkit-progress-value {
 		max-width: 474px;
 	}
 
-	.subtitle {
-		margin-bottom: 30px;
+	.content {
+		margin-top: 260px;
 	}
 
 	.title {
 		font-size: 6rem;
+	}
+
+	.subtitle {
+		margin-bottom: 30px;
 	}
 
 	.action {
@@ -137,6 +141,10 @@ progress::-webkit-progress-value {
 				margin-bottom: 0.25em;
 			}
 		}
+	}
+
+	.image {
+		margin-top: 160px;
 	}
 }
 

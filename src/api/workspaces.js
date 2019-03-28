@@ -22,10 +22,12 @@ export const getRackById = (id, rackId) => {
     .then(response => {
         let data = response.data;
 
-        data.slots = data.slots.reduce((obj, curr) => {
-            obj[curr.rack_unit_start] = curr;
-            return obj;
-        }, {});
+        if (data.slots) {
+            data.slots = data.slots.reduce((obj, curr) => {
+                obj[curr.rack_unit_start] = curr;
+                return obj;
+            }, {});
+        }
 
         return Promise.resolve(data);
     });

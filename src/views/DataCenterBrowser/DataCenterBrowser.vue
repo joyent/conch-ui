@@ -144,13 +144,15 @@ export default {
 
                     this.setActiveRoom(activeRoom);
 
-                    this.rackLoading = true;
+                    if (location && location.rack && location.rack.id) {
+                        this.rackLoading = true;
 
-                    getRackById(this.currentWorkspaceId, location.rack.id)
-                        .then(response => {
-                            this.setRackLayout(response);
-                            this.rackLoading = false;
-                        });
+                        getRackById(this.currentWorkspaceId, location.rack.id)
+                            .then(response => {
+                                this.setRackLayout(response);
+                                this.rackLoading = false;
+                            });
+                    }
                 });
         },
     },

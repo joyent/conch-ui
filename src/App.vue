@@ -1,9 +1,7 @@
 <template>
     <div id="app">
-        <div v-if="this.$route.path === '/'">
-            <SignIn/>
-        </div>
-        <div v-else-if="this.$route.params.currentWorkspace">
+        <SignIn v-if="this.$route.path === '/'" />
+        <div v-else-if="this.$route.params.currentWorkspace || this.$route.path === '/user'">
             <router-view name="navbar"></router-view>
             <div class="section">
                 <div class="columns">
@@ -16,9 +14,7 @@
                 </div>
             </div>
         </div>
-        <div v-else>
-            <PageNotFound/>
-        </div>
+        <PageNotFound v-else />
     </div>
 </template>
 
@@ -51,6 +47,10 @@ export default {
             'setValidations',
             'setWorkspaces',
         ]),
+        findWorkspaceById(id) {
+            return this.workspaces.find(workspace => workspace.id === id) ||
+                   null;
+        },
         setRoomsAndStore() {
             const currentWorkspaceId = this.currentWorkspaceId;
 
@@ -120,7 +120,6 @@ export default {
         ...mapGetters([
             'activeDeviceId',
             'currentWorkspaceId',
-            'findWorkspaceById',
             'loadCurrentWorkspace',
         ]),
         ...mapState([

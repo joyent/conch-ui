@@ -1,17 +1,34 @@
 <template>
     <div class="networking-tab">
-        <Spinner v-if="!hasInterfaces" />
+        <p class="has-text-centered" v-if="isEmpty(this.nics)">
+            No networking details available.
+        </p>
+        <Spinner v-else-if="isEmpty(ifaces)" />
         <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
-                    <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+                    <th
+                        v-for="(header, index) in headers"
+                        :key="index"
+                    >
+                        {{ header }}
+                    </th>
                 </tr>
             </thead>
             <template v-for="(iface, index) in ifaces">
-                <tr :class="{ 'is-selected': isRowSelected(index) }" class="row" @click="revealIfaceDetails(index)" style="cursor: pointer;" :key="index">
+                <tr
+                    :class="{ 'is-selected': isRowSelected(index) }"
+                    class="row"
+                    @click="revealIfaceDetails(index)"
+                    style="cursor: pointer;"
+                    :key="index"
+                >
                     <td>
                         <div class="icon">
-                            <i class="fas fa-caret-down" v-if="isRowSelected(index)"></i>
+                            <i
+                                class="fas fa-caret-down"
+                                v-if="isRowSelected(index)"
+                            ></i>
                             <i class="fas fa-caret-right" v-else></i>
                         </div>
                     </td>
@@ -27,19 +44,27 @@
                             <table class="table is-narrow is-marginless">
                                 <tbody>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Product</td>
+                                        <td class="has-text-weight-semibold">
+                                            Product
+                                        </td>
                                         <td>{{ iface.product }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Peer Switch</td>
+                                        <td class="has-text-weight-semibold">
+                                            Peer Switch
+                                        </td>
                                         <td>{{ iface.peer_switch }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Peer Port</td>
+                                        <td class="has-text-weight-semibold">
+                                            Peer Port
+                                        </td>
                                         <td>{{ iface.peer_port }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Peer Mac</td>
+                                        <td class="has-text-weight-semibold">
+                                            Peer Mac
+                                        </td>
                                         <td>{{ iface.peer_mac }}</td>
                                     </tr>
                                 </tbody>
@@ -50,7 +75,9 @@
             </template>
             <tfoot>
                 <tr>
-                    <th v-for="(header, index) in headers" :key="index">{{ header }}</th>
+                    <th v-for="(header, index) in headers" :key="index">
+                        {{ header }}
+                    </th>
                 </tr>
             </tfoot>
         </table>
@@ -79,6 +106,7 @@ export default {
         };
     },
     methods: {
+        isEmpty,
         isRowSelected(index) {
             return this.ifaceDetailsRows.indexOf(index) >= 0;
         },
@@ -86,7 +114,9 @@ export default {
             if (this.ifaceDetailsRows.indexOf(index) === -1) {
                 this.ifaceDetailsRows.push(index);
             } else {
-                this.ifaceDetailsRows.splice(this.ifaceDetailsRows.indexOf(index), 1);
+                this.ifaceDetailsRows.splice(
+                    this.ifaceDetailsRows.indexOf(index), 1
+                );
             }
         },
     },
@@ -94,9 +124,6 @@ export default {
         ...mapState([
             'activeDeviceDetails',
         ]),
-        hasInterfaces () {
-            return !isEmpty(this.nics);
-        },
         ifaces() {
             return Object.entries(this.nics)
                 .sort()
@@ -106,7 +133,8 @@ export default {
                 });
         },
         nics() {
-            return this.activeDeviceDetails.latest_report && this.activeDeviceDetails.latest_report.interfaces || {};
+            return this.activeDeviceDetails.latest_report &&
+                   this.activeDeviceDetails.latest_report.interfaces || {};
         },
     },
 };

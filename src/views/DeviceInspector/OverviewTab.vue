@@ -3,14 +3,24 @@
         <div class="level">
             <div class="level-left">
                 <div class="level-item tags">
-                    <div class="tag" v-for="(tag, index) in deviceTags" :key="index" :class="tag.style">
+                    <div
+                        class="tag"
+                        v-for="(tag, index) in deviceTags"
+                        :key="index"
+                        :class="tag.style"
+                    >
                         {{ tag.title }}
                     </div>
                 </div>
             </div>
             <div class="level-right" v-if="activeDeviceDetails.location">
                 <div class="level-item">
-                    <button class="button is-small is-link is-rounded" @click="showDeviceInRack">Show Device in Rack</button>
+                    <button
+                        class="button is-small is-link is-rounded"
+                        @click="showDeviceInRack()"
+                    >
+                        Show Device in Rack
+                    </button>
                 </div>
             </div>
         </div>
@@ -19,17 +29,26 @@
                 <div class="tile is-parent is-vertical">
                     <article class="tile is-child box last-seen">
                         <p class="subtitle">Last Reported</p>
-                        <p class="title" v-if="activeDeviceDetails.last_seen">{{ lastSeen }}</p>
+                        <p class="title" v-if="activeDeviceDetails.last_seen">
+                            {{ lastSeen }}
+                        </p>
                         <p class="title" v-else>Never</p>
                     </article>
                     <article class="tile is-child box uptime-since">
                         <p class="subtitle">Uptime</p>
-                        <p class="title" v-if="activeDeviceDetails.uptime_since">{{ uptimeSince }}</p>
+                        <p
+                            class="title"
+                            v-if="activeDeviceDetails.uptime_since"
+                        >
+                            {{ uptimeSince }}
+                        </p>
                         <p class="title" v-else>Unknown</p>
                     </article>
                     <article class="tile is-child box bios-version">
                         <p class="subtitle">BIOS Version</p>
-                        <p class="title" v-if="hasBiosVersion">{{ activeDeviceDetails.latest_report.bios_version }}</p>
+                        <p class="title" v-if="hasBiosVersion">
+                            {{ activeDeviceDetails.latest_report.bios_version }}
+                        </p>
                         <p class="title" v-else>Unknown</p>
                     </article>
                 </div>

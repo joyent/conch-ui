@@ -149,11 +149,12 @@ export default {
 
             this.validationStateResultsById.map(validationResults => {
                 Object.keys(validationResults).map(validationId => {
-                    let { created, description, id, name, updated, version } = this.getValidation(validationId);
+                    let { created, deactivated, description, id, name, updated, version } = this.getValidation(validationId);
 
                     validations.push({
                         results: validationResults[validationId],
                         created,
+                        deactivated,
                         description,
                         id,
                         name,

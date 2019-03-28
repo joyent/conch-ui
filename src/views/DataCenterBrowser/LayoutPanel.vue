@@ -1,10 +1,17 @@
 <template>
     <div class="layout-panel" v-if="hasRackLayout">
         <nav class="panel">
-            <div class="panel-heading has-text-centered">Rack {{ rackLayout.name }}</div>
+            <div class="panel-heading has-text-centered">
+                Rack {{ rackLayout.name }}
+            </div>
             <div class="panel-block">
                 <p class="control has-icons-left">
-                    <input type="text" class="input is-small" placeholder="Search Device" v-model="deviceSearchText">
+                    <input
+                        type="text"
+                        class="input is-small"
+                        placeholder="Search Device"
+                        v-model="deviceSearchText"
+                    >
                     <span class="icon is-small is-left">
                         <i class="fas fa-search"></i>
                     </span>
@@ -21,7 +28,12 @@
                 </a>
             </p>
             <div class="panel-block">
-                <button class="button is-primary is-outlined is-fullwidth is-small" @click="openModal">Edit Assignments</button>
+                <button
+                    class="button is-primary is-outlined is-fullwidth is-small"
+                    @click="openModal()"
+                >
+                    Edit Assignments
+                </button>
             </div>
             <Spinner v-if="rackLoading" />
             <LayoutTable v-else :device-slots="filteredSlots" />

@@ -1,6 +1,9 @@
 <template>
     <div class="storage-tab">
-        <Spinner v-if="!hasDisks" />
+        <p class="has-text-centered" v-if="isEmpty(this.disks)">
+            No storage details available.
+        </p>
+        <Spinner v-else-if="this.sortedDisks.length < 1" />
         <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
@@ -13,10 +16,19 @@
                 </tr>
             </thead>
             <template v-for="(disk, index) in sortedDisks">
-                <tr :class="{ 'is-selected': isRowSelected(index) }" class="row" @click="revealDiskDetails(index)" style="cursor: pointer" :key="index">
+                <tr
+                    :class="{ 'is-selected': isRowSelected(index) }"
+                    class="row"
+                    @click="revealDiskDetails(index)"
+                    style="cursor: pointer"
+                    :key="index"
+                >
                     <td>
                         <div class="icon">
-                            <i class="fas fa-caret-down" v-if="isRowSelected(index)"></i>
+                            <i
+                                class="fas fa-caret-down"
+                                v-if="isRowSelected(index)"
+                            ></i>
                             <i class="fas fa-caret-right" v-else></i>
                         </div>
                     </td>
@@ -33,31 +45,45 @@
                             <table class="table is-narrow is-marginless">
                                 <tbody>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Vendor</td>
+                                        <td class="has-text-weight-semibold">
+                                            Vendor
+                                        </td>
                                         <td>{{ disk.vendor }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Model</td>
+                                        <td class="has-text-weight-semibold">
+                                            Model
+                                        </td>
                                         <td>{{ disk.model }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Size</td>
+                                        <td class="has-text-weight-semibold">
+                                            Size
+                                        </td>
                                         <td>{{ disk.size }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Drive Type</td>
+                                        <td class="has-text-weight-semibold">
+                                            Drive Type
+                                        </td>
                                         <td>{{ disk.drive_type }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Transport</td>
+                                        <td class="has-text-weight-semibold">
+                                            Transport
+                                        </td>
                                         <td>{{ disk.transport }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Firmware</td>
+                                        <td class="has-text-weight-semibold">
+                                            Firmware
+                                        </td>
                                         <td>{{ disk.firmware }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="has-text-weight-semibold">Temperature</td>
+                                        <td class="has-text-weight-semibold">
+                                            Temperature
+                                        </td>
                                         <td>{{ disk.temperature }}</td>
                                     </tr>
                                 </tbody>
@@ -103,6 +129,7 @@ export default {
         };
     },
     methods: {
+        isEmpty,
         isRowSelected(index) {
             return this.diskDetailsRows.indexOf(index) >= 0;
         },
@@ -123,10 +150,9 @@ export default {
         disks() {
             const activeDeviceDetails = this.activeDeviceDetails;
 
-            return activeDeviceDetails.latest_report && activeDeviceDetails.latest_report.disks ? activeDeviceDetails.latest_report.disks : {};
-        },
-        hasDisks() {
-            return !isEmpty(this.disks);
+            return activeDeviceDetails.latest_report &&
+                   activeDeviceDetails.latest_report.disks ?
+                   activeDeviceDetails.latest_report.disks : {};
         },
         sortedDisks() {
             return Object.entries(this.disks)

@@ -1,6 +1,9 @@
 <template>
     <div class="devices">
-        <PageHeader :title="`${currentWorkspaceName} workspace devices`" :subtitle="'Search and filter workspace devices'" />
+        <PageHeader
+            :title="`${currentWorkspaceName} workspace devices`"
+            :subtitle="'Search and filter workspace devices'"
+        />
         <section class="info-tiles">
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
@@ -10,7 +13,10 @@
                         </section>
                         <div class="columns" v-else>
                             <div class="column is-4">
-                                 <DevicesPanel :hardware-product-lookup="hardwareProductLookup" :workspace-devices="workspaceDevices" />
+                                 <DevicesPanel
+                                    :hardware-product-lookup="hardwareProductLookup"
+                                    :workspace-devices="workspaceDevices"
+                                />
                             </div>
                             <div class="column is-6 container" v-if="activeDeviceId">
                                 <div class="div" style="position: -webkit-sticky; position: sticky; top: 0;">
