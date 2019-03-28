@@ -36,21 +36,63 @@
                 </button>
             </div>
             <Spinner v-if="rackLoading" />
-            <LayoutTable v-else :device-slots="filteredSlots" />
+            <table class="table is-fullwidth is-hoverable" v-else>
+                <thead>
+                    <tr>
+                        <th>Slot</th>
+                        <th></th>
+                        <th>Product Name</th>
+                        <th class="has-text-right">Assigned Device</th>
+                        <th class="has-text-right">Asset Tag</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        :class="{ 'is-selected': slot.occupant && highlightDeviceId && slot.occupant.id === highlightDeviceId }"
+                        v-for="(slot, index) in filteredSlots"
+                        :key="index"
+                        @click="activateDevice(slot)"
+                        style="cursor: pointer;"
+                    >
+                        <th>{{ slot.id }}</th>
+                        <td>
+                            <p>
+                                <ProgressIcon :progress="slot.progress" />
+                            </p>
+                        </td>
+                        <td>{{ slot.name }}</td>
+                        <td class="has-text-right ">
+                            <span class="has-text-light" v-if="slot.occupant">{{ slot.occupant.id }}</span>
+                        </td>
+                        <td class="has-text-right">
+                            <span class="has-text-grey-light" v-if="slot.occupant">{{ slot.occupant.asset_tag }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Slot</th>
+                        <th></th>
+                        <th>Product Name</th>
+                        <th class="has-text-right">Assigned Device</th>
+                        <th class="has-text-right">Asset Tag</th>
+                    </tr>
+                </tfoot>
+            </table>
         </nav>
         <EditLayoutModal :device-slots="normalizedSlots" />
     </div>
 </template>
 
 <script>
-import search from "fuzzysearch";
 import EditLayoutModal from './EditLayoutModal.vue';
-import LayoutTable from './LayoutTable.vue';
+import ProgressIcon from '@views/components/ProgressIcon.vue';
 import Spinner from '@views/components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
+import search from "fuzzysearch";
 import { EventBus } from '@src/eventBus.js';
 import { deviceToProgress } from '@views/shared/utils.js';
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     props: {
@@ -61,7 +103,7 @@ export default {
     },
     components: {
         EditLayoutModal,
-        LayoutTable,
+        ProgressIcon,
         Spinner,
     },
     data() {
@@ -71,8 +113,34 @@ export default {
             showModal: false,
         };
     },
+    methods: {
+        ...mapActions([
+            'setActiveDevice',
+        ]),
+        activateDevice(slot) {
+            const device = slot.occupant;
+
+            if (device) {
+                this.setActiveDevice(device);
+            }
+
+            EventBus.$emit('openModal:deviceModal');
+        },
+        deviceFilter(occupant) {
+            const deviceId = occupant ? occupant.id.toLowerCase() : '';
+            const assetTag = occupant && occupant.asset_tag ? occupant.asset_tag.toLowerCase() : '';
+            const progressFilter = this.selectedProgress === 'all' || this.selectedProgress === deviceToProgress(occupant);
+            const searchFilter = search(this.deviceSearchTextLowerCase, deviceId) || search(this.deviceSearchTextLowerCase, assetTag);
+
+            return progressFilter && searchFilter;
+        },
+        openModal() {
+            EventBus.$emit('openModal:editLayoutModal');
+        },
+    },
     computed: {
         ...mapState([
+            'highlightDeviceId',
             'rackLayout',
         ]),
         availableDeviceProgress() {
@@ -113,19 +181,6 @@ export default {
                         occupant: occupant
                     };
                 });
-        },
-    },
-    methods: {
-        deviceFilter(occupant) {
-            const deviceId = occupant ? occupant.id.toLowerCase() : '';
-            const assetTag = occupant && occupant.asset_tag ? occupant.asset_tag.toLowerCase() : '';
-            const progressFilter = this.selectedProgress === 'all' || this.selectedProgress === deviceToProgress(occupant);
-            const searchFilter = search(this.deviceSearchTextLowerCase, deviceId) || search(this.deviceSearchTextLowerCase, assetTag);
-
-            return progressFilter && searchFilter;
-        },
-        openModal() {
-            EventBus.$emit('openModal:editLayoutModal');
         },
     },
 };

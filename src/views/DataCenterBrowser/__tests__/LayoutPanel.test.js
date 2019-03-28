@@ -9,15 +9,17 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('LayoutPanel.vue', () => {
+    let actions;
     let propsData;
     let state;
     let store;
     let wrapper;
 
     beforeEach(() => {
+        actions = { setActiveDevice: jest.fn() };
         propsData = { rackLoading: false };
         state = { rackLayout };
-        store = new Vuex.Store({ state });
+        store = new Vuex.Store({ actions, state });
         wrapper = shallowMount(LayoutPanel, { localVue, propsData, store });
     });
 
@@ -38,7 +40,7 @@ describe('LayoutPanel.vue', () => {
     });
 
     test('should display LayoutTable component when rack is not loading', () => {
-        expect(wrapper.find('layouttable-stub').exists()).toBeTruthy();
+        expect(wrapper.find('table').exists()).toBeTruthy();
     });
 
     test('should display loading indicator when rack is loading', () => {
@@ -70,5 +72,19 @@ describe('LayoutPanel.vue', () => {
         });
 
         expect(graduatedDevices.length).toEqual(wrapper.vm.filteredSlots.length);
+    });
+
+    test('should call activateDevice method with device as parameter when a device row is clicked', () => {
+        const spy = jest.spyOn(wrapper.vm, 'activateDevice');
+
+        wrapper.find('tbody tr').trigger('click');
+
+        expect(spy).toHaveBeenCalledWith(wrapper.vm.filteredSlots[0]);
+    });
+
+    test('should call setActiveDevice action when activateDevice method is called ', () => {
+        wrapper.find('tbody tr').trigger('click');
+
+        expect(actions.setActiveDevice).toHaveBeenCalled();
     });
 });
