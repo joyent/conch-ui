@@ -36,6 +36,7 @@ module.exports = {
     "/node_modules/",
     "/__mock__/",
     "/__fixtures__/",
+    "__snapshots__/",
     "/src/index.js",
   ],
 

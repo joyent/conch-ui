@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserProfile.vue should render correctly on inital render 1`] = `
+<div class="user-profile">
+  <pageheader-stub title="User Profile" subtitle="Update password and profile settings"></pageheader-stub>
+  <section class="info-tiles" style="margin-top: 0.75rem;">
+    <div class="tile is-ancestor">
+      <div class="tile is-parent">
+        <article class="tile is-child box">
+          <!---->
+          <p class="subtitle" style="margin-bottom: 0.75rem;">
+            New Password
+          </p>
+          <form><input type="password" placeholder="New Password" class="input"> <button type="button" class="button save is-primary" style="margin-top: 0.75rem;">
+              Save
+            </button></form>
+        </article>
+      </div>
+    </div>
+  </section>
+  <!---->
+</div>
+`;

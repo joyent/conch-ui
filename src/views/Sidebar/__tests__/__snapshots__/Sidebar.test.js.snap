@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sidebar.vue should render correctly on initial render 1`] = `
+<aside class="menu">
+  <p class="menu-label">Datacenter Builds</p>
+  <ul class="menu-list">
+    <li>
+      <router-link-stub to="[object Object]" active-class="is-active">Status</router-link-stub>
+    </li>
+    <li>
+      <router-link-stub to="[object Object]" active-class="is-active">Browse</router-link-stub>
+    </li>
+    <li>
+      <router-link-stub to="[object Object]" active-class="is-active">Devices</router-link-stub>
+    </li>
+  </ul>
+  <p class="menu-label">Conch</p>
+  <ul class="menu-list">
+    <li>
+      <router-link-stub to="[object Object]" active-class="is-active">Profile</router-link-stub>
+    </li>
+    <li><a class="sign-out">Log out</a></li>
+  </ul> <br>
+  <div class="box conch-versions">
+    <p class="heading">Conch Versions</p>
+    <div class="tags-container">
+      <div class="tags has-addons">
+        <div class="tag is-primary">conch-api</div>
+        <div class="tag is-dark">v2.21.2-10-gabc90b5f</div>
+      </div>
+      <div class="tags has-addons">
+        <div class="tag is-primary">conch-ui</div>
+        <div class="tag is-dark">v2.22.1-31-gece90b5f</div>
+      </div>
+    </div>
+  </div>
+</aside>
+`;
