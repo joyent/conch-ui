@@ -86,7 +86,7 @@ export default {
             return this.activeDeviceDetails.uptime_since;
         },
         health() {
-            return this.activeDeviceDetails.health;
+            return this.activeDeviceDetails.health.toLowerCase();
         },
     },
 };

@@ -125,7 +125,7 @@ export default {
 
             if (this.workspaceDevices && this.workspaceDevices.length) {
                 this.workspaceDevices.forEach(device => {
-                    if (device.health === 'pass') {
+                    if (device.health.toLowerCase() === 'pass') {
                         newProgress.pass++;
                     }
 

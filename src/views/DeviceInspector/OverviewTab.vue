@@ -109,24 +109,24 @@ export default {
             //       If a user clicks through the UI fast, health may
             //       not exist yet
             if (this.activeDeviceDetails.health) {
-                health = this.activeDeviceDetails.health;
-            }
+                health = this.activeDeviceDetails.health.toLowerCase();
 
-            if (health === 'fail') {
-                tags.push({
-                    style: 'is-danger health-fail',
-                    title: 'Failing Validation'
-                });
-            } else if (health === 'pass') {
-                tags.push({
-                    style: 'is-info health-pass',
-                    title: 'Passing Validation'
-                });
-            } else if (health === 'unknown') {
-                tags.push({
-                    style: 'is-warning health-unknown',
-                    title: 'No Report'
-                });
+                if (health === 'fail') {
+                    tags.push({
+                        style: 'is-danger health-fail',
+                        title: 'Failing Validation'
+                    });
+                } else if (health === 'pass') {
+                    tags.push({
+                        style: 'is-info health-pass',
+                        title: 'Passing Validation'
+                    });
+                } else if (health === 'unknown') {
+                    tags.push({
+                        style: 'is-warning health-unknown',
+                        title: 'No Report'
+                    });
+                }
             }
 
             if (this.activeDeviceSettings.firmware === 'updating') {
