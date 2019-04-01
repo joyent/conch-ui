@@ -73,11 +73,12 @@ const OverviewTab = () => {
 			deviceTags = stream.combine(
 				(device, settings) => {
 					let tags = [];
-					if (device().health.toLowerCase() === "fail")
+					const health = device().health.toLowerCase();
+					if (health === "fail")
 						tags.push(m(".tag.is-danger", "Failing Validaiton"));
-					else if (device().health.toLowerCase() === "pass")
+					else if (health === "pass")
 						tags.push(m(".tag.is-info", "Passing Validation"));
-					else if (device().health.toLowerCase() === "unknown")
+					else if (health === "unknown")
 						tags.push(m(".tag.is-warning", "No report"));
 
 					if (settings().firmware === "updating")

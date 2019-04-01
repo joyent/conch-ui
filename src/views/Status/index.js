@@ -121,7 +121,7 @@ export default () => {
 					.then(res => {
 						const newProgress = { pass: 0, total: 0 };
 						res.forEach(device => {
-							if (device.health === "PASS") newProgress.pass++;
+							if (device.health.toLowerCase() === "pass") newProgress.pass++;
 							newProgress.total++;
 						});
 						progress(newProgress);
