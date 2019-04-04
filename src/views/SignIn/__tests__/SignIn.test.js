@@ -1,12 +1,13 @@
 import SignIn from '../SignIn.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import * as authentication from '../../../api/authentication.js';
+import * as authentication from '@api/authentication.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-jest.mock('../../../api/request.js');
+jest.mock('@api/request.js');
+jest.mock('@api/authentication.js');
 
 describe('SignIn.vue', () => {
     let actions;
@@ -19,11 +20,10 @@ describe('SignIn.vue', () => {
     beforeEach(() => {
         actions = {
             setCurrentWorkspace: jest.fn(),
+            setForcePasswordChange: jest.fn(),
             setWorkspaces: jest.fn(),
         };
-        getters = {
-            currentWorkspaceId: jest.fn(),
-        };
+        getters = { currentWorkspaceId: jest.fn() };
         mocks = { $router: [] };
         state = { workspaces: {} };
         store = new Vuex.Store({ actions, getters, state });
@@ -46,13 +46,25 @@ describe('SignIn.vue', () => {
         expect(wrapper.html()).toContain('Invalid email address or password');
     });
 
-    test('should set display warning when empty input fields are submitted', () => {
+    test('should display warning when empty input fields are submitted', () => {
         wrapper.find('button').trigger('click');
 
         expect(wrapper.html()).toContain('Invalid email address or password');
     });
 
+    test('should do things', async () => {
+        wrapper.setData({ emailAddress: 'validuser@joyent.com', password: 'goodPassword' });
+        wrapper.find('button').trigger('click');
+
+        await new Promise(resolve => setTimeout(() => {
+            expect(actions.setForcePasswordChange).toHaveBeenCalled();
+            resolve();
+        }, 100));
+    });
+
     test('should call the login method', () => {
+        jest.spyOn(authentication, 'isForcePasswordChange').mockReturnValueOnce(Promise.resolve(false));
+
         const spy = jest.spyOn(authentication, 'login');
 
         // Needed in order for test to pass. It seems like Jest doesn't know
@@ -61,9 +73,9 @@ describe('SignIn.vue', () => {
         // 'methods' object of the Vue component.
         Object.defineProperty(wrapper.vm, 'loadCurrentWorkspace', { value: jest.fn() });
 
-        wrapper.setData({ emailAddress: 'user@joyent.com', password: 'abcdefg' });
+        wrapper.setData({ emailAddress: 'validuser@joyent.com', password: 'goodPassword' });
         wrapper.find('button').trigger('click');
 
-        expect(spy).toHaveBeenCalledWith({ user: 'user@joyent.com', password: 'abcdefg' });
+        expect(spy).toHaveBeenCalledWith({ user: 'validuser@joyent.com', password: 'goodPassword' });
     });
 });

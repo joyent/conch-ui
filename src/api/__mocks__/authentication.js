@@ -1,10 +1,14 @@
+export const isForcePasswordChange = () => {
+    return Promise.resolve(true);
+};
+
 export const isLoggedIn = token => (
     !!token ? Promise.resolve(true) : Promise.reject(false)
 );
 
 export const login = (data) => {
     return new Promise((resolve, reject) => {
-        const { user, password} = data;
+        const { user, password } = data;
 
         if (!user || !password) {
             reject({ error: '"user" and "password" are both required' });
@@ -30,4 +34,12 @@ export const updatePassword = (password) => {
 
         resolve(true);
     });
+};
+
+export default {
+    isForcePasswordChange,
+    isLoggedIn,
+    login,
+    logout,
+    updatePassword,
 };
