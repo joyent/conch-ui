@@ -100,11 +100,11 @@ progress::-webkit-progress-value {
 		display: flex;
 		flex-direction: column;
 		margin: 0 auto;
-		
+
 		.tags {
 			display: inline-block;
 			margin-bottom: 0;
-	
+
 			.tag {
 				margin-bottom: 0;
 			}
@@ -114,4 +114,45 @@ progress::-webkit-progress-value {
 			}
 		}
 	}
+}
+
+.page-not-found {
+	hr {
+		max-width: 474px;
+	}
+
+	.content {
+		margin-top: 260px;
+	}
+
+	.title {
+		font-size: 6rem;
+	}
+
+	.subtitle {
+		margin-bottom: 30px;
+	}
+
+	.action {
+		.text {
+			margin: 25px 0;
+
+			p:first-child() {
+				margin-bottom: 0.25em;
+			}
+		}
+	}
+
+	.image {
+		margin-top: 160px;
+	}
+}
+
+// Transitions
+.fade-enter-active, .fade-leave-active {
+	transition: opacity .3s;
+}
+
+.fade-enter, .fade-leave-to {
+	opacity: 0;
 }
