@@ -21,8 +21,8 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.3.4",
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-transform-react-jsx": "^7.0.0",
