@@ -148,6 +148,40 @@ progress::-webkit-progress-value {
 	}
 }
 
+.user-profile {
+	section.content {
+		margin-top: 0.75rem;
+
+		.message-header {
+			i {
+				margin-right: 10px;
+			}
+
+			p {
+				margin-bottom: 0;
+			}
+		}
+
+		.button.save {
+			margin-top: 0.75rem;
+		}
+	}
+
+	p.subtitle {
+		margin-bottom: 0.75rem;
+	}
+
+	.modal-card-body {
+		padding: 0px;
+
+		.message-body {
+			p {
+				margin-bottom: 20px;
+			}
+		}
+	}
+}
+
 // Transitions
 .fade-enter-active, .fade-leave-active {
 	transition: opacity .3s;
