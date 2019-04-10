@@ -4,6 +4,7 @@ import mutations from '../mutations.js';
 import activeDevice from '@src/__fixtures__/activeDevice.js';
 import activeRoom from '@src/__fixtures__/activeRoom.js';
 import allRooms from '@src/__fixtures__/allRooms.js';
+import authTokens from '@src/__fixtures__/authTokens.js';
 import deviceDetails from '@src/__fixtures__/deviceDetails.js';
 import deviceSettings from '@src/__fixtures__/deviceSettings.js';
 import deviceValidations from '@src/__fixtures__/deviceValidations.js';
@@ -118,6 +119,15 @@ describe('mutations', () => {
 
             mutations.setAllRooms(state, allRooms);
             expect(state).toMatchObject({ allRooms });
+        });
+    });
+
+    describe('setAuthTokens', () => {
+        test('it adds authentication tokens to the state', () => {
+            state = { authTokens: [] };
+
+            mutations.setAuthTokens(state, authTokens);
+            expect(state).toMatchObject({ authTokens });
         });
     });
 
