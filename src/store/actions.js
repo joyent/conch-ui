@@ -42,6 +42,10 @@ export const setAllRooms = ({ commit }, allRooms) => {
     commit('setAllRooms', allRooms);
 };
 
+export const setAuthTokens = ({ commit }, authTokens) => {
+    commit('setAuthTokens', authTokens);
+};
+
 export const setCurrentWorkspace = ({ commit }, workspace) => {
     commit('setCurrentWorkspace', workspace);
 };
@@ -98,6 +102,7 @@ export default {
     setActiveDeviceValidations,
     setActiveRoom,
     setAllRooms,
+    setAuthTokens,
     setCurrentWorkspace,
     setDevicesByWorkspace,
     setForcePasswordChange,

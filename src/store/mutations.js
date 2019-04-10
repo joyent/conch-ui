@@ -42,6 +42,10 @@ export const setAllRooms = (state, allRooms) => {
     state.allRooms = allRooms;
 };
 
+export const setAuthTokens = (state, authTokens) => {
+    state.authTokens = authTokens;
+};
+
 export const setCurrentWorkspace = (state, workspace) => {
     state.currentWorkspace = workspace;
 };
@@ -98,6 +102,7 @@ export default {
     setActiveDeviceValidations,
     setActiveRoom,
     setAllRooms,
+    setAuthTokens,
     setCurrentWorkspace,
     setDevicesByWorkspace,
     setForcePasswordChange,
