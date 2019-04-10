@@ -87,6 +87,13 @@ describe('actions', () => {
         });
     });
 
+    describe('setAuthTokens', () => {
+        test('it sets authentication tokens', () => {
+            actions.setAuthTokens({ commit }, []);
+            expect(commit).toHaveBeenCalledWith('setAuthTokens', []);
+        });
+    });
+
     describe('setCurrentWorkspace', () => {
         test('it sets the current workspace', () => {
             actions.setCurrentWorkspace({ commit }, {});
