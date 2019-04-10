@@ -5,6 +5,7 @@ export const state = {
     activeDeviceValidations: [],
     activeRoomName: '',
     allRooms: [],
+    authTokens: [],
     currentUser: {},
     currentWorkspace: {},
     devicesByWorkspace: [],

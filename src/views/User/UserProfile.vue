@@ -5,9 +5,9 @@
             :subtitle="'Update password and profile settings'"
         />
         <section class="content">
-            <div class="tile is-ancestor">
-                <div class="tile is-parent">
-                    <article class="tile is-child box">
+            <div class="columns">
+                <div class="column">
+                    <article class="box">
                         <transition name="fade">
                             <article
                                 class="message is-danger"
@@ -106,6 +106,11 @@
                         </form>
                     </article>
                 </div>
+                <div class="column">
+                    <article class="box">
+                        <AuthTokens />
+                    </article>
+                </div>
             </div>
         </section>
         <div class="modal is-active" v-if="showModal">
@@ -141,11 +146,13 @@
 
 <script>
 import PageHeader from '@views/components/PageHeader.vue';
+import AuthTokens from './AuthTokens.vue';
 import { updatePassword } from '@api/users.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
+        AuthTokens,
         PageHeader,
     },
     data() {
