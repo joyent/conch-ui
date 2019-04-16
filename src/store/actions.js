@@ -42,6 +42,10 @@ export const setAllRooms = ({ commit }, allRooms) => {
     commit('setAllRooms', allRooms);
 };
 
+export const setCurrentUser = ({ commit }, currentUser) => {
+    commit('setCurrentUser', currentUser);
+};
+
 export const setCurrentWorkspace = ({ commit }, workspace) => {
     commit('setCurrentWorkspace', workspace);
 };
@@ -78,6 +82,10 @@ export const setShowDeviceInRack = ({ commit }, showDeviceInRack) => {
     commit('setShowDeviceInRack', showDeviceInRack);
 };
 
+export const setUsers = ({ commit }, users) => {
+    commit('setUsers', users);
+};
+
 export const setWorkspaces = ({ commit }, workspaces) => {
     commit('setWorkspaces', workspaces);
 };
@@ -98,6 +106,7 @@ export default {
     setActiveDeviceValidations,
     setActiveRoom,
     setAllRooms,
+    setCurrentUser,
     setCurrentWorkspace,
     setDevicesByWorkspace,
     setForcePasswordChange,
@@ -107,6 +116,7 @@ export default {
     setRackRooms,
     setRackRoomsByWorkspace,
     setShowDeviceInRack,
+    setUsers,
     setWorkspaces,
     setValidations,
 };

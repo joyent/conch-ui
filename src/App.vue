@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <SignIn v-if="this.$route.path === '/'" />
-        <div v-else-if="this.$route.params.currentWorkspace || this.$route.path === '/user'">
+        <div v-else-if="this.$route.params.currentWorkspace || this.$route.path === '/user' || this.$route.path === '/user-management'">
             <router-view name="navbar"></router-view>
             <div class="section">
                 <div class="columns">
@@ -26,6 +26,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { isLoggedIn } from '@api/authentication.js';
 import { loadAllWorkspaces, getRackById } from '@api/workspaces.js';
 import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from '@api/device.js';
+import { getUser } from '@api/users.js';
 import { getValidations } from '@api/validations.js';
 import { getRackRooms, roomToProgress, getWorkspaceRacks } from '@views/shared/utils.js';
 
@@ -42,6 +43,7 @@ export default {
             'setActiveDeviceValidations',
             'setActiveRoom',
             'setAllRooms',
+            'setCurrentUser',
             'setCurrentWorkspace',
             'setRackLayout',
             'setValidations',
@@ -123,6 +125,7 @@ export default {
             'loadCurrentWorkspace',
         ]),
         ...mapState([
+            'currentUser',
             'currentWorkspace',
             'workspaces',
         ]),
@@ -151,6 +154,13 @@ export default {
             } else {
                 this.setWorkspace(currentWorkspaceId);
                 this.setRoomsAndStore();
+            }
+
+            if (isEmpty(this.currentUser)) {
+                getUser()
+                    .then(response => {
+                        this.setCurrentUser(response.data);
+                    });
             }
         }
     },

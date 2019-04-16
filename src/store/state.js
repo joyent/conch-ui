@@ -5,6 +5,7 @@ export const state = {
     activeDeviceValidations: [],
     activeRoom: {},
     allRooms: [],
+    currentUser: {},
     currentWorkspace: {},
     devicesByWorkspace: [],
     hardwareProducts: [],
@@ -14,6 +15,7 @@ export const state = {
     rackRooms: {},
     rackRoomsByWorkspace: [],
     showDeviceInRack: false,
+    users: [],
     workspaces: [],
     validations: [],
 };

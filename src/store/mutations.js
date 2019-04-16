@@ -42,6 +42,10 @@ export const setAllRooms = (state, allRooms) => {
     state.allRooms = allRooms;
 };
 
+export const setCurrentUser = (state, currentUser) => {
+    state.currentUser = currentUser;
+};
+
 export const setCurrentWorkspace = (state, workspace) => {
     state.currentWorkspace = workspace;
 };
@@ -78,6 +82,10 @@ export const setShowDeviceInRack = (state, showDeviceInRack) => {
     state.showDeviceInRack = showDeviceInRack;
 };
 
+export const setUsers = (state, users) => {
+    state.users = users;
+};
+
 export const setWorkspaces = (state, workspaces) => {
     state.workspaces = workspaces;
 };
@@ -98,6 +106,7 @@ export default {
     setActiveDeviceValidations,
     setActiveRoom,
     setAllRooms,
+    setCurrentUser,
     setCurrentWorkspace,
     setDevicesByWorkspace,
     setForcePasswordChange,
@@ -107,6 +116,7 @@ export default {
     setRackRooms,
     setRackRoomsByWorkspace,
     setShowDeviceInRack,
+    setUsers,
     setWorkspaces,
     setValidations,
 };

@@ -5,6 +5,7 @@ import DataCenterBrowser from './views/DataCenterBrowser/DataCenterBrowser.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import Status from './views/Status/Status.vue';
 import UserProfile from './views/User/UserProfile.vue';
+import UserManagement from './views/User/UserManagement.vue';
 import Navbar from './views/Navbar/Navbar.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
@@ -89,6 +90,15 @@ export default new Router({
             name: 'user',
             components: {
                 default: UserProfile,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
+        },
+        {
+            path: '/user-management',
+            name: 'user-management',
+            components: {
+                default: UserManagement,
                 sidebar: Sidebar,
                 navbar: Navbar,
             },

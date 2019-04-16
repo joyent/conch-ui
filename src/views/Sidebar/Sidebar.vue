@@ -14,6 +14,9 @@
         </ul>
         <p class="menu-label">Conch</p>
         <ul class="menu-list">
+            <li v-if="currentUser.is_admin">
+                <router-link :to="{ name: 'user-management' }" active-class="is-active">User Management</router-link>
+            </li>
             <li>
                 <router-link :to="{ name: 'user' }" active-class="is-active">Profile</router-link>
             </li>
@@ -56,6 +59,7 @@ export default {
             'currentWorkspaceId',
         ]),
         ...mapState([
+            'currentUser',
             'currentWorkspace',
         ]),
         workspaceId() {
