@@ -19,6 +19,7 @@ describe('SignIn.vue', () => {
 
     beforeEach(() => {
         actions = {
+            setCurrentUser: jest.fn(),
             setCurrentWorkspace: jest.fn(),
             setForcePasswordChange: jest.fn(),
             setWorkspaces: jest.fn(),

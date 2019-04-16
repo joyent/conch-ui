@@ -80,6 +80,13 @@ describe('actions', () => {
         });
     });
 
+    describe('setCurrentUser', () => {
+        test('it sets the current user', () => {
+            actions.setCurrentUser({ commit }, {});
+            expect(commit).toHaveBeenCalledWith('setCurrentUser', {});
+        });
+    });
+
     describe('setCurrentWorkspace', () => {
         test('it sets the current workspace', () => {
             actions.setCurrentWorkspace({ commit }, {});
@@ -140,6 +147,13 @@ describe('actions', () => {
         test('it sets the boolean showDeviceInRack to true', () => {
             actions.setShowDeviceInRack({ commit }, {});
             expect(commit).toHaveBeenCalledWith('setShowDeviceInRack', {});
+        });
+    });
+
+    describe('setUsers', () => {
+        test('it sets the users', () => {
+            actions.setUsers({ commit }, []);
+            expect(commit).toHaveBeenCalledWith('setUsers', []);
         });
     });
 

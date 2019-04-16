@@ -26,20 +26,9 @@ export const login = (data) => {
 
 export const logout = () => (Promise.resolve(true));
 
-export const updatePassword = (password) => {
-    return new Promise((resolve, reject) => {
-        if (password.length < 5) {
-            reject({ error: 'Password must be at least 5 characters' });
-        }
-
-        resolve(true);
-    });
-};
-
 export default {
     isForcePasswordChange,
     isLoggedIn,
     login,
     logout,
-    updatePassword,
 };

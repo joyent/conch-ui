@@ -51,18 +51,6 @@ describe('authentication API', () => {
         });
     });
 
-    describe('updatePassword', () => {
-        test('should return an error if password is not at least 5 characters', () => {
-            expect.assertions(1);
-            return expect(authentication.updatePassword('abcd')).rejects.toMatchObject(errorPwdLength);
-        });
-
-        test('should return true if new password is valid', () => {
-            expect.assertions(1);
-            return expect(authentication.updatePassword('abcde')).resolves.toBeTruthy();
-        });
-    });
-
     describe('logout', () => {
         test('should return true upon successful logout', () => {
             expect.assertions(1);
