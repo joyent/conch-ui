@@ -165,6 +165,7 @@
                                                     Promote User
                                                 </span>
                                             </a>
+                                            <hr class="dropdown-divider">
                                             <a
                                                 class="dropdown-item deactivate"
                                                 @click="openModal('deactivate', user)"
