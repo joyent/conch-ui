@@ -1,0 +1,310 @@
+<template>
+    <div class="user-modal">
+        <div v-if="!success">
+            <transition name="fade">
+                <div
+                    class="modal"
+                    :class="{ 'is-active': isActive }"
+                    v-if="isActive"
+                >
+                    <div class="modal-background" @click="closeModal()"></div>
+                    <div
+                        class="modal-content notification"
+                        style="padding: 2rem;"
+                    >
+                        <div
+                            class="modal-title has-text-centered"
+                            style="margin-bottom: 10px;"
+                        >
+                            <i
+                                class="far fa-2x fa-address-card"
+                                style="margin-right: 10px;"
+                            ></i>
+                            <span
+                                class="title is-3"
+                                v-if="action === 'create'"
+                            >
+                                Create User
+                            </span>
+                            <span class="title is-3" v-else>Edit User</span>
+                        </div>
+                        <button
+                            class="delete is-medium"
+                            aria-label="close"
+                            @click="closeModal()"
+                        ></button>
+                        <form>
+                            <div class="field name">
+                                <label class="label">Name</label>
+                                <div class="control has-icons-right">
+                                    <input
+                                        class="input"
+                                        :class="{ 'is-danger': errors.name }"
+                                        type="text"
+                                        placeholder="Name"
+                                        v-model="name"
+                                    >
+                                    <span
+                                        class="icon is-small is-right has-text-danger"
+                                        v-if="errors.name"
+                                    >
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                </div>
+                                <p
+                                    class="error has-text-danger is-size-6"
+                                    v-if="errors.name"
+                                    style="padding-top: 5px;"
+                                >
+                                    This field is required.
+                                </p>
+                            </div>
+                            <div class="field email">
+                                <label class="label">Email</label>
+                                <div class="control has-icons-right">
+                                    <input
+                                        class="input"
+                                        :class="{ 'is-danger': errors.email }"
+                                        type="email"
+                                        placeholder="Email"
+                                        v-model="email"
+                                    >
+                                    <span
+                                        class="icon is-small is-right has-text-danger"
+                                        v-if="errors.email"
+                                    >
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                </div>
+                                <p
+                                    class="error has-text-danger is-size-6"
+                                    v-if="errors.email"
+                                    style="padding-top: 5px;"
+                                >
+                                    Please enter a valid email.
+                                </p>
+                            </div>
+                            <div class="field password" v-if="action !== 'edit'">
+                                <label class="label">Password</label>
+                                <div class="control has-icons-right">
+                                    <input
+                                        class="input"
+                                        :class="{ 'is-danger': errors.password }"
+                                        type="text"
+                                        placeholder="Password"
+                                        v-model="password"
+                                    >
+                                    <span
+                                        class="icon is-small is-right has-text-danger"
+                                        v-if="errors.password"
+                                    >
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                </div>
+                                <p
+                                    class="error has-text-danger is-size-6"
+                                    v-if="errors.password"
+                                    style="padding-top: 5px;"
+                                >
+                                    This field is required.
+                                </p>
+                            </div>
+                            <div class="field" style="margin-top: 15px;">
+                                <label class="label">Is Admin?</label>
+                                <label class="switch">
+                                    <input
+                                        type="checkbox"
+                                        :checked="isAdmin === true ? true : false"
+                                        v-model="isAdmin"
+                                        true-value="true"
+                                        false-value="false"
+                                    >
+                                    <span class="slider round is-success"></span>
+                                </label>
+                                <span style="margin-left: 8px;">
+                                    <strong>{{ isAdmin === true ? 'Yes' : 'No' }}</strong>
+                                </span>
+                            </div>
+                        </form>
+                        <div
+                            class="field is-grouped"
+                            style="margin-top: 20px;"
+                        >
+                            <div class="control">
+                                <button
+                                    class="button is-primary create"
+                                    :class="{ 'is-loading': isLoading }"
+                                    @click="createUser()"
+                                    v-if="action === 'create'"
+                                >
+                                    Create User
+                                </button>
+                                <button
+                                    class="button is-primary edit"
+                                    :class="{ 'is-loading': isLoading }"
+                                    @click="editUser()"
+                                    v-else
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+                            <div class="control">
+                                <button
+                                    class="button cancel"
+                                    @click="closeModal()"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+        <SuccessModal v-else>
+            <template v-slot:title>Success!</template>
+            <template v-slot:subtitle>
+                <span v-if="action === 'create'">
+                    <strong class="has-text-white">{{ name }}</strong> has been successfully created.
+                </span>
+                <span v-else>
+                    <strong class="has-text-white">{{ name }}</strong> has been successfully updated.
+                </span>
+            </template>
+        </SuccessModal>
+    </div>
+</template>
+
+<script>
+import SuccessModal from './SuccessModal.vue';
+import * as Users from '@api/users.js';
+import { EventBus } from '@src/eventBus.js';
+
+export default {
+    components: {
+        SuccessModal,
+    },
+    props: {
+        action: {
+            type: String,
+            required: false,
+        },
+        user: {
+            type: Object,
+            required: false,
+        },
+    },
+    data() {
+        return {
+            email: '',
+            emailIsValid: false,
+            errors: {
+                email: false,
+                name: false,
+                password: false,
+            },
+            isActive: true,
+            isAdmin: false,
+            isLoading: false,
+            name: '',
+            password: '',
+            success: false,
+        };
+    },
+    methods: {
+        closeModal() {
+            this.isActive = false;
+            this.resetErrors();
+
+            if (this.success) {
+                this.success = false;
+
+                EventBus.$emit('close-modal:success');
+            } else {
+                EventBus.$emit('close-modal');
+            }
+        },
+        createUser() {
+            this.resetErrors();
+            this.isLoading = true;
+
+            if (this.validateForm()) {
+                const user = {
+                    email: this.email,
+                    is_admin: (this.isAdmin === true || this.isAdmin === 'true'),
+                    name: this.name,
+                    password: this.password,
+                };
+
+                Users.createUser(user)
+                    .then(response => {
+                        this.success = true;
+                        this.isLoading = false;
+                    });
+            } else {
+                this.isLoading = false;
+            }
+        },
+        editUser() {
+            this.resetErrors();
+            this.isLoading = true;
+
+            if (this.validateForm()) {
+                const editedUser = {
+                    id: this.user.id,
+                    email: this.email,
+                    is_admin: (this.isAdmin === true || this.isAdmin === 'true'),
+                    name: this.name,
+                };
+
+                Users.editUser(editedUser)
+                    .then(response => {
+                        this.success = true;
+                        this.isLoading = false;
+                    });
+            } else {
+                this.isLoading = false;
+            }
+        },
+        resetErrors() {
+            this.errors = {
+                email: false,
+                name: false,
+                password: false,
+            };
+        },
+        validEmail() {
+            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(this.email);
+        },
+        validateForm() {
+            this.resetErrors();
+
+            if (!this.name) {
+                this.errors.name = true;
+            }
+
+            if (!this.email || !this.validEmail()) {
+                this.errors.email = true;
+            }
+
+            if (this.action === 'create' && !this.password) {
+                this.errors.password = true;
+            }
+
+            return Object.values(this.errors).some(error => error === true) ? false : true;
+        }
+    },
+    mounted() {
+        const action = this.action;
+        const user = this.user;
+
+        if (user && action && action  === 'edit') {
+            this.email = this.user.email;
+            this.name = this.user.name;
+            this.password = this.user.password;
+            this.isAdmin = this.user.is_admin;
+        }
+    },
+};
+</script>
