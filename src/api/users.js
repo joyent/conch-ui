@@ -5,6 +5,9 @@ export const createUser = (user) => {
         method: 'POST',
         url: '/user',
         data: user,
+    })
+    .catch(error => {
+        return Promise.reject(error);
     });
 };
 
@@ -40,6 +43,9 @@ export const editUser = (user) => {
         method: 'POST',
         url: `/user/${user.id}`,
         data
+    })
+    .catch(error => {
+        return Promise.reject(error);
     });
 };
 

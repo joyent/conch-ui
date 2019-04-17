@@ -297,17 +297,26 @@ export default {
             this.action = '';
         });
 
-        EventBus.$on('action-success', (userId) => {
+        EventBus.$on('action-success', (actionData) => {
+            const userId = actionData.userId;
+
             getUser(userId)
                 .then(response => {
                     const users = this.users;
-                    const index = users.map(user => {
-                        return user.id;
-                    }).indexOf(userId);
 
-                    users.splice(index, 1, response.data);
+                    if (actionData.action && actionData.action === 'create') {
+                        users.push(response.data);
 
-                    this.setUsers(users);
+                        this.setUsers(users);
+                    } else {
+                        const index = users.map(user => {
+                            return user.id;
+                        }).indexOf(userId);
+
+                        users.splice(index, 1, response.data);
+
+                        this.setUsers(users);
+                    }
                 });
         });
     },

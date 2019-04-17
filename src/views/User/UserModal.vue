@@ -64,24 +64,29 @@
                                 <div class="control has-icons-right">
                                     <input
                                         class="input"
-                                        :class="{ 'is-danger': errors.email }"
+                                        :class="{ 'is-danger': errors.invalidEmail }"
                                         type="email"
                                         placeholder="Email"
                                         v-model="email"
                                     >
                                     <span
                                         class="icon is-small is-right has-text-danger"
-                                        v-if="errors.email"
+                                        v-if="errors.invalidEmail"
                                     >
                                         <i class="fas fa-exclamation-triangle"></i>
                                     </span>
                                 </div>
                                 <p
                                     class="error has-text-danger is-size-6"
-                                    v-if="errors.email"
+                                    v-if="errors.invalidEmail || errors.duplicateEmail"
                                     style="padding-top: 5px;"
                                 >
-                                    Please enter a valid email.
+                                    <span v-if="errors.invalidEmail">
+                                        Please enter a valid email.
+                                    </span>
+                                    <span v-if="errors.duplicateEmail">
+                                        This email is already in use.
+                                    </span>
                                 </p>
                             </div>
                             <div class="field password" v-if="action !== 'edit'">
@@ -213,7 +218,8 @@ export default {
             email: '',
             emailIsValid: false,
             errors: {
-                email: false,
+                duplicateEmail: false,
+                invalidEmail: false,
                 name: false,
                 password: false,
             },
@@ -253,9 +259,18 @@ export default {
 
                 Users.createUser(user)
                     .then(response => {
+                        const userId = response.data.id;
                         this.actionComplete = true;
                         this.success = true;
                         this.isLoading = false;
+
+                        EventBus.$emit('action-success', { userId, action: 'create' });
+                    })
+                    .catch(error => {
+                        if (error.status === 409) {
+                            this.errors.duplicateEmail = true;
+                            this.isLoading = false;
+                        }
                     });
             } else {
                 this.isLoading = false;
@@ -290,6 +305,12 @@ export default {
                         this.success = true;
                         this.isLoading = false;
                         EventBus.$emit('action-success', editedUser.id);
+                    })
+                    .catch(error => {
+                        if (error.status === 500) {
+                            this.errors.duplicateEmail = true;
+                            this.isLoading = false;
+                        }
                     });
             } else {
                 this.isLoading = false;
@@ -297,7 +318,8 @@ export default {
         },
         resetErrors() {
             this.errors = {
-                email: false,
+                duplicateEmail: false,
+                invalidEmail: false,
                 name: false,
                 password: false,
             };
@@ -314,7 +336,7 @@ export default {
             }
 
             if (!this.email || !this.validEmail()) {
-                this.errors.email = true;
+                this.errors.invalidEmail = true;
             }
 
             if (this.action === 'create' && !this.password) {
