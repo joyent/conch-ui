@@ -26,7 +26,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { isLoggedIn } from '@api/authentication.js';
 import { loadAllWorkspaces, getRackById } from '@api/workspaces.js';
 import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from '@api/device.js';
-import { getUser } from '@api/users.js';
+import { getCurrentUser } from '@api/users.js';
 import { getValidations } from '@api/validations.js';
 import { getRackRooms, roomToProgress, getWorkspaceRacks } from '@views/shared/utils.js';
 
@@ -157,7 +157,7 @@ export default {
             }
 
             if (isEmpty(this.currentUser)) {
-                getUser()
+                getCurrentUser()
                     .then(response => {
                         this.setCurrentUser(response.data);
                     });

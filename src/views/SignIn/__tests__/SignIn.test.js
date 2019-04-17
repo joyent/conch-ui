@@ -58,7 +58,7 @@ describe('SignIn.vue', () => {
     });
 
     test('should call setForcePasswordChange method when force_password_change is true', async () => {
-        jest.spyOn(users, 'getUser').mockReturnValueOnce(
+        jest.spyOn(users, 'getCurrentUser').mockReturnValueOnce(
             Promise.resolve({
                 data: {
                     name: 'Valid User',

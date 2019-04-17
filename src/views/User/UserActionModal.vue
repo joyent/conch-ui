@@ -121,21 +121,25 @@ export default {
                 forcePasswordChange(userId)
                     .then(() => {
                         this.success = true;
+                        EventBus.$emit('action-success', userId);
                     });
             } else if (action === 'promote') {
                 promoteUser(userId)
                     .then(() => {
                         this.success = true;
+                        EventBus.$emit('action-success', userId);
                     });
             } else if (action === 'demote') {
                 demoteUser(userId)
                     .then(() => {
                         this.success = true;
+                        EventBus.$emit('action-success', userId);
                     });
             } else if (action === 'deactivate') {
                 deactivateUser(userId)
                     .then(() => {
                         this.success = true;
+                        EventBus.$emit('action-success', userId);
                     });
             }
         },

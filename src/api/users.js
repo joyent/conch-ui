@@ -50,10 +50,17 @@ export const forcePasswordChange = (userId) => {
     });
 };
 
-export const getUser = () => {
+export const getCurrentUser = () => {
     return request({
         method: 'GET',
         url: '/user/me',
+    });
+};
+
+export const getUser = (userId) => {
+    return request({
+        method: 'GET',
+        url: `/user/${userId}`,
     });
 };
 
@@ -87,6 +94,7 @@ export default {
     demoteUser,
     editUser,
     forcePasswordChange,
+    getCurrentUser,
     getUser,
     getUsers,
     promoteUser,

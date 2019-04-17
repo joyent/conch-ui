@@ -203,7 +203,7 @@ import UserActionModal from './UserActionModal.vue';
 import UsersStatistics from './UsersStatistics.vue';
 import UserModal from './UserModal.vue';
 import Spinner from '@src/views/components/Spinner.vue';
-import { getUsers } from '@api/users.js';
+import { getUser, getUsers } from '@api/users.js';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 
@@ -295,10 +295,19 @@ export default {
 
         EventBus.$on('close-modal:success', () => {
             this.action = '';
+        });
 
-            getUsers()
+        EventBus.$on('action-success', (userId) => {
+            getUser(userId)
                 .then(response => {
-                    this.setUsers(response.data);
+                    const users = this.users;
+                    const index = users.map(user => {
+                        return user.id;
+                    }).indexOf(userId);
+
+                    users.splice(index, 1, response.data);
+
+                    this.setUsers(users);
                 });
         });
     },

@@ -51,7 +51,7 @@
 <script>
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getUser } from '@api/users.js';
+import { getCurrentUser } from '@api/users.js';
 import { login } from '@api/authentication.js';
 import { loadAllWorkspaces } from '@api/workspaces.js';
 
@@ -97,7 +97,7 @@ export default {
 
                 login(data)
                     .then(response => {
-                        getUser()
+                        getCurrentUser()
                             .then(response => {
                                 const currentUser = response.data;
                                 this.setCurrentUser(currentUser);

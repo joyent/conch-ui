@@ -108,7 +108,7 @@ describe('users API', () => {
         });
     });
 
-    describe('getUser', () => {
+    describe('getCurrentUser', () => {
         beforeEach(() => {
             nock(conchApi)
                 .get('/user/me')
@@ -117,7 +117,21 @@ describe('users API', () => {
 
         test('should return a status of 200', async () => {
             expect.assertions(1);
-            response = await Users.getUser();
+            response = await Users.getCurrentUser();
+            expect(response.status).toEqual(200);
+        });
+    });
+
+    describe('getUser', () => {
+        beforeEach(() => {
+            nock(conchApi)
+                .get(`/user/${userId}`)
+                .reply(200, {});
+        });
+
+        test('should return a status of 200', async () => {
+            expect.assertions(1);
+            response = await Users.getUser(userId);
             expect(response.status).toEqual(200);
         });
     });
