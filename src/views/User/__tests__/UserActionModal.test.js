@@ -17,13 +17,13 @@ describe('UserActionModal.vue', () => {
     });
 
     test('should not display the success modal on initial render', () => {
-        expect(wrapper.find('successmodal-stub').exists()).toBeFalsy();
+        expect(wrapper.find('resultmodal-stub').exists()).toBeFalsy();
     });
 
     test('should display the success modal when an action is successful', () => {
         wrapper.setData({ success: true });
 
-        expect(wrapper.find('successmodal-stub').exists()).toBeTruthy();
+        expect(wrapper.find('resultmodal-stub').exists()).toBeTruthy();
     });
 
     describe('closing the modal', () => {

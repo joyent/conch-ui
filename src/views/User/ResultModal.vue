@@ -9,7 +9,7 @@
                 ></button>
                 <div class="columns is-vcentered">
                     <div class="column is-2" style="text-align: center;">
-                        <i class="far fa-3x fa-check-circle has-text-success"></i>
+                        <slot name="icon"></slot>
                     </div>
                     <div class="column">
                         <h1 class="title">

@@ -1,13 +1,13 @@
-import SuccessModal from '../SuccessModal.vue';
+import ResultModal from '../ResultModal.vue';
 import { shallowMount } from '@vue/test-utils';
 
-describe('SuccessModal.vue', () => {
+describe('ResultModal.vue', () => {
     let methods;
     let wrapper;
 
     beforeEach(() => {
         methods = { triggerParentCloseModal: jest.fn() };
-        wrapper = shallowMount(SuccessModal, { methods });
+        wrapper = shallowMount(ResultModal, { methods });
     });
 
     test('should set isActive to false to close the modal when the close button is clicked', () => {

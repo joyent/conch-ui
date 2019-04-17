@@ -57,7 +57,10 @@
                 </div>
             </div>
         </div>
-        <SuccessModal v-else>
+        <ResultModal v-else>
+            <template v-slot:icon>
+                <i class="far fa-3x fa-check-circle has-text-success"></i>
+            </template>
             <template v-slot:title>Success!</template>
             <template v-slot:subtitle>
                 <p class="subtitle" v-if="action === 'reset-pwd'">
@@ -67,12 +70,12 @@
                     <strong class="has-text-white">{{ user.name }}</strong> has been successfully <strong class="has-text-white">{{ action }}d</strong>.
                 </p>
             </template>
-        </SuccessModal>
+        </ResultModal>
     </div>
 </template>
 
 <script>
-import SuccessModal from './SuccessModal.vue';
+import ResultModal from './ResultModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import {
     deactivateUser,
@@ -83,7 +86,7 @@ import {
 
 export default {
     components: {
-        SuccessModal,
+        ResultModal,
     },
     props: {
         action: {

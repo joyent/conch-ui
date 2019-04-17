@@ -1,6 +1,6 @@
 <template>
     <div class="user-modal">
-        <div v-if="!success">
+        <div v-if="!actionComplete">
             <transition name="fade">
                 <div
                     class="modal"
@@ -114,15 +114,16 @@
                                 <label class="switch">
                                     <input
                                         type="checkbox"
-                                        :checked="isAdmin === true ? true : false"
+                                        :checked="isAdmin"
                                         v-model="isAdmin"
-                                        true-value="true"
-                                        false-value="false"
+                                        :true-value="true"
+                                        :false-value="false"
                                     >
                                     <span class="slider round is-success"></span>
                                 </label>
                                 <span style="margin-left: 8px;">
-                                    <strong>{{ isAdmin === true ? 'Yes' : 'No' }}</strong>
+                                    <strong v-if="isAdmin">Yes</strong>
+                                    <strong v-else>No</strong>
                                 </span>
                             </div>
                         </form>
@@ -161,28 +162,40 @@
                 </div>
             </transition>
         </div>
-        <SuccessModal v-else>
-            <template v-slot:title>Success!</template>
+        <ResultModal v-else>
+            <template v-slot:icon>
+                <i
+                    class="far fa-3x fa-check-circle has-text-success"
+                    v-if="success"
+                ></i>
+                <i v-else class="fas fa-3x fa-id-badge has-text-warning"></i>
+            </template>
+            <template v-slot:title>
+                <span v-if="success">Success!</span>
+            </template>
             <template v-slot:subtitle>
-                <span v-if="action === 'create'">
+                <span v-if="success && action === 'create'">
                     <strong class="has-text-white">{{ name }}</strong> has been successfully created.
                 </span>
-                <span v-else>
+                <span v-else-if="success && action === 'edit'">
                     <strong class="has-text-white">{{ name }}</strong> has been successfully updated.
                 </span>
+                <span v-else>
+                    No information was changed.
+                </span>
             </template>
-        </SuccessModal>
+        </ResultModal>
     </div>
 </template>
 
 <script>
-import SuccessModal from './SuccessModal.vue';
+import ResultModal from './ResultModal.vue';
 import * as Users from '@api/users.js';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
     components: {
-        SuccessModal,
+        ResultModal,
     },
     props: {
         action: {
@@ -196,6 +209,7 @@ export default {
     },
     data() {
         return {
+            actionComplete: false,
             email: '',
             emailIsValid: false,
             errors: {
@@ -213,6 +227,7 @@ export default {
     },
     methods: {
         closeModal() {
+            this.actionComplete = false;
             this.isActive = false;
             this.resetErrors();
 
@@ -231,13 +246,14 @@ export default {
             if (this.validateForm()) {
                 const user = {
                     email: this.email,
-                    is_admin: (this.isAdmin === true || this.isAdmin === 'true'),
+                    is_admin: this.isAdmin,
                     name: this.name,
                     password: this.password,
                 };
 
                 Users.createUser(user)
                     .then(response => {
+                        this.actionComplete = true;
                         this.success = true;
                         this.isLoading = false;
                     });
@@ -249,18 +265,31 @@ export default {
             this.resetErrors();
             this.isLoading = true;
 
+            if (
+                this.name === this.user.name &&
+                this.email === this.user.email &&
+                this.isAdmin === this.user.is_admin
+            ) {
+                    this.actionComplete = true;
+                    this.isLoading = false;
+
+                    return;
+            }
+
             if (this.validateForm()) {
                 const editedUser = {
                     id: this.user.id,
                     email: this.email,
-                    is_admin: (this.isAdmin === true || this.isAdmin === 'true'),
+                    is_admin: this.isAdmin,
                     name: this.name,
                 };
 
                 Users.editUser(editedUser)
                     .then(response => {
+                        this.actionComplete = true;
                         this.success = true;
                         this.isLoading = false;
+                        EventBus.$emit('action-success', editedUser.id);
                     });
             } else {
                 this.isLoading = false;

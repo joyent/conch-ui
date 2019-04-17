@@ -23,13 +23,13 @@ describe('UserModal.vue', () => {
         wrapper.find('button.create').trigger('click');
     };
 
-    test('should not display the success modal on initial render', () => {
-        expect(wrapper.find('successmodal-stub').exists()).toBeFalsy();
+    test('should not display the result modal on initial render', () => {
+        expect(wrapper.find('resultmodal-stub').exists()).toBeFalsy();
     });
 
-    test('should display the success modal when an action is successful', () => {
-        wrapper.setData({ success: true });
-        expect(wrapper.find('successmodal-stub').exists()).toBeTruthy();
+    test('should display the result modal when an action is completed', () => {
+        wrapper.setData({ actionComplete: true });
+        expect(wrapper.find('resultmodal-stub').exists()).toBeTruthy();
     });
 
     describe('method createUser', () => {
