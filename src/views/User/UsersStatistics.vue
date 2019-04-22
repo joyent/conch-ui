@@ -1,7 +1,7 @@
 <template>
     <div class="box user-stats is-flex" style="margin-bottom: 20px;">
         <span style="margin-right: 20px;">
-            <h1 class="title is-4">Users Statistics:</h1>
+            <h1 class="title is-4">Statistics:</h1>
         </span>
         <div class="tags has-addons">
             <span class="tag is-info">Total Users</span>

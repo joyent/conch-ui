@@ -212,6 +212,9 @@ progress::-webkit-progress-value {
 		}
 
 		table {
+			border-bottom-left-radius: 5px;
+			border-bottom-right-radius: 5px;
+
 			td,
 			tfoot th,
 			thead th {
@@ -229,7 +232,7 @@ progress::-webkit-progress-value {
 
 			tfoot {
 				th {
-					border-width: 1px 0;
+					border-width: 1px 0 0;
 					color: #bdcbdb;
 				}
 			}
@@ -237,7 +240,7 @@ progress::-webkit-progress-value {
 			&.is-hoverable {
 				tr {
 					&:hover {
-						background-color: $grey;
+						background-color: lighten($grey-darker, 4%);
 					}
 				}
 			}
@@ -267,43 +270,6 @@ progress::-webkit-progress-value {
 		}
 	}
 
-	.table-pagination {
-		border-bottom-left-radius: 5px;
-		border-bottom-right-radius: 5px;
-		background-color: $grey-dark;
-		padding: 25px;
-
-		.pagination-buttons {
-			display: flex;
-			flex-grow: 1;
-			justify-content: center;
-		}
-
-		.pagination-previous {
-			order: 2;
-		}
-
-		.pagination-next {
-			order: 4;
-		}
-
-		.pagination-list {
-			order: 3;
-			flex-grow: 0;
-
-			li {
-				margin-bottom: 0;
-			}
-		}
-
-		.results-per-page {
-			border-color: #4E5D6C;
-			color: #8694a4;
-			margin: 4px 20px 4px 4px;
-			text-align: center;
-		}
-	}
-
 	.user-modal {
 		input {
 			background-color: $grey-darker;
@@ -314,6 +280,18 @@ progress::-webkit-progress-value {
 				color: #bdcbdb;
 			}
 		}
+	}
+
+	button.button,
+	input,
+	select {
+		&:not(&.delete) {
+			border-radius: 4px;
+		}
+	}
+
+	.modal-content {
+		border-radius: 5px;
 	}
 }
 
