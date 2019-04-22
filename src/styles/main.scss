@@ -282,6 +282,18 @@ progress::-webkit-progress-value {
 		}
 	}
 
+	.no-results {
+		text-align: center;
+
+		p.title {
+			margin-top: 40px;
+		}
+
+		img {
+			margin-top: 20px;
+		}
+	}
+
 	button.button,
 	input,
 	select {
@@ -300,8 +312,12 @@ progress::-webkit-progress-value {
 	transition: opacity .3s;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter, .fade-leave-to, .fade-in-slow-enter, .fade-in-slow-leave-to {
 	opacity: 0;
+}
+
+.fade-in-slow-enter-active {
+	transition: opacity .6s;
 }
 
 /* Toggle Switch */

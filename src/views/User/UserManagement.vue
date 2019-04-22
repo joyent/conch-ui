@@ -53,132 +53,138 @@
                         </div>
                     </div>
                 </div>
-                <table class="table is-hoverable is-fullwidth">
-                    <thead>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th>Issues</th>
-                        <th>Last Active</th>
-                        <th>Actions</th>
-                    </thead>
-                    <tfoot>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th>Issues</th>
-                        <th>Last Active</th>
-                        <th>Actions</th>
-                    </tfoot>
-                    <tbody>
-                        <tr v-for="(user, i) in filteredUsers" :key="user.id">
-                            <td class="has-text-centered">
-                                <span>{{ i + 1 }}</span>
-                            </td>
-                            <td>{{ user.name }}</td>
-                            <td>
-                                <span v-if="user.is_admin">Admin</span>
-                                <span v-else>User</span>
-                            </td>
-                            <td>
-                                <span
-                                    v-if="user.force_password_change || user.refuse_session_auth"
-                                >
+                <transition name="fade-in-slow">
+                    <table class="table is-hoverable is-fullwidth" v-if="filteredUsers.length">
+                        <thead>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Issues</th>
+                            <th>Last Active</th>
+                            <th>Actions</th>
+                        </thead>
+                        <tfoot>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Issues</th>
+                            <th>Last Active</th>
+                            <th>Actions</th>
+                        </tfoot>
+                        <tbody>
+                            <tr v-for="(user, i) in filteredUsers" :key="user.id">
+                                <td class="has-text-centered">
+                                    <span>{{ i + 1 }}</span>
+                                </td>
+                                <td>{{ user.name }}</td>
+                                <td>
+                                    <span v-if="user.is_admin">Admin</span>
+                                    <span v-else>User</span>
+                                </td>
+                                <td>
                                     <span
-                                        class="tag pwd-change is-danger"
-                                        v-if="user.force_password_change"
+                                        v-if="user.force_password_change || user.refuse_session_auth"
                                     >
-                                        Password Change Required
-                                    </span>
-                                    <span
-                                        class="tag sess-auth is-danger"
-                                        v-if="user.refuse_session_auth"
-                                    >
-                                        Session Auth Refused
-                                    </span>
-                                </span>
-                                <span v-else>
-                                    <span class="tag none is-success">
-                                        None
-                                    </span>
-                                </span>
-                            </td>
-                            <td>
-                                <span v-if="user.last_login">
-                                    {{ lastActive(user.last_login) }}
-                                </span>
-                                <span v-else>
-                                    Never
-                                </span>
-                            </td>
-                            <td>
-                                <div
-                                    class="dropdown is-right"
-                                    :class="{ 'is-active': activeDropdown === i }"
-                                    @click="setActiveDropdown(i)"
-                                >
-                                    <div class="dropdown-trigger">
-                                        <button
-                                            class="button is-primary"
-                                            aria-haspopup="true"
-                                            :aria-controls="`dropdown-menu-${i}`"
+                                        <span
+                                            class="tag pwd-change is-danger"
+                                            v-if="user.force_password_change"
                                         >
-                                            <span>Actions</span>
-                                            <span class="icon is-small">
-                                                <i
-                                                    class="fas fa-angle-down"
-                                                    aria-hidden="true"
-                                                ></i>
-                                            </span>
-                                        </button>
-                                    </div>
+                                            Password Change Required
+                                        </span>
+                                        <span
+                                            class="tag sess-auth is-danger"
+                                            v-if="user.refuse_session_auth"
+                                        >
+                                            Session Auth Refused
+                                        </span>
+                                    </span>
+                                    <span v-else>
+                                        <span class="tag none is-success">
+                                            None
+                                        </span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span v-if="user.last_login">
+                                        {{ lastActive(user.last_login) }}
+                                    </span>
+                                    <span v-else>
+                                        Never
+                                    </span>
+                                </td>
+                                <td>
                                     <div
-                                        v-if="activeDropdown === i"
-                                        class="dropdown-menu"
-                                        :id="`dropdown-menu-${i}`"
-                                        role="menu"
+                                        class="dropdown is-right"
+                                        :class="{ 'is-active': activeDropdown === i }"
+                                        @click="setActiveDropdown(i)"
                                     >
-                                        <div class="dropdown-content">
-                                            <a
-                                                class="dropdown-item edit"
-                                                @click="openModal('edit', user)"
+                                        <div class="dropdown-trigger">
+                                            <button
+                                                class="button is-primary"
+                                                aria-haspopup="true"
+                                                :aria-controls="`dropdown-menu-${i}`"
                                             >
-                                                Edit User
-                                            </a>
-                                            <a
-                                                class="dropdown-item reset-pwd"
-                                                @click="openModal('reset-pwd', user)"
-                                            >
-                                                Reset Password
-                                            </a>
-                                            <a class="dropdown-item permissions">
-                                                <span
-                                                    v-if="user.is_admin"
-                                                    @click="openModal('demote', user)"
-                                                >
-                                                    Demote User
+                                                <span>Actions</span>
+                                                <span class="icon is-small">
+                                                    <i
+                                                        class="fas fa-angle-down"
+                                                        aria-hidden="true"
+                                                    ></i>
                                                 </span>
-                                                <span
-                                                    v-else
-                                                    @click="openModal('promote', user)"
+                                            </button>
+                                        </div>
+                                        <div
+                                            v-if="activeDropdown === i"
+                                            class="dropdown-menu"
+                                            :id="`dropdown-menu-${i}`"
+                                            role="menu"
+                                        >
+                                            <div class="dropdown-content">
+                                                <a
+                                                    class="dropdown-item edit"
+                                                    @click="openModal('edit', user)"
                                                 >
-                                                    Promote User
-                                                </span>
-                                            </a>
-                                            <hr class="dropdown-divider">
-                                            <a
-                                                class="dropdown-item deactivate"
-                                                @click="openModal('deactivate', user)"
-                                            >
-                                                Deactivate User
-                                            </a>
+                                                    Edit User
+                                                </a>
+                                                <a
+                                                    class="dropdown-item reset-pwd"
+                                                    @click="openModal('reset-pwd', user)"
+                                                >
+                                                    Reset Password
+                                                </a>
+                                                <a class="dropdown-item permissions">
+                                                    <span
+                                                        v-if="user.is_admin"
+                                                        @click="openModal('demote', user)"
+                                                    >
+                                                        Demote User
+                                                    </span>
+                                                    <span
+                                                        v-else
+                                                        @click="openModal('promote', user)"
+                                                    >
+                                                        Promote User
+                                                    </span>
+                                                </a>
+                                                <hr class="dropdown-divider">
+                                                <a
+                                                    class="dropdown-item deactivate"
+                                                    @click="openModal('deactivate', user)"
+                                                >
+                                                    Deactivate User
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="no-results" v-if="!filteredUsers.length">
+                        <p class="title">No Search Results Found.</p>
+                        <img src="../../assets/no-search-results.svg" width="30%">
+                    </div>
+                </transition>
             </div>
             <transition name="fade">
                 <UserModal
