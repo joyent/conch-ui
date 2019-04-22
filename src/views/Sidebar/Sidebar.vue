@@ -29,11 +29,11 @@
             <p class="heading">Conch Versions</p>
             <div class="tags-container">
                 <div class="tags has-addons">
-                    <div class="tag is-primary">conch-api</div>
+                    <div class="tag is-primary">API</div>
                     <div class="tag is-dark">{{ conchVersion }}</div>
                 </div>
                 <div class="tags has-addons">
-                    <div class="tag is-primary">conch-ui</div>
+                    <div class="tag is-primary">UI</div>
                     <div class="tag is-dark">{{ conchUIVersion }}</div>
                 </div>
             </div>
