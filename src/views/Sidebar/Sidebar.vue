@@ -12,11 +12,14 @@
                 <router-link :to="{ name: 'devices', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Devices</router-link>
             </li>
         </ul>
+        <p class="menu-label" v-if="currentUser.is_admin">Conch Admin</p>
+        <ul class="menu-list" v-if="currentUser.is_admin">
+            <li>
+                <router-link :to="{ name: 'user-management' }" active-class="is-active">Users</router-link>
+            </li>
+        </ul>
         <p class="menu-label">Conch</p>
         <ul class="menu-list">
-            <li v-if="currentUser.is_admin">
-                <router-link :to="{ name: 'user-management' }" active-class="is-active">User Management</router-link>
-            </li>
             <li>
                 <router-link :to="{ name: 'user' }" active-class="is-active">Profile</router-link>
             </li>

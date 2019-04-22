@@ -95,7 +95,7 @@ export default new Router({
             },
         },
         {
-            path: '/user-management',
+            path: '/admin/users',
             name: 'user-management',
             components: {
                 default: UserManagement,
