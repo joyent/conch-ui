@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <SignIn v-if="this.$route.path === '/'" />
-        <div v-else-if="this.$route.params.currentWorkspace || this.$route.path === '/user' || this.$route.path === '/user-management'">
+        <div v-else>
             <router-view name="navbar"></router-view>
             <div class="section">
                 <div class="columns">
@@ -14,12 +14,10 @@
                 </div>
             </div>
         </div>
-        <PageNotFound v-else />
     </div>
 </template>
 
 <script>
-import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -32,7 +30,6 @@ import { getRackRooms, roomToProgress, getWorkspaceRacks } from '@views/shared/u
 
 export default {
     components: {
-        PageNotFound,
         SignIn,
     },
     methods: {
