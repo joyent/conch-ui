@@ -11,10 +11,11 @@ export const createUser = (user) => {
     });
 };
 
-export const deactivateUser = (userId) => {
+export const deactivateUser = (userId, clearTokens) => {
     return requestWithToken({
         method: 'DELETE',
         url: `/user/${userId}`,
+        params: { clearTokens }
     });
 };
 
@@ -94,7 +95,61 @@ export const updatePassword = (password) => {
     .then(clearToken());
 };
 
+// Tokens
+
+export const createToken = (name) => {
+    return requestWithToken({
+        method: 'POST',
+        url: '/user/me/token',
+        data: { name },
+    });
+};
+
+export const deleteToken = (name) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/user/me/token/${name}`,
+    });
+};
+
+// Used?
+export const getToken = (name) => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/user/me/token/${name}`,
+    });
+};
+
+// Profile page
+export const getTokens = () => {
+    return requestWithToken({
+        method: 'GET',
+        url: '/user/me/token',
+    });
+};
+
+export const deleteUserToken = (name, userId) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/user/${userId}/token/${name}`,
+    });
+};
+
+export const getUserTokens = (userId) => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/user/${userId}/token`,
+    });
+};
+
+
 export default {
+    createToken,
+    deleteToken,
+    getToken,
+    getTokens,
+    deleteUserToken,
+
     createUser,
     deactivateUser,
     demoteUser,

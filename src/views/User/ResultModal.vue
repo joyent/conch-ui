@@ -18,6 +18,9 @@
                         <p class="subtitle">
                             <slot name="subtitle"></slot>
                         </p>
+                        <div class="control" @click="closeModal()">
+                            <button class="button is-link">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>

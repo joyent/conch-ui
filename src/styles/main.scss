@@ -112,72 +112,80 @@ progress::-webkit-progress-value {
 	.card-content {
 		padding: 0;
 
-		ul {
-			list-style: none;
-			margin: 0;
+		thead {
+			th {
+				background-color: $grey-darker;
+				border-bottom-width: 1px;
 
-			li {
-				align-items: center;
-				display: flex;
-				cursor: pointer;
-				padding: 12px;
-				border-bottom: 1px solid $grey-dark;
+				&:first-of-type {
+					border-top-left-radius: 5px;
+				}
 
+				&:last-of-type {
+					border-top-right-radius: 5px;
+				}
+			}
+		}
+
+		tfoot {
+			th {
+				background-color: $grey-darker;
+				border-top-width: 1px;
+
+				&:first-of-type {
+					border-bottom-left-radius: 5px;
+				}
+
+				&:last-of-type {
+					border-bottom-right-radius: 5px;
+				}
+			}
+		}
+
+		.token {
+			background-color: darken($grey-darker, 4%);
+			transition: background-color 0.3s ease-in-out;
+
+			&.create {
+				input {
+					background-color: $grey-dark;
+					color: $grey-lighter;
+
+					&::placeholder {
+						color: $grey-lighter;
+					}
+				}
+
+				td {
+					.button {
+						border-top-right-radius: 4px;
+						border-bottom-right-radius: 4px;
+					}
+				}
+			}
+
+			.delete-token {
 				&:hover {
-					background-color: lighten(#1a2531, 3%);
+					color: $red;
+					cursor: pointer;
+				}
+			}
+
+			.has-success-background {
+				background-color: $green;
+				transition: background-color 0.3s ease-in-out;
+			}
+
+			td {
+				padding: 14px;
+				white-space: nowrap;
+
+				&:last-of-type {
+					text-align: right;
 				}
 
-				+ li {
-					margin-top: 0;
-				}
-
-				a.name {
-					flex-grow: 1;
-				}
-
-				&.token {
-					> i {
-						margin-right: 10px;
-					}
-
-					&.is-expanded {
-						border-bottom: none;
-					}
-
-					.delete-token {
-						&:hover {
-							color: $red;
-						}
-					}
-
-					&.create {
-						input {
-							background-color: $grey-dark;
-							border-top-left-radius: 4px;
-							border-bottom-left-radius: 4px;
-							color: $grey-lighter;
-							width: 250px;
-
-							&::placeholder {
-								color: $grey-lighter;
-							}
-						}
-
-						.button {
-							border-top-right-radius: 4px;
-							border-bottom-right-radius: 4px;
-						}
-					}
-				}
-
-				&.is-expanded {
-					a {
-						color: #ffffff;
-					}
-				}
-
-				span.icon {
-					margin-right: 3px;
+				&:first-of-type {
+					width: 22px;
 				}
 			}
 		}
@@ -258,10 +266,6 @@ progress::-webkit-progress-value {
 		}
 	}
 
-	p.subtitle {
-		margin-bottom: 0.75rem;
-	}
-
 	.modal-card-body {
 		padding: 0px;
 
@@ -289,7 +293,7 @@ progress::-webkit-progress-value {
 			background-color: $grey-dark;
 			border-top-right-radius: 5px;
 			border-top-left-radius: 5px;
-			padding: 25px;
+			padding: 20px;
 
 			input.search {
 				background-color: $grey-darker;
@@ -395,6 +399,139 @@ progress::-webkit-progress-value {
 
 	.modal-content {
 		border-radius: 5px;
+	}
+}
+
+.authentication-tokens {
+	section.content {
+		margin-top: 0.75rem;
+	}
+
+	li:not(:last-of-type) {
+		margin-bottom: 5px;
+	}
+
+	select {
+		background-color: $grey-darker;
+		border-color: $grey;
+		color: #bdcbdb;
+	}
+
+	.selected-user {
+		&.box {
+			border-color: #209cee;
+			border-radius: 4px;
+			border-width: 0 4px 0 4px;
+			border-style: solid;
+		}
+
+		.tags {
+			margin-bottom: 0;
+			margin-right: 10px;
+
+			.tag {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	.no-results {
+		text-align: center;
+
+		p.title {
+			margin-top: 40px;
+		}
+
+		img {
+			margin-top: 20px;
+		}
+	}
+
+	.user-search {
+		input {
+			background-color: $grey-darker;
+			border-color: $grey;
+			color: #bdcbdb;
+
+			&::placeholder {
+				color: #bdcbdb;
+			}
+		}
+	}
+
+	.user-authentication-tokens {
+		.username {
+			flex-grow: 1;
+			margin-bottom: 0;
+		}
+	}
+
+	.user-search-row {
+		cursor: pointer;
+
+		td {
+			border: none;
+			padding: 15px 10px;
+		}
+
+		&:hover {
+			background-color: $grey-darker;
+		}
+	}
+
+	.authentication-tokens-table,
+	.auth-users-table {
+		.table-filter {
+			background-color: $grey-dark;
+			border-top-right-radius: 5px;
+			border-top-left-radius: 5px;
+			padding: 20px;
+
+			input.search {
+				background-color: $grey-darker;
+				border-color: $grey;
+				color: #bdcbdb;
+
+				&::placeholder {
+					color: #bdcbdb;
+				}
+			}
+		}
+
+		table {
+			border-bottom-left-radius: 5px;
+			border-bottom-right-radius: 5px;
+
+			td,
+			tfoot th,
+			thead th {
+				padding-bottom: 15px;
+				padding-top: 15px;
+				vertical-align: middle;
+			}
+
+			thead {
+				th {
+					border-width: 1px 0;
+					color: #bdcbdb;
+				}
+			}
+
+			tfoot {
+				th {
+					border-width: 1px 0 0 0;
+					color: #bdcbdb;
+				}
+			}
+
+			&.is-hoverable {
+				tr {
+					&:hover {
+						background-color: lighten($grey-darker, 4%);
+					}
+				}
+			}
+		}
 	}
 }
 

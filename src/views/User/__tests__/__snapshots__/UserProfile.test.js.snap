@@ -31,7 +31,7 @@ exports[`UserProfile.vue should render correctly on inital render 1`] = `
       </div>
       <div class="column">
         <article class="box">
-          <authtokens-stub></authtokens-stub>
+          <userauthtokens-stub></userauthtokens-stub>
         </article>
       </div>
     </div>

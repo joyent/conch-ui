@@ -16,6 +16,7 @@ export const state = {
     rackRooms: {},
     rackRoomsByWorkspace: [],
     showDeviceInRack: false,
+    userAuthTokens: [],
     users: [],
     workspaces: [],
     validations: [],

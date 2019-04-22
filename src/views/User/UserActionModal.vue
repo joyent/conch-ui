@@ -24,19 +24,52 @@
                             ></i>
                             <i
                                 class="fas fa-3x fa-user-slash has-text-warning"
-                                v-else-if="action === 'deactivate'"
+                                v-else-if="action === 'deactivate' && !deactivateConfirmed"
+                            ></i>
+                            <i
+                                class="fas fa-3x fa-key has-text-warning"
+                                v-else-if="action === 'deactivate' && deactivateConfirmed"
                             ></i>
                         </div>
                         <div class="column">
                             <p class="subtitle" v-if="action === 'reset-pwd'">
                                 Are you sure you want to <strong class="has-text-white">reset the password</strong> for <strong class="has-text-white">{{ user.name }}</strong>?
                             </p>
-                            <p class="subtitle" v-else>
+                            <p class="subtitle" v-else-if="action !== 'reset-password' && !deactivateConfirmed">
                                 Are you sure you want to <strong class="has-text-white">{{ action }} {{ user.name }}</strong>?
                             </p>
+                            <transition name="fade">
+                                <div class="field" v-if="action === 'deactivate' && deactivateConfirmed" style="margin-bottom: 1.5rem">
+                                    <p class="subtitle" >
+                                        Do you want to clear the tokens for <strong class="has-text-white">{{ user.name }}</strong>?
+                                    </p>
+                                    <label class="switch">
+                                        <input
+                                            type="checkbox"
+                                            :checked="clearTokens"
+                                            v-model="clearTokens"
+                                            :true-value="true"
+                                            :false-value="false"
+                                        >
+                                        <span class="slider round is-success"></span>
+                                    </label>
+                                    <span style="margin-left: 8px;">
+                                        <strong v-if="clearTokens">Yes</strong>
+                                        <strong v-else>No</strong>
+                                    </span>
+                                </div>
+                            </transition>
                             <div class="field is-grouped">
                                 <div class="control">
                                     <button
+                                        v-if="action === 'deactivate' && !deactivateConfirmed"
+                                        class="button confirm is-success"
+                                        @click="deactivateConfirmed = true"
+                                    >
+                                        Confirm
+                                    </button>
+                                    <button
+                                        v-else-if="action === 'deactivate' && deactivateConfirmed"
                                         class="button confirm is-success"
                                         @click="confirm()"
                                     >
@@ -100,6 +133,8 @@ export default {
     },
     data() {
         return {
+            clearTokens: true,
+            deactivateConfirmed: false,
             isActive: true,
             success: false,
         };
@@ -123,27 +158,34 @@ export default {
             if (action === 'reset-pwd') {
                 forcePasswordChange(userId)
                     .then(() => {
-                        this.success = true;
-                        EventBus.$emit('action-success', userId);
+                        this.triggerSuccess(userId);
                     });
             } else if (action === 'promote') {
                 promoteUser(userId)
                     .then(() => {
-                        this.success = true;
-                        EventBus.$emit('action-success', userId);
+                        this.triggerSuccess(userId);
                     });
             } else if (action === 'demote') {
                 demoteUser(userId)
                     .then(() => {
-                        this.success = true;
-                        EventBus.$emit('action-success', userId);
+                        this.triggerSuccess(userId);
                     });
             } else if (action === 'deactivate') {
-                deactivateUser(userId)
+                const clearTokens = this.clearTokens ? 1 : 0;
+
+                deactivateUser(userId, clearTokens)
                     .then(() => {
-                        this.success = true;
-                        EventBus.$emit('action-success', userId);
+                        this.triggerSuccess(userId, true);
                     });
+            }
+        },
+        triggerSuccess(userId, deactivate) {
+            this.success = true;
+
+            if (deactivate) {
+                EventBus.$emit('action-success', { userId, action: 'deactivate' });
+            } else {
+                EventBus.$emit('action-success', { userId });
             }
         },
     },

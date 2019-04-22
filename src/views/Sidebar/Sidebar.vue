@@ -15,6 +15,9 @@
         <p class="menu-label" v-if="currentUser.is_admin">Conch Admin</p>
         <ul class="menu-list" v-if="currentUser.is_admin">
             <li>
+                <router-link :to="{ name: 'tokens' }" active-class="is-active">Tokens</router-link>
+            </li>
+            <li>
                 <router-link :to="{ name: 'user-management' }" active-class="is-active">Users</router-link>
             </li>
         </ul>
