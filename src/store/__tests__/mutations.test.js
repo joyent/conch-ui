@@ -235,6 +235,15 @@ describe('mutations', () => {
         });
     });
 
+    describe('setUserAuthTokens', () => {
+        test('it adds authentication tokens to the state', () => {
+            state = { userAuthTokens: [] };
+
+            mutations.setUserAuthTokens(state, userAuthTokens);
+            expect(state).toMatchObject({ userAuthTokens });
+        });
+    });
+
     describe('setUsers', () => {
         test('it adds users to the state', () => {
             state = { users: [] };

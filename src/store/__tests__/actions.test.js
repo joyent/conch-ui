@@ -157,6 +157,13 @@ describe('actions', () => {
         });
     });
 
+    describe('setUserAuthTokens', () => {
+        test('it sets authentication tokens', () => {
+            actions.setUserAuthTokens({ commit }, []);
+            expect(commit).toHaveBeenCalledWith('setUserAuthTokens', []);
+        });
+    });
+
     describe('setUsers', () => {
         test('it sets the users', () => {
             actions.setUsers({ commit }, []);

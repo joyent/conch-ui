@@ -264,7 +264,13 @@ export default {
                         this.success = true;
                         this.isLoading = false;
 
-                        EventBus.$emit('action-success', { userId, action: 'create' });
+                        EventBus.$emit(
+                            'action-success',
+                            {
+                                userId,
+                                action: 'create'
+                            }
+                        );
                     })
                     .catch(error => {
                         if (error.status === 409) {

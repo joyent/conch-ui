@@ -108,7 +108,7 @@
                 </div>
                 <div class="column">
                     <article class="box">
-                        <AuthTokens />
+                        <UserAuthTokens />
                     </article>
                 </div>
             </div>
@@ -146,13 +146,13 @@
 
 <script>
 import PageHeader from '@views/components/PageHeader.vue';
-import AuthTokens from './AuthTokens.vue';
+import UserAuthTokens from './UserAuthTokens.vue';
 import { updatePassword } from '@api/users.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
-        AuthTokens,
+        UserAuthTokens,
         PageHeader,
     },
     data() {

@@ -6,6 +6,7 @@ import SignIn from './views/SignIn/SignIn.vue';
 import Status from './views/Status/Status.vue';
 import UserProfile from './views/User/UserProfile.vue';
 import UserManagement from './views/User/UserManagement.vue';
+import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTokens.vue';
 import Navbar from './views/Navbar/Navbar.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
@@ -93,6 +94,23 @@ export default new Router({
                 sidebar: Sidebar,
                 navbar: Navbar,
             },
+        },
+        {
+            path: '/admin/tokens',
+            name: 'tokens',
+            components: {
+                default: AuthenticationTokens,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
+            children: [
+                {
+                    // when /admin/tokens/:userId is matched
+                    path: ':userId',
+                    name: 'userTokens',
+                    component: AuthenticationTokens,
+                },
+            ],
         },
         {
             path: '/admin/users',

@@ -94,6 +94,10 @@ export const setShowDeviceInRack = ({ commit }, showDeviceInRack) => {
     commit('setShowDeviceInRack', showDeviceInRack);
 };
 
+export const setUserAuthTokens = ({ commit }, userAuthTokens) => {
+    commit('setUserAuthTokens', userAuthTokens);
+};
+
 export const setUsers = ({ commit }, users) => {
     commit('setUsers', users);
 };
@@ -131,6 +135,7 @@ export default {
     setRackRooms,
     setRackRoomsByWorkspace,
     setShowDeviceInRack,
+    setUserAuthTokens,
     setUsers,
     setWorkspaces,
     setValidations,

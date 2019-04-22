@@ -94,6 +94,10 @@ export const setShowDeviceInRack = (state, showDeviceInRack) => {
     state.showDeviceInRack = showDeviceInRack;
 };
 
+export const setUserAuthTokens = (state, userAuthTokens) => {
+    state.userAuthTokens = userAuthTokens;
+};
+
 export const setUsers = (state, users) => {
     state.users = users;
 };
@@ -131,6 +135,7 @@ export default {
     setRackRooms,
     setRackRoomsByWorkspace,
     setShowDeviceInRack,
+    setUserAuthTokens,
     setUsers,
     setWorkspaces,
     setValidations,

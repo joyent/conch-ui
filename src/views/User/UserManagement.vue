@@ -54,7 +54,10 @@
                     </div>
                 </div>
                 <transition name="fade-in-slow">
-                    <table class="table is-hoverable is-fullwidth" v-if="filteredUsers.length">
+                    <table
+                        class="table is-hoverable is-fullwidth"
+                        v-if="filteredUsers.length"
+                    >
                         <thead>
                             <th></th>
                             <th>Name</th>
@@ -152,6 +155,12 @@
                                                 >
                                                     Reset Password
                                                 </a>
+                                                <a
+                                                    class="dropdown-item tokens"
+                                                    @click="viewTokens(user)"
+                                                >
+                                                    View Tokens
+                                                </a>
                                                 <a class="dropdown-item permissions">
                                                     <span
                                                         v-if="user.is_admin"
@@ -182,7 +191,10 @@
                     </table>
                     <div class="no-results" v-if="!filteredUsers.length">
                         <p class="title">No Search Results Found.</p>
-                        <img src="../../assets/no-search-results.svg" width="30%">
+                        <img
+                            src="../../assets/no-search-results.svg"
+                            width="30%"
+                        >
                     </div>
                 </transition>
             </div>
@@ -253,6 +265,9 @@ export default {
                 this.activeDropdown = row;
             }
         },
+        viewTokens(user) {
+            this.$router.push({ name: 'userTokens', params: { userId: user.id }});
+        },
     },
     computed: {
         ...mapState([
@@ -303,27 +318,34 @@ export default {
             this.action = '';
         });
 
+        // NEED TO SORT OUT THESE EVENTS
+        // - Refresh user list after deactivating user (or remove from array)
+        // - Refresh user list after creating user (or add to array)
+        // -
         EventBus.$on('action-success', (actionData) => {
             const userId = actionData.userId;
 
-            getUser(userId)
-                .then(response => {
-                    const users = this.users;
+            if (!actionData.action === 'deactivate') {
+                getUser(userId)
+                    .then(response => {
+                        const newUser = response.data;
+                        const users = this.users;
 
-                    if (actionData.action && actionData.action === 'create') {
-                        users.push(response.data);
+                        if (actionData.action && actionData.action === 'create') {
+                            users.push(newUser);
 
-                        this.setUsers(users);
-                    } else {
-                        const index = users.map(user => {
-                            return user.id;
-                        }).indexOf(userId);
+                            this.setUsers(users);
+                        } else {
+                            const index = users.map(user => {
+                                return user.id;
+                            }).indexOf(userId);
 
-                        users.splice(index, 1, response.data);
+                            users.splice(index, 1, newUser);
 
-                        this.setUsers(users);
-                    }
-                });
+                            this.setUsers(users);
+                        }
+                    });
+            }
         });
     },
 };
