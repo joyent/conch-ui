@@ -2,8 +2,8 @@ export const clearActiveDevice = (state) => {
     state.activeDevice = {};
 };
 
-export const clearActiveRoom = (state) => {
-    state.activeRoom = {};
+export const clearActiveRoomName = (state) => {
+    state.activeRoomName = '';
 };
 
 export const clearForcePasswordChange = (state) => {
@@ -34,8 +34,8 @@ export const setActiveDeviceValidations = (state, activeDeviceValidations) => {
     state.activeDeviceValidations = activeDeviceValidations;
 };
 
-export const setActiveRoom = (state, activeRoom) => {
-    state.activeRoom = activeRoom;
+export const setActiveRoomName = (state, activeRoomName) => {
+    state.activeRoomName = activeRoomName;
 };
 
 export const setAllRooms = (state, allRooms) => {
@@ -96,7 +96,7 @@ export const setValidations = (state, validations) => {
 
 export default {
     clearActiveDevice,
-    clearActiveRoom,
+    clearActiveRoomName,
     clearForcePasswordChange,
     clearRackLayout,
     clearShowDeviceInRack,
@@ -104,7 +104,7 @@ export default {
     setActiveDeviceDetails,
     setActiveDeviceSettings,
     setActiveDeviceValidations,
-    setActiveRoom,
+    setActiveRoomName,
     setAllRooms,
     setCurrentUser,
     setCurrentWorkspace,

@@ -3,7 +3,7 @@ export const state = {
     activeDeviceDetails: {},
     activeDeviceSettings: {},
     activeDeviceValidations: [],
-    activeRoom: {},
+    activeRoomName: '',
     allRooms: [],
     currentUser: {},
     currentWorkspace: {},

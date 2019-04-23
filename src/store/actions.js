@@ -2,8 +2,8 @@ export const clearActiveDevice = ({ commit }) => {
     commit('clearActiveDevice');
 };
 
-export const clearActiveRoom = ({ commit }) => {
-    commit('clearActiveRoom');
+export const clearActiveRoomName = ({ commit }) => {
+    commit('clearActiveRoomName');
 };
 
 export const clearForcePasswordChange = ({ commit }) => {
@@ -34,8 +34,8 @@ export const setActiveDeviceValidations = ({ commit }, activeDeviceValidations) 
     commit('setActiveDeviceValidations', activeDeviceValidations);
 };
 
-export const setActiveRoom = ({ commit }, activeRoom) => {
-    commit('setActiveRoom', activeRoom);
+export const setActiveRoomName = ({ commit }, activeRoomName) => {
+    commit('setActiveRoomName', activeRoomName);
 };
 
 export const setAllRooms = ({ commit }, allRooms) => {
@@ -96,7 +96,7 @@ export const setValidations = ({ commit }, validations) => {
 
 export default {
     clearActiveDevice,
-    clearActiveRoom,
+    clearActiveRoomName,
     clearForcePasswordChange,
     clearRackLayout,
     clearShowDeviceInRack,
@@ -104,7 +104,7 @@ export default {
     setActiveDeviceDetails,
     setActiveDeviceSettings,
     setActiveDeviceValidations,
-    setActiveRoom,
+    setActiveRoomName,
     setAllRooms,
     setCurrentUser,
     setCurrentWorkspace,

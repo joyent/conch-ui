@@ -88,15 +88,15 @@ export default {
     methods: {
         ...mapActions([
             'clearActiveDevice',
-            'clearActiveRoom',
+            'clearActiveRoomName',
             'clearRackLayout',
-            'setActiveRoom',
+            'setActiveRoomName',
             'setHighlightDeviceId',
             'setRackLayout',
         ]),
         clearActiveData() {
             this.clearActiveDevice();
-            this.clearActiveRoom();
+            this.clearActiveRoomName();
             this.clearRackLayout();
         },
         setWorkspaceDevices() {
@@ -137,20 +137,21 @@ export default {
             getLocation(device.id)
                 .then(response => {
                     const location = response.data;
-                    const activeRoom = this.rackRooms.find(room => {
-                        return room.name === location.datacenter.name;
-                    });
 
-                    this.setActiveRoom(activeRoom);
+                    if (location) {
+                        if (location.datacenter_room && location.datacenter_room.az) {
+                            this.setActiveRoomName(location.datacenter_room.az);
+                        }
 
-                    if (location && location.rack && location.rack.id) {
-                        this.rackLoading = true;
+                        if (location.rack && location.rack.id) {
+                            this.rackLoading = true;
 
-                        getRackById(this.currentWorkspaceId, location.rack.id)
-                            .then(response => {
-                                this.setRackLayout(response);
-                                this.rackLoading = false;
-                            });
+                            getRackById(this.currentWorkspaceId, location.rack.id)
+                                .then(response => {
+                                    this.setRackLayout(response);
+                                    this.rackLoading = false;
+                                });
+                        }
                     }
                 });
         },
@@ -161,19 +162,27 @@ export default {
             'currentWorkspaceName',
         ]),
         ...mapState([
-            'activeRoom',
+            'activeRoomName',
         ]),
         activeRacks() {
-            if (!isEmpty(this.activeRoom)) {
-                return this.activeRoom.racks.sort((a, b) => {
-                    a.name > b.name ? 1 : -1
-                });
-            }
+            if (this.rackRooms.length) {
+                let racks;
 
-            return null;
+                this.rackRooms.map(rackRoom => {
+                    if (rackRoom.name === this.activeRoomName) {
+                        racks = rackRoom.racks.sort((a, b) => {
+                            a.name > b.name ? 1 : -1
+                        });
+
+                        return;
+                    }
+                });
+
+                return racks;
+            }
         },
         hasRackRooms() {
-            return !isEmpty(this.rackRooms);
+            return this.rackRooms.length > 0;
         },
     },
     watch: {

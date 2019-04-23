@@ -38,7 +38,7 @@ export default {
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
             'setActiveDeviceValidations',
-            'setActiveRoom',
+            'setActiveRoomName',
             'setAllRooms',
             'setCurrentUser',
             'setCurrentWorkspace',
@@ -87,14 +87,7 @@ export default {
                         }
 
                         if (routeParams.roomName) {
-                            const roomName = routeParams.roomName;
-                            const name = Object.keys(rooms).find(room => {
-                                return room === roomName;
-                            });
-                            const racks = rooms[name];
-                            const progress = roomToProgress(racks);
-
-                            this.setActiveRoom({ name, racks, progress });
+                            this.setActiveRoomName(routeParams.roomName);
                         }
 
                         if (routeParams.rackId) {

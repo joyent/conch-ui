@@ -83,7 +83,7 @@ export default {
             'setActiveDeviceDetails',
             'setActiveDeviceSettings',
             'setActiveDeviceValidations',
-            'setActiveRoom',
+            'setActiveRoomName',
             'setRackLayout',
             'setValidations',
         ]),
@@ -99,15 +99,17 @@ export default {
                     this.setActiveDeviceDetails(deviceDetails);
 
                     if (deviceDetails.location) {
-                        const location = deviceDetails.location;
+                        const {
+                            datacenter_room,
+                            rack
+                        } = deviceDetails.location;
 
-                        if (location.datacenter && location.datacenter.name) {
-                            const activeRoom = this.getRoomByName(location.datacenter.name);
-                            this.setActiveRoom(activeRoom);
+                        if (datacenter_room && datacenter_room.az) {
+                            this.setActiveRoomName(datacenter_room.az);
                         }
 
-                        if (location.rack && location.rack.id) {
-                            getRackById(this.currentWorkspaceId, location.rack.id)
+                        if (rack && rack.id) {
+                            getRackById(this.currentWorkspaceId, rack.id)
                                 .then(response => {
                                     this.setRackLayout(response);
                                 });
