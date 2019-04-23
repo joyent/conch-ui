@@ -29,6 +29,7 @@ describe('OverviewTab.vue', () => {
 
     beforeEach(() => {
         actions = {
+            setActiveRoomName: jest.fn(),
             setHighlightDeviceId: jest.fn(),
             setShowDeviceInRack: jest.fn(),
         };

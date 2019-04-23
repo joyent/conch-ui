@@ -32,12 +32,12 @@ describe('mutations', () => {
         });
     });
 
-    describe('clearActiveRoom', () => {
+    describe('clearActiveRoomName', () => {
         test('it clears the active room currently in state', () => {
-            state = { activeRoom };
+            state = { activeRoomName: activeRoom.name };
 
-            mutations.clearActiveRoom(state);
-            expect(state).toMatchObject({ activeRoom: {} });
+            mutations.clearActiveRoomName(state);
+            expect(state).toMatchObject({ activeRoomName: {} });
         });
     });
 
@@ -104,12 +104,12 @@ describe('mutations', () => {
         });
     });
 
-    describe('setActiveRoom', () => {
+    describe('setActiveRoomName', () => {
         test('it adds an active room to the state', () => {
-            state = { activeRoom: {} };
+            state = { activeRoomName: '' };
 
-            mutations.setActiveRoom(state, activeRoom);
-            expect(state).toMatchObject({ activeRoom });
+            mutations.setActiveRoomName(state, activeRoom.name);
+            expect(state).toMatchObject({ activeRoomName: activeRoom.name });
         });
     });
 

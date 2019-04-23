@@ -10,10 +10,10 @@ describe('actions', () => {
         });
     });
 
-    describe('clearActiveRoom', () => {
+    describe('clearActiveRoomName', () => {
         test('it clears the active room', () => {
-            actions.clearActiveRoom({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('clearActiveRoom');
+            actions.clearActiveRoomName({ commit }, {});
+            expect(commit).toHaveBeenCalledWith('clearActiveRoomName');
         });
     });
 
@@ -66,10 +66,10 @@ describe('actions', () => {
         });
     });
 
-    describe('setActiveRoom', () => {
+    describe('setActiveRoomName', () => {
         test('it sets the active room', () => {
-            actions.setActiveRoom({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setActiveRoom', {});
+            actions.setActiveRoomName({ commit }, '');
+            expect(commit).toHaveBeenCalledWith('setActiveRoomName', '');
         });
     });
 

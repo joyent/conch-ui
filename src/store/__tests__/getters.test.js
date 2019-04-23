@@ -6,7 +6,6 @@ import activeRoom from '@src/__fixtures__/activeRoom.js';
 import allRooms from '@src/__fixtures__/allRooms.js';
 import devicesByWorkspaceId from '@src/__fixtures__/devicesByWorkspace.js';
 import rackLayout from '@src/__fixtures__/rackLayout.js';
-import rackRooms from '@src/__fixtures__/rackRooms.js';
 import rackRoomsByWorkspaceId from '@src/__fixtures__/rackRoomsByWorkspace.js';
 import workspaces from '@src/__fixtures__/workspaces.js';
 
@@ -41,15 +40,6 @@ describe('getters', () => {
             const activeRackId = getters.activeRackId(state);
 
             expect(activeRackId).toEqual(rackLayout.id);
-        });
-    });
-
-    describe('activeRoomName', () => {
-        test('it returns the name of the active room', () => {
-            state = { activeRoom };
-            const activeRoomName = getters.activeRoomName(state);
-
-            expect(activeRoomName).toEqual(activeRoom.name);
         });
     });
 
