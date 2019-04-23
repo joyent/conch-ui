@@ -197,6 +197,21 @@ export default {
         this.setWorkspaceRacks();
     },
     mounted() {
+        if (this.$route && this.$route.params) {
+            const routeParams = this.$route.params;
+
+            if (routeParams.roomName) {
+                this.setActiveRoomName(routeParams.roomName);
+            }
+
+            if (routeParams.currentWorkspace && routeParams.rackId) {
+                getRackById(routeParams.currentWorkspace, routeParams.rackId)
+                    .then(response => {
+                        this.setRackLayout(response);
+                    });
+            }
+        }
+
         EventBus.$on('changeWorkspace:datacenter', () => {
             this.setWorkspaceDevices();
             this.setWorkspaceRacks();
