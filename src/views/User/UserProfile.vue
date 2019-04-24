@@ -141,7 +141,7 @@
 
 <script>
 import PageHeader from '@views/components/PageHeader.vue';
-import { updatePassword } from '@api/authentication.js';
+import { updatePassword } from '@api/users.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {

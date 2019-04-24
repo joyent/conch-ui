@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <SignIn v-if="this.$route.path === '/'" />
-        <div v-else-if="this.$route.params.currentWorkspace || this.$route.path === '/user'">
+        <div v-else>
             <router-view name="navbar"></router-view>
             <div class="section">
                 <div class="columns">
@@ -14,24 +14,22 @@
                 </div>
             </div>
         </div>
-        <PageNotFound v-else />
     </div>
 </template>
 
 <script>
-import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { isLoggedIn } from '@api/authentication.js';
 import { loadAllWorkspaces, getRackById } from '@api/workspaces.js';
 import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from '@api/device.js';
+import { getCurrentUser } from '@api/users.js';
 import { getValidations } from '@api/validations.js';
 import { getRackRooms, roomToProgress, getWorkspaceRacks } from '@views/shared/utils.js';
 
 export default {
     components: {
-        PageNotFound,
         SignIn,
     },
     methods: {
@@ -42,6 +40,7 @@ export default {
             'setActiveDeviceValidations',
             'setActiveRoom',
             'setAllRooms',
+            'setCurrentUser',
             'setCurrentWorkspace',
             'setRackLayout',
             'setValidations',
@@ -123,6 +122,7 @@ export default {
             'loadCurrentWorkspace',
         ]),
         ...mapState([
+            'currentUser',
             'currentWorkspace',
             'workspaces',
         ]),
@@ -151,6 +151,13 @@ export default {
             } else {
                 this.setWorkspace(currentWorkspaceId);
                 this.setRoomsAndStore();
+            }
+
+            if (isEmpty(this.currentUser)) {
+                getCurrentUser()
+                    .then(response => {
+                        this.setCurrentUser(response.data);
+                    });
             }
         }
     },

@@ -51,7 +51,8 @@
 <script>
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { isForcePasswordChange, login } from '@api/authentication.js';
+import { getCurrentUser } from '@api/users.js';
+import { login } from '@api/authentication.js';
 import { loadAllWorkspaces } from '@api/workspaces.js';
 
 export default {
@@ -66,6 +67,7 @@ export default {
     },
     methods: {
         ...mapActions([
+            'setCurrentUser',
             'setCurrentWorkspace',
             'setForcePasswordChange',
             'setWorkspaces',
@@ -95,9 +97,12 @@ export default {
 
                 login(data)
                     .then(response => {
-                        isForcePasswordChange()
-                            .then(forcePasswordChange => {
-                                if (forcePasswordChange) {
+                        getCurrentUser()
+                            .then(response => {
+                                const currentUser = response.data;
+                                this.setCurrentUser(currentUser);
+
+                                if (currentUser.force_password_change) {
                                     this.setForcePasswordChange();
                                     this.$router.push({ name: 'user' });
                                 } else {

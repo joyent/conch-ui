@@ -12,6 +12,7 @@ import hardwareProducts from '@src/__fixtures__/hardwareProducts.js';
 import rackLayout from '@src/__fixtures__/rackLayout.js';
 import rackRooms from '@src/__fixtures__/rackRooms.js';
 import rackRoomsByWorkspaceId from '@src/__fixtures__/rackRoomsByWorkspace.js';
+import users from '@src/__fixtures__/users.js';
 import validations from '@src/__fixtures__/validations.js';
 import workspaces from '@src/__fixtures__/workspaces.js';
 
@@ -121,6 +122,16 @@ describe('mutations', () => {
         });
     });
 
+    describe('setCurrentUser', () => {
+        test('it adds the current user to the state', () => {
+            const currentUser = users[0];
+            state = { currentUser: {} };
+
+            mutations.setCurrentUser(state, currentUser);
+            expect(state).toMatchObject({ currentUser });
+        });
+    });
+
     describe('setCurrentWorkspace', () => {
         test('it adds the current workspace to the state', () => {
             const currentWorkspace = workspaces[0];
@@ -211,6 +222,15 @@ describe('mutations', () => {
 
             mutations.setShowDeviceInRack(state, showDeviceInRack);
             expect(state).toMatchObject({ showDeviceInRack });
+        });
+    });
+
+    describe('setUsers', () => {
+        test('it adds users to the state', () => {
+            state = { users: [] };
+
+            mutations.setUsers(state, users);
+            expect(state).toMatchObject({ users });
         });
     });
 

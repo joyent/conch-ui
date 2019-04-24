@@ -61,15 +61,6 @@ describe('App.vue', () => {
         });
     });
 
-    describe('PageNotFound (404)', () => {
-        test('should display the PageNotFound component when user 404s', () => {
-            mocks.$route.params.currentWorkspace = '';
-            mocks.$route.path = '/user/apple';
-
-            expect(wrapper.find('pagenotfound-stub').exists()).toBeTruthy();
-        });
-    });
-
     describe('Main layout', () => {
         describe('path is "/user"', () => {
             beforeEach(() => {

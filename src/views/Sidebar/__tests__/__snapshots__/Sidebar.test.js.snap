@@ -14,6 +14,8 @@ exports[`Sidebar.vue should render correctly on initial render 1`] = `
       <router-link-stub to="[object Object]" active-class="is-active">Devices</router-link-stub>
     </li>
   </ul>
+  <!---->
+  <!---->
   <p class="menu-label">Conch</p>
   <ul class="menu-list">
     <li>
@@ -25,11 +27,11 @@ exports[`Sidebar.vue should render correctly on initial render 1`] = `
     <p class="heading">Conch Versions</p>
     <div class="tags-container">
       <div class="tags has-addons">
-        <div class="tag is-primary">conch-api</div>
+        <div class="tag is-primary">API</div>
         <div class="tag is-dark">v2.21.2-10-gabc90b5f</div>
       </div>
       <div class="tags has-addons">
-        <div class="tag is-primary">conch-ui</div>
+        <div class="tag is-primary">UI</div>
         <div class="tag is-dark">v2.22.1-31-gece90b5f</div>
       </div>
     </div>

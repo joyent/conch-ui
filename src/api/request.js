@@ -29,8 +29,19 @@ export const requestWithToken = (args) => {
     };
 
     return request(args).catch(error => {
-        clearToken();
-        Promise.reject(error);
+        let errorResponse;
+
+        if (error.response) {
+            errorResponse = error.response;
+        } else {
+            return Promise.reject(error);
+        }
+
+        if (errorResponse.status && errorResponse.status === 401) {
+            clearToken();
+        }
+
+        return Promise.reject(errorResponse);
     });
 };
 

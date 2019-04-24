@@ -2,6 +2,7 @@ import SignIn from '../SignIn.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import * as authentication from '@api/authentication.js';
+import * as users from '@api/users.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -19,11 +20,15 @@ describe('SignIn.vue', () => {
 
     beforeEach(() => {
         actions = {
+            setCurrentUser: jest.fn(),
             setCurrentWorkspace: jest.fn(),
             setForcePasswordChange: jest.fn(),
             setWorkspaces: jest.fn(),
         };
-        getters = { currentWorkspaceId: jest.fn() };
+        getters = {
+            currentWorkspaceId: jest.fn(),
+            loadCurrentWorkspace: jest.fn(),
+        };
         mocks = { $router: [] };
         state = { workspaces: {} };
         store = new Vuex.Store({ actions, getters, state });
@@ -52,8 +57,22 @@ describe('SignIn.vue', () => {
         expect(wrapper.html()).toContain('Invalid email address or password');
     });
 
-    test('should do things', async () => {
-        wrapper.setData({ emailAddress: 'validuser@joyent.com', password: 'goodPassword' });
+    test('should call setForcePasswordChange method when force_password_change is true', async () => {
+        jest.spyOn(users, 'getCurrentUser').mockReturnValueOnce(
+            Promise.resolve({
+                data: {
+                    name: 'Valid User',
+                    email: 'validuser@joyent.com',
+                    password: 'abcdefg',
+                    force_password_change: true,
+                },
+            })
+        );
+
+        wrapper.setData({
+            emailAddress: 'validuser@joyent.com',
+            password: 'goodPassword',
+        });
         wrapper.find('button').trigger('click');
 
         await new Promise(resolve => setTimeout(() => {
@@ -63,8 +82,6 @@ describe('SignIn.vue', () => {
     });
 
     test('should call the login method', () => {
-        jest.spyOn(authentication, 'isForcePasswordChange').mockReturnValueOnce(Promise.resolve(false));
-
         const spy = jest.spyOn(authentication, 'login');
 
         // Needed in order for test to pass. It seems like Jest doesn't know

@@ -4,6 +4,9 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import * as auth from '../../../api/authentication.js';
 import * as conchApi from '../../../api/conchApiVersion.js';
 
+// Fixture
+import users from '@src/__fixtures__/users.js';
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -14,6 +17,7 @@ jest.spyOn(conchApi, 'getApiVersion');
 describe('Sidebar.vue', () => {
     let getters;
     let mocks
+    let state;
     let store;
     let stubs;
     let wrapper;
@@ -21,7 +25,8 @@ describe('Sidebar.vue', () => {
     beforeEach(() => {
         getters = { currentWorkspaceId: jest.fn() };
         mocks = { $router :[] };
-        store = new Vuex.Store({ getters });
+        state = { currentUser: users[0] };
+        store = new Vuex.Store({ state, getters });
         stubs = ['router-link'];
         wrapper = shallowMount(Sidebar, { localVue, mocks, store, stubs });
     });

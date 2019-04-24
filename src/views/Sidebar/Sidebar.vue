@@ -12,6 +12,12 @@
                 <router-link :to="{ name: 'devices', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Devices</router-link>
             </li>
         </ul>
+        <p class="menu-label" v-if="currentUser.is_admin">Conch Admin</p>
+        <ul class="menu-list" v-if="currentUser.is_admin">
+            <li>
+                <router-link :to="{ name: 'user-management' }" active-class="is-active">Users</router-link>
+            </li>
+        </ul>
         <p class="menu-label">Conch</p>
         <ul class="menu-list">
             <li>
@@ -26,11 +32,11 @@
             <p class="heading">Conch Versions</p>
             <div class="tags-container">
                 <div class="tags has-addons">
-                    <div class="tag is-primary">conch-api</div>
+                    <div class="tag is-primary">API</div>
                     <div class="tag is-dark">{{ conchVersion }}</div>
                 </div>
                 <div class="tags has-addons">
-                    <div class="tag is-primary">conch-ui</div>
+                    <div class="tag is-primary">UI</div>
                     <div class="tag is-dark">{{ conchUIVersion }}</div>
                 </div>
             </div>
@@ -56,6 +62,7 @@ export default {
             'currentWorkspaceId',
         ]),
         ...mapState([
+            'currentUser',
             'currentWorkspace',
         ]),
         workspaceId() {
