@@ -1,0 +1,30 @@
+/* Spinner */
+
+.spinner {
+	min-height: 60px;
+	text-align: center;
+}
+
+// A simple animated spinner for loading indicators. Change
+.spinner:before {
+	content: "";
+	box-sizing: border-box;
+	position: absolute;
+	//top: 50%;
+	//left: 50%;
+	width: 30px;
+	height: 30px;
+	margin-top: 15px;
+	margin-left: -15px;
+	border-radius: 50%;
+	border: 3px rgba(#07d, 0.25) solid;
+	border-top: 3px rgba(#07d, 1) solid;
+	border-left: 3px rgba(#07d, 0.8) dotted;
+	animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+	to {
+		transform: rotate(360deg);
+	}
+}
