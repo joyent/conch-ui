@@ -1,7 +1,20 @@
-@import "d3.relationshipgraph.min.css";
-
+/* Third-party */
+// Rack Status Graph
+// TODO: Replace this with something maintained and testable
+@import "vendor/d3.relationshipgraph.min.css";
+// Bulmaswatch Theme
+// TODO: Import the theme files and remove the package
+// TODO: Make theme configurable
 @import "bulmaswatch/superhero/bulmaswatch.scss";
+
+// Bulma Extension
 @import "bulma-tooltip/dist/css/bulma-tooltip.sass";
+
+/* Partials */
+@import "partials/spinner";
+@import "partials/table";
+@import "partials/toggle-switch";
+@import "partials/transitions";
 
 // Extend Bulma's panel-tabs class to wrap items
 .panel-tabs {
@@ -13,35 +26,6 @@ progress::-webkit-progress-value {
 	-moz-transition: width 1.5s ease;
 	-o-transition: width 1.5s ease;
 	transition: width 1s ease;
-}
-
-.spinner {
-	min-height: 60px;
-	text-align: center;
-}
-
-// A simple animated spinner for loading indicators. Change
-.spinner:before {
-	content: "";
-	box-sizing: border-box;
-	position: absolute;
-	//top: 50%;
-	//left: 50%;
-	width: 30px;
-	height: 30px;
-	margin-top: 15px;
-	margin-left: -15px;
-	border-radius: 50%;
-	border: 3px rgba(#07d, 0.25) solid;
-	border-top: 3px rgba(#07d, 1) solid;
-	border-left: 3px rgba(#07d, 0.8) dotted;
-	animation: spinner 1s linear infinite;
-}
-
-@keyframes spinner {
-	to {
-		transform: rotate(360deg);
-	}
 }
 
 // overrides for d3.relationshipgraph.min.css
@@ -298,60 +282,6 @@ progress::-webkit-progress-value {
 		color: #bdcbdb;
 	}
 
-	.users-table {
-		.table-filter {
-			background-color: $grey-dark;
-			border-top-right-radius: 5px;
-			border-top-left-radius: 5px;
-			padding: 20px;
-
-			input.search {
-				background-color: $grey-darker;
-				border-color: $grey;
-				color: #bdcbdb;
-
-				&::placeholder {
-					color: #bdcbdb;
-				}
-			}
-		}
-
-		table {
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-
-			td,
-			tfoot th,
-			thead th {
-				padding-bottom: 15px;
-				padding-top: 15px;
-				vertical-align: middle;
-			}
-
-			thead {
-				th {
-					border-width: 1px 0;
-					color: #bdcbdb;
-				}
-			}
-
-			tfoot {
-				th {
-					border-width: 1px 0 0;
-					color: #bdcbdb;
-				}
-			}
-
-			&.is-hoverable {
-				tr {
-					&:hover {
-						background-color: lighten($grey-darker, 4%);
-					}
-				}
-			}
-		}
-	}
-
 	.card-header-title {
 		padding-bottom: 20px;
 		padding-top: 20px;
@@ -488,141 +418,4 @@ progress::-webkit-progress-value {
 			background-color: $grey-darker;
 		}
 	}
-
-	.authentication-tokens-table,
-	.auth-users-table {
-		.table-filter {
-			background-color: $grey-dark;
-			border-top-right-radius: 5px;
-			border-top-left-radius: 5px;
-			padding: 20px;
-
-			input.search {
-				background-color: $grey-darker;
-				border-color: $grey;
-				color: #bdcbdb;
-
-				&::placeholder {
-					color: #bdcbdb;
-				}
-			}
-		}
-
-		table {
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-
-			td,
-			tfoot th,
-			thead th {
-				padding-bottom: 15px;
-				padding-top: 15px;
-				vertical-align: middle;
-			}
-
-			thead {
-				th {
-					border-width: 1px 0;
-					color: #bdcbdb;
-				}
-			}
-
-			tfoot {
-				th {
-					border-width: 1px 0 0 0;
-					color: #bdcbdb;
-				}
-			}
-
-			&.is-hoverable {
-				tr {
-					&:hover {
-						background-color: lighten($grey-darker, 4%);
-					}
-				}
-			}
-		}
-	}
-}
-
-/* Transitions */
-.fade-enter-active, .fade-leave-active {
-	transition: opacity .3s;
-}
-
-.fade-enter, .fade-leave-to, .fade-in-slow-enter, .fade-in-slow-leave-to {
-	opacity: 0;
-}
-
-.fade-in-slow-enter-active {
-	transition: opacity .6s;
-}
-
-/* Toggle Switch */
-.switch {
-	position: relative;
-	display: inline-block;
-	width: 60px;
-	height: 28px;
-}
-
-.switch input {
-	opacity: 0;
-	width: 0;
-	height: 0;
-}
-
-.slider {
-	position: absolute;
-	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: #ccc;
-	-webkit-transition: .3s;
-	transition: .3s;
-}
-
-.slider:before {
-	position: absolute;
-	content: "";
-	height: 22px;
-	width: 22px;
-	left: 4px;
-	bottom: 3px;
-	background-color: white;
-	-webkit-transition: .3s;
-	transition: .3s;
-}
-
-input:checked + .slider {
-	background-color: #2196F3;
-
-	&.is-success {
-		background-color: $green;
-	}
-}
-
-input:focus + .slider {
-	box-shadow: 0 0 1px #2196F3;
-
-	&.is-success {
-		box-shadow: 0 0 1px $green;
-	}
-}
-
-input:checked + .slider:before {
-	-webkit-transform: translateX(30px);
-	-ms-transform: translateX(30px);
-	transform: translateX(30px);
-}
-
-/* Rounded sliders */
-.slider.round {
-	border-radius: 34px;
-}
-
-.slider.round:before {
-	border-radius: 50%;
 }

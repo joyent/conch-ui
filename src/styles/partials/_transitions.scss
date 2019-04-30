@@ -1,0 +1,17 @@
+/* Transitions */
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity .3s;
+}
+
+.fade-enter,
+.fade-leave-to,
+.fade-in-slow-enter,
+.fade-in-slow-leave-to {
+	opacity: 0;
+}
+
+.fade-in-slow-enter-active {
+	transition: opacity .6s;
+}
