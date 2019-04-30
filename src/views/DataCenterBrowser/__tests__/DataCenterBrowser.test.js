@@ -6,7 +6,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import activeRoom from '@src/__fixtures__/activeRoom.js';
 import devices from '@src/__fixtures__/devices.js';
 import devicesByWorkspaceId from '@src/__fixtures__/devicesByWorkspace.js';
-import rackRooms from '@src/__fixtures__/rackRooms.js';
+import datacenterRackRooms from '@src/__fixtures__/datacenterRackRooms.js';
 import workspaces from '@src/__fixtures__/workspaces.js';
 
 const localVue = createLocalVue();
@@ -26,9 +26,9 @@ describe('DataCenterBrowser.vue', () => {
     beforeEach(() => {
         actions = {
             clearActiveDevice: jest.fn(),
-            clearActiveRoom: jest.fn(),
+            clearActiveRoomName: jest.fn(),
             clearRackLayout: jest.fn(),
-            setActiveRoom: jest.fn(),
+            setActiveRoomName: jest.fn(),
             setHighlightDeviceId: jest.fn(),
         };
         getters = {
@@ -45,20 +45,20 @@ describe('DataCenterBrowser.vue', () => {
     });
 
     test('should display roomPanel component when rack rooms are available', () => {
-        wrapper.setData({ rackRooms });
+        wrapper.setData({ rackRooms: datacenterRackRooms });
         expect(wrapper.find('roompanel-stub').exists()).toBeTruthy();
     });
 
     test('should not display rackPanel component when a rack room has not been selected', () => {
-        wrapper.setData({ rackRooms });
+        wrapper.setData({ rackRooms: datacenterRackRooms });
         expect(wrapper.find('rackpanel-stub').exists()).toBeFalsy();
     });
 
     test('should display rackPanel component when a rack room is active', () => {
-        state = { activeRoom };
+        state.activeRoomName = activeRoom.name;
         store = new Vuex.Store({ actions, getters, state });
         wrapper = shallowMount(DataCenterBrowser, { localVue, store });
-        wrapper.setData({ rackRooms });
+        wrapper.setData({ rackRooms: datacenterRackRooms });
 
         expect(wrapper.find('rackpanel-stub').exists()).toBeTruthy();
     });
@@ -71,7 +71,7 @@ describe('DataCenterBrowser.vue', () => {
         wrapper.destroy();
 
         expect(actions.clearActiveDevice).toHaveBeenCalled();
-        expect(actions.clearActiveRoom).toHaveBeenCalled();
+        expect(actions.clearActiveRoomName).toHaveBeenCalled();
         expect(actions.clearRackLayout).toHaveBeenCalled();
     });
 

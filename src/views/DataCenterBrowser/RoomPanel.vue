@@ -37,7 +37,7 @@
 import search from "fuzzysearch";
 import isEmpty from 'lodash/isEmpty';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     props: {
@@ -55,10 +55,8 @@ export default {
         };
     },
     computed: {
-        ...mapGetters([
-            'activeRoomName',
-        ]),
         ...mapState([
+            'activeRoomName',
             'rackLayout',
         ]),
         availableRoomProgress() {
@@ -85,25 +83,35 @@ export default {
     methods: {
         ...mapActions([
             'clearRackLayout',
-            'setActiveRoom',
+            'setActiveRoomName',
         ]),
         activateRoom(room) {
-            this.setActiveRoom(room);
+            if (room.name) {
+                this.setActiveRoomName(room.name);
+            }
 
             if (!isEmpty(this.rackLayout)) {
                 this.clearRackLayout();
             }
 
-            this.$router.push({ name: 'datacenterRoom', params: { roomName: `${this.activeRoomName}` } });
+            this.$router.push({
+                name: 'datacenterRoom',
+                params: {
+                    roomName: `${this.activeRoomName}`
+                },
+            });
         },
         roomFilterTextLowerCase() {
             return this.roomFilterText.toLowerCase();
         },
         roomNameFilter(roomName) {
-            return search(this.roomFilterTextLowerCase(), roomName.toLowerCase())
+            return search(
+                this.roomFilterTextLowerCase(), roomName.toLowerCase()
+            );
         },
         roomProgressFilter(progress) {
-            return this.selectedProgress === 'all' || this.selectedProgress === progress;
+            return this.selectedProgress === 'all' ||
+                   this.selectedProgress === progress;
         },
     },
 };

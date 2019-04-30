@@ -47,7 +47,7 @@
 <script>
 import search from "fuzzysearch";
 import ProgressIcon from '@views/components/ProgressIcon.vue';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { getRackById } from '@api/workspaces';
 import { EventBus } from '@src/eventBus.js';
 
@@ -72,8 +72,10 @@ export default {
     computed: {
         ...mapGetters([
             'activeRackId',
-            'activeRoomName',
             'currentWorkspaceId',
+        ]),
+        ...mapState([
+            'activeRoomName',
         ]),
         filteredActiveRacks() {
             return this.activeRacks.reduce((acc, rack) => {

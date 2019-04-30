@@ -18,7 +18,7 @@ describe('RoomPanel.vue', () => {
     let wrapperHtml;
 
     beforeEach(() => {
-        actions = { setActiveRoom: jest.fn() };
+        actions = { setActiveRoomName: jest.fn() };
         getters = { activeRoomName: jest.fn() };
         mocks = { $router: [] };
         propsData = { rackRooms: workspaceRackRooms };

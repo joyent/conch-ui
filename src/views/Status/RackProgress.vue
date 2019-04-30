@@ -165,7 +165,7 @@ export default {
                     let path = window.location.href.split("/");
                     path.pop();
                     path = path.join("/");
-                    window.open(`${path}/datacenter/${_private_.room_name}/rack/${_private_.rack_id}/device`, "_blank");
+                    window.location.href = `${path}/datacenter/${_private_.room_name}/rack/${_private_.rack_id}/device`;
                 }
             }
         }).data(this.rackStatus);

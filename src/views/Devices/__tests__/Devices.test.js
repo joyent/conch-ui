@@ -23,7 +23,7 @@ describe('Devices.vue', () => {
     beforeEach(() => {
         actions = {
             clearActiveDevice: jest.fn(),
-            clearActiveRoom: jest.fn(),
+            clearActiveRoomName: jest.fn(),
             clearRackLayout: jest.fn(),
             setHardwareProducts: jest.fn(),
         };

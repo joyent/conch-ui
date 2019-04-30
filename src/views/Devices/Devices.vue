@@ -65,13 +65,13 @@ export default {
     methods: {
         ...mapActions([
             'clearActiveDevice',
-            'clearActiveRoom',
+            'clearActiveRoomName',
             'clearRackLayout',
             'setHardwareProducts',
         ]),
         clearActiveData() {
             this.clearActiveDevice();
-            this.clearActiveRoom();
+            this.clearActiveRoomName();
             this.clearRackLayout();
         },
         isEmpty,

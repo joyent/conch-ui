@@ -75,22 +75,28 @@ export default {
     },
     methods: {
         ...mapActions([
+            'setActiveRoomName',
             'setHighlightDeviceId',
             'setShowDeviceInRack',
         ]),
         showDeviceInRack() {
-            const { datacenter, rack } = this.activeDeviceDetails.location;
+            const {
+                datacenter_room,
+                rack
+            } = this.activeDeviceDetails.location;
             const route = this.$route.path;
             const workspaceRoute = route.substring(0, route.indexOf("/", 1));
+            const datacenterRoomName = datacenter_room.az;
 
             this.setHighlightDeviceId(this.activeDeviceId);
+            this.setActiveRoomName(datacenterRoomName);
 
             EventBus.$emit('closeModal:deviceModal');
             EventBus.$emit('showDeviceInRack');
 
             this.setShowDeviceInRack(true);
 
-            this.$router.push({ path: `${workspaceRoute}/datacenter/${datacenter.name}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}` });
+            this.$router.push({ path: `${workspaceRoute}/datacenter/${datacenterRoomName}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}` });
         },
     },
     computed: {
