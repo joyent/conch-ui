@@ -1,95 +1,50 @@
 <template>
     <div class="user-action-modal">
-        <div class="modal" :class="{ 'is-active': isActive }" v-if="!success">
-            <div class="modal-background" @click="closeModal()"></div>
-            <div class="modal-content">
-                <div class="notification">
-                    <button
-                        class="delete is-medium"
-                        @click="closeModal()"
-                    ></button>
-                    <div class="columns is-vcentered">
-                        <div class="column is-2" style="text-align: center;">
-                            <i
-                                class="fas fa-3x fa-unlock-alt has-text-warning"
-                                v-if="action === 'reset-pwd'"
-                            ></i>
-                            <i
-                                class="far fa-4x fa-arrow-alt-circle-up has-text-warning"
-                                v-else-if="action === 'promote'"
-                            ></i>
-                            <i
-                                class="far fa-4x fa-arrow-alt-circle-down has-text-warning"
-                                v-else-if="action === 'demote'"
-                            ></i>
-                            <i
-                                class="fas fa-3x fa-user-slash has-text-warning"
-                                v-else-if="action === 'deactivate' && !deactivateConfirmed"
-                            ></i>
-                            <i
-                                class="fas fa-3x fa-key has-text-warning"
-                                v-else-if="action === 'deactivate' && deactivateConfirmed"
-                            ></i>
-                        </div>
-                        <div class="column">
-                            <p class="subtitle" v-if="action === 'reset-pwd'">
-                                Are you sure you want to <strong class="has-text-white">reset the password</strong> for <strong class="has-text-white">{{ user.name }}</strong>?
-                            </p>
-                            <p class="subtitle" v-else-if="action !== 'reset-password' && !deactivateConfirmed">
-                                Are you sure you want to <strong class="has-text-white">{{ action }} {{ user.name }}</strong>?
-                            </p>
-                            <transition name="fade">
-                                <div class="field" v-if="action === 'deactivate' && deactivateConfirmed" style="margin-bottom: 1.5rem">
-                                    <p class="subtitle" >
-                                        Do you want to clear the tokens for <strong class="has-text-white">{{ user.name }}</strong>?
-                                    </p>
-                                    <label class="switch">
-                                        <input
-                                            type="checkbox"
-                                            :checked="clearTokens"
-                                            v-model="clearTokens"
-                                            :true-value="true"
-                                            :false-value="false"
-                                        >
-                                        <span class="slider round is-success"></span>
-                                    </label>
-                                    <span style="margin-left: 8px;">
-                                        <strong v-if="clearTokens">Yes</strong>
-                                        <strong v-else>No</strong>
-                                    </span>
-                                </div>
-                            </transition>
-                            <div class="field is-grouped">
-                                <div class="control">
-                                    <button
-                                        v-if="action === 'deactivate' && !deactivateConfirmed"
-                                        class="button confirm is-success"
-                                        @click="deactivateConfirmed = true"
-                                    >
-                                        Confirm
-                                    </button>
-                                    <button
-                                        v-else-if="action === 'deactivate' && deactivateConfirmed"
-                                        class="button confirm is-success"
-                                        @click="confirm()"
-                                    >
-                                        Confirm
-                                    </button>
-                                </div>
-                                <div class="control">
-                                    <button
-                                        class="button cancel"
-                                        @click="closeModal()"
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <ConfirmationModal v-if="!success">
+            <template v-slot:icon>
+                <i
+                    class="fas fa-4x fa-unlock-alt has-text-warning"
+                    v-if="action === 'reset-pwd'"
+                ></i>
+                <i
+                    class="far fa-4x fa-arrow-alt-circle-up has-text-success"
+                    v-else-if="action === 'promote'"
+                ></i>
+                <i
+                    class="far fa-4x fa-arrow-alt-circle-down has-text-danger"
+                    v-else-if="action === 'demote'"
+                ></i>
+                <i
+                    class="fas fa-4x fa-user-slash has-text-danger"
+                    v-else-if="action === 'deactivate'"
+                ></i>
+            </template>
+            <template v-slot:title>
+                <h1 class="title" v-if="action === 'reset-pwd'">
+                    Reset Password?
+                </h1>
+                <h1 class="title is-capitalized" v-else>
+                    {{ action }} User?
+                </h1>
+            </template>
+            <template v-slot:subtitle>
+                <p class="subtitle" v-if="action === 'reset-pwd'">
+                    Are you sure you want to reset the password for <strong class="name">{{ user.name }}</strong>?
+                </p>
+                <p class="subtitle" v-else>
+                    Are you sure you want to {{ action }} <strong class="name">{{ user.name }}</strong>?
+                </p>
+            </template>
+            <template v-slot:footer>
+                <a
+                    class="button confirm is-success is-fullwidth"
+                    @click="confirm()"
+                >
+                    Confirm
+                    <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                </a>
+            </template>
+        </ConfirmationModal>
         <ResultModal v-else>
             <template v-slot:icon>
                 <i class="far fa-3x fa-check-circle has-text-success"></i>
@@ -108,6 +63,7 @@
 </template>
 
 <script>
+import ConfirmationModal from '@src/views/components/ConfirmationModal.vue';
 import ResultModal from './ResultModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import {
@@ -119,6 +75,7 @@ import {
 
 export default {
     components: {
+        ConfirmationModal,
         ResultModal,
     },
     props: {
