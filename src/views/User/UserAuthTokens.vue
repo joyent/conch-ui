@@ -118,38 +118,28 @@
             </div>
         </div>
         <transition name="fade">
-            <div class="modal is-active" v-if="deletingToken">
-                <div class="modal-background" @click="closeModal()"></div>
-                <div
-                    class="modal-content"
-                    style="border-radius: 5px; width: 520px;"
-                >
-                    <div class="notification">
-                        <button class="delete" @click="closeModal()"></button>
-                        <p class="subtitle" style="margin-bottom: 20px;">
-                            Are you sure you want to delete the Authentication Token <strong class="has-text-white">{{ tokenName }}</strong>?
-                        </p>
-                        <div class="field is-grouped">
-                            <div class="control">
-                                <button
-                                    class="button confirm is-success"
-                                    @click="removeToken(tokenName)"
-                                >
-                                        Delete Token
-                                </button>
-                            </div>
-                            <div class="control">
-                                <button
-                                    class="button cancel is-info"
-                                    @click="closeModal()"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ConfirmationModal v-if="deletingToken">
+                <template v-slot:icon>
+                    <i class="far fa-4x fa-times-circle has-text-danger"></i>
+                </template>
+                <template v-slot:title>
+                    <h1 class="title">Delete Token?</h1>
+                </template>
+                <template v-slot:subtitle>
+                    <p class="subtitle">
+                        Are you sure you want to delete <strong class="name">{{ tokenName }}</strong>?
+                    </p>
+                </template>
+                <template v-slot:footer>
+                    <a
+                        class="button confirm is-success is-fullwidth"
+                        @click="removeToken(tokenName)"
+                    >
+                        Delete Token
+                        <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                    </a>
+                </template>
+            </ConfirmationModal>
             <ResultModal v-else-if="deleteSuccess">
                 <template v-slot:icon>
                     <i class="far fa-4x fa-check-circle has-text-success"></i>
@@ -171,11 +161,13 @@
 <script>
 import moment from 'moment';
 import ResultModal from './ResultModal.vue';
+import ConfirmationModal from '@src/views/components/ConfirmationModal.vue';
 import { createToken, deleteToken, getTokens } from '@api/users.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
+        ConfirmationModal,
         ResultModal,
     },
     data() {

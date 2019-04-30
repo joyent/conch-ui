@@ -135,6 +135,14 @@ export const deleteUserToken = (name, userId) => {
     });
 };
 
+export const deleteUserTokens = (userId, params) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/user/${userId}/revoke`,
+        params
+    });
+};
+
 export const getUserTokens = (userId) => {
     return requestWithToken({
         method: 'GET',
@@ -149,6 +157,7 @@ export default {
     getToken,
     getTokens,
     deleteUserToken,
+    deleteUserTokens,
 
     createUser,
     deactivateUser,

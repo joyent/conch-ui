@@ -42,9 +42,19 @@ table.table {
     }
 
     &.is-hoverable {
-        tr {
-            &:hover {
-                background-color: lighten($grey-darker, 4%);
+        tbody {
+            tr {
+                &:not(.is-selected) {
+                    &:hover {
+                        background-color: lighten($grey-darker, 4%);
+                    }
+                }
+
+                &.is-selected {
+                    td {
+                        border-color: #4E5D6C;
+                    }
+                }
             }
         }
     }

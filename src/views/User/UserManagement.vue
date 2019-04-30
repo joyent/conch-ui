@@ -155,12 +155,6 @@
                                                 >
                                                     Reset Password
                                                 </a>
-                                                <a
-                                                    class="dropdown-item tokens"
-                                                    @click="viewTokens(user)"
-                                                >
-                                                    View Tokens
-                                                </a>
                                                 <a class="dropdown-item permissions">
                                                     <span
                                                         v-if="user.is_admin"
@@ -174,6 +168,25 @@
                                                     >
                                                         Promote User
                                                     </span>
+                                                </a>
+                                                <hr class="dropdown-divider">
+                                                <a
+                                                    class="dropdown-item tokens"
+                                                    @click="viewTokens(user)"
+                                                >
+                                                    View Tokens
+                                                </a>
+                                                <a
+                                                    class="dropdown-item delete-login-tokens"
+                                                    @click="openModal('delete-login-tokens', user)"
+                                                >
+                                                    Delete Login Tokens
+                                                </a>
+<a
+                                                    class="dropdown-item delete-auth-tokens"
+                                                    @click="openModal('delete-auth-tokens', user)"
+                                                >
+                                                    Delete Auth Tokens
                                                 </a>
                                                 <hr class="dropdown-divider">
                                                 <a
