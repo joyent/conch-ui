@@ -22,6 +22,10 @@ export const clearShowDeviceInRack = (state) => {
     state.showDeviceInRack = false;
 };
 
+export const clearUserAuthTokens = (state) => {
+    state.userAuthTokens = [];
+};
+
 export const setActiveDevice = (state, activeDevice) => {
     state.activeDevice = activeDevice;
 };
@@ -117,6 +121,7 @@ export default {
     clearInvalidCredentials,
     clearRackLayout,
     clearShowDeviceInRack,
+    clearUserAuthTokens,
     setActiveDevice,
     setActiveDeviceDetails,
     setActiveDeviceSettings,

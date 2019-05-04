@@ -228,7 +228,7 @@ export default {
                             this.creatingToken = false;
                             this.tokenName = '';
                             this.tokens.unshift(response.data);
-                        }, 2500);
+                        }, 2000);
                     });
             } else {
                 this.isLoading = false;

@@ -11,11 +11,11 @@ export const createUser = (user) => {
     });
 };
 
-export const deactivateUser = (userId, clearTokens) => {
+export const deactivateUser = (userId, params) => {
     return requestWithToken({
         method: 'DELETE',
         url: `/user/${userId}`,
-        params: { clearTokens }
+        params,
     });
 };
 
