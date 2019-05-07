@@ -1,5 +1,5 @@
 <template>
-    <div class="modal modal-confirm" :class="{ 'is-active': isActive }">
+    <div class="modal modal-base" :class="{ 'is-active': isActive }">
         <div class="modal-background" @click="closeModal()"></div>
         <div class="modal-content">
             <div class="notification is-marginless">
@@ -7,13 +7,13 @@
                     class="delete is-medium"
                     @click="closeModal()"
                 ></button>
-                <div class="modal-icon is-2 has-text-centered">
+                <div class="modal-icon has-text-centered">
                     <slot name="icon"></slot>
                 </div>
-                <div class="has-text-centered">
+                <div class="modal-title has-text-centered">
                     <slot name="title"></slot>
-                    <slot name="subtitle"></slot>
                 </div>
+                <slot name="body"></slot>
             </div>
             <footer>
                 <slot name="footer"></slot>

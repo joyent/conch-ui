@@ -230,7 +230,7 @@
                         Delete Token?
                     </h1>
                 </template>
-                <template v-slot:subtitle>
+                <template v-slot:body>
                     <p class="subtitle" v-if="tokenType">
                         Are you sure you want to delete the {{ tokenType }} tokens for <strong class="has-text-white">{{ selectedUser.name }}</strong>?
                     </p>
@@ -274,7 +274,7 @@
                         Success!
                     </h1>
                 </template>
-                <template v-slot:subtitle>
+                <template v-slot:body>
                     <p class="subtitle" v-if="deletingAuthTokens">
                         <strong class="has-text-white">{{ selectedUser.name }}</strong>'s auth tokens have been deleted.
                     </p>

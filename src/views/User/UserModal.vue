@@ -1,183 +1,160 @@
 <template>
     <div class="user-modal">
-        <div v-if="!actionComplete">
-            <transition name="fade">
-                <div
-                    class="modal modal-confirm"
-                    :class="{ 'is-active': isActive }"
-                    v-if="isActive"
-                >
-                    <div class="modal-background" @click="closeModal()"></div>
-                    <div class="modal-content">
-                        <div class="notification is-marginless">
-                            <div
-                                class="modal-title has-text-centered"
-                                style="margin-bottom: 10px;"
-                            >
-                                <i
-                                    class="far fa-2x fa-address-card"
-                                    style="margin-right: 10px;"
-                                ></i>
-                                <span
-                                    class="title is-3"
-                                    v-if="action === 'create'"
+        <transition name="fade">
+            <BaseModal v-if="!actionComplete">
+                <template v-slot:icon>
+                    <i class="fas fa-4x fa-address-card has-text-info"></i>
+                </template>
+                <template v-slot:title>
+                    <h1 class="title is-3" v-if="action === 'create'">Create User</h1>
+                    <h1 class="title is-3" v-else>Edit User</h1>
+                </template>
+                <template v-slot:body>
+                    <form>
+                        <div class="field name">
+                            <label class="label">Name</label>
+                            <div class="control has-icons-right">
+                                <input
+                                    class="input"
+                                    :class="{ 'is-danger': errors.name }"
+                                    type="text"
+                                    placeholder="Name"
+                                    v-model="name"
                                 >
-                                    Create User
+                                <span
+                                    class="icon is-small is-right has-text-danger"
+                                    v-if="errors.name"
+                                >
+                                    <i class="fas fa-exclamation-triangle"></i>
                                 </span>
-                                <span class="title is-3" v-else>Edit User</span>
                             </div>
-                            <button
-                                class="delete is-medium"
-                                aria-label="close"
-                                @click="closeModal()"
-                            ></button>
-                            <form>
-                                <div class="field name">
-                                    <label class="label">Name</label>
-                                    <div class="control has-icons-right">
-                                        <input
-                                            class="input"
-                                            :class="{ 'is-danger': errors.name }"
-                                            type="text"
-                                            placeholder="Name"
-                                            v-model="name"
-                                        >
-                                        <span
-                                            class="icon is-small is-right has-text-danger"
-                                            v-if="errors.name"
-                                        >
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                        </span>
-                                    </div>
-                                    <p
-                                        class="error has-text-danger is-size-6"
-                                        v-if="errors.name"
-                                        style="padding-top: 5px;"
-                                    >
-                                        This field is required.
-                                    </p>
-                                </div>
-                                <div class="field email">
-                                    <label class="label">Email</label>
-                                    <div class="control has-icons-right">
-                                        <input
-                                            class="input"
-                                            :class="{ 'is-danger': errors.invalidEmail }"
-                                            type="email"
-                                            placeholder="Email"
-                                            v-model="email"
-                                        >
-                                        <span
-                                            class="icon is-small is-right has-text-danger"
-                                            v-if="errors.invalidEmail"
-                                        >
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                        </span>
-                                    </div>
-                                    <p
-                                        class="error has-text-danger is-size-6"
-                                        v-if="errors.invalidEmail || errors.duplicateEmail"
-                                        style="padding-top: 5px;"
-                                    >
-                                        <span v-if="errors.invalidEmail">
-                                            Please enter a valid email.
-                                        </span>
-                                        <span v-if="errors.duplicateEmail">
-                                            This email is already in use.
-                                        </span>
-                                    </p>
-                                </div>
-                                <div class="field password" v-if="action !== 'edit'">
-                                    <label class="label">Password</label>
-                                    <div class="control has-icons-right">
-                                        <input
-                                            class="input"
-                                            :class="{ 'is-danger': errors.password }"
-                                            type="text"
-                                            placeholder="Password"
-                                            v-model="password"
-                                        >
-                                        <span
-                                            class="icon is-small is-right has-text-danger"
-                                            v-if="errors.password"
-                                        >
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                        </span>
-                                    </div>
-                                    <p
-                                        class="error has-text-danger is-size-6"
-                                        v-if="errors.password"
-                                        style="padding-top: 5px;"
-                                    >
-                                        This field is required.
-                                    </p>
-                                </div>
-                                <div class="field" style="margin-top: 15px;">
-                                    <label class="label">Is Admin?</label>
-                                    <label class="switch">
-                                        <input
-                                            type="checkbox"
-                                            :checked="isAdmin"
-                                            v-model="isAdmin"
-                                            :true-value="true"
-                                            :false-value="false"
-                                        >
-                                        <span class="slider round is-success"></span>
-                                    </label>
-                                    <span style="margin-left: 8px;">
-                                        <strong v-if="isAdmin">Yes</strong>
-                                        <strong v-else>No</strong>
-                                    </span>
-                                </div>
-                            </form>
+                            <p
+                                class="error has-text-danger is-size-6"
+                                v-if="errors.name"
+                                style="padding-top: 5px;"
+                            >
+                                This field is required.
+                            </p>
                         </div>
-                        <footer>
-                            <a
-                                class="button is-success create is-fullwidth"
-                                :class="{ 'is-loading': isLoading }"
-                                @click="createUser()"
-                                v-if="action === 'create'"
+                        <div class="field email">
+                            <label class="label">Email</label>
+                            <div class="control has-icons-right">
+                                <input
+                                    class="input"
+                                    :class="{ 'is-danger': errors.invalidEmail }"
+                                    type="email"
+                                    placeholder="Email"
+                                    v-model="email"
+                                >
+                                <span
+                                    class="icon is-small is-right has-text-danger"
+                                    v-if="errors.invalidEmail"
+                                >
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                            </div>
+                            <p
+                                class="error has-text-danger is-size-6"
+                                v-if="errors.invalidEmail || errors.duplicateEmail"
+                                style="padding-top: 5px;"
                             >
-                                Create User
-                                <i class="fas fa-lg fa-long-arrow-alt-right"></i>
-                            </a>
-                            <a
-                                class="button is-success edit is-fullwidth"
-                                :class="{ 'is-loading': isLoading }"
-                                @click="editUser()"
-                                v-else
+                                <span v-if="errors.invalidEmail">
+                                    Please enter a valid email.
+                                </span>
+                                <span v-if="errors.duplicateEmail">
+                                    This email is already in use.
+                                </span>
+                            </p>
+                        </div>
+                        <div class="field password" v-if="action !== 'edit'">
+                            <label class="label">Password</label>
+                            <div class="control has-icons-right">
+                                <input
+                                    class="input"
+                                    :class="{ 'is-danger': errors.password }"
+                                    type="text"
+                                    placeholder="Password"
+                                    v-model="password"
+                                >
+                                <span
+                                    class="icon is-small is-right has-text-danger"
+                                    v-if="errors.password"
+                                >
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                            </div>
+                            <p
+                                class="error has-text-danger is-size-6"
+                                v-if="errors.password"
+                                style="padding-top: 5px;"
                             >
-                                Save Changes
-                                <i class="fas fa-lg fa-long-arrow-alt-right"></i>
-                            </a>
-                        </footer>
-                    </div>
-                </div>
-            </transition>
-        </div>
-        <BaseModal v-else>
-            <template v-slot:icon>
-                <i
-                    class="far fa-3x fa-check-circle has-text-success"
-                    v-if="success"
-                ></i>
-                <i v-else class="fas fa-3x fa-id-badge has-text-warning"></i>
-            </template>
-            <template v-slot:title>
-                <span v-if="success">Success!</span>
-            </template>
-            <template v-slot:subtitle>
-                <span v-if="success && action === 'create'">
-                    <strong class="has-text-white">{{ name }}</strong> has been successfully created.
-                </span>
-                <span v-else-if="success && action === 'edit'">
-                    <strong class="has-text-white">{{ name }}</strong> has been successfully updated.
-                </span>
-                <span v-else>
-                    No information was changed.
-                </span>
-            </template>
-        </BaseModal>
+                                This field is required.
+                            </p>
+                        </div>
+                        <div class="field" style="margin-top: 15px;">
+                            <label class="label">Is Admin?</label>
+                            <label class="switch">
+                                <input
+                                    type="checkbox"
+                                    :checked="isAdmin"
+                                    v-model="isAdmin"
+                                    :true-value="true"
+                                    :false-value="false"
+                                >
+                                <span class="slider round is-success"></span>
+                            </label>
+                            <span style="margin-left: 8px;">
+                                <strong v-if="isAdmin">Yes</strong>
+                                <strong v-else>No</strong>
+                            </span>
+                        </div>
+                    </form>
+                </template>
+                <template v-slot:footer>
+                    <a
+                        class="button is-success create is-fullwidth"
+                        :class="{ 'is-loading': isLoading }"
+                        @click="createUser()"
+                        v-if="action === 'create'"
+                    >
+                        Create User
+                        <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                    </a>
+                    <a
+                        class="button is-success edit is-fullwidth"
+                        :class="{ 'is-loading': isLoading }"
+                        @click="editUser()"
+                        v-else
+                    >
+                        Save Changes
+                        <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                    </a>
+                </template>
+            </BaseModal>
+            <BaseModal v-else>
+                <template v-slot:icon>
+                    <i
+                        class="far fa-3x fa-check-circle has-text-success"
+                        v-if="success"
+                    ></i>
+                    <i v-else class="fas fa-3x fa-id-badge has-text-warning"></i>
+                </template>
+                <template v-slot:title>
+                    <span v-if="success">Success!</span>
+                </template>
+                <template v-slot:body>
+                    <span v-if="success && action === 'create'">
+                        <strong class="has-text-white">{{ name }}</strong> has been successfully created.
+                    </span>
+                    <span v-else-if="success && action === 'edit'">
+                        <strong class="has-text-white">{{ name }}</strong> has been successfully updated.
+                    </span>
+                    <span v-else>
+                        No information was changed.
+                    </span>
+                </template>
+            </BaseModal>
+        </transition>
     </div>
 </template>
 

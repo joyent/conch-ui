@@ -31,11 +31,11 @@
                 <h1 class="title" v-if="hasNoTokens">
                     No Tokens to Delete
                 </h1>
-                <h1 class="title" v-else>
+                <h1 class="title is-capitalized" v-else>
                     {{ titleText }}
                 </h1>
             </template>
-            <template v-slot:subtitle>
+            <template v-slot:body>
                 <p class="subtitle" v-if="hasNoTokens">
                     <strong class="name">{{ user.name }}</strong> has no auth tokens.
                 </p>
@@ -71,7 +71,7 @@
                     Success!
                 </h1>
             </template>
-            <template v-slot:subtitle>
+            <template v-slot:body>
                 <p class="subtitle" v-if="action === 'reset-pwd'">
                     <strong class="has-text-white">{{ user.name }}</strong>'s password has been reset.
                 </p>

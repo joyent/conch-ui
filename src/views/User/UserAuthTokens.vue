@@ -125,7 +125,7 @@
                 <template v-slot:title>
                     <h1 class="title">Delete Token?</h1>
                 </template>
-                <template v-slot:subtitle>
+                <template v-slot:body>
                     <p class="subtitle">
                         Are you sure you want to delete <strong class="name">{{ tokenName }}</strong>?
                     </p>
@@ -145,7 +145,7 @@
                     <i class="far fa-4x fa-check-circle has-text-success"></i>
                 </template>
                 <template v-slot:title>Success!</template>
-                <template v-slot:subtitle>
+                <template v-slot:body>
                     <p class="subtitle" v-if="createSuccess">
                         <strong class="has-text-white">{{ tokenName }}</strong> has been created.
                     </p>
