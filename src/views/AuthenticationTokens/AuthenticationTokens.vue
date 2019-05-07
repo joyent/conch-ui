@@ -218,7 +218,7 @@
             <p class="title is-5" style="padding: 40px;">No Search Results Found.</p>
         </div>
         <transition name="fade">
-            <ConfirmationModal v-if="deleting">
+            <BaseModal v-if="deleting">
                 <template v-slot:icon>
                     <i class="far fa-4x fa-times-circle has-text-danger"></i>
                 </template>
@@ -264,8 +264,8 @@
                         <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                     </a>
                 </template>
-            </ConfirmationModal>
-            <ResultModal v-else-if="deleteSuccess">
+            </BaseModal>
+            <BaseModal v-else-if="deleteSuccess">
                 <template v-slot:icon>
                     <i class="far fa-4x fa-check-circle has-text-success"></i>
                 </template>
@@ -294,7 +294,7 @@
                         <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                     </a>
                 </template>
-            </ResultModal>
+            </BaseModal>
         </transition>
     </div>
 </template>
@@ -303,8 +303,7 @@
 import search from "fuzzysearch";
 import moment from 'moment';
 import Spinner from '@src/views/components/Spinner.vue';
-import ConfirmationModal from '@src/views/components/ConfirmationModal.vue';
-import ResultModal from '@src/views/User/ResultModal.vue';
+import BaseModal from '@src/views/components/BaseModal.vue';
 import {
     deleteUserToken,
     deleteUserTokens,
@@ -318,8 +317,7 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
-        ConfirmationModal,
-        ResultModal,
+        BaseModal,
         Spinner,
     },
     data() {
