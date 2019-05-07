@@ -95,24 +95,25 @@ progress::-webkit-progress-value {
 }
 
 // Modals
-.modal-confirm {
+.modal-base {
 	.modal-content {
 		border-radius: 5px;
 		width: 460px;
 
 		.notification {
-			padding: 1.25rem 1.5rem;
+			padding: 1.5rem 1.5rem 1.25rem;
 
 			.modal-icon {
-				margin-bottom: 20px;
+				margin-bottom: 25px;
 			}
 
 			.title {
-				margin-bottom: 25px;
+				margin-bottom: 20px;
 			}
 
 			.subtitle {
 				padding: 10px;
+				text-align: center;
 
 				.name {
 					color: $white;
