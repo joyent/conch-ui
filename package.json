@@ -18,7 +18,8 @@
     "tooltip.js": "^1.1.5",
     "vue": "^2.6.10",
     "vue-router": "^3.0.2",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "snyk": "^1.161.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",
@@ -69,9 +70,12 @@
     "jest:coverage": "jest -c=./jest.config.js --coverage --passWithNoTests",
     "jest:local": "jest -c=./jest.config.js -o --passWithNoTests",
     "jest:watch": "jest -c=./jest.config.js --watch --passWithNoTests",
-    "jest:watch:all": "jest -c=./jest.config.js --watchAll --passWithNoTests"
+    "jest:watch:all": "jest -c=./jest.config.js --watchAll --passWithNoTests",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "keywords": [],
   "author": "",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "snyk": true
 }
