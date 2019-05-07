@@ -1,5 +1,5 @@
 import UserActionModal from '../UserActionModal.vue';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import * as usersApi from '@api/users.js';
 
 // Fixture
@@ -13,7 +13,7 @@ describe('UserActionModal.vue', () => {
 
     beforeEach(() => {
         propsData = { action: 'deactivate', user: users[0] };
-        wrapper = shallowMount(UserActionModal, { propsData });
+        wrapper = mount(UserActionModal, { propsData });
     });
 
     test('should not display the success modal on initial render', () => {
@@ -23,7 +23,7 @@ describe('UserActionModal.vue', () => {
     test('should display the success modal when an action is successful', () => {
         wrapper.setData({ success: true });
 
-        expect(wrapper.find('resultmodal-stub').exists()).toBeTruthy();
+        expect(wrapper.html()).toContain('Success!');
     });
 
     describe('closing the modal', () => {
@@ -44,12 +44,6 @@ describe('UserActionModal.vue', () => {
 
             expect(spy).toHaveBeenCalled();
         });
-
-        test('should close the modal when the "Cancel" button is clicked', () => {
-            wrapper.find('button.cancel').trigger('click');
-
-            expect(spy).toHaveBeenCalled();
-        });
     });
 
     describe('action "deactivate"', () => {
@@ -64,7 +58,7 @@ describe('UserActionModal.vue', () => {
         test('should call the deactivateUser method when action prop is "deactivate" and confirm button is clicked', () => {
             const spy = jest.spyOn(usersApi, 'deactivateUser');
 
-            wrapper.find('button.confirm').trigger('click');
+            wrapper.find('a.confirm').trigger('click');
 
             expect(spy).toHaveBeenCalled();
         });
@@ -72,7 +66,8 @@ describe('UserActionModal.vue', () => {
 
     describe('action "demote"', () => {
         test('should display warning text containing "demote" if the action prop is "demote"', () => {
-            wrapper.setProps({ action: 'demote'});
+            propsData.action = 'demote';
+            wrapper = mount(UserActionModal, { propsData });
 
             expect(wrapper.find('.subtitle').html()).toContain('demote');
         });
@@ -87,7 +82,7 @@ describe('UserActionModal.vue', () => {
             const spy = jest.spyOn(usersApi, 'demoteUser');
 
             wrapper.setProps({ action: 'demote' });
-            wrapper.find('button.confirm').trigger('click');
+            wrapper.find('a.confirm').trigger('click');
 
             expect(spy).toHaveBeenCalled();
         });
@@ -95,7 +90,8 @@ describe('UserActionModal.vue', () => {
 
     describe('action "promote"', () => {
         test('should display warning text containing "promote" if the action prop is "promote"', () => {
-            wrapper.setProps({ action: 'promote'});
+            propsData.action = 'promote';
+            wrapper = mount(UserActionModal, { propsData });
 
             expect(wrapper.find('.subtitle').html()).toContain('promote');
         });
@@ -110,7 +106,7 @@ describe('UserActionModal.vue', () => {
             const spy = jest.spyOn(usersApi, 'promoteUser');
 
             wrapper.setProps({ action: 'promote' });
-            wrapper.find('button.confirm').trigger('click');
+            wrapper.find('a.confirm').trigger('click');
 
             expect(spy).toHaveBeenCalled();
         });
@@ -118,7 +114,8 @@ describe('UserActionModal.vue', () => {
 
     describe('action "reset-pwd"', () => {
         test('should display warning text containing "reset" if the action prop is "reset-pwd"', () => {
-            wrapper.setProps({ action: 'reset-pwd'});
+            propsData.action = 'reset-pwd';
+            wrapper = mount(UserActionModal, { propsData });
 
             expect(wrapper.find('.subtitle').html()).toContain('reset the password');
         });
@@ -133,7 +130,7 @@ describe('UserActionModal.vue', () => {
             const spy = jest.spyOn(usersApi, 'forcePasswordChange');
 
             wrapper.setProps({ action: 'reset-pwd' });
-            wrapper.find('button.confirm').trigger('click');
+            wrapper.find('a.confirm').trigger('click');
 
             expect(spy).toHaveBeenCalled();
         });
