@@ -13,6 +13,7 @@ import hardwareProducts from '@src/__fixtures__/hardwareProducts.js';
 import rackLayout from '@src/__fixtures__/rackLayout.js';
 import rackRooms from '@src/__fixtures__/rackRooms.js';
 import rackRoomsByWorkspaceId from '@src/__fixtures__/rackRoomsByWorkspace.js';
+import userAuthTokens from '@src/__fixtures__/userAuthTokens.js';
 import users from '@src/__fixtures__/users.js';
 import validations from '@src/__fixtures__/validations.js';
 import workspaces from '@src/__fixtures__/workspaces.js';

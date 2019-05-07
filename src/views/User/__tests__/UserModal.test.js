@@ -20,7 +20,7 @@ describe('UserModal.vue', () => {
 
     // Helper function
     const clickCreateUser = () => {
-        wrapper.find('button.create').trigger('click');
+        wrapper.find('a.create').trigger('click');
     };
 
     test('should not display the result modal on initial render', () => {
@@ -61,7 +61,7 @@ describe('UserModal.vue', () => {
             propsData.action = 'edit';
             wrapper = shallowMount(UserModal, { propsData })
             wrapper.setData(data);
-            wrapper.find('button.edit').trigger('click');
+            wrapper.find('a.edit').trigger('click');
 
             expect(spy).toHaveBeenCalled();
         });
@@ -82,12 +82,6 @@ describe('UserModal.vue', () => {
 
         test('should close the modal when modal close button is clicked', () => {
             wrapper.find('button.delete').trigger('click');
-
-            expect(spy).toHaveBeenCalled();
-        });
-
-        test('should close the modal when the "Cancel" button is clicked', () => {
-            wrapper.find('button.cancel').trigger('click');
 
             expect(spy).toHaveBeenCalled();
         });
