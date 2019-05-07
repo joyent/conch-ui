@@ -155,7 +155,7 @@
                 </div>
             </transition>
         </div>
-        <ResultModal v-else>
+        <BaseModal v-else>
             <template v-slot:icon>
                 <i
                     class="far fa-3x fa-check-circle has-text-success"
@@ -177,18 +177,18 @@
                     No information was changed.
                 </span>
             </template>
-        </ResultModal>
+        </BaseModal>
     </div>
 </template>
 
 <script>
-import ResultModal from './ResultModal.vue';
+import BaseModal from '@src/views/components/BaseModal.vue';
 import * as Users from '@api/users.js';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
     components: {
-        ResultModal,
+        BaseModal,
     },
     props: {
         action: {

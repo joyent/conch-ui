@@ -17,7 +17,7 @@ describe('UserActionModal.vue', () => {
     });
 
     test('should not display the success modal on initial render', () => {
-        expect(wrapper.find('resultmodal-stub').exists()).toBeFalsy();
+        expect(wrapper.find('basemodal-stub').exists()).toBeFalsy();
     });
 
     test('should display the success modal when an action is successful', () => {

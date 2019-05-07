@@ -118,7 +118,7 @@
             </div>
         </div>
         <transition name="fade">
-            <ConfirmationModal v-if="deletingToken">
+            <BaseModal v-if="deletingToken">
                 <template v-slot:icon>
                     <i class="far fa-4x fa-times-circle has-text-danger"></i>
                 </template>
@@ -139,8 +139,8 @@
                         <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                     </a>
                 </template>
-            </ConfirmationModal>
-            <ResultModal v-else-if="deleteSuccess">
+            </BaseModal>
+            <BaseModal v-else-if="deleteSuccess">
                 <template v-slot:icon>
                     <i class="far fa-4x fa-check-circle has-text-success"></i>
                 </template>
@@ -153,22 +153,20 @@
                         <strong class="has-text-white">{{ tokenName }}</strong> has been deleted.
                     </p>
                 </template>
-            </ResultModal>
+            </BaseModal>
         </transition>
     </div>
 </template>
 
 <script>
 import moment from 'moment';
-import ResultModal from './ResultModal.vue';
-import ConfirmationModal from '@src/views/components/ConfirmationModal.vue';
+import BaseModal from '@src/views/components/BaseModal.vue';
 import { createToken, deleteToken, getTokens } from '@api/users.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
-        ConfirmationModal,
-        ResultModal,
+        BaseModal,
     },
     data() {
         return {

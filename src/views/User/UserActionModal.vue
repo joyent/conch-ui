@@ -1,6 +1,6 @@
 <template>
     <div class="user-action-modal">
-        <ConfirmationModal v-if="!success">
+        <BaseModal v-if="!success">
             <template v-slot:icon>
                 <i
                     class="fas fa-4x fa-unlock-alt has-text-warning"
@@ -61,8 +61,8 @@
                     <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                 </a>
             </template>
-        </ConfirmationModal>
-        <ResultModal v-else>
+        </BaseModal>
+        <BaseModal v-else>
             <template v-slot:icon>
                 <i class="far fa-4x fa-check-circle has-text-success"></i>
             </template>
@@ -95,13 +95,12 @@
                     <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                 </a>
             </template>
-        </ResultModal>
+        </BaseModal>
     </div>
 </template>
 
 <script>
-import ConfirmationModal from '@src/views/components/ConfirmationModal.vue';
-import ResultModal from './ResultModal.vue';
+import BaseModal from '@src/views/components/BaseModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import {
     deactivateUser,
@@ -115,8 +114,7 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
-        ConfirmationModal,
-        ResultModal,
+        BaseModal,
     },
     props: {
         action: {
