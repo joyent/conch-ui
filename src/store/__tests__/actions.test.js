@@ -38,6 +38,13 @@ describe('actions', () => {
         });
     });
 
+    describe('clearUserAuthTokens', () => {
+        test('it clears the auth tokens stored for the current user', () => {
+            actions.clearUserAuthTokens({ commit }, {});
+            expect(commit).toHaveBeenCalledWith('clearUserAuthTokens');
+        });
+    });
+
     describe('setActiveDevice', () => {
         test('it sets the active device', () => {
             actions.setActiveDevice({ commit }, {});

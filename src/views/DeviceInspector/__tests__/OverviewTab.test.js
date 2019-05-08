@@ -1,10 +1,10 @@
 import OverviewTab from '../OverviewTab';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { EventBus } from '../../../eventBus.js';
+import { EventBus } from '@src/eventBus.js';
 
 // Fixtures
-import deviceDetails from '../../../__fixtures__/deviceDetails.js';
+import deviceDetails from '@src/__fixtures__/deviceDetails.js';
 import deviceSettings from '@src/__fixtures__/deviceSettings.js';
 
 const GlobalPlugins = {

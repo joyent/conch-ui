@@ -4,22 +4,44 @@
             <span class="subtitle">
                 Authentication Tokens
             </span>
-            <button
+            <a
                 class="button add is-outlined is-success"
                 @click="nameNewToken()"
                 v-if="!creatingToken"
+                :disabled="createSuccess"
             >
                 Create Token
-            </button>
-            <button
+            </a>
+            <a
                 class="button cancel is-outlined is-danger"
-                :disabled="creatingToken && createSuccess"
                 @click="cancelNewToken()"
-                v-else
+                v-else-if="creatingToken && !createSuccess"
             >
                 Cancel
-            </button>
+            </a>
         </div>
+        <transition name="fade">
+            <article
+                class="message is-success"
+                v-if="createSuccess"
+                style="border-radius: 5px; margin-bottom: 20px;"
+            >
+                <div
+                    class="message-header"
+                    style="border-radius: 5px; padding: 8px;"
+                >
+                    <p>
+                        <i class="fas fa-check-circle"></i>
+                        {{ tokenName }} has been succesfully created.
+                    </p>
+                    <button
+                        class="delete"
+                        aria-label="delete"
+                        @click="createSuccess = false"
+                    ></button>
+                </div>
+            </article>
+        </transition>
         <div class="card" style="border-radius: 5px;">
             <div class="card-content">
                 <div class="content">
@@ -44,8 +66,8 @@
                         </tfoot>
                         <tbody>
                             <tr v-if="creatingToken" class="token create">
-                                <td colspan="6" :class="{ 'has-success-background': createSuccess}">
-                                    <div class="field has-addons" v-if="!createSuccess">
+                                <td colspan="6">
+                                    <div class="field has-addons">
                                         <i
                                             class="fas fa-key has-text-success"
                                             style="display: flex;align-items: center;margin-right: 14px;"
@@ -61,27 +83,21 @@
                                         </div>
                                         <div class="control">
                                             <a
-                                                class="button is-success"
+                                                class="button create is-success"
                                                 :class="{ 'is-loading': isLoading }"
                                                 @click="save()"
                                             >
-                                                <span v-if="!createSuccess">
+                                                <span>
                                                     Create Token
                                                 </span>
                                             </a>
                                         </div>
                                     </div>
-                                    <p
-                                        class="has-text-centered"
-                                        v-else
-                                    >
-                                        <strong class="has-text-white">{{ tokenName }}</strong> has been successfully created!
-                                    </p>
                                 </td>
                             </tr>
                             <tr
                                 class="token"
-                                v-for="token in tokens"
+                                v-for="token in reversedTokens"
                                 :key="token.id"
                             >
                                 <td>
@@ -144,14 +160,22 @@
                 <template v-slot:icon>
                     <i class="far fa-4x fa-check-circle has-text-success"></i>
                 </template>
-                <template v-slot:title>Success!</template>
+                <template v-slot:title>
+                    <h1 class="title">Success!</h1>
+                </template>
                 <template v-slot:body>
-                    <p class="subtitle" v-if="createSuccess">
-                        <strong class="has-text-white">{{ tokenName }}</strong> has been created.
-                    </p>
-                    <p class="subtitle" v-else-if="deleteSuccess">
+                    <p class="subtitle" v-if="deleteSuccess">
                         <strong class="has-text-white">{{ tokenName }}</strong> has been deleted.
                     </p>
+                </template>
+                <template v-slot:footer>
+                    <a
+                        class="button close is-success is-fullwidth"
+                        @click="closeModal()"
+                    >
+                        Close
+                        <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                    </a>
                 </template>
             </BaseModal>
         </transition>
@@ -161,6 +185,7 @@
 <script>
 import moment from 'moment';
 import BaseModal from '@src/views/components/BaseModal.vue';
+import { EventBus } from '@src/eventBus.js';
 import { createToken, deleteToken, getTokens } from '@api/users.js';
 import { mapActions, mapState } from 'vuex';
 
@@ -213,20 +238,22 @@ export default {
                 });
         },
         save() {
+            const tokenName = this.tokenName;
             this.isLoading = true;
 
-            if (this.tokenName) {
-                createToken(this.tokenName)
+            if (tokenName) {
+                createToken(tokenName)
                     .then(response => {
+                        this.creatingToken = false;
                         this.createSuccess = true;
                         this.isLoading = false;
 
+                        this.tokens.push(response.data);
+
                         setTimeout(() => {
                             this.createSuccess = false;
-                            this.creatingToken = false;
                             this.tokenName = '';
-                            this.tokens.unshift(response.data);
-                        }, 2000);
+                        }, 3000);
                     });
             } else {
                 this.isLoading = false;
@@ -235,8 +262,12 @@ export default {
         setTokens() {
             getTokens()
                 .then(response => {
-                    this.tokens = response.data;
-                    this.setUserAuthTokens(this.tokens);
+                    const tokens = response.data;
+
+                    if (tokens.length) {
+                        this.tokens = tokens;
+                        this.setUserAuthTokens(tokens);
+                    }
                 });
         },
     },
@@ -244,6 +275,10 @@ export default {
         ...mapState([
             'userAuthTokens',
         ]),
+        reversedTokens() {
+            const tokens = this.tokens;
+            return tokens.length ? tokens.reverse() : [];
+        },
     },
     mounted() {
         if (this.userAuthTokens.length) {
@@ -251,6 +286,10 @@ export default {
         } else {
             this.setTokens();
         }
+
+        EventBus.$on('closeModal:baseModal', () => {
+            this.closeModal();
+        });
     },
 };
 </script>

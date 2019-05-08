@@ -1,5 +1,5 @@
 import UserModal from '../UserModal.vue';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import * as usersApi from '@api/users.js';
 
 // Fixture
@@ -15,22 +15,13 @@ describe('UserModal.vue', () => {
     beforeEach(() => {
         user = users[0];
         propsData = { action: 'create', user };
-        wrapper = shallowMount(UserModal, { propsData });
+        wrapper = mount(UserModal, { propsData });
     });
 
     // Helper function
     const clickCreateUser = () => {
         wrapper.find('a.create').trigger('click');
     };
-
-    test('should not display the base modal on initial render', () => {
-        expect(wrapper.find('basemodal-stub').exists()).toBeFalsy();
-    });
-
-    test('should display the base modal when an action is completed', () => {
-        wrapper.setData({ actionComplete: true });
-        expect(wrapper.find('basemodal-stub').exists()).toBeTruthy();
-    });
 
     describe('method createUser', () => {
         test('should call createUser method when "Create User" button is clicked', () => {
@@ -59,7 +50,7 @@ describe('UserModal.vue', () => {
                 password: 'abcdefg',
             };
             propsData.action = 'edit';
-            wrapper = shallowMount(UserModal, { propsData })
+            wrapper = mount(UserModal, { propsData })
             wrapper.setData(data);
             wrapper.find('a.edit').trigger('click');
 

@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import { EventBus } from '@src/eventBus.js';
+
 export default {
     data() {
         return {
@@ -32,7 +34,7 @@ export default {
     methods: {
         closeModal() {
             this.isActive = false;
-            this.triggerParentCloseModal();
+            EventBus.$emit('closeModal:baseModal');
         },
         triggerParentCloseModal() {
             this.$parent.closeModal();

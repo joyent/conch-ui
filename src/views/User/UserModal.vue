@@ -322,11 +322,15 @@ export default {
         const user = this.user;
 
         if (user && action && action  === 'edit') {
-            this.email = this.user.email;
-            this.name = this.user.name;
-            this.password = this.user.password;
-            this.isAdmin = this.user.is_admin;
+            this.email = user.email;
+            this.name = user.name;
+            this.password = user.password;
+            this.isAdmin = user.is_admin;
         }
+
+        EventBus.$on('closeModal:baseModal', () => {
+            this.closeModal();
+        });
     },
 };
 </script>

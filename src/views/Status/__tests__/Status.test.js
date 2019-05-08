@@ -1,7 +1,7 @@
 import Status from '../Status.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { EventBus } from '../../../eventBus.js';
+import { EventBus } from '@src/eventBus.js';
 
 // Fixture
 import devices from '@src/__fixtures__/devices.js';
