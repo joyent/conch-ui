@@ -37,6 +37,7 @@
                                         class="input is-info is-fullwidth is-rounded"
                                         placeholder="Email address"
                                         v-model="emailAddress"
+                                        @keyup.enter="signIn()"
                                     >
                                 </div>
                             </div>
@@ -47,6 +48,7 @@
                                         class="input is-info is-fullwidth is-rounded"
                                         placeholder="Password"
                                         v-model="password"
+                                        @keyup.enter="signIn()"
                                     >
                                 </div>
                             </div>

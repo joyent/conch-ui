@@ -79,6 +79,7 @@
                                                 placeholder="Token name"
                                                 v-model="tokenName"
                                                 ref="newToken"
+                                                @keyup.enter="save()"
                                             >
                                         </div>
                                         <div class="control">
