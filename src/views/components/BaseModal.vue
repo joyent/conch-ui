@@ -36,9 +36,6 @@ export default {
             this.isActive = false;
             EventBus.$emit('closeModal:baseModal');
         },
-        triggerParentCloseModal() {
-            this.$parent.closeModal();
-        },
     },
     mounted() {
         this.isActive = true;

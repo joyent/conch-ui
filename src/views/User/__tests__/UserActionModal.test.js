@@ -1,8 +1,10 @@
 import UserActionModal from '../UserActionModal.vue';
-import { mount } from '@vue/test-utils';
+import Vuex from 'vuex';
+import { createLocalVue, mount } from '@vue/test-utils';
 import * as usersApi from '@api/users.js';
 
 // Fixture
+import userAuthTokens from '@src/__fixtures__/userAuthTokens.js';
 import users from '@src/__fixtures__/users.js';
 
 jest.mock('@api/request.js');
@@ -11,19 +13,21 @@ describe('UserActionModal.vue', () => {
     let propsData;
     let wrapper;
 
-    beforeEach(() => {
-        propsData = { action: 'deactivate', user: users[0] };
-        wrapper = mount(UserActionModal, { propsData });
-    });
+    describe('success modal', () => {
+        beforeEach(() => {
+            propsData = { action: 'deactivate', user: users[0] };
+            wrapper = mount(UserActionModal, { propsData });
+        });
 
-    test('should not display the success modal on initial render', () => {
-        expect(wrapper.find('basemodal-stub').exists()).toBeFalsy();
-    });
+        test('should not display the success modal on initial render', () => {
+            expect(wrapper.html()).not.toContain('Success!');
+        });
 
-    test('should display the success modal when an action is successful', () => {
-        wrapper.setData({ success: true });
+        test('should display a success modal when an action is successful', () => {
+            wrapper.setData({ success: true });
 
-        expect(wrapper.html()).toContain('Success!');
+            expect(wrapper.html()).toContain('Success!');
+        });
     });
 
     describe('closing the modal', () => {
@@ -65,23 +69,23 @@ describe('UserActionModal.vue', () => {
     });
 
     describe('action "demote"', () => {
-        test('should display warning text containing "demote" if the action prop is "demote"', () => {
+        beforeEach(() => {
             propsData.action = 'demote';
+            wrapper = mount(UserActionModal, { propsData });
+        });
+
+        test('should display warning text containing "demote" if the action prop is "demote"', () => {
             wrapper = mount(UserActionModal, { propsData });
 
             expect(wrapper.find('.subtitle').html()).toContain('demote');
         });
 
         test('should display the fa-arrow-alt-circle-down icon if the action prop is "demote"', () => {
-            wrapper.setProps({ action: 'demote'});
-
             expect(wrapper.find('.fa-arrow-alt-circle-down').exists()).toBeTruthy();
         });
 
         test('should call the demoteUser method when action prop is "demote" and confirm button is clicked', () => {
             const spy = jest.spyOn(usersApi, 'demoteUser');
-
-            wrapper.setProps({ action: 'demote' });
             wrapper.find('a.confirm').trigger('click');
 
             expect(spy).toHaveBeenCalled();
@@ -89,23 +93,23 @@ describe('UserActionModal.vue', () => {
     });
 
     describe('action "promote"', () => {
-        test('should display warning text containing "promote" if the action prop is "promote"', () => {
+        beforeEach(() => {
             propsData.action = 'promote';
+            wrapper = mount(UserActionModal, { propsData });
+        });
+
+        test('should display warning text containing "promote" if the action prop is "promote"', () => {
             wrapper = mount(UserActionModal, { propsData });
 
             expect(wrapper.find('.subtitle').html()).toContain('promote');
         });
 
         test('should display the fa-arrow-alt-circle-up icon if the action prop is "promote"', () => {
-            wrapper.setProps({ action: 'promote'});
-
             expect(wrapper.find('.fa-arrow-alt-circle-up').exists()).toBeTruthy();
         });
 
         test('should call the promoteUser method when action prop is "promote" and confirm button is clicked', () => {
             const spy = jest.spyOn(usersApi, 'promoteUser');
-
-            wrapper.setProps({ action: 'promote' });
             wrapper.find('a.confirm').trigger('click');
 
             expect(spy).toHaveBeenCalled();
@@ -113,23 +117,81 @@ describe('UserActionModal.vue', () => {
     });
 
     describe('action "reset-pwd"', () => {
-        test('should display warning text containing "reset" if the action prop is "reset-pwd"', () => {
+        beforeEach(() => {
             propsData.action = 'reset-pwd';
             wrapper = mount(UserActionModal, { propsData });
+        });
 
+        test('should display warning containing "reset" when action prop is "reset-pwd"', () => {
             expect(wrapper.find('.subtitle').html()).toContain('reset the password');
         });
 
         test('should display the fa-unlock-alt icon if the action prop is "reset-pwd"', () => {
-            wrapper.setProps({ action: 'reset-pwd'});
-
             expect(wrapper.find('.fa-unlock-alt').exists()).toBeTruthy();
         });
 
         test('should call the forcePasswordChange method when action prop is "reset-pwd" and confirm button is clicked', () => {
             const spy = jest.spyOn(usersApi, 'forcePasswordChange');
 
-            wrapper.setProps({ action: 'reset-pwd' });
+            wrapper.find('a.confirm').trigger('click');
+
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+
+    describe('action "delete-auth-tokens"', () => {
+        let state;
+        let store;
+        const localVue = createLocalVue();
+        localVue.use(Vuex);
+
+        jest.spyOn(usersApi, 'getUserTokens').mockReturnValue(
+            Promise.resolve({
+                data: userAuthTokens,
+            })
+        );
+
+        beforeEach(() => {
+            propsData.action = 'delete-auth-tokens';
+            state = { currentUser: users[1] };
+            store = new Vuex.Store({ state });
+
+            wrapper = mount(UserActionModal, { localVue, propsData, store });
+        });
+
+        test('should display warning containing "delete the auth tokens" when action prop is "delete-auth-tokens"', async () => {
+            expect(wrapper.find('.subtitle').html()).toContain('delete the auth tokens');
+        });
+
+        test('should display the fa-times-circle icon when action prop is "delete-auth-tokens"', async () => {
+            expect(wrapper.find('.fa-times-circle').exists()).toBeTruthy();
+        });
+
+        test('should call the deleteUserTokens method when action prop is "delete-auth-tokens" and confirm button is clicked', () => {
+            const spy = jest.spyOn(usersApi, 'deleteUserTokens');
+            wrapper.find('a.confirm').trigger('click');
+
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+
+    describe('action "delete-login-tokens"', () => {
+        beforeEach(() => {
+            propsData.action = 'delete-login-tokens';
+            wrapper = mount(UserActionModal, { propsData });
+        });
+
+        test('should display warning text containing "delete the login tokens" when action prop is "delete-login-tokens"', async () => {
+            expect(wrapper.find('.subtitle').html()).toContain('delete the login tokens');
+        });
+
+        test('should display the fa-times-circle icon when action prop is "delete-login-tokens"', () => {
+            expect(wrapper.find('.fa-times-circle').exists()).toBeTruthy();
+        });
+
+        test('should call the deleteUserTokens method when action prop is "delete-login-tokens" and confirm button is clicked', () => {
+            const spy = jest.spyOn(usersApi, 'deleteUserTokens');
+
             wrapper.find('a.confirm').trigger('click');
 
             expect(spy).toHaveBeenCalled();

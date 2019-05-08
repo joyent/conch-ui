@@ -97,7 +97,7 @@
                             </tr>
                             <tr
                                 class="token"
-                                v-for="token in reversedTokens"
+                                v-for="token in tokens"
                                 :key="token.id"
                             >
                                 <td>
@@ -248,7 +248,11 @@ export default {
                         this.createSuccess = true;
                         this.isLoading = false;
 
-                        this.tokens.push(response.data);
+                        if (this.tokens.length) {
+                            this.tokens.push(response.data);
+                        } else {
+                            this.tokens.unshift(response.data);
+                        }
 
                         setTimeout(() => {
                             this.createSuccess = false;
@@ -275,10 +279,6 @@ export default {
         ...mapState([
             'userAuthTokens',
         ]),
-        reversedTokens() {
-            const tokens = this.tokens;
-            return tokens.length ? tokens.reverse() : [];
-        },
     },
     mounted() {
         if (this.userAuthTokens.length) {
