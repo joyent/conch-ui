@@ -242,5 +242,10 @@ export default {
             this.titleText = `${action} User?`;
         }
     },
+    mounted() {
+        EventBus.$on('closeModal:baseModal', () => {
+            this.closeModal();
+        });
+    },
 };
 </script>

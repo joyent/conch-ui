@@ -70,6 +70,15 @@ describe('mutations', () => {
         });
     });
 
+    describe('clearUserAuthTokens', () => {
+        test('it clears the auth tokens stored for the current user', () => {
+            state = { userAuthTokens };
+
+            mutations.clearUserAuthTokens(state);
+            expect(state).toMatchObject({ userAuthTokens: [] });
+        });
+    });
+
     describe('setActiveDevice', () => {
         test('it adds an active device to the state', () => {
             state = { activeDevice: {} };

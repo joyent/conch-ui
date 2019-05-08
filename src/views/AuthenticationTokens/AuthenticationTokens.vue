@@ -302,6 +302,7 @@
 <script>
 import search from "fuzzysearch";
 import moment from 'moment';
+import { EventBus } from '@src/eventBus.js';
 import Spinner from '@src/views/components/Spinner.vue';
 import BaseModal from '@src/views/components/BaseModal.vue';
 import {
@@ -497,6 +498,10 @@ export default {
                     this.setUsers(response.data);
                 });
         }
+
+        EventBus.$on('closeModal:baseModal', () => {
+            this.closeModal();
+        });
     },
 };
 </script>
