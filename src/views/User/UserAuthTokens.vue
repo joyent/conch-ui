@@ -22,8 +22,8 @@
         </div>
         <transition name="fade">
             <article
-                class="message is-success"
-                v-if="createSuccess"
+                class="message success is-success"
+                v-if="createSuccess && !creatingToken"
                 style="border-radius: 5px; margin-bottom: 20px;"
             >
                 <div
@@ -38,6 +38,26 @@
                         class="delete"
                         aria-label="delete"
                         @click="createSuccess = false"
+                    ></button>
+                </div>
+            </article>
+            <article
+                class="message duplicate-name-error is-danger"
+                v-if="duplicateTokenNameError && !creatingToken"
+                style="border-radius: 5px; margin-bottom: 20px;"
+            >
+                <div
+                    class="message-header"
+                    style="border-radius: 5px; padding: 8px;"
+                >
+                    <p>
+                        <i class="fas fa-check-circle"></i>
+                        A token with the name {{ tokenName }} already exists.
+                    </p>
+                    <button
+                        class="delete"
+                        aria-label="delete"
+                        @click="duplicateTokenNameError = false"
                     ></button>
                 </div>
             </article>
@@ -200,6 +220,7 @@ export default {
             creatingToken: false,
             deleteSuccess: false,
             deletingToken: false,
+            duplicateTokenNameError: false,
             isLoading: false,
             tokens: [],
             tokenName: '',
@@ -222,6 +243,7 @@ export default {
             return moment(createdDate).fromNow();
         },
         nameNewToken() {
+            this.tokenName = '';
             this.creatingToken = true;
             this.$nextTick(() => this.$refs.newToken.focus())
         },
@@ -258,7 +280,24 @@ export default {
                         setTimeout(() => {
                             this.createSuccess = false;
                             this.tokenName = '';
-                        }, 3000);
+                        }, 2000);
+                    })
+                    .catch(error => {
+                        if (error.status === 400) {
+                            const errorData = error.data;
+                            if (errorData && errorData.error) {
+                                if (errorData.error.includes(`name "${tokenName}" is already in use`)) {
+                                    this.duplicateTokenNameError = true;
+                                    this.isLoading = false;
+                                    this.creatingToken = false;
+
+                                    setTimeout(() => {
+                                        this.duplicateTokenNameError = false;
+                                        this.tokenName = '';
+                                    }, 3000);
+                                }
+                            }
+                        }
                     });
             } else {
                 this.isLoading = false;

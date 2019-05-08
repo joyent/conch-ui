@@ -1,7 +1,6 @@
 import UserAuthTokens from '../UserAuthTokens.vue';
 import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
-
 import * as users from '@api/users.js';
 
 // Fixture
@@ -107,6 +106,10 @@ describe('UserAuthTokens.vue', () => {
         expect(spy).toHaveBeenCalled();
     });
 
+    test('should not display any success or error messages on initial render', () => {
+        expect(wrapper.find('.message').exists()).toBeFalsy();
+    });
+
     test('should call the removeToken method when "Delete Token" button is clicked', () => {
         const spy = spyOn(wrapper.vm, 'removeToken');
 
@@ -114,5 +117,34 @@ describe('UserAuthTokens.vue', () => {
         wrapper.find('a.confirm').trigger('click');
 
         expect(spy).toHaveBeenCalled();
+    });
+
+    test('should display an error message when a duplicate token name is submitted', async () => {
+        jest.spyOn(users, 'createToken').mockRejectedValueOnce({
+            data: {
+                error: 'name "test 1" is already in use',
+            },
+            status: 400,
+        });
+
+        clickCreateToken();
+        setTokenName('test 1');
+        saveNewToken();
+
+        await new Promise(resolve => setTimeout(() => {
+            expect(wrapper.find('.duplicate-name-error').exists()).toBeTruthy();
+            resolve();
+        }, 10));
+    });
+
+    test('should display a success message when a token is successfully created', async () => {
+        clickCreateToken();
+        setTokenName('test 1');
+        saveNewToken();
+
+        await new Promise(resolve => setTimeout(() => {
+            expect(wrapper.find('.message.success').exists()).toBeTruthy();
+            resolve();
+        }, 10));
     });
 });
