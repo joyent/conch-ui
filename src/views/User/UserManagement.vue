@@ -62,7 +62,7 @@
                             <th></th>
                             <th>Name</th>
                             <th>Role</th>
-                            <th>Issues</th>
+                            <th>Authentication Issues</th>
                             <th>Last Active</th>
                             <th>Actions</th>
                         </thead>
@@ -70,7 +70,7 @@
                             <th></th>
                             <th>Name</th>
                             <th>Role</th>
-                            <th>Issues</th>
+                            <th>Authentication Issues</th>
                             <th>Last Active</th>
                             <th>Actions</th>
                         </tfoot>
@@ -160,13 +160,13 @@
                                                         v-if="user.is_admin"
                                                         @click="openModal('demote', user)"
                                                     >
-                                                        Demote User
+                                                        Demote to Regular User
                                                     </span>
                                                     <span
                                                         v-else
                                                         @click="openModal('promote', user)"
                                                     >
-                                                        Promote User
+                                                        Promote to Admin
                                                     </span>
                                                 </a>
                                                 <hr class="dropdown-divider">
