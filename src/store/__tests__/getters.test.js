@@ -25,15 +25,6 @@ describe('getters', () => {
         });
     });
 
-    describe('activeRoomId', () => {
-        test('it returns the id of the active room', () => {
-            state = { activeRoom };
-            const activeRoomId = getters.activeRoomId(state);
-
-            expect(activeRoomId).toEqual(activeRoom.id);
-        });
-    });
-
     describe('activeRackId', () => {
         test('it returns the id of the active rack', () => {
             state = { rackLayout };
