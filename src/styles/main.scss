@@ -361,14 +361,44 @@ progress::-webkit-progress-value {
 	.modal-content {
 		border-radius: 5px;
 	}
+
+	.dropdown {
+		.dropdown-content {
+			background-color: lighten($grey-dark, 8%);
+			border-radius: 5px;
+		}
+
+		.dropdown-item {
+			padding: 6px 16px;
+
+			&:hover {
+				color: $white;
+			}
+		}
+
+		hr.dropdown-divider {
+			background-color: $grey-light;
+		}
+	}
 }
 
-button.button,
-input,
-select {
-	&:not(&.delete) {
+a.button {
+	border-radius: 4px;
+
+	&.confirm.is-fullwidth {
+		border-radius: inherit;
+	}
+}
+
+button.button {
+	&:not(.delete) {
 		border-radius: 4px;
 	}
+}
+
+input.input.search,
+.select select {
+	border-radius: 4px;
 }
 
 .authentication-tokens {
