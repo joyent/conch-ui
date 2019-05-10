@@ -55,20 +55,21 @@
                                                 <i class="fas fa-2x fa-user-circle"></i>
                                             </span>
                                         </td>
-                                        <td>{{ user.name }}</td>
-                                        <td class="btn-group">
-                                            <button
-                                                class="button is-info"
+                                        <td class="username">{{ user.name }}</td>
+                                        <td>
+                                            <a
+                                                class="button view-auth-tokens is-info"
                                                 @click="selectUser(user)"
+                                                style="margin-right: 10px;"
                                             >
                                                 <i
                                                     class="far fa-eye"
                                                     style="margin-right: 10px;"
                                                 ></i>
                                                 Auth Tokens
-                                            </button>
-                                            <button
-                                                class="button is-danger"
+                                            </a>
+                                            <a
+                                                class="button delete-login-tokens is-danger"
                                                 @click="openModalMultipleTokens('login', user)"
                                             >
                                                 <i
@@ -76,7 +77,7 @@
                                                     style="margin-right: 10px;"
                                                 ></i>
                                                 Login Tokens
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -104,8 +105,8 @@
                             >
                                 {{ selectedUser.name }}
                             </span>
-                            <button
-                                class="button is-info"
+                            <a
+                                class="button close-token-list is-info"
                                 @click="closeTokenList()"
                             >
                                 <i
@@ -113,7 +114,7 @@
                                     style="margin-right: 10px"
                                 ></i>
                                 Back to User List
-                            </button>
+                            </a>
                         </div>
                     </div>
                     <div class="box is-paddingless">
@@ -144,13 +145,13 @@
                                             </div>
                                         </div>
                                         <div style="text-align: right; padding: 12px;">
-                                            <button
-                                                class="button is-danger"
+                                            <a
+                                                class="button delete-auth-tokens is-danger"
                                                 @click="openModalMultipleTokens('auth')"
                                                 v-if="tokens && tokens.length"
                                             >
                                                 Delete Auth Tokens
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -180,7 +181,7 @@
                                             <td class="has-text-centered">
                                                 <span>{{ i + 1 }}</span>
                                             </td>
-                                            <td>{{ token.name }}</td>
+                                            <td class="token-name">{{ token.name }}</td>
                                             <td v-if="token.last_used">
                                                 {{ getDate(token.last_used) }}
                                             </td>
@@ -204,7 +205,7 @@
                         v-if="tokens && !tokens.length"
                         style="padding: 40px;"
                     >
-                        <p class="title is-5 has-text-centered">
+                        <p class="title no-tokens is-5 has-text-centered">
                             <strong class="has-text-white">{{ selectedUser.name }}</strong> does not have any auth tokens.
                         </p>
                     </div>
@@ -244,7 +245,7 @@
                         @click="deleteLoginTokens()"
                         v-if="tokenType && tokenType === 'login'"
                     >
-                        Delete Tokens
+                        Delete Login Tokens
                         <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                     </a>
                     <a
@@ -252,7 +253,7 @@
                         @click="deleteAuthTokens()"
                         v-else-if="tokenType && tokenType === 'auth'"
                     >
-                        Delete Tokens
+                        Delete Auth Tokens
                         <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                     </a>
                     <a
@@ -348,6 +349,7 @@ export default {
             this.deletingLoginTokens = false,
             this.deleteSuccess = false;
             this.tokenName = '';
+            this.tokenType = '';
         },
         closeTokenList() {
             this.viewTokens = false;
@@ -400,20 +402,19 @@ export default {
             this.tokenName = tokenName;
         },
         openModalMultipleTokens(tokenType, user = null) {
-            this.deleting = true;
-            this.tokenType = tokenType;
-
             if (user) {
                 this.selectedUser = user;
             }
+
+            this.tokenType = tokenType;
+            this.deleting = true;
         },
         selectUser(user) {
             this.selectedUser = user;
+            this.setTokens(user.id);
             this.viewUsers = false;
             this.viewTokens = true;
             this.searchTextUsers = '';
-
-            this.setTokens(user.id);
         },
         setTokens(userId) {
             getUserTokens(userId)
