@@ -15,6 +15,7 @@ jest.mock('@api/request.js');
 
 describe('AuthenticationTokens.vue', () => {
     let actions;
+    let mocks;
     let state;
     let store;
     let wrapper;
@@ -25,16 +26,17 @@ describe('AuthenticationTokens.vue', () => {
             setUserAuthTokens: jest.fn(),
             setUsers: jest.fn() ,
         };
+        mocks = { $router: [] };
         state = { authTokens, currentUser: users[0], users };
         store = new Vuex.Store({ actions, state });
-        wrapper = mount(AuthenticationTokens, { localVue, store });
+        wrapper = mount(AuthenticationTokens, { localVue, mocks, store });
     });
 
     describe('users page', () => {
         test('should display a loading indicator until the user list has been fetched from the API', () => {
             state.users = [];
             store = new Vuex.Store({ actions, state });
-            wrapper = mount(AuthenticationTokens, { localVue, store });
+            wrapper = mount(AuthenticationTokens, { localVue, mocks, store });
 
             expect(wrapper.find('.spinner').exists()).toBeTruthy();
         });
@@ -96,7 +98,7 @@ describe('AuthenticationTokens.vue', () => {
             test('should display button with text "Delete Login Tokens" on the modal', () => {
                 clickDeleteLoginTokens();
 
-                expect(wrapper.find('.button.confirm').text()).toEqual('Delete Login Tokens');
+                expect(wrapper.find('a.confirm').text()).toEqual('Delete Login Tokens');
             });
 
             test('should call the deleteUserTokens method with the userId and login_only: 1 as params', () => {
@@ -105,7 +107,7 @@ describe('AuthenticationTokens.vue', () => {
                 const params = { login_only: 1 };
 
                 clickDeleteLoginTokens();
-                wrapper.find('.button.confirm').trigger('click');
+                wrapper.find('a.confirm').trigger('click');
 
                 expect(spy).toHaveBeenCalledWith(userId, params);
             });
@@ -115,7 +117,7 @@ describe('AuthenticationTokens.vue', () => {
                 jest.spyOn(usersApi, 'deleteUserTokens').mockResolvedValueOnce(true);
 
                 clickDeleteLoginTokens();
-                wrapper.find('.button.confirm').trigger('click');
+                wrapper.find('a.confirm').trigger('click');
 
                 wrapper.vm.$nextTick(() => {
                     expect(wrapper.find('.modal-base .subtitle').text()).toEqual(successText);
@@ -124,7 +126,7 @@ describe('AuthenticationTokens.vue', () => {
 
             test('should display a table containing tokens for the selected user when "Auth Tokens" button is clicked', () => {
                 store = new Vuex.Store({ actions, state });
-                wrapper = mount(AuthenticationTokens, { localVue, store });
+                wrapper = mount(AuthenticationTokens, { localVue, mocks, store });
 
                 wrapper.find('.view-auth-tokens').trigger('click');
 
@@ -190,9 +192,15 @@ describe('AuthenticationTokens.vue', () => {
                 });
             });
 
-            // Helper function
+            // Helper functions
+            const clickConfirmButton = () => {
+                wrapper.find('a.confirm').trigger('click');
+            };
             const clickDeleteTokenButton = () => {
                 wrapper.find('.delete-token').trigger('click');
+            };
+            const clickDeleteAuthTokensButton = () => {
+                wrapper.find('.delete-auth-tokens').trigger('click');
             };
 
             test('should display a confirmation modal when the delete token button on a token row is clicked', () => {
@@ -210,7 +218,7 @@ describe('AuthenticationTokens.vue', () => {
             test('should display a button with text "Delete Token" on the modal', () => {
                 clickDeleteTokenButton();
 
-                expect(wrapper.find('.button.confirm').text()).toEqual('Delete Token');
+                expect(wrapper.find('a.confirm').text()).toEqual('Delete Token');
             });
 
             test('should call the deleteToken method when "Delete Token" button is clicked', () => {
@@ -219,9 +227,33 @@ describe('AuthenticationTokens.vue', () => {
                 const userId = users[0].id;
 
                 clickDeleteTokenButton();
-                wrapper.find('a.confirm').trigger('click');
+                clickConfirmButton();
 
                 expect(spy).toHaveBeenCalledWith(tokenName, userId);
+            });
+
+            test('should call the deleteUserTokens method with the userId and login_only: 1 as params', () => {
+                const spy = jest.spyOn(usersApi, 'deleteUserTokens');
+                const params = { api_only: 1 };
+                const userId = users[0].id;
+
+                clickDeleteAuthTokensButton();
+                clickConfirmButton();
+
+                expect(spy).toHaveBeenCalledWith(userId, params);
+            });
+
+            test('should display a modal when the "Delete Auth Tokens" button is clicked ', () => {
+                clickDeleteAuthTokensButton();
+
+                expect(wrapper.find('.modal-base').exists).toBeTruthy();
+            });
+
+            test('should display informative confirmation text on the delete auth tokens modal', () => {
+                const confirmationMessage = `Are you sure you want to delete the auth tokens for ${users[0].name}?`
+                clickDeleteAuthTokensButton();
+
+                expect(wrapper.find('.subtitle').text()).toEqual(confirmationMessage);
             });
         });
     });

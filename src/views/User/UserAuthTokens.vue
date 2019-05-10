@@ -65,10 +65,11 @@
         <div class="card" style="border-radius: 5px;">
             <div class="card-content">
                 <div class="content">
+                    <Spinner v-if="!tokens.length && !noTokens" />
                     <table
                         class="table is-fullwidth"
                         style="border-radius: 4px;"
-                        v-if="tokens.length || creatingToken"
+                        v-else-if="tokens.length || creatingToken"
                     >
                         <thead>
                             <th></th>
@@ -143,7 +144,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div v-else>
+                    <div v-else-if="noTokens">
                         <p
                             class="subtitle has-text-white has-text-centered"
                             style="padding: 20px; margin-bottom: 0;"
@@ -205,6 +206,7 @@
 
 <script>
 import moment from 'moment';
+import Spinner from '@src/views/components/Spinner.vue';
 import BaseModal from '@src/views/components/BaseModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { createToken, deleteToken, getTokens } from '@api/users.js';
@@ -213,6 +215,7 @@ import { mapActions, mapState } from 'vuex';
 export default {
     components: {
         BaseModal,
+        Spinner,
     },
     data() {
         return {
@@ -222,6 +225,7 @@ export default {
             deletingToken: false,
             duplicateTokenNameError: false,
             isLoading: false,
+            noTokens: false,
             tokens: [],
             tokenName: '',
         };
@@ -311,6 +315,8 @@ export default {
                     if (tokens.length) {
                         this.tokens = tokens;
                         this.setUserAuthTokens(tokens);
+                    } else {
+                        this.noTokens = true;
                     }
                 });
         },
