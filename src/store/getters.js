@@ -1,6 +1,5 @@
 export const activeDeviceId = state => (state.activeDevice.id);
 export const activeRackId = state => (state.rackLayout.id);
-export const activeRoomId = state => (state.activeRoom.id);
 export const currentWorkspaceId = state => (state.currentWorkspace.id);
 export const currentWorkspaceName = state => (state.currentWorkspace.name);
 export const findWorkspaceById = state => id => (state.workspaces.find(w => w.id === id));
@@ -48,7 +47,6 @@ export const loadCurrentWorkspace = state => id => {
 export default {
     activeDeviceId,
     activeRackId,
-    activeRoomId,
     currentWorkspaceId,
     currentWorkspaceName,
     findWorkspaceById,
