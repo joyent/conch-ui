@@ -67,9 +67,7 @@
                 <i class="far fa-4x fa-check-circle has-text-success"></i>
             </template>
             <template v-slot:title>
-                <h1 class="title">
-                    Success!
-                </h1>
+                <h1 class="title">Success!</h1>
             </template>
             <template v-slot:body>
                 <p class="subtitle" v-if="action === 'reset-pwd'">

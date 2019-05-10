@@ -24,9 +24,7 @@ describe('UserAuthTokens.vue', () => {
         store = new Vuex.Store({ actions, state });
         mocks = { $nextTick: jest.fn() };
         wrapper = mount(UserAuthTokens, { localVue, mocks, store });
-        wrapper.setData({
-            tokens: userAuthTokens,
-        });
+        wrapper.setData({ tokens: userAuthTokens });
     });
 
     // Helper functions
@@ -45,6 +43,12 @@ describe('UserAuthTokens.vue', () => {
 
     test('should not display modal on initial render', () => {
         expect(wrapper.find('.modal').exists()).toBeFalsy();
+    });
+
+    test('should display spinner if tokens are still being retrieved from the API', () => {
+        wrapper.setData({ tokens: [], noTokens: false });
+
+        expect(wrapper.find('.spinner').exists()).toBeTruthy();
     });
 
     test('should display a confirmation modal when user attempts to delete a token', () => {

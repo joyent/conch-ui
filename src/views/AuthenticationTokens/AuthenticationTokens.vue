@@ -271,9 +271,7 @@
                     <i class="far fa-4x fa-check-circle has-text-success"></i>
                 </template>
                 <template v-slot:title>
-                    <h1 class="title">
-                        Success!
-                    </h1>
+                    <h1 class="title">Success!</h1>
                 </template>
                 <template v-slot:body>
                     <p class="subtitle" v-if="deletingAuthTokens">
@@ -389,9 +387,12 @@ export default {
                     this.deleting = false;
                     this.deleteSuccess = true;
 
-                    // if (userId === this.currentUser.id) {
-                    //     logout();
-                    // }
+                    if (userId === this.currentUser.id) {
+                        logout()
+                            .then(() => {
+                                this.$router.push({ name: 'signIn' });
+                            });
+                    }
                 });
         },
         getDate(date) {

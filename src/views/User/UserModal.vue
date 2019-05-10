@@ -140,18 +140,30 @@
                     <i v-else class="fas fa-3x fa-id-badge has-text-warning"></i>
                 </template>
                 <template v-slot:title>
-                    <span v-if="success">Success!</span>
+                    <span v-if="success">
+                        <h1 class="title">Success!</h1>
+                    </span>
                 </template>
                 <template v-slot:body>
-                    <span v-if="success && action === 'create'">
+                    <p class="subtitle" v-if="success && action === 'create'">
                         <strong class="has-text-white">{{ name }}</strong> has been successfully created.
-                    </span>
-                    <span v-else-if="success && action === 'edit'">
+                    </p>
+                    <p class="subtitle" v-else-if="success && action === 'edit'">
                         <strong class="has-text-white">{{ name }}</strong> has been successfully updated.
-                    </span>
-                    <span v-else>
+                    </p>
+                    <p class="subtitle" v-else>
                         No information was changed.
-                    </span>
+                    </p>
+                </template>
+                <template v-slot:footer>
+                    <a
+                        class="button confirm is-success is-fullwidth"
+                        @click="closeModal()"
+                    >
+                        <span v-if="success">Great!</span>
+                        <span v-else>Close</span>
+                        <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                    </a>
                 </template>
             </BaseModal>
         </transition>

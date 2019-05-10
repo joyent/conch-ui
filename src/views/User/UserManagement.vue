@@ -123,7 +123,7 @@
                                     >
                                         <div class="dropdown-trigger">
                                             <button
-                                                class="button is-primary"
+                                                class="button actions is-primary"
                                                 aria-haspopup="true"
                                                 :aria-controls="`dropdown-menu-${i}`"
                                             >
@@ -182,7 +182,7 @@
                                                 >
                                                     Delete Login Tokens
                                                 </a>
-<a
+                                                <a
                                                     class="dropdown-item delete-auth-tokens"
                                                     @click="openModal('delete-auth-tokens', user)"
                                                 >
@@ -259,6 +259,11 @@ export default {
         ...mapActions([
             'setUsers',
         ]),
+        getIndex(users, userId) {
+            return users.map(user => {
+                return user.id;
+            }).indexOf(userId);
+        },
         lastActive(date) {
             return moment(date).fromNow();
         },
@@ -331,33 +336,28 @@ export default {
             this.action = '';
         });
 
-        // NEED TO SORT OUT THESE EVENTS
-        // - Refresh user list after deactivating user (or remove from array)
-        // - Refresh user list after creating user (or add to array)
-        // -
         EventBus.$on('action-success', (actionData) => {
             const userId = actionData.userId;
+            const users = this.users;
 
-            if (!actionData.action === 'deactivate') {
+            if (actionData.action !== 'deactivate') {
                 getUser(userId)
                     .then(response => {
                         const newUser = response.data;
-                        const users = this.users;
 
                         if (actionData.action && actionData.action === 'create') {
                             users.push(newUser);
-
                             this.setUsers(users);
                         } else {
-                            const index = users.map(user => {
-                                return user.id;
-                            }).indexOf(userId);
-
+                            const index = this.getIndex(users, userId);
                             users.splice(index, 1, newUser);
-
                             this.setUsers(users);
                         }
                     });
+            } else if (actionData && actionData.action === 'deactivate') {
+                const index = this.getIndex(users, userId);
+                users.splice(index, 1);
+                this.setUsers(users);
             }
         });
     },
