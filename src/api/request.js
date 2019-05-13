@@ -1,4 +1,7 @@
 import axios from 'axios';
+import router from '@src/router.js';
+import store from '@src/store/store.js';
+import { logout } from '@api/authentication.js';
 
 export const clearToken = () => {
     return sessionStorage.removeItem('token');
@@ -38,7 +41,11 @@ export const requestWithToken = (args) => {
         }
 
         if (errorResponse.status && errorResponse.status === 401) {
-            clearToken();
+            logout()
+                .then(() => {
+                    store.dispatch('setInvalidCredentials');
+                    router.push({ name: 'signIn' });
+                });
         }
 
         return Promise.reject(errorResponse);

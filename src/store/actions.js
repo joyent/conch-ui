@@ -10,6 +10,10 @@ export const clearForcePasswordChange = ({ commit }) => {
     commit('clearForcePasswordChange');
 };
 
+export const clearInvalidCredentials = ({ commit }) => {
+    commit('clearInvalidCredentials');
+};
+
 export const clearRackLayout = ({ commit }) => {
     commit('clearRackLayout');
 };
@@ -66,6 +70,10 @@ export const setHighlightDeviceId = ({ commit }, highlightDeviceId) => {
     commit('setHighlightDeviceId', highlightDeviceId);
 };
 
+export const setInvalidCredentials = ({ commit }) => {
+    commit('setInvalidCredentials');
+};
+
 export const setRackLayout = ({ commit }, rackLayout) => {
     commit('setRackLayout', rackLayout);
 };
@@ -98,6 +106,7 @@ export default {
     clearActiveDevice,
     clearActiveRoomName,
     clearForcePasswordChange,
+    clearInvalidCredentials,
     clearRackLayout,
     clearShowDeviceInRack,
     setActiveDevice,
@@ -112,6 +121,7 @@ export default {
     setForcePasswordChange,
     setHardwareProducts,
     setHighlightDeviceId,
+    setInvalidCredentials,
     setRackLayout,
     setRackRooms,
     setRackRoomsByWorkspace,
