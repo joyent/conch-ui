@@ -118,6 +118,25 @@ progress::-webkit-progress-value {
 				.name {
 					color: $white;
 				}
+
+				&.margin-small {
+					margin-bottom: 1rem;
+				}
+			}
+
+			.field.has-switch {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-bottom: 6px;
+
+				.switch.is-large {
+					margin-right: 8px;
+				}
+
+				.switch-text {
+					width: 30px;
+				}
 			}
 		}
 
@@ -395,7 +414,7 @@ progress::-webkit-progress-value {
 a.button {
 	border-radius: 4px;
 
-	&.confirm.is-fullwidth {
+	&.is-fullwidth {
 		border-radius: inherit;
 	}
 }
