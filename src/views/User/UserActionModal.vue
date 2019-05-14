@@ -1,6 +1,6 @@
 <template>
     <div class="user-action-modal">
-        <BaseModal v-if="!success">
+        <BaseModal v-if="!success && !deactivateConfirmed">
             <template v-slot:icon>
                 <i
                     class="fas fa-4x fa-unlock-alt has-text-warning"
@@ -53,11 +53,62 @@
                     <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                 </a>
                 <a
+                    class="button confirm-deactivate is-success is-fullwidth"
+                    @click="deactivateConfirmed = true"
+                    v-else-if="action === 'deactivate'"
+                >
+                    Confirm
+                    <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                </a>
+                <a
                     class="button confirm is-success is-fullwidth"
                     @click="confirm()"
                     v-else
                 >
                     Confirm
+                    <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                </a>
+            </template>
+        </BaseModal>
+        <BaseModal v-else-if="!success && deactivateConfirmed">
+            <template v-slot:icon>
+                <i class="fas fa-4x fa-key has-text-danger"></i>
+            </template>
+            <template v-slot:title>
+                <h1 class="title">Clear Tokens?</h1>
+            </template>
+            <template v-slot:body>
+                <p class="subtitle margin-small">
+                    Do you want to clear <strong class="has-text-white">{{ user.name }}</strong>'s tokens?
+                </p>
+                <div class="field has-switch has-text-centered">
+                    <label class="switch is-large">
+                        <input
+                            type="checkbox"
+                            :checked="clearTokens"
+                            v-model="clearTokens"
+                            :true-value="true"
+                            :false-value="false"
+                        >
+                        <span class="slider round is-success"></span>
+                    </label>
+                    <div class="switch-text">
+                        <strong v-if="clearTokens">Yes</strong>
+                        <strong v-else>No</strong>
+                    </div>
+                </div>
+            </template>
+            <template v-slot:footer>
+                <a
+                    class="button confirm is-success is-fullwidth"
+                    @click="confirm()"
+                >
+                    <span v-if="clearTokens">
+                        Clear <strong class="has-text-white"> {{ user.name }}</strong>'s tokens
+                    </span>
+                    <span v-else>
+                        Do not clear <strong class="has-text-white">{{ user.name}}</strong>'s tokens
+                    </span>
                     <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                 </a>
             </template>
@@ -175,10 +226,13 @@ export default {
 
                 if (this.clearTokens) {
                     params.clear_tokens = 1;
+                } else {
+                    params.clear_tokens = 0;
                 }
 
                 deactivateUser(userId, params)
                     .then(() => {
+                        this.deactivateConfirmed = false;
                         this.triggerSuccess(userId, true);
                     });
             } else if (action === 'delete-auth-tokens') {
@@ -202,7 +256,9 @@ export default {
             }
         },
         triggerSuccess(userId, deactivate = false) {
-            this.success = true;
+            this.$nextTick(() => {
+                this.success = true;
+            });
 
             if (deactivate) {
                 EventBus.$emit('action-success', { userId, action: 'deactivate' });

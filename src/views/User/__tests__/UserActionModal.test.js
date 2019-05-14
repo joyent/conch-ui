@@ -62,6 +62,7 @@ describe('UserActionModal.vue', () => {
         test('should call the deactivateUser method when action prop is "deactivate" and confirm button is clicked', () => {
             const spy = jest.spyOn(usersApi, 'deactivateUser');
 
+            wrapper.find('a.confirm-deactivate').trigger('click');
             wrapper.find('a.confirm').trigger('click');
 
             expect(spy).toHaveBeenCalled();
