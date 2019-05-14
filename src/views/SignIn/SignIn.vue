@@ -3,7 +3,7 @@
         <div class="hero-body">
             <div class="container has-text-centered">
                 <div
-                    class="column is-4 is-offset-4 session-notification"
+                    class="column is-6 is-offset-3 session-notification"
                     v-if="invalidCredentials && showNotification"
                 >
                     <article class="message is-danger">
