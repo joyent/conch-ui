@@ -86,11 +86,12 @@ export const promoteUser = (userId) => {
     });
 };
 
-export const updatePassword = (password) => {
+export const updatePassword = (password, params) => {
     return requestWithToken({
         method: 'POST',
         url: '/user/me/password',
-        data: { password }
+        data: { password },
+        params,
     })
     .then(clearToken());
 };
