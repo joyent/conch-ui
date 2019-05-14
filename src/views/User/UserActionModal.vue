@@ -53,7 +53,7 @@
                     <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                 </a>
                 <a
-                    class="button confirm is-success is-fullwidth"
+                    class="button confirm-deactivate is-success is-fullwidth"
                     @click="deactivateConfirmed = true"
                     v-else-if="action === 'deactivate'"
                 >
