@@ -23,7 +23,9 @@ exports[`UserProfile.vue should render correctly on inital render 1`] = `
                 <!---->
                 <!---->
               </div>
-            </div> <button type="button" class="button save is-primary">
+            </div>
+            <div class="field"><label class="label">Clear tokens?</label> <label class="switch"><input type="checkbox" true-value="true"> <span class="slider round is-success"></span></label> <span style="margin-left: 8px;"><strong>Yes</strong></span></div>
+            <div class="field" name="fade"><label class="label">Which tokens?</label> <label class="switch"><input type="checkbox" true-value="true" class="two-tone"> <span class="slider round is-success"></span></label> <span style="margin-left: 8px;"><strong>Clear Login Tokens Only</strong></span></div> <button type="button" class="button save is-primary">
               Save
             </button>
           </form>
