@@ -327,11 +327,7 @@ export default {
         ]),
     },
     mounted() {
-        if (this.userAuthTokens.length) {
-            this.tokens = this.userAuthTokens;
-        } else {
-            this.setTokens();
-        }
+        this.setTokens();
 
         EventBus.$on('closeModal:baseModal', () => {
             this.closeModal();

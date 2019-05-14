@@ -5,6 +5,23 @@
 	display: inline-block;
 	width: 60px;
 	height: 28px;
+
+	&.is-large {
+		height: 36px;
+		width: 70px;
+
+		.slider:before {
+			height: 30px;
+			width: 30px;
+			left: 4px;
+		}
+
+		input:checked + .slider:before {
+			-webkit-transform: translateX(32px);
+			-ms-transform: translateX(32px);
+			transform: translateX(32px);
+		}
+	}
 }
 
 .switch input {
@@ -51,6 +68,11 @@ input:focus + .slider {
 	&.is-success {
 		box-shadow: 0 0 1px $green;
 	}
+}
+
+input[type=checkbox].two-tone:not(:checked) + .slider {
+	box-shadow: 0 0 1px #2196F3;
+	background-color: #2196F3;
 }
 
 input:checked + .slider:before {
