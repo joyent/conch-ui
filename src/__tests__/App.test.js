@@ -2,20 +2,17 @@ import App from '../App.vue';
 import Vuex from 'vuex';
 import isEmpty from 'lodash/isEmpty';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-
-// Fixture
-import workspaces from '../__fixtures__/workspaces.js';
-import { rackLayout } from '../__fixtures__/rackLayout';
-import devices from '../__fixtures__/devices';
-import allRooms from '../__fixtures__/allRooms';
+import VueRouter from 'vue-router';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+localVue.use(VueRouter);
+
+const router = new VueRouter();
 
 describe('App.vue', () => {
     let actions;
     let getters;
-    let mocks;
     let state;
     let store;
     let stubs;
@@ -36,26 +33,15 @@ describe('App.vue', () => {
             currentWorkspaceId: jest.fn(),
             loadCurrentWorkspace: jest.fn(),
         };
-        mocks = {
-            $route: {
-                params: {
-                    currentWorkspace: workspaces[0].id,
-                    deviceId: devices[0].id,
-                    rackId: rackLayout.id,
-                    roomName: allRooms[0].name,
-                },
-                path: '',
-            },
-        };
-        state = { workspaces };
+        state = {};
         stubs = ['router-view'];
         store = new Vuex.Store({ actions, getters, state });
-        wrapper = shallowMount(App, { localVue, mocks, store, stubs });
+        wrapper = shallowMount(App, { localVue, router, store, stubs });
     });
 
     describe('SignIn', () => {
         test('should display the SignIn component when path is "/"', () => {
-            mocks.$route.path = '/';
+            router.push({ path: '/' });
 
             expect(wrapper.find('signin-stub').exists()).toBeTruthy();
         });
@@ -64,7 +50,7 @@ describe('App.vue', () => {
     describe('Main layout', () => {
         describe('path is "/user"', () => {
             beforeEach(() => {
-                mocks.$route.path = '/user';
+                router.push({ path: '/user' });
             });
 
             test('should display the navbar router-view component', () => {
@@ -76,7 +62,6 @@ describe('App.vue', () => {
             });
 
             test('should display the sidebar router-view component', () => {
-                mocks.$route.path = '/user';
                 const navbar = wrapper.findAll('router-view-stub').filter(view => {
                     return view.attributes('name') === 'sidebar';
                 });
@@ -85,7 +70,6 @@ describe('App.vue', () => {
             });
 
             test('should display an unnamed router-view component for the main component', () => {
-                mocks.$route.path = '/user';
                 const component = wrapper.findAll('router-view-stub').filter(view => {
                     return isEmpty(view.attributes());
                 });
