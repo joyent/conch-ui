@@ -1,5 +1,5 @@
 import UserModal from '../UserModal.vue';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import * as usersApi from '@api/users.js';
 
 // Fixture
@@ -15,22 +15,13 @@ describe('UserModal.vue', () => {
     beforeEach(() => {
         user = users[0];
         propsData = { action: 'create', user };
-        wrapper = shallowMount(UserModal, { propsData });
+        wrapper = mount(UserModal, { propsData });
     });
 
     // Helper function
     const clickCreateUser = () => {
-        wrapper.find('button.create').trigger('click');
+        wrapper.find('a.create').trigger('click');
     };
-
-    test('should not display the result modal on initial render', () => {
-        expect(wrapper.find('resultmodal-stub').exists()).toBeFalsy();
-    });
-
-    test('should display the result modal when an action is completed', () => {
-        wrapper.setData({ actionComplete: true });
-        expect(wrapper.find('resultmodal-stub').exists()).toBeTruthy();
-    });
 
     describe('method createUser', () => {
         test('should call createUser method when "Create User" button is clicked', () => {
@@ -59,9 +50,9 @@ describe('UserModal.vue', () => {
                 password: 'abcdefg',
             };
             propsData.action = 'edit';
-            wrapper = shallowMount(UserModal, { propsData })
+            wrapper = mount(UserModal, { propsData })
             wrapper.setData(data);
-            wrapper.find('button.edit').trigger('click');
+            wrapper.find('a.edit').trigger('click');
 
             expect(spy).toHaveBeenCalled();
         });
@@ -82,12 +73,6 @@ describe('UserModal.vue', () => {
 
         test('should close the modal when modal close button is clicked', () => {
             wrapper.find('button.delete').trigger('click');
-
-            expect(spy).toHaveBeenCalled();
-        });
-
-        test('should close the modal when the "Cancel" button is clicked', () => {
-            wrapper.find('button.cancel').trigger('click');
 
             expect(spy).toHaveBeenCalled();
         });

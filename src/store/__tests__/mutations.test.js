@@ -4,6 +4,7 @@ import mutations from '../mutations.js';
 import activeDevice from '@src/__fixtures__/activeDevice.js';
 import activeRoom from '@src/__fixtures__/activeRoom.js';
 import allRooms from '@src/__fixtures__/allRooms.js';
+import authTokens from '@src/__fixtures__/authTokens.js';
 import deviceDetails from '@src/__fixtures__/deviceDetails.js';
 import deviceSettings from '@src/__fixtures__/deviceSettings.js';
 import deviceValidations from '@src/__fixtures__/deviceValidations.js';
@@ -12,6 +13,7 @@ import hardwareProducts from '@src/__fixtures__/hardwareProducts.js';
 import rackLayout from '@src/__fixtures__/rackLayout.js';
 import rackRooms from '@src/__fixtures__/rackRooms.js';
 import rackRoomsByWorkspaceId from '@src/__fixtures__/rackRoomsByWorkspace.js';
+import userAuthTokens from '@src/__fixtures__/userAuthTokens.js';
 import users from '@src/__fixtures__/users.js';
 import validations from '@src/__fixtures__/validations.js';
 import workspaces from '@src/__fixtures__/workspaces.js';
@@ -65,6 +67,15 @@ describe('mutations', () => {
 
             mutations.clearShowDeviceInRack(state);
             expect(state).toMatchObject({ showDeviceInRack: false });
+        });
+    });
+
+    describe('clearUserAuthTokens', () => {
+        test('it clears the auth tokens stored for the current user', () => {
+            state = { userAuthTokens };
+
+            mutations.clearUserAuthTokens(state);
+            expect(state).toMatchObject({ userAuthTokens: [] });
         });
     });
 
@@ -129,6 +140,15 @@ describe('mutations', () => {
 
             mutations.setCurrentUser(state, currentUser);
             expect(state).toMatchObject({ currentUser });
+        });
+    });
+
+    describe('setAuthTokens', () => {
+        test('it adds authentication tokens to the state', () => {
+            state = { authTokens: [] };
+
+            mutations.setAuthTokens(state, authTokens);
+            expect(state).toMatchObject({ authTokens });
         });
     });
 
@@ -222,6 +242,15 @@ describe('mutations', () => {
 
             mutations.setShowDeviceInRack(state, showDeviceInRack);
             expect(state).toMatchObject({ showDeviceInRack });
+        });
+    });
+
+    describe('setUserAuthTokens', () => {
+        test('it adds authentication tokens to the state', () => {
+            state = { userAuthTokens: [] };
+
+            mutations.setUserAuthTokens(state, userAuthTokens);
+            expect(state).toMatchObject({ userAuthTokens });
         });
     });
 

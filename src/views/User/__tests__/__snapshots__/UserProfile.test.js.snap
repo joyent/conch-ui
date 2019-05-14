@@ -4,9 +4,9 @@ exports[`UserProfile.vue should render correctly on inital render 1`] = `
 <div class="user-profile">
   <pageheader-stub title="User Profile" subtitle="Update password and profile settings"></pageheader-stub>
   <section class="content">
-    <div class="tile is-ancestor">
-      <div class="tile is-parent">
-        <article class="tile is-child box">
+    <div class="columns">
+      <div class="column">
+        <article class="box">
           <!---->
           <p class="subtitle">
             Reset Password
@@ -27,6 +27,11 @@ exports[`UserProfile.vue should render correctly on inital render 1`] = `
               Save
             </button>
           </form>
+        </article>
+      </div>
+      <div class="column">
+        <article class="box">
+          <userauthtokens-stub></userauthtokens-stub>
         </article>
       </div>
     </div>

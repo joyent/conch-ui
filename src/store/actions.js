@@ -18,6 +18,10 @@ export const clearShowDeviceInRack = ({ commit }) => {
     commit('clearShowDeviceInRack');
 };
 
+export const clearUserAuthTokens = ({ commit }) => {
+    commit('clearUserAuthTokens');
+};
+
 export const setActiveDevice = ({ commit }, activeDevice) => {
     commit('setActiveDevice', activeDevice);
 };
@@ -40,6 +44,10 @@ export const setActiveRoomName = ({ commit }, activeRoomName) => {
 
 export const setAllRooms = ({ commit }, allRooms) => {
     commit('setAllRooms', allRooms);
+};
+
+export const setAuthTokens = ({ commit }, authTokens) => {
+    commit('setAuthTokens', authTokens);
 };
 
 export const setCurrentUser = ({ commit }, currentUser) => {
@@ -82,6 +90,10 @@ export const setShowDeviceInRack = ({ commit }, showDeviceInRack) => {
     commit('setShowDeviceInRack', showDeviceInRack);
 };
 
+export const setUserAuthTokens = ({ commit }, userAuthTokens) => {
+    commit('setUserAuthTokens', userAuthTokens);
+};
+
 export const setUsers = ({ commit }, users) => {
     commit('setUsers', users);
 };
@@ -100,12 +112,14 @@ export default {
     clearForcePasswordChange,
     clearRackLayout,
     clearShowDeviceInRack,
+    clearUserAuthTokens,
     setActiveDevice,
     setActiveDeviceDetails,
     setActiveDeviceSettings,
     setActiveDeviceValidations,
     setActiveRoomName,
     setAllRooms,
+    setAuthTokens,
     setCurrentUser,
     setCurrentWorkspace,
     setDevicesByWorkspace,
@@ -116,6 +130,7 @@ export default {
     setRackRooms,
     setRackRoomsByWorkspace,
     setShowDeviceInRack,
+    setUserAuthTokens,
     setUsers,
     setWorkspaces,
     setValidations,

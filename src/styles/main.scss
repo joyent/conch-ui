@@ -1,7 +1,20 @@
-@import "d3.relationshipgraph.min.css";
-
+/* Third-party */
+// Rack Status Graph
+// TODO: Replace this with something maintained and testable
+@import "vendor/d3.relationshipgraph.min.css";
+// Bulmaswatch Theme
+// TODO: Import the theme files and remove the package
+// TODO: Make theme configurable
 @import "bulmaswatch/superhero/bulmaswatch.scss";
+
+// Bulma Extension
 @import "bulma-tooltip/dist/css/bulma-tooltip.sass";
+
+/* Partials */
+@import "partials/spinner";
+@import "partials/table";
+@import "partials/toggle-switch";
+@import "partials/transitions";
 
 // Extend Bulma's panel-tabs class to wrap items
 .panel-tabs {
@@ -13,35 +26,6 @@ progress::-webkit-progress-value {
 	-moz-transition: width 1.5s ease;
 	-o-transition: width 1.5s ease;
 	transition: width 1s ease;
-}
-
-.spinner {
-	min-height: 60px;
-	text-align: center;
-}
-
-// A simple animated spinner for loading indicators. Change
-.spinner:before {
-	content: "";
-	box-sizing: border-box;
-	position: absolute;
-	//top: 50%;
-	//left: 50%;
-	width: 30px;
-	height: 30px;
-	margin-top: 15px;
-	margin-left: -15px;
-	border-radius: 50%;
-	border: 3px rgba(#07d, 0.25) solid;
-	border-top: 3px rgba(#07d, 1) solid;
-	border-left: 3px rgba(#07d, 0.8) dotted;
-	animation: spinner 1s linear infinite;
-}
-
-@keyframes spinner {
-	to {
-		transform: rotate(360deg);
-	}
 }
 
 // overrides for d3.relationshipgraph.min.css
@@ -89,6 +73,144 @@ progress::-webkit-progress-value {
 
 		i::before {
 			content: "\f058";
+		}
+	}
+}
+
+.delete-token {
+	&:hover {
+		color: $red;
+		cursor: pointer;
+	}
+}
+
+// Modals
+.modal-base {
+	.modal-content {
+		border-radius: 5px;
+		width: 460px;
+
+		.notification {
+			padding: 1.5rem 1.5rem 1.25rem;
+
+			.modal-icon {
+				margin-bottom: 25px;
+			}
+
+			.title {
+				margin-bottom: 20px;
+			}
+
+			.subtitle {
+				padding: 10px;
+				text-align: center;
+
+				.name {
+					color: $white;
+				}
+			}
+		}
+
+		footer {
+			.button {
+				padding: 25px;
+
+				i {
+					margin-left: 10px;
+				}
+			}
+		}
+	}
+}
+
+.tokens {
+	.header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 20px;
+
+		.subtitle {
+			margin-bottom: 0;
+		}
+
+		button {
+			border-radius: 4px;
+		}
+	}
+
+	.card-content {
+		padding: 0;
+
+		thead {
+			th {
+				background-color: $grey-darker;
+				border-width: 0 0 1px 0;
+
+				&:first-of-type {
+					border-top-left-radius: 5px;
+				}
+
+				&:last-of-type {
+					border-top-right-radius: 5px;
+				}
+			}
+		}
+
+		tfoot {
+			th {
+				background-color: $grey-darker;
+				border-top-width: 1px;
+
+				&:first-of-type {
+					border-bottom-left-radius: 5px;
+				}
+
+				&:last-of-type {
+					border-bottom-right-radius: 5px;
+				}
+			}
+		}
+
+		.token {
+			background-color: darken($grey-darker, 4%);
+			transition: background-color 0.3s ease-in-out;
+
+			&.create {
+				input {
+					background-color: $grey-dark;
+					color: $grey-lighter;
+
+					&::placeholder {
+						color: $grey-lighter;
+					}
+				}
+
+				td {
+					.button {
+						border-top-right-radius: 4px;
+						border-bottom-right-radius: 4px;
+					}
+				}
+			}
+
+			.has-success-background {
+				background-color: $green;
+				transition: background-color 0.3s ease-in-out;
+			}
+
+			td {
+				padding: 14px;
+				white-space: nowrap;
+
+				&:last-of-type {
+					text-align: right;
+				}
+
+				&:first-of-type {
+					width: 22px;
+				}
+			}
 		}
 	}
 }
@@ -167,10 +289,6 @@ progress::-webkit-progress-value {
 		}
 	}
 
-	p.subtitle {
-		margin-bottom: 0.75rem;
-	}
-
 	.modal-card-body {
 		padding: 0px;
 
@@ -191,60 +309,6 @@ progress::-webkit-progress-value {
 		background-color: $grey-darker;
 		border-color: $grey;
 		color: #bdcbdb;
-	}
-
-	.users-table {
-		.table-filter {
-			background-color: $grey-dark;
-			border-top-right-radius: 5px;
-			border-top-left-radius: 5px;
-			padding: 25px;
-
-			input.search {
-				background-color: $grey-darker;
-				border-color: $grey;
-				color: #bdcbdb;
-
-				&::placeholder {
-					color: #bdcbdb;
-				}
-			}
-		}
-
-		table {
-			border-bottom-left-radius: 5px;
-			border-bottom-right-radius: 5px;
-
-			td,
-			tfoot th,
-			thead th {
-				padding-bottom: 15px;
-				padding-top: 15px;
-				vertical-align: middle;
-			}
-
-			thead {
-				th {
-					border-width: 1px 0;
-					color: #bdcbdb;
-				}
-			}
-
-			tfoot {
-				th {
-					border-width: 1px 0 0;
-					color: #bdcbdb;
-				}
-			}
-
-			&.is-hoverable {
-				tr {
-					&:hover {
-						background-color: lighten($grey-darker, 4%);
-					}
-				}
-			}
-		}
 	}
 
 	.card-header-title {
@@ -294,97 +358,157 @@ progress::-webkit-progress-value {
 		}
 	}
 
-	button.button,
-	input,
-	select {
-		&:not(&.delete) {
-			border-radius: 4px;
-		}
-	}
-
 	.modal-content {
 		border-radius: 5px;
 	}
-}
 
-/* Transitions */
-.fade-enter-active, .fade-leave-active {
-	transition: opacity .3s;
-}
+	.dropdown {
+		.dropdown-content {
+			background-color: lighten($grey-dark, 8%);
+			border-radius: 5px;
+		}
 
-.fade-enter, .fade-leave-to, .fade-in-slow-enter, .fade-in-slow-leave-to {
-	opacity: 0;
-}
+		.dropdown-item {
+			padding: 6px 16px;
 
-.fade-in-slow-enter-active {
-	transition: opacity .6s;
-}
+			&:hover {
+				color: $white;
+			}
+		}
 
-/* Toggle Switch */
-.switch {
-	position: relative;
-	display: inline-block;
-	width: 60px;
-	height: 28px;
-}
-
-.switch input {
-	opacity: 0;
-	width: 0;
-	height: 0;
-}
-
-.slider {
-	position: absolute;
-	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: #ccc;
-	-webkit-transition: .3s;
-	transition: .3s;
-}
-
-.slider:before {
-	position: absolute;
-	content: "";
-	height: 22px;
-	width: 22px;
-	left: 4px;
-	bottom: 3px;
-	background-color: white;
-	-webkit-transition: .3s;
-	transition: .3s;
-}
-
-input:checked + .slider {
-	background-color: #2196F3;
-
-	&.is-success {
-		background-color: $green;
+		hr.dropdown-divider {
+			background-color: $grey-light;
+		}
 	}
 }
 
-input:focus + .slider {
-	box-shadow: 0 0 1px #2196F3;
+a.button {
+	border-radius: 4px;
 
-	&.is-success {
-		box-shadow: 0 0 1px $green;
+	&.confirm.is-fullwidth {
+		border-radius: inherit;
 	}
 }
 
-input:checked + .slider:before {
-	-webkit-transform: translateX(30px);
-	-ms-transform: translateX(30px);
-	transform: translateX(30px);
+button.button {
+	&:not(.delete) {
+		border-radius: 4px;
+	}
 }
 
-/* Rounded sliders */
-.slider.round {
-	border-radius: 34px;
+input.input.search,
+.select select {
+	border-radius: 4px;
 }
 
-.slider.round:before {
-	border-radius: 50%;
+.authentication-tokens {
+	section.content {
+		margin-top: 0.75rem;
+	}
+
+	li:not(:last-of-type) {
+		margin-bottom: 5px;
+	}
+
+	select {
+		background-color: $grey-darker;
+		border-color: $grey;
+		color: #bdcbdb;
+	}
+
+	.auth-users-table {
+		th {
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+
+		td {
+			padding: 20px;
+
+			&:last-of-type {
+				text-align: right;
+			}
+
+			button {
+				&:first-of-type {
+					margin-right: 5px;
+				}
+			}
+		}
+
+		tr {
+			&.is-selected {
+				background-color: lighten($grey-darker, 2%);
+				border: 1px solid #209cee;
+				border-width: 0 0 0 1px;
+			}
+		}
+	}
+
+	.toggle-switches {
+		display: flex;
+		justify-content: space-around;
+	}
+
+	.selected-user {
+		&.box {
+			border-color: #209cee;
+			border-radius: 4px;
+			border-width: 0 4px 0 4px;
+			border-style: solid;
+		}
+
+		.tags {
+			margin-bottom: 0;
+			margin-right: 10px;
+
+			.tag {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	.no-results {
+		text-align: center;
+
+		p.title {
+			margin-top: 40px;
+		}
+
+		img {
+			margin-top: 20px;
+		}
+	}
+
+	.user-search {
+		input {
+			background-color: $grey-darker;
+			border-color: $grey;
+			color: #bdcbdb;
+
+			&::placeholder {
+				color: #bdcbdb;
+			}
+		}
+	}
+
+	.user-authentication-tokens {
+		.username {
+			flex-grow: 1;
+			margin-bottom: 0;
+		}
+	}
+
+	.user-search-row {
+		cursor: pointer;
+
+		td {
+			border: none;
+			padding: 15px 10px;
+		}
+
+		&:hover {
+			background-color: $grey-darker;
+		}
+	}
 }

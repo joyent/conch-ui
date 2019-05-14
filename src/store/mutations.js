@@ -18,6 +18,10 @@ export const clearShowDeviceInRack = (state) => {
     state.showDeviceInRack = false;
 };
 
+export const clearUserAuthTokens = (state) => {
+    state.userAuthTokens = [];
+};
+
 export const setActiveDevice = (state, activeDevice) => {
     state.activeDevice = activeDevice;
 };
@@ -40,6 +44,10 @@ export const setActiveRoomName = (state, activeRoomName) => {
 
 export const setAllRooms = (state, allRooms) => {
     state.allRooms = allRooms;
+};
+
+export const setAuthTokens = (state, authTokens) => {
+    state.authTokens = authTokens;
 };
 
 export const setCurrentUser = (state, currentUser) => {
@@ -82,6 +90,10 @@ export const setShowDeviceInRack = (state, showDeviceInRack) => {
     state.showDeviceInRack = showDeviceInRack;
 };
 
+export const setUserAuthTokens = (state, userAuthTokens) => {
+    state.userAuthTokens = userAuthTokens;
+};
+
 export const setUsers = (state, users) => {
     state.users = users;
 };
@@ -100,12 +112,14 @@ export default {
     clearForcePasswordChange,
     clearRackLayout,
     clearShowDeviceInRack,
+    clearUserAuthTokens,
     setActiveDevice,
     setActiveDeviceDetails,
     setActiveDeviceSettings,
     setActiveDeviceValidations,
     setActiveRoomName,
     setAllRooms,
+    setAuthTokens,
     setCurrentUser,
     setCurrentWorkspace,
     setDevicesByWorkspace,
@@ -116,6 +130,7 @@ export default {
     setRackRooms,
     setRackRoomsByWorkspace,
     setShowDeviceInRack,
+    setUserAuthTokens,
     setUsers,
     setWorkspaces,
     setValidations,

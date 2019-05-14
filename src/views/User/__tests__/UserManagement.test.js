@@ -12,15 +12,17 @@ jest.mock('@api/request.js');
 
 describe('UserManagement.vue', () => {
     let actions;
+    let mocks;
     let state;
     let store;
     let wrapper;
 
     beforeEach(() => {
         actions = { setUsers: jest.fn() };
+        mocks = { $router: [] };
         state = { users };
         store = new Vuex.Store({ actions, state });
-        wrapper = mount(UserManagement, { localVue, store });
+        wrapper = mount(UserManagement, { localVue, mocks, store });
     });
 
     // Helper function
@@ -31,7 +33,7 @@ describe('UserManagement.vue', () => {
     test('should display loading indicator when users are not available', () => {
         state.users = [];
         store = new Vuex.Store({ actions, state });
-        wrapper = mount(UserManagement, { localVue, store });
+        wrapper = mount(UserManagement, { localVue, mocks, store });
 
         expect(wrapper.find('.spinner').exists()).toBeTruthy();
     });
@@ -108,5 +110,14 @@ describe('UserManagement.vue', () => {
         clickDropdownTrigger();
 
         expect(wrapper.find('.dropdown-menu').exists()).toBeFalsy();
+    });
+
+    test('should call the viewTokens method when view tokens link on action dropdown menu is clicked', () => {
+        const spy = jest.spyOn(wrapper.vm, 'viewTokens');
+
+        wrapper.find('button.actions').trigger('click');
+        wrapper.find('a.tokens').trigger('click');
+
+        expect(spy).toHaveBeenCalled();
     });
 });

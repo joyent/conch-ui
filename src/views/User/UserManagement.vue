@@ -54,12 +54,15 @@
                     </div>
                 </div>
                 <transition name="fade-in-slow">
-                    <table class="table is-hoverable is-fullwidth" v-if="filteredUsers.length">
+                    <table
+                        class="table is-hoverable is-fullwidth"
+                        v-if="filteredUsers.length"
+                    >
                         <thead>
                             <th></th>
                             <th>Name</th>
                             <th>Role</th>
-                            <th>Issues</th>
+                            <th>Authentication Issues</th>
                             <th>Last Active</th>
                             <th>Actions</th>
                         </thead>
@@ -67,7 +70,7 @@
                             <th></th>
                             <th>Name</th>
                             <th>Role</th>
-                            <th>Issues</th>
+                            <th>Authentication Issues</th>
                             <th>Last Active</th>
                             <th>Actions</th>
                         </tfoot>
@@ -120,7 +123,7 @@
                                     >
                                         <div class="dropdown-trigger">
                                             <button
-                                                class="button is-primary"
+                                                class="button actions is-primary"
                                                 aria-haspopup="true"
                                                 :aria-controls="`dropdown-menu-${i}`"
                                             >
@@ -157,14 +160,33 @@
                                                         v-if="user.is_admin"
                                                         @click="openModal('demote', user)"
                                                     >
-                                                        Demote User
+                                                        Demote to Regular User
                                                     </span>
                                                     <span
                                                         v-else
                                                         @click="openModal('promote', user)"
                                                     >
-                                                        Promote User
+                                                        Promote to Admin
                                                     </span>
+                                                </a>
+                                                <hr class="dropdown-divider">
+                                                <a
+                                                    class="dropdown-item tokens"
+                                                    @click="viewTokens(user)"
+                                                >
+                                                    View Tokens
+                                                </a>
+                                                <a
+                                                    class="dropdown-item delete-login-tokens"
+                                                    @click="openModal('delete-login-tokens', user)"
+                                                >
+                                                    Delete Login Tokens
+                                                </a>
+                                                <a
+                                                    class="dropdown-item delete-auth-tokens"
+                                                    @click="openModal('delete-auth-tokens', user)"
+                                                >
+                                                    Delete Auth Tokens
                                                 </a>
                                                 <hr class="dropdown-divider">
                                                 <a
@@ -182,7 +204,10 @@
                     </table>
                     <div class="no-results" v-if="!filteredUsers.length">
                         <p class="title">No Search Results Found.</p>
-                        <img src="../../assets/no-search-results.svg" width="30%">
+                        <img
+                            src="../../assets/no-search-results.svg"
+                            width="30%"
+                        >
                     </div>
                 </transition>
             </div>
@@ -234,6 +259,11 @@ export default {
         ...mapActions([
             'setUsers',
         ]),
+        getIndex(users, userId) {
+            return users.map(user => {
+                return user.id;
+            }).indexOf(userId);
+        },
         lastActive(date) {
             return moment(date).fromNow();
         },
@@ -252,6 +282,9 @@ export default {
             } else {
                 this.activeDropdown = row;
             }
+        },
+        viewTokens(user) {
+            this.$router.push({ name: 'userTokens', params: { userId: user.id }});
         },
     },
     computed: {
@@ -305,25 +338,27 @@ export default {
 
         EventBus.$on('action-success', (actionData) => {
             const userId = actionData.userId;
+            const users = this.users;
 
-            getUser(userId)
-                .then(response => {
-                    const users = this.users;
+            if (actionData.action !== 'deactivate') {
+                getUser(userId)
+                    .then(response => {
+                        const newUser = response.data;
 
-                    if (actionData.action && actionData.action === 'create') {
-                        users.push(response.data);
-
-                        this.setUsers(users);
-                    } else {
-                        const index = users.map(user => {
-                            return user.id;
-                        }).indexOf(userId);
-
-                        users.splice(index, 1, response.data);
-
-                        this.setUsers(users);
-                    }
-                });
+                        if (actionData.action && actionData.action === 'create') {
+                            users.push(newUser);
+                            this.setUsers(users);
+                        } else {
+                            const index = this.getIndex(users, userId);
+                            users.splice(index, 1, newUser);
+                            this.setUsers(users);
+                        }
+                    });
+            } else if (actionData && actionData.action === 'deactivate') {
+                const index = this.getIndex(users, userId);
+                users.splice(index, 1);
+                this.setUsers(users);
+            }
         });
     },
 };

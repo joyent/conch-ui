@@ -38,6 +38,13 @@ describe('actions', () => {
         });
     });
 
+    describe('clearUserAuthTokens', () => {
+        test('it clears the auth tokens stored for the current user', () => {
+            actions.clearUserAuthTokens({ commit }, {});
+            expect(commit).toHaveBeenCalledWith('clearUserAuthTokens');
+        });
+    });
+
     describe('setActiveDevice', () => {
         test('it sets the active device', () => {
             actions.setActiveDevice({ commit }, {});
@@ -84,6 +91,13 @@ describe('actions', () => {
         test('it sets the current user', () => {
             actions.setCurrentUser({ commit }, {});
             expect(commit).toHaveBeenCalledWith('setCurrentUser', {});
+        });
+    });
+
+    describe('setAuthTokens', () => {
+        test('it sets authentication tokens', () => {
+            actions.setAuthTokens({ commit }, []);
+            expect(commit).toHaveBeenCalledWith('setAuthTokens', []);
         });
     });
 
@@ -147,6 +161,13 @@ describe('actions', () => {
         test('it sets the boolean showDeviceInRack to true', () => {
             actions.setShowDeviceInRack({ commit }, {});
             expect(commit).toHaveBeenCalledWith('setShowDeviceInRack', {});
+        });
+    });
+
+    describe('setUserAuthTokens', () => {
+        test('it sets authentication tokens', () => {
+            actions.setUserAuthTokens({ commit }, []);
+            expect(commit).toHaveBeenCalledWith('setUserAuthTokens', []);
         });
     });
 
