@@ -1,5 +1,6 @@
 import DevicesPanel from '../DevicesPanel.vue';
 import Vuex from 'vuex';
+import VueRouter from 'vue-router';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 
 // Fixtures
@@ -8,11 +9,13 @@ import hardwareProductLookup from '@src/__fixtures__/hardwareProductLookup.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+localVue.use(VueRouter);
+
+const router = new VueRouter();
 
 describe('DevicesPanel.vue', () => {
     let actions;
     let getters;
-    let mocks;
     let propsData;
     let store;
     let wrapper;
@@ -20,10 +23,9 @@ describe('DevicesPanel.vue', () => {
     beforeEach(() => {
         actions = { setActiveDevice: jest.fn() };
         getters = { activeDeviceId: jest.fn() };
-        mocks = { $route: {}, $router: [] };
         propsData = { hardwareProductLookup, workspaceDevices: devices };
         store = new Vuex.Store({ actions, getters });
-        wrapper = shallowMount(DevicesPanel, { localVue, mocks, propsData, store });
+        wrapper = shallowMount(DevicesPanel, { localVue, router, propsData, store });
     });
 
     test('should call activateDevice method with device as parameter when device row is clicked', () => {

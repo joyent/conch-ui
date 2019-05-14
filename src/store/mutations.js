@@ -10,6 +10,10 @@ export const clearForcePasswordChange = (state) => {
     state.forcePasswordChange = false;
 };
 
+export const clearInvalidCredentials = (state) => {
+    state.invalidCredentials = false;
+};
+
 export const clearRackLayout = (state) => {
     state.rackLayout = {};
 };
@@ -74,6 +78,10 @@ export const setHighlightDeviceId = (state, highlightDeviceId) => {
     state.highlightDeviceId = highlightDeviceId;
 };
 
+export const setInvalidCredentials = (state) => {
+    state.invalidCredentials = true;
+};
+
 export const setRackLayout = (state, rackLayout) => {
     state.rackLayout = rackLayout;
 };
@@ -110,6 +118,7 @@ export default {
     clearActiveDevice,
     clearActiveRoomName,
     clearForcePasswordChange,
+    clearInvalidCredentials,
     clearRackLayout,
     clearShowDeviceInRack,
     clearUserAuthTokens,
@@ -126,6 +135,7 @@ export default {
     setForcePasswordChange,
     setHardwareProducts,
     setHighlightDeviceId,
+    setInvalidCredentials,
     setRackLayout,
     setRackRooms,
     setRackRoomsByWorkspace,

@@ -2,6 +2,24 @@
     <section class="hero is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
+                <div
+                    class="column is-6 is-offset-3 session-notification"
+                    v-if="invalidCredentials && showNotification"
+                >
+                    <article class="message is-danger">
+                        <div class="message-header">
+                            <p>Session Invalidated</p>
+                            <button
+                                class="delete"
+                                aria-label="delete"
+                                @click="showNotification = false"
+                            ></button>
+                        </div>
+                        <div class="message-body">
+                            Your session has been invalidated. Please sign in again.
+                        </div>
+                    </article>
+                </div>
                 <div class="column is-4 is-offset-4">
                     <div class="box">
                         <div class="h3 title">Login to Conch</div>
@@ -65,6 +83,7 @@ export default {
             emailAddress: '',
             isLoading: false,
             password: '',
+            showNotification: true,
         };
     },
     methods: {
@@ -145,6 +164,7 @@ export default {
             'loadCurrentWorkspace'
         ]),
         ...mapState([
+            'invalidCredentials',
             'workspaces',
         ]),
     },

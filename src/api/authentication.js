@@ -5,6 +5,7 @@ import {
     request,
     requestWithToken
 } from './request.js';
+import store from '@src/store/store.js';
 
 export const isLoggedIn = () => !!getToken();
 
@@ -20,6 +21,8 @@ export const login = (data) => {
         if (data && data.jwt_token) {
             setToken(data.jwt_token);
         }
+
+        store.dispatch('clearInvalidCredentials');
 
         return data;
     });
