@@ -95,6 +95,43 @@
                                     </span>
                                 </div>
                             </div>
+                            <div class="field">
+                                <label class="label">Clear tokens?</label>
+                                <label class="switch">
+                                    <input
+                                        type="checkbox"
+                                        :checked="clearTokens"
+                                        v-model="clearTokens"
+                                        :true-value="true"
+                                        :false-value="false"
+                                    >
+                                    <span class="slider round is-success"></span>
+                                </label>
+                                <span style="margin-left: 8px;">
+                                    <strong v-if="clearTokens">Yes</strong>
+                                    <strong v-else>No</strong>
+                                </span>
+                            </div>
+                            <transition name="fade">
+                                <div class="field" v-if="clearTokens">
+                                    <label class="label">Which tokens?</label>
+                                    <label class="switch">
+                                        <input
+                                            class="two-tone"
+                                            type="checkbox"
+                                            :checked="clearAllTokens"
+                                            v-model="clearAllTokens"
+                                            :true-value="true"
+                                            :false-value="false"
+                                        >
+                                        <span class="slider round is-success"></span>
+                                    </label>
+                                    <span style="margin-left: 8px;">
+                                        <strong v-if="clearAllTokens">Clear All Tokens</strong>
+                                        <strong v-else>Clear Login Tokens Only</strong>
+                                    </span>
+                                </div>
+                            </transition>
                             <button
                                 class="button save is-primary"
                                 :class="{ 'is-loading': isLoading }"
@@ -157,6 +194,8 @@ export default {
     },
     data() {
         return {
+            clearAllTokens: false,
+            clearTokens: true,
             confirmPassword: '',
             errors: {},
             isLoading: false,
@@ -170,6 +209,7 @@ export default {
     methods: {
         ...mapActions([
             'clearForcePasswordChange',
+            'setUserAuthTokens',
         ]),
         validateConfirmPassword() {
             this.validConfirmPassword = false;
@@ -225,7 +265,20 @@ export default {
                 this.showError = true;
                 return;
             } else {
-                updatePassword(password)
+                const params = {};
+
+                if (this.clearTokens) {
+                    if (this.clearAllTokens) {
+                        params.clear_tokens = 'all';
+                        this.setUserAuthTokens([]);
+                    } else {
+                        params.clear_tokens = 'login_only';
+                    }
+                } else {
+                    params.clear_tokens = 0;
+                }
+
+                updatePassword(password, params)
                     .then(() => {
                         this.$router.push({ name: 'signIn' });
                         this.isLoading = false;
