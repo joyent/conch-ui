@@ -4,16 +4,18 @@
             <Spinner v-if="!workspaces.length" />
             <table
                 class="table workspaces-table is-hoverable is-fullwidth"
-                v-else
+                v-else-if="!isEmpty(workspaceUsers)"
             >
                 <thead>
+                    <th></th>
                     <th>Workspace Name</th>
                     <th>Admin Users</th>
                     <th>Regular Users</th>
                     <th>Total Users</th>
                     <th></th>
                 </thead>
-                <tfoot>
+                <tfoot v-if="workspaceUsers.length > 10">
+                    <th></th>
                     <th>Workspace Name</th>
                     <th>Admin Users</th>
                     <th>Regular Users</th>
@@ -30,6 +32,7 @@
                             @click="selectWorkspace(index)"
                             :key="workspaceName"
                         >
+                            <td class="has-text-centered">{{ index + 1 }}</td>
                             <td>{{ workspaceName }}</td>
                             <td>{{ adminUsers(users) }}</td>
                             <td>{{ regularUsers(users) }}</td>
@@ -43,7 +46,7 @@
                             v-if="isRowSelected(index)"
                             :key="`${workspaceName}-users`"
                         >
-                            <td colspan="5">
+                            <td colspan="6">
                                 <UsersTable :users="users" />
                             </td>
                         </tr>
@@ -57,6 +60,7 @@
 <script>
 import Spinner from '@src/views/components/Spinner.vue';
 import UsersTable from './UsersTable.vue';
+import isEmpty from 'lodash/isEmpty';
 import sortBy from 'lodash/sortBy';
 import { mapState } from 'vuex';
 
@@ -87,6 +91,7 @@ export default {
 
             return 0;
         },
+        isEmpty,
         isRowSelected(index) {
             return this.selectedRows.indexOf(index) >= 0;
         },

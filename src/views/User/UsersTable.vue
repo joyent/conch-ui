@@ -8,7 +8,7 @@
             <th>Last Active</th>
             <th>Actions</th>
         </thead>
-        <tfoot>
+        <tfoot v-if="users.length > 10">
             <th></th>
             <th>User Name</th>
             <th>Role</th>

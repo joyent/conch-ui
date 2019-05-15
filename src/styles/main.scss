@@ -422,16 +422,19 @@ progress::-webkit-progress-value {
 				table {
 					border-top-left-radius: 5px;
 					border-top-right-radius: 5px;
-				}
 
-				th {
-					border-top-width: 0;
-				}
+					td {
+						border-width: 0 0 1px;
 
-				td {
-					&:hover {
-						cursor: default;
+						&:hover {
+							cursor: default;
+						}
 					}
+				}
+
+				thead th {
+					border-top-width: 0;
+					border-bottom-width: 1px;
 				}
 			}
 		}

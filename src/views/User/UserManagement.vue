@@ -72,21 +72,23 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="currentTab === 'list'">
-                    <transition name="fade-in-slow">
-                        <UsersTable v-if="filteredUsers.length" :users="filteredUsers" />
-                        <div class="no-results" v-else>
-                            <p class="title">No Search Results Found.</p>
-                            <img
-                                src="../../assets/no-search-results.svg"
-                                width="30%"
-                            >
+                <transition name="fade-in-slow">
+                    <div v-if="filteredUsers.length">
+                        <div v-if="currentTab === 'list'">
+                            <UsersTable :users="filteredUsers" />
                         </div>
-                    </transition>
-                </div>
-                <div v-else>
-                    <WorkspaceView :users="filteredUsers" />
-                </div>
+                        <div v-else>
+                            <WorkspaceView :users="filteredUsers" />
+                        </div>
+                    </div>
+                    <div class="no-results" v-else>
+                        <p class="title">No Search Results Found.</p>
+                        <img
+                            src="../../assets/no-search-results.svg"
+                            width="30%"
+                        >
+                    </div>
+                </transition>
             </div>
             <transition name="fade">
                 <UserModal
