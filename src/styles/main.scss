@@ -409,6 +409,62 @@ progress::-webkit-progress-value {
 			background-color: $grey-light;
 		}
 	}
+
+	.workspace-view {
+		.workspaces-table {
+			th {
+				padding: 15px 20px;
+			}
+
+			.row.users-subtable {
+				background-color: lighten($grey-darker, 3%);
+
+				table {
+					border-top-left-radius: 5px;
+					border-top-right-radius: 5px;
+				}
+
+				th {
+					border-top-width: 0;
+				}
+
+				td {
+					&:hover {
+						cursor: default;
+					}
+				}
+			}
+		}
+
+		.workspace-row {
+			&:hover {
+				cursor: pointer;
+			}
+		}
+
+		.row {
+			td {
+				padding: 20px;
+			}
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			i.fa-chevron-right {
+				transition: transform 0.2s ease-in-out;
+			}
+
+			&.is-selected {
+				transition: background-color 0.2s ease-in-out;
+
+				i.fa-chevron-right {
+					transform: rotate(90deg);
+					transition: transform 0.2s ease-in-out;
+				}
+			}
+		}
+	}
 }
 
 a.button {
