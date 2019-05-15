@@ -85,7 +85,7 @@
                     </transition>
                 </div>
                 <div v-else>
-                    <WorkspaceView />
+                    <WorkspaceView :users="filteredUsers" />
                 </div>
             </div>
             <transition name="fade">

@@ -65,10 +65,16 @@ export default {
         Spinner,
         UsersTable,
     },
+    props: {
+        users: {
+            type: Array,
+            required: true,
+        },
+    },
     data() {
         return {
             selectedRows: [],
-            workspaceUsers: {},
+            sortedWorkspaces: [],
         };
     },
     methods: {
@@ -105,30 +111,33 @@ export default {
     },
     computed: {
         ...mapState([
-            'users',
             'workspaces',
         ]),
+        workspaceUsers() {
+            return this.sortedWorkspaces.reduce((acc, workspace) => {
+                const users = [];
+
+                for (let i = 0; i < this.users.length; i++) {
+                    const user = this.users[i];
+                    const match = user.workspaces.find(userWorkspace => {
+                        return userWorkspace.id === workspace.id;
+                    });
+
+                    if (match) {
+                        users.push(user);
+                    }
+                }
+
+                if (users.length) {
+                    acc[workspace.name] = users;
+                }
+
+                return acc;
+            }, {});
+        }
     },
     mounted() {
-        const workspaces = sortBy(this.workspaces, ['name']);
-
-        this.workspaceUsers = workspaces.reduce((acc, workspace) => {
-            const users = [];
-            for (let i = 0; i < this.users.length; i++) {
-                const user = this.users[i];
-                const match = user.workspaces.find(userWorkspace => {
-                    return userWorkspace.id === workspace.id;
-                });
-
-                if (match) {
-                    users.push(user);
-                }
-            }
-
-            acc[workspace.name] = users;
-
-            return acc;
-        }, {});
+        this.sortedWorkspaces = sortBy(this.workspaces, ['name']);
     },
 };
 </script>
