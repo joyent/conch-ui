@@ -1,65 +1,64 @@
 <template>
     <div class="workspace-view">
-        <transition name="fade-in-slow">
-            <Spinner v-if="!workspaces.length" />
-            <table
-                class="table workspaces-table is-hoverable is-fullwidth"
-                v-else-if="!isEmpty(workspaceUsers)"
-            >
-                <thead>
-                    <th></th>
-                    <th>Workspace Name</th>
-                    <th>Admin Users</th>
-                    <th>Regular Users</th>
-                    <th>Total Users</th>
-                    <th></th>
-                </thead>
-                <tfoot v-if="workspaceUsers.length > 10">
-                    <th></th>
-                    <th>Workspace Name</th>
-                    <th>Admin Users</th>
-                    <th>Regular Users</th>
-                    <th>Total Users</th>
-                    <th></th>
-                </tfoot>
-                <tbody>
-                    <template
-                        v-for="(users, workspaceName, index) in workspaceUsers"
+        <Spinner v-if="!workspaces.length" />
+        <table
+            class="table workspaces-table is-hoverable is-fullwidth"
+            v-else-if="!isEmpty(workspaceUsers)"
+        >
+            <thead>
+                <th></th>
+                <th>Workspace Name</th>
+                <th>Admin Users</th>
+                <th>Regular Users</th>
+                <th>Total Users</th>
+                <th></th>
+            </thead>
+            <tfoot v-if="workspaceUsers.length > 10">
+                <th></th>
+                <th>Workspace Name</th>
+                <th>Admin Users</th>
+                <th>Regular Users</th>
+                <th>Total Users</th>
+                <th></th>
+            </tfoot>
+            <tbody>
+                <template
+                    v-for="(users, workspaceName, index) in workspaceUsers"
+                >
+                    <tr
+                        :class="{ 'is-selected': isRowSelected(index) }"
+                        class="row workspace-row"
+                        @click="selectWorkspace(index)"
+                        :key="workspaceName"
                     >
-                        <tr
-                            :class="{ 'is-selected': isRowSelected(index) }"
-                            class="row workspace-row"
-                            @click="selectWorkspace(index)"
-                            :key="workspaceName"
-                        >
-                            <td class="has-text-centered">{{ index + 1 }}</td>
-                            <td>{{ workspaceName }}</td>
-                            <td>{{ adminUsers(users) }}</td>
-                            <td>{{ regularUsers(users) }}</td>
-                            <td>{{ users.length }}</td>
-                            <td class="has-text-right">
-                                <i class="fas fa-chevron-right"></i>
-                            </td>
-                        </tr>
-                        <tr
-                            class="row users-subtable"
-                            v-if="isRowSelected(index)"
-                            :key="`${workspaceName}-users`"
-                        >
-                            <td colspan="6">
-                                <UsersTable :users="users" />
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
-        </transition>
+                        <td class="has-text-centered">{{ index + 1 }}</td>
+                        <td>{{ workspaceName }}</td>
+                        <td>{{ adminUsers(users) }}</td>
+                        <td>{{ regularUsers(users) }}</td>
+                        <td>{{ users.length }}</td>
+                        <td class="has-text-right">
+                            <i class="fas fa-chevron-right"></i>
+                        </td>
+                    </tr>
+                    <tr
+                        class="row users-subtable"
+                        v-if="isRowSelected(index)"
+                        :key="`${workspaceName}-users`"
+                    >
+                        <td colspan="6">
+                            <UsersTable :users="users" />
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
     </div>
 </template>
 
 <script>
 import Spinner from '@src/views/components/Spinner.vue';
 import UsersTable from './UsersTable.vue';
+import search from "fuzzysearch";
 import isEmpty from 'lodash/isEmpty';
 import sortBy from 'lodash/sortBy';
 import { mapState } from 'vuex';
@@ -70,6 +69,10 @@ export default {
         UsersTable,
     },
     props: {
+        searchText: {
+            type: String,
+            required: false,
+        },
         users: {
             type: Array,
             required: true,
@@ -118,8 +121,28 @@ export default {
         ...mapState([
             'workspaces',
         ]),
+        filteredWorkspaces() {
+            const searchText = this.searchText.toLowerCase();
+            let workspaces = this.sortedWorkspaces;
+
+            if (searchText) {
+                return workspaces.reduce((acc, workspace) => {
+                    const name = workspace.name.toLowerCase();
+
+                    if (
+                        search(searchText, name)
+                    ) {
+                        acc.push(workspace);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            return workspaces;
+        },
         workspaceUsers() {
-            return this.sortedWorkspaces.reduce((acc, workspace) => {
+            return this.filteredWorkspaces.reduce((acc, workspace) => {
                 const users = [];
 
                 for (let i = 0; i < this.users.length; i++) {

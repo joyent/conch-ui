@@ -4,7 +4,7 @@
         <div class="users" v-else>
             <UsersStatistics :users="users" />
             <div class="users-table">
-                <div class="table-filter">
+                <div class="table-header">
                     <div class="columns is-vcentered">
                         <div class="column">
                             <h1 class="title is-4">User Management</h1>
@@ -20,13 +20,28 @@
                                 ></i>
                             </a>
                             <a
-                                @click="setCurrentTab('workspace')"
+                                @click="setCurrentTab('workspaces')"
                             >
                                 <i
                                     class="fas fa-lg fa-sitemap"
-                                    :class="{ 'has-text-white': currentTab === 'workspace' }"
+                                    :class="{ 'has-text-white': currentTab === 'workspaces' }"
                                 ></i>
                             </a>
+                        </div>
+                        <div style="width: 135px; padding: 12px;">
+                            <button
+                                class="button create is-primary is-pulled-right"
+                                @click="action = 'create'"
+                            >
+                                Create User
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-filter">
+                    <div class="columns is-vcentered">
+                        <div class="column is-1">
+                            <h1 class="title is-5">Filters</h1>
                         </div>
                         <div class="column is-2">
                             <div class="field">
@@ -62,13 +77,20 @@
                                 </p>
                             </div>
                         </div>
-                        <div style="width: 135px; padding: 12px;">
-                            <button
-                                class="button create is-primary is-pulled-right"
-                                @click="action = 'create'"
-                            >
-                                Create User
-                            </button>
+                        <div class="column is-3" v-if="currentTab === 'workspaces'">
+                            <div class="field">
+                                <p class="control has-icons-left has-icons-right">
+                                    <input
+                                        class="input search workspaces"
+                                        type="text"
+                                        placeholder="Search Workspaces"
+                                        v-model="searchTextWorkspaces"
+                                    >
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -78,7 +100,10 @@
                             <UsersTable :users="filteredUsers" />
                         </div>
                         <div v-else>
-                            <WorkspaceView :users="filteredUsers" />
+                            <WorkspaceView
+                                :users="filteredUsers"
+                                :search-text="searchTextWorkspaces"
+                            />
                         </div>
                     </div>
                     <div class="no-results" v-else>
@@ -134,6 +159,7 @@ export default {
             collapsed: true,
             currentTab: 'list',
             searchText: '',
+            searchTextWorkspaces: '',
             user: {},
             userFilter: 'all',
         };
