@@ -1,7 +1,12 @@
-.table-filter {
+.table-header {
     background-color: $grey-dark;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
+    padding: 20px;
+}
+
+.table-filter {
+    background-color: $grey-dark;
     padding: 20px;
 
     input.search {
