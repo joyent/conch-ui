@@ -195,10 +195,10 @@ export default {
                 this.activeDropdown = row;
             }
         },
-        sortBy(field) {
-            let users = this.sortedUsers;
+        sortBy(field, updatedUsers = null, sortUsers = false) {
+            let users = updatedUsers || this.sortedUsers;
 
-            if (this.sortFilter !== field) {
+            if (this.sortFilter !== field || sortUsers) {
                 if (field === 'name') {
                     this.sortedUsers = orderBy(users, [user => user.name.toLowerCase()], ['asc']);
                 } else if (field === 'is_admin') {
@@ -228,6 +228,15 @@ export default {
                     userId: user.id
                 },
             });
+        },
+    },
+    watch: {
+        users: function(newVal, oldVal) {
+            if (this.sortFilter) {
+                this.sortBy(this.sortFilter, newVal, true);
+            } else {
+                this.sortedUsers = newVal;
+            }
         },
     },
     created() {
