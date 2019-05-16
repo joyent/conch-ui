@@ -24,7 +24,7 @@ describe('UserAuthTokens.vue', () => {
         store = new Vuex.Store({ actions, state });
         mocks = { $nextTick: jest.fn() };
         wrapper = mount(UserAuthTokens, { localVue, mocks, store });
-        wrapper.setData({ tokens: userAuthTokens });
+        wrapper.setData({ sortedTokens: userAuthTokens });
     });
 
     // Helper functions
@@ -46,7 +46,7 @@ describe('UserAuthTokens.vue', () => {
     });
 
     test('should display spinner if tokens are still being retrieved from the API', () => {
-        wrapper.setData({ tokens: [], noTokens: false });
+        wrapper.setData({ sortedTokens: [], noTokens: false });
 
         expect(wrapper.find('.spinner').exists()).toBeTruthy();
     });
@@ -97,7 +97,7 @@ describe('UserAuthTokens.vue', () => {
     });
 
     test('should not display any token details on initial render', () => {
-        wrapper.setData({ tokens: [] });
+        wrapper.setData({ sortedTokens: [] });
         expect(wrapper.html()).toContain('You do not have any tokens.');
     });
 

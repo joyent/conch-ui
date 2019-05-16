@@ -149,7 +149,7 @@ describe('AuthenticationTokens.vue', () => {
         });
 
         test('should display a table row for each token returned by the API', () => {
-            wrapper.setData({ tokens: userAuthTokens });
+            wrapper.setData({ sortedTokens: userAuthTokens });
 
             const authTokenCount = userAuthTokens.length;
             const rowCount = wrapper.findAll('tr').length;
@@ -158,14 +158,14 @@ describe('AuthenticationTokens.vue', () => {
         });
 
         test('should display a notification of "User does not have tokens" if the selected user has no tokens', () => {
-            wrapper.setData({ tokens: [] });
+            wrapper.setData({ sortedTokens: [] });
             const noTokensText = `${users[0].name} does not have any auth tokens.`;
 
             expect(wrapper.find('.no-tokens').text()).toEqual(noTokensText);
         });
 
         test('should not display a "Delete Auth Tokens" button if the selected user has no tokens', () => {
-            wrapper.setData({ tokens: [] });
+            wrapper.setData({ sortedTokens: [] });
 
             expect(wrapper.find('a.delete-auth-tokens').exists()).toBeFalsy();
         });
@@ -177,7 +177,7 @@ describe('AuthenticationTokens.vue', () => {
         });
 
         test('should filter displayed token results when search text is entered into search input field', () => {
-            wrapper.setData({ tokens: userAuthTokens });
+            wrapper.setData({ sortedTokens: userAuthTokens });
             wrapper.find('input.search').setValue('3');
             const rows = wrapper.findAll('tr');
 
@@ -188,7 +188,7 @@ describe('AuthenticationTokens.vue', () => {
         describe('view auth tokens modals', () => {
             beforeEach(() => {
                 wrapper.setData({
-                    tokens: userAuthTokens
+                    sortedTokens: userAuthTokens
                 });
             });
 

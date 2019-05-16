@@ -111,13 +111,4 @@ describe('UserManagement.vue', () => {
 
         expect(wrapper.find('.dropdown-menu').exists()).toBeFalsy();
     });
-
-    test('should call the viewTokens method when view tokens link on action dropdown menu is clicked', () => {
-        const spy = jest.spyOn(wrapper.vm, 'viewTokens');
-
-        wrapper.find('button.actions').trigger('click');
-        wrapper.find('a.tokens').trigger('click');
-
-        expect(spy).toHaveBeenCalled();
-    });
 });
