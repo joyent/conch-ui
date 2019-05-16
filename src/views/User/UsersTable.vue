@@ -2,13 +2,29 @@
     <table class="table is-hoverable is-fullwidth">
         <thead>
             <th></th>
-            <th>User Name</th>
-            <th>Role</th>
-            <th>Authentication Issues</th>
-            <th>Last Active</th>
+            <th>
+                <a class="table-header-filter" @click="sortBy('name')">
+                    User Name
+                </a>
+            </th>
+            <th>
+                <a class="table-header-filter" @click="sortBy('is_admin')">
+                    Role
+                </a>
+            </th>
+            <th>
+                <a class="table-header-filter" @click="sortBy('issues')">
+                    Authentication Issues
+                </a>
+            </th>
+            <th>
+                <a class="table-header-filter" @click="sortBy('last_active')">
+                    Last Active
+                </a>
+            </th>
             <th>Actions</th>
         </thead>
-        <tfoot v-if="users.length > 10">
+        <tfoot v-if="sortedUsers.length > 10">
             <th></th>
             <th>User Name</th>
             <th>Role</th>
@@ -17,7 +33,7 @@
             <th>Actions</th>
         </tfoot>
         <tbody>
-            <tr v-for="(user, index) in users" :key="user.id">
+            <tr v-for="(user, index) in sortedUsers" :key="user.id">
                 <td class="has-text-centered">
                     <span>{{ index + 1 }}</span>
                 </td>
@@ -148,6 +164,7 @@
 
 <script>
 import moment from 'moment';
+import orderBy from 'lodash/orderBy';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
@@ -160,6 +177,8 @@ export default {
     data() {
         return {
             activeDropdown: null,
+            sortFilter: '',
+            sortedUsers: [],
         };
     },
     methods: {
@@ -176,9 +195,43 @@ export default {
                 this.activeDropdown = row;
             }
         },
-        viewTokens(user) {
-            this.$router.push({ name: 'userTokens', params: { userId: user.id }});
+        sortBy(field) {
+            let users = this.sortedUsers;
+
+            if (this.sortFilter !== field) {
+                if (field === 'name') {
+                    this.sortedUsers = orderBy(users, [user => user.name.toLowerCase()], ['asc']);
+                } else if (field === 'is_admin') {
+                    this.sortedUsers = orderBy(users, [user => user.is_admin], ['desc']);
+                } else if (field === 'issues') {
+                    this.sortedUsers = orderBy(users, [user => user.force_password_change || user.refuse_session_auth], ['desc']);
+                } else if (field === 'last_active') {
+                    const inactiveUsers = users.filter(user => user.last_login == null);
+                    const activeUsers = users.filter(user => user.last_login != null);
+
+                    users = orderBy(activeUsers, [user => user.last_login], ['desc']);
+                    users = users.concat(inactiveUsers)
+
+                    this.sortedUsers = users;
+                }
+
+                this.sortFilter = field;
+            } else {
+                users.reverse();
+                this.sortedUsers = users;
+            }
         },
+        viewTokens(user) {
+            this.$router.push({
+                name: 'userTokens',
+                params: {
+                    userId: user.id
+                },
+            });
+        },
+    },
+    created() {
+        this.sortedUsers = this.users;
     },
 };
 </script>
