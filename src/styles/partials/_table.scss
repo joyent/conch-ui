@@ -36,6 +36,16 @@ table.table {
         th {
             border-width: 1px 0;
             color: #bdcbdb;
+
+            a {
+                &.table-header-filter {
+                    color: #bdcbdb;
+
+                    &:hover {
+                        color: $white;
+                    }
+                }
+            }
         }
     }
 
