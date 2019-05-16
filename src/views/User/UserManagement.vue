@@ -40,24 +40,24 @@
                 </div>
                 <div class="table-filter">
                     <div class="columns is-vcentered">
-                        <div class="column is-1">
-                            <h1 class="title is-5">Filters</h1>
-                        </div>
                         <div class="column is-2">
                             <div class="field">
-                                <div class="control">
-                                    <div class="select is-fullwidth">
-                                        <select v-model="userFilter">
-                                            <option value="all">
-                                                All Users
-                                            </option>
-                                            <option value="admins">
-                                                Admins
-                                            </option>
-                                            <option value="users">
-                                                Users
-                                            </option>
-                                        </select>
+                                <div class="select-with-label">
+                                    <div class="select-label">User Type</div>
+                                    <div class="control">
+                                        <div class="select">
+                                            <select v-model="userFilter">
+                                                <option value="all">
+                                                    All Users
+                                                </option>
+                                                <option value="admins">
+                                                    Admins
+                                                </option>
+                                                <option value="users">
+                                                    Users
+                                                </option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
