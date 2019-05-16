@@ -2,7 +2,49 @@
     <div class="user-management">
         <Spinner v-if="users.length < 1"/>
         <div class="users" v-else>
-            <UsersStatistics :users="users" />
+            <div class="box user-stats is-flex" style="margin-bottom: 20px;">
+                <span style="margin-right: 20px;">
+                    <h1 class="title is-4">Statistics:</h1>
+                </span>
+                <div class="tags has-addons">
+                    <a @click="statisticFilter = 'all_users'">
+                        <span class="tag is-info">Total Users</span>
+                    </a>
+                    <span class="tag is-dark">{{ users.length }}</span>
+                </div>
+                <div class="tags has-addons">
+                    <a @click="statisticFilter = 'admins'">
+                        <span class="tag is-info">Admins</span>
+                    </a>
+                    <span class="tag is-dark">{{ adminUsersCount }}</span>
+                </div>
+                <div class="tags has-addons">
+                    <a @click="statisticFilter = 'regular_users'">
+                        <span class="tag is-info">Regular Users</span>
+                    </a>
+                    <span class="tag is-dark">{{ regularUsersCount }}</span>
+                </div>
+                <div class="tags has-addons">
+                    <a @click="statisticFilter = 'inactive'">
+                        <span class="tag is-info">Inactive</span>
+                    </a>
+                    <span class="tag is-dark">{{ inactiveUsersCount }}</span>
+                </div>
+                <div class="tags has-addons">
+                    <a @click="statisticFilter = 'password-reset'">
+                        <span class="tag is-info">Password Resets</span>
+                    </a>
+                    <span class="tag is-dark">{{ passwordResetCount }}</span>
+                </div>
+                <div class="tags has-addons">
+                    <a @click="statisticFilter = 'refuse-session-auth'">
+                        <span class="tag is-info">Refuse Session Auth</span>
+                    </a>
+                    <span class="tag is-dark">
+                        {{ refusedSessionAuthCount }}
+                    </span>
+                </div>
+            </div>
             <div class="users-table">
                 <div class="table-header">
                     <div class="columns is-vcentered">
@@ -107,7 +149,7 @@
                         </div>
                     </div>
                     <div class="no-results" v-else>
-                        <p class="title">No Search Results Found.</p>
+                        <p class="title">No Results Found.</p>
                         <img
                             src="../../assets/no-search-results.svg"
                             width="30%"
@@ -134,7 +176,6 @@
 <script>
 import search from "fuzzysearch";
 import UserActionModal from './UserActionModal.vue';
-import UsersStatistics from './UsersStatistics.vue';
 import UserModal from './UserModal.vue';
 import Spinner from '@src/views/components/Spinner.vue';
 import WorkspaceView from './WorkspaceView.vue';
@@ -148,7 +189,6 @@ export default {
         Spinner,
         UserActionModal,
         UserModal,
-        UsersStatistics,
         UsersTable,
         WorkspaceView,
     },
@@ -160,6 +200,7 @@ export default {
             currentTab: 'list',
             searchText: '',
             searchTextWorkspaces: '',
+            statisticFilter: '',
             user: {},
             userFilter: 'all',
         };
@@ -190,6 +231,9 @@ export default {
         ...mapState([
             'users',
         ]),
+        adminUsersCount() {
+            return this.users.filter(user => user.is_admin === true).length;
+        },
         filteredUsers() {
             const searchText = this.searchText.toLowerCase();
             let users = this.users;
@@ -216,8 +260,38 @@ export default {
                 }, []);
             }
 
+            if (this.statisticFilter) {
+                const statisticFilter = this.statisticFilter;
+
+                if (statisticFilter === 'all_users') {
+                    users = users;
+                } else if (statisticFilter === 'admins') {
+                    users = users.filter(user => user.is_admin === true);
+                } else if (statisticFilter === 'regular_users') {
+                    users = users.filter(user => user.is_admin === false);
+                } else if (statisticFilter === 'inactive') {
+                    users = users.filter(user => user.last_login == null);
+                } else if (statisticFilter === 'password-reset') {
+                    users = users.filter(user => user.force_password_change === true);
+                } else if (statisticFilter === 'refuse-session-auth') {
+                    users = users.filter(user => user.refuse_session_auth === true);
+                }
+            }
+
             return users;
         },
+        inactiveUsersCount() {
+            return this.users.filter(user => user.last_login == null).length;
+        },
+        passwordResetCount() {
+            return this.users.filter(user => user.force_password_change === true).length;
+        },
+        refusedSessionAuthCount() {
+            return this.users.filter(user => user.refuse_session_auth === true).length;
+        },
+        regularUsersCount() {
+            return this.users.filter(user => user.is_admin === false).length;
+        }
     },
     mounted() {
         if (!this.users.length) {
