@@ -65,17 +65,38 @@
         <div class="card" style="border-radius: 5px;">
             <div class="card-content">
                 <div class="content">
-                    <Spinner v-if="!tokens.length && !noTokens" />
+                    <Spinner v-if="!sortedTokens.length && !noTokens" />
                     <table
                         class="table is-fullwidth"
                         style="border-radius: 4px;"
-                        v-else-if="tokens.length || creatingToken"
+                        v-else-if="sortedTokens.length || creatingToken"
                     >
                         <thead>
                             <th></th>
-                            <th>Name</th>
-                            <th>Last Used</th>
-                            <th>Created</th>
+                            <th>
+                                <a
+                                    class="table-header-filter"
+                                    @click="sortBy('name')"
+                                >
+                                    Name
+                                </a>
+                            </th>
+                            <th>
+                                <a
+                                    class="table-header-filter"
+                                    @click="sortBy('last_used')"
+                                >
+                                    Last Used
+                                </a>
+                            </th>
+                            <th>
+                                <a
+                                    class="table-header-filter"
+                                    @click="sortBy('created')"
+                                >
+                                    Created
+                                </a>
+                            </th>
                             <th></th>
                         </thead>
                         <tfoot>
@@ -119,8 +140,8 @@
                             </tr>
                             <tr
                                 class="token"
-                                v-for="token in tokens"
-                                :key="token.id"
+                                v-for="token in sortedTokens"
+                                :key="token.name"
                             >
                                 <td>
                                     <i
@@ -206,6 +227,7 @@
 
 <script>
 import moment from 'moment';
+import orderBy from 'lodash/orderBy';
 import Spinner from '@src/views/components/Spinner.vue';
 import BaseModal from '@src/views/components/BaseModal.vue';
 import { EventBus } from '@src/eventBus.js';
@@ -226,7 +248,8 @@ export default {
             duplicateTokenNameError: false,
             isLoading: false,
             noTokens: false,
-            tokens: [],
+            sortFilter: '',
+            sortedTokens: [],
             tokenName: '',
         };
     },
@@ -275,10 +298,10 @@ export default {
                         this.createSuccess = true;
                         this.isLoading = false;
 
-                        if (this.tokens.length) {
-                            this.tokens.push(response.data);
+                        if (this.sortedTokens.length) {
+                            this.sortedTokens.unshift(response.data);
                         } else {
-                            this.tokens.unshift(response.data);
+                            this.sortedTokens.push(response.data);
                         }
 
                         setTimeout(() => {
@@ -313,12 +336,30 @@ export default {
                     const tokens = response.data;
 
                     if (tokens.length) {
-                        this.tokens = tokens;
+                        this.sortedTokens = tokens;
                         this.setUserAuthTokens(tokens);
                     } else {
                         this.noTokens = true;
                     }
                 });
+        },
+        sortBy(field) {
+            let tokens = this.sortedTokens;
+
+            if (this.sortFilter !== field) {
+                if (field === 'name') {
+                    this.sortedTokens = orderBy(tokens, [token => token.name], ['asc']);
+                } else if (field === 'last_used') {
+                    this.sortedTokens = orderBy(tokens, [token => token.last_used], ['desc']);
+                } else if (field === 'created') {
+                    this.sortedTokens = orderBy(tokens, [token => token.created], ['desc']);
+                }
+
+                this.sortFilter = field;
+            } else {
+                tokens.reverse();
+                this.sortedTokens = tokens;
+            }
         },
     },
     computed: {
@@ -327,11 +368,12 @@ export default {
         ]),
     },
     mounted() {
-        this.setTokens();
-
         EventBus.$on('closeModal:baseModal', () => {
             this.closeModal();
         });
+    },
+    created() {
+        this.setTokens();
     },
 };
 </script>
