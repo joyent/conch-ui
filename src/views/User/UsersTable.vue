@@ -3,23 +3,78 @@
         <thead>
             <th></th>
             <th>
-                <a class="table-header-filter" @click="sortBy('name')">
+                <a
+                    class="table-header-filter"
+                    :class="{ 'has-text-white': sortFilter === 'name' }"
+                    @click="sortBy('name')"
+                >
                     User Name
+                    <i
+                        class="fas fa-angle-down"
+                        v-if="sortFilter === 'name' && !reversedSort"
+                        style="margin-left: 10px;"
+                    ></i>
+                    <i
+                        class="fas fa-angle-up"
+                        v-else-if="sortFilter === 'name' && reversedSort"
+                        style="margin-left: 10px;"
+                    ></i>
                 </a>
             </th>
             <th>
-                <a class="table-header-filter" @click="sortBy('is_admin')">
+                <a
+                    class="table-header-filter"
+                    :class="{ 'has-text-white': sortFilter === 'is_admin' }"
+                    @click="sortBy('is_admin')"
+                >
                     Role
+                    <i
+                        class="fas fa-angle-down"
+                        v-if="sortFilter === 'is_admin' && !reversedSort"
+                        style="margin-left: 10px;"
+                    ></i>
+                    <i
+                        class="fas fa-angle-up"
+                        v-else-if="sortFilter === 'is_admin' && reversedSort"
+                        style="margin-left: 10px;"
+                    ></i>
                 </a>
             </th>
             <th>
-                <a class="table-header-filter" @click="sortBy('issues')">
+                <a
+                    class="table-header-filter"
+                    :class="{ 'has-text-white': sortFilter === 'issues' }"
+                    @click="sortBy('issues')"
+                >
                     Authentication Issues
+                    <i
+                        class="fas fa-angle-down"
+                        v-if="sortFilter === 'issues' && !reversedSort"
+                        style="margin-left: 10px;"
+                    ></i>
+                    <i
+                        class="fas fa-angle-up"
+                        v-else-if="sortFilter === 'issues' && reversedSort"
+                        style="margin-left: 10px;"
+                    ></i>
                 </a>
             </th>
             <th>
-                <a class="table-header-filter" @click="sortBy('last_active')">
+                <a
+                    class="table-header-filter"
+                    :class="{ 'has-text-white': sortFilter === 'last_active' }"
+                    @click="sortBy('last_active')">
                     Last Active
+                    <i
+                        class="fas fa-angle-down"
+                        v-if="sortFilter === 'last_active' && !reversedSort"
+                        style="margin-left: 10px;"
+                    ></i>
+                    <i
+                        class="fas fa-angle-up"
+                        v-else-if="sortFilter === 'last_active' && reversedSort"
+                        style="margin-left: 10px;"
+                    ></i>
                 </a>
             </th>
             <th>Actions</th>
@@ -177,6 +232,7 @@ export default {
     data() {
         return {
             activeDropdown: null,
+            reversedSort: false,
             sortFilter: '',
             sortedUsers: [],
         };
@@ -218,6 +274,7 @@ export default {
                 this.sortFilter = field;
             } else {
                 users.reverse();
+                this.reversedSort = !this.reversedSort;
                 this.sortedUsers = users;
             }
         },

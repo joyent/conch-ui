@@ -1,13 +1,31 @@
 <template>
     <div class="workspace-view">
-        <Spinner v-if="!workspaces.length" />
+        <Spinner v-if="!sortedWorkspaces.length" />
         <table
             class="table workspaces-table is-hoverable is-fullwidth"
             v-else-if="!isEmpty(workspaceUsers)"
         >
             <thead>
                 <th></th>
-                <th>Workspace Name</th>
+                <th>
+                    <a
+                        class="table-header-filter"
+                        :class="{ 'has-text-white': sortFilter === 'workspace_name' }"
+                        @click="sortByName()"
+                    >
+                        Workspace Name
+                        <i
+                            class="fas fa-angle-down"
+                            v-if="sortFilter === 'workspace_name' && !reversedSort"
+                            style="margin-left: 10px;"
+                        ></i>
+                        <i
+                            class="fas fa-angle-up"
+                            v-else-if="sortFilter === 'workspace_name' && reversedSort"
+                            style="margin-left: 10px;"
+                        ></i>
+                    </a>
+                </th>
                 <th>Admin Users</th>
                 <th>Regular Users</th>
                 <th>Total Users</th>
@@ -18,7 +36,7 @@
                 <th>Workspace Name</th>
                 <th>Admin Users</th>
                 <th>Regular Users</th>
-                <th>Total Users</th>
+                <th>All Users</th>
                 <th></th>
             </tfoot>
             <tbody>
@@ -60,7 +78,7 @@ import Spinner from '@src/views/components/Spinner.vue';
 import UsersTable from './UsersTable.vue';
 import search from "fuzzysearch";
 import isEmpty from 'lodash/isEmpty';
-import sortBy from 'lodash/sortBy';
+import orderBy from 'lodash/orderBy';
 import { mapState } from 'vuex';
 
 export default {
@@ -80,7 +98,9 @@ export default {
     },
     data() {
         return {
+            reversedSort: false,
             selectedRows: [],
+            sortFilter: '',
             sortedWorkspaces: [],
         };
     },
@@ -116,22 +136,32 @@ export default {
                 this.selectedRows.splice(indexPos, 1);
             }
         },
+        sortByName() {
+            const workspaces = this.sortedWorkspaces;
+
+            if (!this.sortFilter) {
+                this.sortFilter = 'workspace_name';
+            }
+
+            workspaces.reverse();
+            this.sortedWorkspaces = workspaces;
+            this.reversedSort = !this.reversedSort;
+        },
     },
     computed: {
         ...mapState([
             'workspaces',
         ]),
         filteredWorkspaces() {
-            const searchText = this.searchText.toLowerCase();
+            const searchText = this.searchText;
             let workspaces = this.sortedWorkspaces;
 
             if (searchText) {
                 return workspaces.reduce((acc, workspace) => {
                     const name = workspace.name.toLowerCase();
+                    const text = searchText.toLowerCase()
 
-                    if (
-                        search(searchText, name)
-                    ) {
+                    if (search(text, name)) {
                         acc.push(workspace);
                     }
 
@@ -156,16 +186,14 @@ export default {
                     }
                 }
 
-                if (users.length) {
-                    acc[workspace.name] = users;
-                }
+                acc[workspace.name] = users;
 
                 return acc;
             }, {});
         }
     },
     mounted() {
-        this.sortedWorkspaces = sortBy(this.workspaces, ['name']);
+        this.sortedWorkspaces = orderBy(this.workspaces, [workspace => workspace.name.toLowerCase()], ['asc']);
     },
 };
 </script>
