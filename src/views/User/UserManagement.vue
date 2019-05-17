@@ -2,143 +2,136 @@
     <div class="user-management">
         <Spinner v-if="users.length < 1"/>
         <div class="users" v-else>
-            <div class="box user-stats is-flex" style="margin-bottom: 20px;">
-                <span style="margin-right: 20px;">
-                    <h1 class="title is-4">Statistics:</h1>
-                </span>
-                <div class="tags has-addons">
-                    <a @click="statisticFilter = 'all_users'">
-                        <span class="tag is-info">Total Users</span>
+            <div class="columns is-vcentered">
+                <div class="column">
+                    <a @click="setUserFilters('all_users')">
+                        <div class="box users-stats">
+                            <h2 class="is-6">All Users</h2>
+                            <span class="is-size-3 has-text-info">
+                                {{ users.length }}
+                            </span>
+                        </div>
                     </a>
-                    <span class="tag is-dark">{{ users.length }}</span>
                 </div>
-                <div class="tags has-addons">
-                    <a @click="statisticFilter = 'admins'">
-                        <span class="tag is-info">Admins</span>
+                <div class="column">
+                    <a @click="setUserFilters('admin_users')">
+                        <div class="box users-stats">
+                            <h2 class="is-6">Admin Users</h2>
+                            <span class="is-size-3 has-text-info">
+                                {{ adminUsersCount }}
+                            </span>
+                        </div>
                     </a>
-                    <span class="tag is-dark">{{ adminUsersCount }}</span>
                 </div>
-                <div class="tags has-addons">
-                    <a @click="statisticFilter = 'regular_users'">
-                        <span class="tag is-info">Regular Users</span>
+                <div class="column">
+                    <a @click="setUserFilters('regular_users')">
+                        <div class="box users-stats">
+                            <h2 class="is-6">Regular Users</h2>
+                            <span class="is-size-3 has-text-info">
+                                {{ regularUsersCount }}
+                            </span>
+                        </div>
                     </a>
-                    <span class="tag is-dark">{{ regularUsersCount }}</span>
                 </div>
-                <div class="tags has-addons">
+                <div class="column">
                     <a @click="statisticFilter = 'inactive'">
-                        <span class="tag is-info">Inactive</span>
+                        <div class="box users-stats">
+                            <h2 class="is-6">Inactive Users</h2>
+                            <span class="is-size-3 has-text-info">
+                                {{ inactiveUsersCount }}
+                            </span>
+                        </div>
                     </a>
-                    <span class="tag is-dark">{{ inactiveUsersCount }}</span>
                 </div>
-                <div class="tags has-addons">
+                <div class="column">
                     <a @click="statisticFilter = 'password-reset'">
-                        <span class="tag is-info">Password Resets</span>
+                        <div class="box users-stats">
+                            <h2 class="is-6">Authentication Issues</h2>
+                            <span class="is-size-3 has-text-info">
+                                {{ authenticationIssuesCount }}
+                            </span>
+                        </div>
                     </a>
-                    <span class="tag is-dark">{{ passwordResetCount }}</span>
                 </div>
-                <div class="tags has-addons">
-                    <a @click="statisticFilter = 'refuse-session-auth'">
-                        <span class="tag is-info">Refuse Session Auth</span>
-                    </a>
-                    <span class="tag is-dark">
-                        {{ refusedSessionAuthCount }}
-                    </span>
-                </div>
+            </div>
+            <div class="tabs">
+                <ul>
+                    <li :class="{ 'is-active': currentTab === 'users' }">
+                        <a
+                            class="tab is-uppercase"
+                            @click="currentTab = 'users'"
+                        >
+                            Users
+                        </a>
+                    </li>
+                    <li :class="{ 'is-active': currentTab === 'workspaces' }">
+                        <a
+                            class="tab is-uppercase"
+                            @click="currentTab = 'workspaces'"
+                        >
+                            Workspaces
+                        </a>
+                    </li>
+                </ul>
             </div>
             <div class="users-table">
                 <div class="table-header">
-                    <div class="columns is-vcentered">
-                        <div class="column">
-                            <h1 class="title is-4">User Management</h1>
+                    <h1 class="title is-4">User Management</h1>
+                    <div class="table-filter">
+                        <div class="control">
+                            <div class="select">
+                                <select v-model="userFilter">
+                                    <option value="all">
+                                        All Users
+                                    </option>
+                                    <option value="admins">
+                                        Admin Users
+                                    </option>
+                                    <option value="users">
+                                        Regular Users
+                                    </option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="column">
-                            <a
-                                @click="setCurrentTab('list')"
-                                style="margin-right: 10px;"
+                        <div class="control has-icons-left has-icons-right">
+                            <input
+                                class="input search"
+                                type="text"
+                                placeholder="Search Users"
+                                v-model="searchText"
                             >
-                                <i
-                                    class="fas fa-lg fa-users"
-                                    :class="{ 'has-text-white': currentTab === 'list' }"
-                                ></i>
-                            </a>
-                            <a
-                                @click="setCurrentTab('workspaces')"
-                            >
-                                <i
-                                    class="fas fa-lg fa-sitemap"
-                                    :class="{ 'has-text-white': currentTab === 'workspaces' }"
-                                ></i>
-                            </a>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-search"></i>
+                            </span>
                         </div>
-                        <div style="width: 135px; padding: 12px;">
-                            <button
-                                class="button create is-primary is-pulled-right"
-                                @click="action = 'create'"
+                        <div
+                            class="control has-icons-left has-icons-right"
+                            v-if="currentTab === 'workspaces'"
+                        >
+                            <input
+                                class="input search workspaces"
+                                type="text"
+                                placeholder="Search Workspaces"
+                                v-model="searchTextWorkspaces"
                             >
-                                Create User
-                            </button>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-search"></i>
+                            </span>
                         </div>
                     </div>
-                </div>
-                <div class="table-filter">
-                    <div class="columns is-vcentered">
-                        <div class="column is-2">
-                            <div class="field">
-                                <div class="select-with-label">
-                                    <div class="select-label">User Type</div>
-                                    <div class="control">
-                                        <div class="select">
-                                            <select v-model="userFilter">
-                                                <option value="all">
-                                                    All Users
-                                                </option>
-                                                <option value="admins">
-                                                    Admins
-                                                </option>
-                                                <option value="users">
-                                                    Users
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="column is-3">
-                            <div class="field">
-                                <p class="control has-icons-left has-icons-right">
-                                    <input
-                                        class="input search"
-                                        type="text"
-                                        placeholder="Search Users"
-                                        v-model="searchText"
-                                    >
-                                    <span class="icon is-small is-left">
-                                        <i class="fas fa-search"></i>
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="column is-3" v-if="currentTab === 'workspaces'">
-                            <div class="field">
-                                <p class="control has-icons-left has-icons-right">
-                                    <input
-                                        class="input search workspaces"
-                                        type="text"
-                                        placeholder="Search Workspaces"
-                                        v-model="searchTextWorkspaces"
-                                    >
-                                    <span class="icon is-small is-left">
-                                        <i class="fas fa-search"></i>
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
+                    <div style="width: 135px;">
+                        <button
+                            class="button create is-primary is-pulled-right"
+                            @click="action = 'create'"
+                        >
+                            <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                            Add User
+                        </button>
                     </div>
                 </div>
                 <transition name="fade-in-slow">
                     <div v-if="filteredUsers.length">
-                        <div v-if="currentTab === 'list'">
+                        <div v-if="currentTab === 'users'">
                             <UsersTable :users="filteredUsers" />
                         </div>
                         <div v-else>
@@ -197,7 +190,7 @@ export default {
             action: '',
             activeDropdown: null,
             collapsed: true,
-            currentTab: 'list',
+            currentTab: 'users',
             searchText: '',
             searchTextWorkspaces: '',
             statisticFilter: '',
@@ -226,6 +219,18 @@ export default {
         setCurrentTab(tab) {
             this.currentTab = tab;
         },
+        setUserFilters(filter) {
+            if (filter === 'all_users') {
+                this.statisticFilter = 'all_users';
+                this.userFilter = 'all';
+            } else if (filter === 'admin_users') {
+                this.statisticFilter = 'admins';
+                this.userFilter = 'admins';
+            } else if (filter === 'regular_users') {
+                this.statisticFilter = 'regular_users';
+                this.userFilter = 'users';
+            }
+        },
     },
     computed: {
         ...mapState([
@@ -233,6 +238,13 @@ export default {
         ]),
         adminUsersCount() {
             return this.users.filter(user => user.is_admin === true).length;
+        },
+        authenticationIssuesCount() {
+            return this.users.filter(user => {
+                if (user.force_password_change || user.refuse_session_auth) {
+                    return user;
+                }
+            }).length;
         },
         filteredUsers() {
             const searchText = this.searchText.toLowerCase();
@@ -282,12 +294,6 @@ export default {
         },
         inactiveUsersCount() {
             return this.users.filter(user => user.last_login == null).length;
-        },
-        passwordResetCount() {
-            return this.users.filter(user => user.force_password_change === true).length;
-        },
-        refusedSessionAuthCount() {
-            return this.users.filter(user => user.refuse_session_auth === true).length;
         },
         regularUsersCount() {
             return this.users.filter(user => user.is_admin === false).length;

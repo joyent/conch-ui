@@ -331,10 +331,6 @@ progress::-webkit-progress-value {
 }
 
 .user-management {
-	li:not(:last-of-type) {
-		margin-bottom: 5px;
-	}
-
 	select {
 		background-color: $grey-darker;
 		border-color: $grey;
@@ -346,20 +342,40 @@ progress::-webkit-progress-value {
 		padding-top: 20px;
 	}
 
-	.user-stats {
-		&.box {
-			border-color: #209cee;
-			border-radius: 4px;
-			border-width: 0 4px 0 4px;
-			border-style: solid;
+	.users-stats {
+		transition: all 0.2s ease-in-out;
+
+		&:hover {
+			background-color: lighten($grey-dark, 2%);
+			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+			transition: all 0.2s ease-in-out;
 		}
+	}
 
-		.tags {
-			margin-bottom: 0;
-			margin-right: 10px;
+	.tabs {
+		margin-bottom: 0;
 
-			.tag {
-				margin-bottom: 0;
+		li {
+			a.tab {
+				color: $grey-lighter;
+			}
+
+			&.is-active {
+				margin: 0;
+
+				a {
+					border-bottom-width: 2px;
+					border-bottom-color: #209cee;
+					color: #209cee;
+					font-weight: 600;
+				}
+			}
+
+			&:not(.is-active) {
+				a {
+					border-bottom-width: 0;
+					margin-bottom: 1px;
+				}
 			}
 		}
 	}
