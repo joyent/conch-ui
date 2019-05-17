@@ -76,25 +76,58 @@
                             <th>
                                 <a
                                     class="table-header-filter"
+                                    :class="{ 'has-text-white': sortFilter === 'name' }"
                                     @click="sortBy('name')"
                                 >
                                     Name
+                                    <i
+                                        class="fas fa-angle-down"
+                                        v-if="sortFilter === 'name' && !reversedSort"
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                    <i
+                                        class="fas fa-angle-up"
+                                        v-else-if="sortFilter === 'name' && reversedSort"
+                                        style="margin-left: 10px;"
+                                    ></i>
                                 </a>
                             </th>
                             <th>
                                 <a
                                     class="table-header-filter"
+                                    :class="{ 'has-text-white': sortFilter === 'last_used' }"
                                     @click="sortBy('last_used')"
                                 >
                                     Last Used
+                                    <i
+                                        class="fas fa-angle-down"
+                                        v-if="sortFilter === 'last_used' && !reversedSort"
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                    <i
+                                        class="fas fa-angle-up"
+                                        v-else-if="sortFilter === 'last_used' && reversedSort"
+                                        style="margin-left: 10px;"
+                                    ></i>
                                 </a>
                             </th>
                             <th>
                                 <a
                                     class="table-header-filter"
+                                    :class="{ 'has-text-white': sortFilter === 'created' }"
                                     @click="sortBy('created')"
                                 >
                                     Created
+                                    <i
+                                        class="fas fa-angle-down"
+                                        v-if="sortFilter === 'created' && !reversedSort"
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                    <i
+                                        class="fas fa-angle-up"
+                                        v-else-if="sortFilter === 'created' && reversedSort"
+                                        style="margin-left: 10px;"
+                                    ></i>
                                 </a>
                             </th>
                             <th></th>
@@ -248,6 +281,7 @@ export default {
             duplicateTokenNameError: false,
             isLoading: false,
             noTokens: false,
+            reversedSort: false,
             sortFilter: '',
             sortedTokens: [],
             tokenName: '',
@@ -358,6 +392,7 @@ export default {
                 this.sortFilter = field;
             } else {
                 tokens.reverse();
+                this.reversedSort = !this.reversedSort;
                 this.sortedTokens = tokens;
             }
         },
