@@ -6,27 +6,22 @@
                     <Spinner v-if="!users.length" />
                     <div class="box is-paddingless" v-else>
                         <div class="auth-users-table">
-                            <div class="table-filter" >
-                                <div class="columns is-vcentered">
-                                    <div class="column">
-                                        <h1 class="title is-3 is-marginless">
-                                            Users
-                                        </h1>
-                                    </div>
-                                    <div class="column is-3">
-                                        <div class="field">
-                                            <p class="control has-icons-left has-icons-right">
-                                                <input
-                                                    class="input search"
-                                                    type="text"
-                                                    placeholder="Search Users"
-                                                    v-model="searchTextUsers"
-                                                >
-                                                <span class="icon is-small is-left">
-                                                    <i class="fas fa-search"></i>
-                                                </span>
-                                            </p>
-                                        </div>
+                            <div
+                                class="table-header"
+                                style="border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                            >
+                                <h1 class="title is-3">Users</h1>
+                                <div class="table-filter">
+                                    <div class="control has-icons-left has-icons-right">
+                                        <input
+                                            class="input search"
+                                            type="text"
+                                            placeholder="Search Users"
+                                            v-model="searchTextUsers"
+                                        >
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-search"></i>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -39,16 +34,27 @@
                                     <th>
                                         <a
                                             class="table-header-filter"
+                                            :class="{ 'has-text-white': sortFilter === 'name' }"
                                             @click="sortUsersBy('name')"
                                         >
-                                            Name
+                                            User Name
+                                            <i
+                                                class="fas fa-angle-down"
+                                                v-if="sortFilter === 'name' && !reversedSort"
+                                                style="margin-left: 10px;"
+                                            ></i>
+                                            <i
+                                                class="fas fa-angle-up"
+                                                v-else-if="sortFilter === 'name' && reversedSort"
+                                                style="margin-left: 10px;"
+                                            ></i>
                                         </a>
                                     </th>
                                     <th></th>
                                 </thead>
                                 <tfoot>
                                     <th></th>
-                                    <th>Name</th>
+                                    <th>User Name</th>
                                     <th></th>
                                 </tfoot>
                                 <tbody>
@@ -62,7 +68,9 @@
                                                 <i class="fas fa-2x fa-user-circle"></i>
                                             </span>
                                         </td>
-                                        <td class="username">{{ user.name }}</td>
+                                        <td class="username">
+                                            {{ user.name }}
+                                        </td>
                                         <td>
                                             <a
                                                 class="button view-auth-tokens is-info"
@@ -128,34 +136,32 @@
                         <div class="user-authentication-tokens">
                             <div class="authentication-tokens-table">
                                 <div
-                                    class="table-filter"
+                                    class="table-header"
+                                    style="border-top-left-radius: 5px; border-top-right-radius: 5px;"
                                 >
-                                    <div class="columns is-vcentered">
-                                        <div class="column">
-                                            <h1 class="title is-4 is-marginless">
-                                                Authentication Tokens
-                                            </h1>
+                                    <h1 class="title is-4">
+                                        Authentication Tokens
+                                    </h1>
+                                    <div class="table-filter">
+                                        <div class="control has-icons-left has-icons-right">
+                                            <input
+                                                class="input search"
+                                                type="text"
+                                                placeholder="Search Tokens"
+                                                v-model="searchTextTokens"
+                                            >
+                                            <span
+                                                class="icon is-small is-left"
+                                            >
+                                                <i class="fas fa-search"></i>
+                                            </span>
                                         </div>
-                                        <div class="column is-3">
-                                            <div class="field">
-                                                <p class="control has-icons-left has-icons-right">
-                                                    <input
-                                                        class="input search"
-                                                        type="text"
-                                                        placeholder="Search Tokens"
-                                                        v-model="searchTextTokens"
-                                                    >
-                                                    <span class="icon is-small is-left">
-                                                        <i class="fas fa-search"></i>
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div style="text-align: right; padding: 12px;">
+                                        <div
+                                            v-if="sortedTokens && sortedTokens.length"
+                                        >
                                             <a
                                                 class="button delete-auth-tokens is-danger"
                                                 @click="openModalMultipleTokens('auth')"
-                                                v-if="sortedTokens && sortedTokens.length"
                                             >
                                                 Delete Auth Tokens
                                             </a>
@@ -171,32 +177,65 @@
                                         <th>
                                             <a
                                                 class="table-header-filter"
+                                                :class="{ 'has-text-white': sortFilter === 'name' }"
                                                 @click="sortTokensBy('name')"
                                             >
-                                                Name
+                                                Token Name
+                                                <i
+                                                    class="fas fa-angle-down"
+                                                    v-if="sortFilter === 'name' && !reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
+                                                <i
+                                                    class="fas fa-angle-up"
+                                                    v-else-if="sortFilter === 'name' && reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
                                             </a>
                                         </th>
                                         <th>
                                             <a
                                                 class="table-header-filter"
+                                                :class="{ 'has-text-white': sortFilter === 'last_used' }"
                                                 @click="sortTokensBy('last_used')"
                                             >
                                                 Last Used
+                                                <i
+                                                    class="fas fa-angle-down"
+                                                    v-if="sortFilter === 'last_used' && !reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
+                                                <i
+                                                    class="fas fa-angle-up"
+                                                    v-else-if="sortFilter === 'last_used' && reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
                                             </a>
                                         </th>
                                         <th>
                                             <a
                                                 class="table-header-filter"
+                                                :class="{ 'has-text-white': sortFilter === 'created' }"
                                                 @click="sortTokensBy('created')"
                                             >
                                                 Created
+                                                <i
+                                                    class="fas fa-angle-down"
+                                                    v-if="sortFilter === 'created' && !reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
+                                                <i
+                                                    class="fas fa-angle-up"
+                                                    v-else-if="sortFilter === 'created' && reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
                                             </a>
                                         </th>
                                         <th></th>
                                     </thead>
                                     <tfoot>
                                         <th></th>
-                                        <th>Name</th>
+                                        <th>Token Name</th>
                                         <th>Last Used</th>
                                         <th>Created</th>
                                         <th></th>
@@ -215,7 +254,10 @@
                                             </td>
                                             <td v-else>Never</td>
                                             <td>{{ getDate(token.created) }}</td>
-                                            <td class="has-text-centered">
+                                            <td
+                                                class="has-text-right"
+                                                style="padding: 15px; 20px;"
+                                            >
                                                 <span
                                                     class="icon delete-token"
                                                     @click="openModalSingleToken(token.name)"
@@ -244,7 +286,9 @@
             class="no-results"
             v-if="noSearchResultsTokens || noSearchResultsUsers"
         >
-            <p class="title is-5" style="padding: 40px;">No Search Results Found.</p>
+            <p class="title is-5" style="padding: 40px;">
+                No Search Results Found.
+            </p>
         </div>
         <transition name="fade">
             <BaseModal v-if="deleting">
@@ -355,6 +399,7 @@ export default {
             deleting: false,
             deletingAuthTokens: false,
             deletingLoginTokens: false,
+            reversedSort: false,
             searchTextTokens: '',
             searchTextUsers: '',
             selectedUser: null,
@@ -484,6 +529,7 @@ export default {
                 this.sortFilter = field;
             } else {
                 tokens.reverse();
+                this.reversedSort = !this.reversedSort;
                 this.sortedTokens = tokens;
             }
         },
@@ -498,6 +544,7 @@ export default {
                 this.sortFilter = field;
             } else {
                 users.reverse();
+                this.reversedSort = !this.reversedSort;
                 this.sortedUsers = users;
             }
         },
