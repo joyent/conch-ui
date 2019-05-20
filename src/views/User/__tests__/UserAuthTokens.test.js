@@ -2,6 +2,7 @@ import UserAuthTokens from '../UserAuthTokens.vue';
 import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
 import * as users from '@api/users.js';
+import moment from 'moment';
 
 // Fixture
 import userAuthTokens from '@src/__fixtures__/userAuthTokens.js';
@@ -41,6 +42,76 @@ describe('UserAuthTokens.vue', () => {
         wrapper.find('a.create').trigger('click');
     };
 
+    describe('table row sorting', () => {
+        let createdHeader;
+        let lastUsedHeader;
+        let nameHeader;
+        let sortBySpy;
+        let tableHeaders;
+
+        beforeEach(() => {
+            tableHeaders = wrapper.findAll('.table-header-filter');
+            nameHeader = tableHeaders.at(0);
+            lastUsedHeader = tableHeaders.at(1);
+            createdHeader = tableHeaders.at(2);
+
+            wrapper.setData({ sortedTokens: userAuthTokens });
+            sortBySpy = jest.spyOn(wrapper.vm, 'sortBy');
+        });
+
+        // Helper functions
+        const clickNameHeader = () => {
+            nameHeader.trigger('click');
+        };
+        const clickLastUsedHeader = () => {
+            lastUsedHeader.trigger('click');
+        };
+        const clickCreatedHeader = () => {
+            createdHeader.trigger('click');
+        };
+
+        test('should call the sortBy method when the "Name" table header is clicked', () => {
+            clickNameHeader();
+
+            expect(sortBySpy).toHaveBeenCalled();
+        });
+
+        test('should call the sortBy method when the "Last Used" table header is clicked', () => {
+            clickLastUsedHeader();
+
+            expect(sortBySpy).toHaveBeenCalled();
+        });
+
+        test('should call the sortBy method when the "Created" table header is clicked', () => {
+            clickCreatedHeader();
+
+            expect(sortBySpy).toHaveBeenCalled();
+        });
+
+        test('should sort the tokens by "name" when "Name" table header is clicked', async () => {
+            clickNameHeader();
+            clickNameHeader();
+
+            expect(wrapper.findAll('.token-name').at(0).text()).toEqual(userAuthTokens[3].name);
+        });
+
+        test('should sort the tokens by "last_used" when "Last Used" table header is clicked', () => {
+            clickLastUsedHeader();
+
+            const lastUsed = moment(userAuthTokens[3].last_used).fromNow();
+
+            expect(wrapper.findAll('.last-used').at(0).text()).toEqual(lastUsed);
+        });
+
+        test('should sort the tokens by "created" when "Created" table header is clicked', () => {
+            clickCreatedHeader();
+
+            const created = moment(userAuthTokens[3].created).fromNow();
+
+            expect(wrapper.findAll('.created').at(0).text()).toEqual(created);
+        });
+    });
+
     test('should not display modal on initial render', () => {
         expect(wrapper.find('.modal').exists()).toBeFalsy();
     });
@@ -73,7 +144,7 @@ describe('UserAuthTokens.vue', () => {
     });
 
     test('should display tokens added by the user', () => {
-        expect(wrapper.html()).toContain('test 1');
+        expect(wrapper.html()).toContain(userAuthTokens[0].name);
     });
 
     test('should call createToken when valid token name is submitted', () => {

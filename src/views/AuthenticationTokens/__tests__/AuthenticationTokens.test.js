@@ -62,6 +62,19 @@ describe('AuthenticationTokens.vue', () => {
             expect(wrapper.findAll('tr').length).toEqual(1);
         });
 
+        test('should sort displayed user results when "Name" header is clicked', () => {
+            wrapper.find('.table-header-filter').trigger('click');
+
+            expect(wrapper.find('.username').text()).toEqual(users[1].name);
+        });
+
+        test('should reverse sort displayed user results when "Name" header is clicked', () => {
+            wrapper.find('.table-header-filter').trigger('click');
+            wrapper.find('.table-header-filter').trigger('click');
+
+            expect(wrapper.find('.username').text()).toEqual(users[0].name);
+        });
+
         describe('delete login tokens modals', () => {
             // Helper function
             const clickDeleteLoginTokens = () => {
@@ -176,13 +189,46 @@ describe('AuthenticationTokens.vue', () => {
             expect(wrapper.find('.auth-users-table').exists()).toBeTruthy();
         });
 
-        test('should filter displayed token results when search text is entered into search input field', () => {
-            wrapper.setData({ sortedTokens: userAuthTokens });
-            wrapper.find('input.search').setValue('3');
-            const rows = wrapper.findAll('tr');
+        describe('filtering and sorting', () => {
+            const firstAuthTokenName = userAuthTokens[0].name;
+            const fourthAuthTokenName = userAuthTokens[3].name;
 
-            expect(rows.length).toEqual(1);
-            expect(wrapper.find('.token-name').text()).toEqual(userAuthTokens[2].name);
+            beforeEach(() => {
+                wrapper.setData({ sortedTokens: userAuthTokens });
+            });
+
+            test('should filter displayed token results when search text is entered into search input field', () => {
+                wrapper.find('input.search').setValue('apple');
+                const rows = wrapper.findAll('tr');
+
+                expect(rows.length).toEqual(1);
+                expect(wrapper.find('.token-name').text()).toEqual(firstAuthTokenName);
+            });
+
+            test('should sort displayed user results when "Name" header is clicked', () => {
+                wrapper.find('.table-header-filter').trigger('click');
+
+                expect(wrapper.find('.token-name').text()).toEqual(firstAuthTokenName);
+            });
+
+            test('should reverse sort displayed user results when "Name" header is clicked', () => {
+                wrapper.find('.table-header-filter').trigger('click');
+                wrapper.find('.table-header-filter').trigger('click');
+
+                expect(wrapper.find('.token-name').text()).toEqual(fourthAuthTokenName);
+            });
+
+            test('should sort displayed user results when "Last Used" header is clicked', () => {
+                wrapper.findAll('.table-header-filter').at(1).trigger('click');
+
+                expect(wrapper.find('.token-name').text()).toEqual(fourthAuthTokenName);
+            });
+
+            test('should sort displayed user results when "Created" header is clicked', () => {
+                wrapper.findAll('.table-header-filter').at(2).trigger('click');
+
+                expect(wrapper.find('.token-name').text()).toEqual(userAuthTokens[2].name);
+            });
         });
 
         describe('view auth tokens modals', () => {
