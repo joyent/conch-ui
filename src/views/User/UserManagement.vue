@@ -4,7 +4,7 @@
         <div class="users" v-else>
             <div class="columns is-vcentered">
                 <div class="column">
-                    <a @click="setUserFilters('all_users')">
+                    <a class="filter-all" @click="setUserFilters('all_users')">
                         <div class="box users-stats">
                             <h2 class="is-6">All Users</h2>
                             <span class="is-size-3 has-text-info">
@@ -14,7 +14,7 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a @click="setUserFilters('admin_users')">
+                    <a class="filter-admin" @click="setUserFilters('admin_users')">
                         <div class="box users-stats">
                             <h2 class="is-6">Admin Users</h2>
                             <span class="is-size-3 has-text-info">
@@ -24,7 +24,7 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a @click="setUserFilters('regular_users')">
+                    <a class="filter-regular" @click="setUserFilters('regular_users')">
                         <div class="box users-stats">
                             <h2 class="is-6">Regular Users</h2>
                             <span class="is-size-3 has-text-info">
@@ -34,7 +34,7 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a @click="statisticFilter = 'inactive'">
+                    <a class="filter-inactive" @click="statisticFilter = 'inactive'">
                         <div class="box users-stats">
                             <h2 class="is-6">Inactive Users</h2>
                             <span class="is-size-3 has-text-info">
@@ -44,7 +44,7 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a @click="statisticFilter = 'password-reset'">
+                    <a class="filter-auth-issues" @click="statisticFilter = 'authentication_issues'">
                         <div class="box users-stats">
                             <h2 class="is-6">Authentication Issues</h2>
                             <span class="is-size-3 has-text-info">
@@ -58,7 +58,7 @@
                 <ul>
                     <li :class="{ 'is-active': currentTab === 'users' }">
                         <a
-                            class="tab is-uppercase"
+                            class="tab users-tab is-uppercase"
                             @click="currentTab = 'users'"
                         >
                             Users
@@ -66,7 +66,7 @@
                     </li>
                     <li :class="{ 'is-active': currentTab === 'workspaces' }">
                         <a
-                            class="tab is-uppercase"
+                            class="tab workspaces-tab is-uppercase"
                             @click="currentTab = 'workspaces'"
                         >
                             Workspaces
@@ -74,7 +74,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="users-table">
+            <div class="data-table">
                 <div class="table-header">
                     <h1 class="title is-4">User Management</h1>
                     <div class="table-filter">
@@ -216,9 +216,6 @@ export default {
                 this.user = {};
             }
         },
-        setCurrentTab(tab) {
-            this.currentTab = tab;
-        },
         setUserFilters(filter) {
             if (filter === 'all_users') {
                 this.statisticFilter = 'all_users';
@@ -283,10 +280,15 @@ export default {
                     users = users.filter(user => user.is_admin === false);
                 } else if (statisticFilter === 'inactive') {
                     users = users.filter(user => user.last_login == null);
-                } else if (statisticFilter === 'password-reset') {
-                    users = users.filter(user => user.force_password_change === true);
-                } else if (statisticFilter === 'refuse-session-auth') {
-                    users = users.filter(user => user.refuse_session_auth === true);
+                } else if (statisticFilter === 'authentication_issues') {
+                    users = users.filter(user => {
+                        if (
+                            user.force_password_change === true ||
+                            user.refuse_session_auth === true
+                        )
+
+                        return user;
+                    });
                 }
             }
 

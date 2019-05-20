@@ -1,5 +1,5 @@
 <template>
-    <table class="table is-hoverable is-fullwidth">
+    <table class="users-table table is-hoverable is-fullwidth">
         <thead>
             <th></th>
             <th>
@@ -92,7 +92,7 @@
                 <td class="has-text-centered">
                     <span>{{ index + 1 }}</span>
                 </td>
-                <td>{{ user.name }}</td>
+                <td class="username">{{ user.name }}</td>
                 <td>
                     <span v-if="user.is_admin">Admin</span>
                     <span v-else>User</span>

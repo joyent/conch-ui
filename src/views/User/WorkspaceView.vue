@@ -50,7 +50,7 @@
                         :key="workspaceName"
                     >
                         <td class="has-text-centered">{{ index + 1 }}</td>
-                        <td>{{ workspaceName }}</td>
+                        <td class="workspace-name">{{ workspaceName }}</td>
                         <td>{{ adminUsers(users) }}</td>
                         <td>{{ regularUsers(users) }}</td>
                         <td>{{ users.length }}</td>

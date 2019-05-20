@@ -181,12 +181,12 @@
                                         class="fas fa-key has-text-success"
                                     ></i>
                                 </td>
-                                <td>
+                                <td class="token-name">
                                     {{ token.name }}
                                 </td>
-                                <td v-if="token.last_used">{{ getDate(token.last_used) }}</td>
-                                <td v-else>Never</td>
-                                <td>{{ getDate(token.created) }}</td>
+                                <td class="last-used" v-if="token.last_used">{{ getDate(token.last_used) }}</td>
+                                <td class="last-used" v-else>Never</td>
+                                <td class="created">{{ getDate(token.created) }}</td>
                                 <td>
                                     <span
                                         class="icon delete-token"
