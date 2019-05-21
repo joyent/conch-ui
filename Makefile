@@ -22,7 +22,7 @@ format: ## Format Javascript source files with prettier
 	@yarn prettier
 
 node_modules: yarn.lock
-	@yarn install
+	@yarn install --ignore-engines
 	@touch node_modules
 
 dist/index.html: src/**/* config.js webpack.common.js webpack.prod.js
