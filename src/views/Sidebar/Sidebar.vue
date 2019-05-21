@@ -1,5 +1,6 @@
 <template>
-    <aside class="menu">
+    <Spinner v-if="!workspaceId" />
+    <aside class="menu" v-else>
         <p class="menu-label">Datacenter Builds</p>
         <ul class="menu-list">
             <li>
@@ -49,16 +50,28 @@
 
 <script>
 import isEmpty from 'lodash/isEmpty';
+import Spinner from '@src/views/components/Spinner.vue';
 import { getApiVersion } from '@api/conchApiVersion.js';
 import { logout } from '@api/authentication.js';
 import { mapGetters, mapState } from 'vuex';
 
 export default {
+    components: {
+        Spinner,
+    },
     data() {
         return {
             conchVersion: '',
             conchUIVersion: '',
         };
+    },
+    methods: {
+        signOut() {
+            logout()
+                .then(() => {
+                    this.$router.push({ name: 'signIn' });
+                });
+        },
     },
     computed: {
         ...mapGetters([
@@ -86,14 +99,6 @@ export default {
             }
 
             return workspaceId;
-        },
-    },
-    methods: {
-        signOut() {
-            logout()
-                .then(() => {
-                    this.$router.push({ name: 'signIn' });
-                });
         },
     },
     created() {
