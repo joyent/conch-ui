@@ -65,6 +65,14 @@ export default {
             conchUIVersion: '',
         };
     },
+    methods: {
+        signOut() {
+            logout()
+                .then(() => {
+                    this.$router.push({ name: 'signIn' });
+                });
+        },
+    },
     computed: {
         ...mapGetters([
             'currentWorkspaceId',
@@ -91,14 +99,6 @@ export default {
             }
 
             return workspaceId;
-        },
-    },
-    methods: {
-        signOut() {
-            logout()
-                .then(() => {
-                    this.$router.push({ name: 'signIn' });
-                });
         },
     },
     created() {
