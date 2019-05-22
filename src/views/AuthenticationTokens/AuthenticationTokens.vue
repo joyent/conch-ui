@@ -33,7 +33,7 @@
                                     <th></th>
                                     <th>
                                         <a
-                                            class="table-header-filter"
+                                            class="table-header-filter username"
                                             :class="{ 'has-text-white': sortFilter === 'name' }"
                                             @click="sortUsersBy('name')"
                                         >
@@ -59,6 +59,7 @@
                                 </tfoot>
                                 <tbody>
                                     <tr
+                                        class="row"
                                         v-for="user in filteredUsers"
                                         :key="user.id"
                                         :class="{ 'is-selected': selectedUser && selectedUser.id === user.id }"
@@ -115,7 +116,7 @@
                                 <i class="fas fa-2x fa-user-circle"></i>
                             </span>
                             <span
-                                class="title is-5 username is-marginless"
+                                class="title is-5 name is-marginless"
                                 style="flex-grow: 1;"
                             >
                                 {{ selectedUser.name }}
@@ -176,7 +177,7 @@
                                         <th></th>
                                         <th>
                                             <a
-                                                class="table-header-filter"
+                                                class="table-header-filter token-name"
                                                 :class="{ 'has-text-white': sortFilter === 'name' }"
                                                 @click="sortTokensBy('name')"
                                             >
@@ -195,7 +196,7 @@
                                         </th>
                                         <th>
                                             <a
-                                                class="table-header-filter"
+                                                class="table-header-filter last-used"
                                                 :class="{ 'has-text-white': sortFilter === 'last_used' }"
                                                 @click="sortTokensBy('last_used')"
                                             >
@@ -214,7 +215,7 @@
                                         </th>
                                         <th>
                                             <a
-                                                class="table-header-filter"
+                                                class="table-header-filter created"
                                                 :class="{ 'has-text-white': sortFilter === 'created' }"
                                                 @click="sortTokensBy('created')"
                                             >
@@ -242,6 +243,7 @@
                                     </tfoot>
                                     <tbody>
                                         <tr
+                                            class="token"
                                             v-for="(token, i) in filteredTokens"
                                             :key="token.id"
                                         >
