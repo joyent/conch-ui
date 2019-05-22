@@ -18,43 +18,49 @@ describe('UsersTable.vue', () => {
         wrapper = shallowMount(UsersTable, { mocks, propsData });
     });
 
+    // Helper function
+    const clickElement = (element) => {
+        wrapper.find(element).trigger('click');
+    };
+
     test('should call the viewTokens method when view tokens link on action dropdown menu is clicked', () => {
         const spy = jest.spyOn(wrapper.vm, 'viewTokens');
 
-        wrapper.find('button.actions').trigger('click');
-        wrapper.find('a.tokens').trigger('click');
+        clickElement('button.actions');
+        clickElement('a.tokens');
 
         expect(spy).toHaveBeenCalled();
     });
 
     test('should sort users by username when "User Name" header is clicked', () => {
-        wrapper.find('.table-header-filter').trigger('click');
+        clickElement('.table-header-filter.username');
 
-        expect(wrapper.find('.username').text()).toEqual(secondUserName);
+        expect(wrapper.find('.row .username').text()).toEqual(secondUserName);
     });
 
-    test('should reverse sort users by username when "User Name" header is clicked', () => {
-        wrapper.find('.table-header-filter').trigger('click');
-        wrapper.find('.table-header-filter').trigger('click');
+    test('should reverse sort users by username when "User Name" header is clicked twice', () => {
+        // First click sorts table by user name alphabetically
+        clickElement('.table-header-filter.username');
+        clickElement('.table-header-filter.username');
 
-        expect(wrapper.find('.username').text()).toEqual(firstUserName);
+        expect(wrapper.find('.row .username').text()).toEqual(firstUserName);
     });
 
     test('should sort users by role when the "Role" header is clicked', () => {
-        wrapper.findAll('.table-header-filter').at(1).trigger('click');
+        clickElement('.table-header-filter.role');
 
-        expect(wrapper.find('.username').text()).toEqual(secondUserName);
+        expect(wrapper.find('.row .username').text()).toEqual(secondUserName);
     });
 
     test('should sort users by authenticaiton issues when "Authentication Issues" header is clicked', () => {
-        wrapper.findAll('.table-header-filter').at(2).trigger('click');
+        clickElement('.table-header-filter.auth-issues');
 
-        expect(wrapper.find('.username').text()).toEqual(firstUserName);
+        expect(wrapper.find('.row .username').text()).toEqual(firstUserName);
     });
 
     test('should sort users by last active date when "Last Active" header is clicked', () => {
-        wrapper.findAll('.table-header-filter').at(3).trigger('click');
+        clickElement('.table-header-filter.last-active');
 
-        expect(wrapper.find('.username').text()).toEqual(firstUserName);
+        expect(wrapper.find('.row .username').text()).toEqual(firstUserName);
     });
 });

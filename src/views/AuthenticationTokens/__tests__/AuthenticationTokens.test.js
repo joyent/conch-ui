@@ -32,6 +32,11 @@ describe('AuthenticationTokens.vue', () => {
         wrapper = mount(AuthenticationTokens, { localVue, mocks, store });
     });
 
+    // Helper function
+    const clickUserNameHeader = () => {
+        wrapper.find('.table-header-filter.username').trigger('click');
+    };
+
     describe('users page', () => {
         test('should display a loading indicator until the user list has been fetched from the API', () => {
             state.users = [];
@@ -62,17 +67,18 @@ describe('AuthenticationTokens.vue', () => {
             expect(wrapper.findAll('tr').length).toEqual(1);
         });
 
-        test('should sort displayed user results when "Name" header is clicked', () => {
-            wrapper.find('.table-header-filter').trigger('click');
+        test('should sort displayed user results when "User Name" header is clicked', () => {
+            clickUserNameHeader();
 
-            expect(wrapper.find('.username').text()).toEqual(users[1].name);
+            expect(wrapper.find('.row .username').text()).toEqual(users[1].name);
         });
 
-        test('should reverse sort displayed user results when "Name" header is clicked', () => {
-            wrapper.find('.table-header-filter').trigger('click');
-            wrapper.find('.table-header-filter').trigger('click');
+        test('should reverse sort displayed user results when "User Name" header is clicked twice', () => {
+            // First click sorts table by user name alphabetically
+            clickUserNameHeader();
+            clickUserNameHeader();
 
-            expect(wrapper.find('.username').text()).toEqual(users[0].name);
+            expect(wrapper.find('.row .username').text()).toEqual(users[0].name);
         });
 
         describe('delete login tokens modals', () => {
@@ -158,7 +164,7 @@ describe('AuthenticationTokens.vue', () => {
         });
 
         test('should display the username of the selected user at the top of the page', () => {
-            expect(wrapper.find('.selected-user .username').text()).toEqual(users[0].name);
+            expect(wrapper.find('.selected-user .name').text()).toEqual(users[0].name);
         });
 
         test('should display a table row for each token returned by the API', () => {
@@ -197,37 +203,43 @@ describe('AuthenticationTokens.vue', () => {
                 wrapper.setData({ sortedTokens: userAuthTokens });
             });
 
+            // Helper function
+            const clickTokenNameHeader = () => {
+                wrapper.find('.table-header-filter.token-name').trigger('click');
+            };
+
             test('should filter displayed token results when search text is entered into search input field', () => {
                 wrapper.find('input.search').setValue('apple');
                 const rows = wrapper.findAll('tr');
 
                 expect(rows.length).toEqual(1);
-                expect(wrapper.find('.token-name').text()).toEqual(firstAuthTokenName);
+                expect(wrapper.find('.token .token-name').text()).toEqual(firstAuthTokenName);
             });
 
-            test('should sort displayed user results when "Name" header is clicked', () => {
-                wrapper.find('.table-header-filter').trigger('click');
+            test('should sort displayed user results when "Token Name" header is clicked', () => {
+                clickTokenNameHeader();
 
-                expect(wrapper.find('.token-name').text()).toEqual(firstAuthTokenName);
+                expect(wrapper.find('.token .token-name').text()).toEqual(firstAuthTokenName);
             });
 
-            test('should reverse sort displayed user results when "Name" header is clicked', () => {
-                wrapper.find('.table-header-filter').trigger('click');
-                wrapper.find('.table-header-filter').trigger('click');
+            test('should reverse sort displayed user results when "Token Name" header is clicked twice', () => {
+                // First click sorts table by token name alphabetically
+                clickTokenNameHeader();
+                clickTokenNameHeader();
 
-                expect(wrapper.find('.token-name').text()).toEqual(fourthAuthTokenName);
+                expect(wrapper.find('.token .token-name').text()).toEqual(fourthAuthTokenName);
             });
 
             test('should sort displayed user results when "Last Used" header is clicked', () => {
-                wrapper.findAll('.table-header-filter').at(1).trigger('click');
+                wrapper.find('.table-header-filter.last-used').trigger('click');
 
-                expect(wrapper.find('.token-name').text()).toEqual(fourthAuthTokenName);
+                expect(wrapper.find('.token .token-name').text()).toEqual(fourthAuthTokenName);
             });
 
             test('should sort displayed user results when "Created" header is clicked', () => {
-                wrapper.findAll('.table-header-filter').at(2).trigger('click');
+                wrapper.find('.table-header-filter.created').trigger('click');
 
-                expect(wrapper.find('.token-name').text()).toEqual(userAuthTokens[2].name);
+                expect(wrapper.find('.token .token-name').text()).toEqual(userAuthTokens[2].name);
             });
         });
 

@@ -4,7 +4,7 @@
             <th></th>
             <th>
                 <a
-                    class="table-header-filter"
+                    class="table-header-filter username"
                     :class="{ 'has-text-white': sortFilter === 'name' }"
                     @click="sortBy('name')"
                 >
@@ -23,7 +23,7 @@
             </th>
             <th>
                 <a
-                    class="table-header-filter"
+                    class="table-header-filter role"
                     :class="{ 'has-text-white': sortFilter === 'is_admin' }"
                     @click="sortBy('is_admin')"
                 >
@@ -42,7 +42,7 @@
             </th>
             <th>
                 <a
-                    class="table-header-filter"
+                    class="table-header-filter auth-issues"
                     :class="{ 'has-text-white': sortFilter === 'issues' }"
                     @click="sortBy('issues')"
                 >
@@ -61,7 +61,7 @@
             </th>
             <th>
                 <a
-                    class="table-header-filter"
+                    class="table-header-filter last-active"
                     :class="{ 'has-text-white': sortFilter === 'last_active' }"
                     @click="sortBy('last_active')">
                     Last Active
@@ -88,7 +88,11 @@
             <th>Actions</th>
         </tfoot>
         <tbody>
-            <tr v-for="(user, index) in sortedUsers" :key="user.id">
+            <tr
+                class="row"
+                v-for="(user, index) in sortedUsers"
+                :key="user.id"
+            >
                 <td class="has-text-centered">
                     <span>{{ index + 1 }}</span>
                 </td>

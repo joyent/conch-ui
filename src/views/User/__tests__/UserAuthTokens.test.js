@@ -32,42 +32,37 @@ describe('UserAuthTokens.vue', () => {
     const clickCreateToken = () => {
         wrapper.find('a.add').trigger('click');
     };
+
     const clickDeleteToken = () => {
         wrapper.find('.delete-token').trigger('click');
-    }
+    };
+
     const setTokenName = (name) => {
         wrapper.find('input').setValue(name);
     };
+
     const saveNewToken = () => {
         wrapper.find('a.create').trigger('click');
     };
 
     describe('table row sorting', () => {
-        let createdHeader;
-        let lastUsedHeader;
-        let nameHeader;
         let sortBySpy;
-        let tableHeaders;
 
         beforeEach(() => {
-            tableHeaders = wrapper.findAll('.table-header-filter');
-            nameHeader = tableHeaders.at(0);
-            lastUsedHeader = tableHeaders.at(1);
-            createdHeader = tableHeaders.at(2);
-
             wrapper.setData({ sortedTokens: userAuthTokens });
             sortBySpy = jest.spyOn(wrapper.vm, 'sortBy');
         });
 
-        // Helper functions
         const clickNameHeader = () => {
-            nameHeader.trigger('click');
+            wrapper.find('.table-header-filter.token-name').trigger('click');
         };
+
         const clickLastUsedHeader = () => {
-            lastUsedHeader.trigger('click');
+            wrapper.find('.table-header-filter.last-used').trigger('click');
         };
+
         const clickCreatedHeader = () => {
-            createdHeader.trigger('click');
+            wrapper.find('.table-header-filter.created').trigger('click');
         };
 
         test('should call the sortBy method when the "Name" table header is clicked', () => {
@@ -88,11 +83,12 @@ describe('UserAuthTokens.vue', () => {
             expect(sortBySpy).toHaveBeenCalled();
         });
 
-        test('should sort the tokens by "name" when "Name" table header is clicked', async () => {
+        test('should reverse sort the tokens by "name" when "Name" table header is clicked twice', async () => {
+            // First click sorts table by token name alphabetically
             clickNameHeader();
             clickNameHeader();
 
-            expect(wrapper.findAll('.token-name').at(0).text()).toEqual(userAuthTokens[3].name);
+            expect(wrapper.findAll('.token .token-name').at(0).text()).toEqual(userAuthTokens[3].name);
         });
 
         test('should sort the tokens by "last_used" when "Last Used" table header is clicked', () => {
@@ -100,7 +96,7 @@ describe('UserAuthTokens.vue', () => {
 
             const lastUsed = moment(userAuthTokens[3].last_used).fromNow();
 
-            expect(wrapper.findAll('.last-used').at(0).text()).toEqual(lastUsed);
+            expect(wrapper.findAll('.token .last-used').at(0).text()).toEqual(lastUsed);
         });
 
         test('should sort the tokens by "created" when "Created" table header is clicked', () => {
@@ -108,7 +104,7 @@ describe('UserAuthTokens.vue', () => {
 
             const created = moment(userAuthTokens[3].created).fromNow();
 
-            expect(wrapper.findAll('.created').at(0).text()).toEqual(created);
+            expect(wrapper.findAll('.token .created').at(0).text()).toEqual(created);
         });
     });
 

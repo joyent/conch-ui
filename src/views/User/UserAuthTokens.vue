@@ -75,11 +75,11 @@
                             <th></th>
                             <th>
                                 <a
-                                    class="table-header-filter"
+                                    class="table-header-filter token-name"
                                     :class="{ 'has-text-white': sortFilter === 'name' }"
                                     @click="sortBy('name')"
                                 >
-                                    Name
+                                    Token Name
                                     <i
                                         class="fas fa-angle-down"
                                         v-if="sortFilter === 'name' && !reversedSort"
@@ -94,7 +94,7 @@
                             </th>
                             <th>
                                 <a
-                                    class="table-header-filter"
+                                    class="table-header-filter last-used"
                                     :class="{ 'has-text-white': sortFilter === 'last_used' }"
                                     @click="sortBy('last_used')"
                                 >
@@ -113,7 +113,7 @@
                             </th>
                             <th>
                                 <a
-                                    class="table-header-filter"
+                                    class="table-header-filter created"
                                     :class="{ 'has-text-white': sortFilter === 'created' }"
                                     @click="sortBy('created')"
                                 >
