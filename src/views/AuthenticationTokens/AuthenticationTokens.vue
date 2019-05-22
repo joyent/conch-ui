@@ -6,27 +6,22 @@
                     <Spinner v-if="!users.length" />
                     <div class="box is-paddingless" v-else>
                         <div class="auth-users-table">
-                            <div class="table-filter" >
-                                <div class="columns is-vcentered">
-                                    <div class="column">
-                                        <h1 class="title is-3 is-marginless">
-                                            Users
-                                        </h1>
-                                    </div>
-                                    <div class="column is-3">
-                                        <div class="field">
-                                            <p class="control has-icons-left has-icons-right">
-                                                <input
-                                                    class="input search"
-                                                    type="text"
-                                                    placeholder="Search Users"
-                                                    v-model="searchTextUsers"
-                                                >
-                                                <span class="icon is-small is-left">
-                                                    <i class="fas fa-search"></i>
-                                                </span>
-                                            </p>
-                                        </div>
+                            <div
+                                class="table-header"
+                                style="border-top-left-radius: 5px; border-top-right-radius: 5px;"
+                            >
+                                <h1 class="title is-3">Users</h1>
+                                <div class="table-filter">
+                                    <div class="control has-icons-left has-icons-right">
+                                        <input
+                                            class="input search"
+                                            type="text"
+                                            placeholder="Search Users"
+                                            v-model="searchTextUsers"
+                                        >
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-search"></i>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -36,16 +31,35 @@
                             >
                                 <thead>
                                     <th></th>
-                                    <th>Name</th>
+                                    <th>
+                                        <a
+                                            class="table-header-filter username"
+                                            :class="{ 'has-text-white': sortFilter === 'name' }"
+                                            @click="sortUsersBy('name')"
+                                        >
+                                            User Name
+                                            <i
+                                                class="fas fa-angle-down"
+                                                v-if="sortFilter === 'name' && !reversedSort"
+                                                style="margin-left: 10px;"
+                                            ></i>
+                                            <i
+                                                class="fas fa-angle-up"
+                                                v-else-if="sortFilter === 'name' && reversedSort"
+                                                style="margin-left: 10px;"
+                                            ></i>
+                                        </a>
+                                    </th>
                                     <th></th>
                                 </thead>
                                 <tfoot>
                                     <th></th>
-                                    <th>Name</th>
+                                    <th>User Name</th>
                                     <th></th>
                                 </tfoot>
                                 <tbody>
                                     <tr
+                                        class="row"
                                         v-for="user in filteredUsers"
                                         :key="user.id"
                                         :class="{ 'is-selected': selectedUser && selectedUser.id === user.id }"
@@ -55,7 +69,9 @@
                                                 <i class="fas fa-2x fa-user-circle"></i>
                                             </span>
                                         </td>
-                                        <td class="username">{{ user.name }}</td>
+                                        <td class="username">
+                                            {{ user.name }}
+                                        </td>
                                         <td>
                                             <a
                                                 class="button view-auth-tokens is-info"
@@ -100,7 +116,7 @@
                                 <i class="fas fa-2x fa-user-circle"></i>
                             </span>
                             <span
-                                class="title is-5 username is-marginless"
+                                class="title is-5 name is-marginless"
                                 style="flex-grow: 1;"
                             >
                                 {{ selectedUser.name }}
@@ -121,34 +137,32 @@
                         <div class="user-authentication-tokens">
                             <div class="authentication-tokens-table">
                                 <div
-                                    class="table-filter"
+                                    class="table-header"
+                                    style="border-top-left-radius: 5px; border-top-right-radius: 5px;"
                                 >
-                                    <div class="columns is-vcentered">
-                                        <div class="column">
-                                            <h1 class="title is-4 is-marginless">
-                                                Authentication Tokens
-                                            </h1>
+                                    <h1 class="title is-4">
+                                        Authentication Tokens
+                                    </h1>
+                                    <div class="table-filter">
+                                        <div class="control has-icons-left has-icons-right">
+                                            <input
+                                                class="input search"
+                                                type="text"
+                                                placeholder="Search Tokens"
+                                                v-model="searchTextTokens"
+                                            >
+                                            <span
+                                                class="icon is-small is-left"
+                                            >
+                                                <i class="fas fa-search"></i>
+                                            </span>
                                         </div>
-                                        <div class="column is-3">
-                                            <div class="field">
-                                                <p class="control has-icons-left has-icons-right">
-                                                    <input
-                                                        class="input search"
-                                                        type="text"
-                                                        placeholder="Search Tokens"
-                                                        v-model="searchTextTokens"
-                                                    >
-                                                    <span class="icon is-small is-left">
-                                                        <i class="fas fa-search"></i>
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div style="text-align: right; padding: 12px;">
+                                        <div
+                                            v-if="sortedTokens && sortedTokens.length"
+                                        >
                                             <a
                                                 class="button delete-auth-tokens is-danger"
                                                 @click="openModalMultipleTokens('auth')"
-                                                v-if="tokens && tokens.length"
                                             >
                                                 Delete Auth Tokens
                                             </a>
@@ -161,20 +175,75 @@
                                 >
                                     <thead>
                                         <th></th>
-                                        <th>Name</th>
-                                        <th>Last Used</th>
-                                        <th>Created</th>
+                                        <th>
+                                            <a
+                                                class="table-header-filter token-name"
+                                                :class="{ 'has-text-white': sortFilter === 'name' }"
+                                                @click="sortTokensBy('name')"
+                                            >
+                                                Token Name
+                                                <i
+                                                    class="fas fa-angle-down"
+                                                    v-if="sortFilter === 'name' && !reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
+                                                <i
+                                                    class="fas fa-angle-up"
+                                                    v-else-if="sortFilter === 'name' && reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a
+                                                class="table-header-filter last-used"
+                                                :class="{ 'has-text-white': sortFilter === 'last_used' }"
+                                                @click="sortTokensBy('last_used')"
+                                            >
+                                                Last Used
+                                                <i
+                                                    class="fas fa-angle-down"
+                                                    v-if="sortFilter === 'last_used' && !reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
+                                                <i
+                                                    class="fas fa-angle-up"
+                                                    v-else-if="sortFilter === 'last_used' && reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a
+                                                class="table-header-filter created"
+                                                :class="{ 'has-text-white': sortFilter === 'created' }"
+                                                @click="sortTokensBy('created')"
+                                            >
+                                                Created
+                                                <i
+                                                    class="fas fa-angle-down"
+                                                    v-if="sortFilter === 'created' && !reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
+                                                <i
+                                                    class="fas fa-angle-up"
+                                                    v-else-if="sortFilter === 'created' && reversedSort"
+                                                    style="margin-left: 10px;"
+                                                ></i>
+                                            </a>
+                                        </th>
                                         <th></th>
                                     </thead>
                                     <tfoot>
                                         <th></th>
-                                        <th>Name</th>
+                                        <th>Token Name</th>
                                         <th>Last Used</th>
                                         <th>Created</th>
                                         <th></th>
                                     </tfoot>
                                     <tbody>
                                         <tr
+                                            class="token"
                                             v-for="(token, i) in filteredTokens"
                                             :key="token.id"
                                         >
@@ -187,7 +256,10 @@
                                             </td>
                                             <td v-else>Never</td>
                                             <td>{{ getDate(token.created) }}</td>
-                                            <td class="has-text-centered">
+                                            <td
+                                                class="has-text-right"
+                                                style="padding: 15px; 20px;"
+                                            >
                                                 <span
                                                     class="icon delete-token"
                                                     @click="openModalSingleToken(token.name)"
@@ -202,7 +274,7 @@
                         </div>
                     </div>
                     <div
-                        v-if="tokens && !tokens.length"
+                        v-if="sortedTokens && !sortedTokens.length"
                         style="padding: 40px;"
                     >
                         <p class="title no-tokens is-5 has-text-centered">
@@ -216,7 +288,9 @@
             class="no-results"
             v-if="noSearchResultsTokens || noSearchResultsUsers"
         >
-            <p class="title is-5" style="padding: 40px;">No Search Results Found.</p>
+            <p class="title is-5" style="padding: 40px;">
+                No Search Results Found.
+            </p>
         </div>
         <transition name="fade">
             <BaseModal v-if="deleting">
@@ -301,6 +375,7 @@
 <script>
 import search from "fuzzysearch";
 import moment from 'moment';
+import orderBy from 'lodash/orderBy';
 import { EventBus } from '@src/eventBus.js';
 import Spinner from '@src/views/components/Spinner.vue';
 import BaseModal from '@src/views/components/BaseModal.vue';
@@ -326,12 +401,15 @@ export default {
             deleting: false,
             deletingAuthTokens: false,
             deletingLoginTokens: false,
+            reversedSort: false,
             searchTextTokens: '',
             searchTextUsers: '',
             selectedUser: null,
+            sortFilter: '',
+            sortedTokens: [],
+            sortedUsers: [],
             tokenName: '',
             tokenType: '',
-            tokens: null,
             viewTokens: false,
             viewUsers: true,
         };
@@ -353,7 +431,8 @@ export default {
             this.viewTokens = false;
             this.viewUsers = true;
             this.selectedUser = null;
-            this.tokens = null;
+            this.sortFilter = '';
+            this.sortedTokens = null;
         },
         deleteToken(tokenName) {
             deleteUserToken(tokenName, this.selectedUser.id)
@@ -416,12 +495,13 @@ export default {
             this.viewUsers = false;
             this.viewTokens = true;
             this.searchTextUsers = '';
+            this.sortFilter = '';
         },
         setTokens(userId) {
             getUserTokens(userId)
                 .then(response => {
                     const tokens = response.data;
-                    this.tokens = tokens;
+                    this.sortedTokens = tokens;
 
                     if (this.selectedUser) {
                         if (this.currentUser.id === this.selectedUser.id) {
@@ -430,6 +510,47 @@ export default {
                     }
                 });
         },
+        sortTokensBy(field) {
+            let tokens = this.sortedTokens;
+
+            if (this.sortFilter !== field) {
+                if (field === 'name') {
+                    this.sortedTokens = orderBy(tokens, [token => token.name.toLowerCase()], ['asc']);
+                } else if (field === 'last_used') {
+                    const unusedTokens = tokens.filter(token => token.last_used == null);
+                    const usedTokens = tokens.filter(token => token.last_used != null);
+
+                    tokens = orderBy(usedTokens, [token => token.last_used], ['desc']);
+                    tokens = tokens.concat(unusedTokens);
+
+                    this.sortedTokens = tokens;
+                } else if (field === 'created') {
+                    this.sortedTokens = orderBy(tokens, [token => token.created], ['desc']);
+                }
+
+                this.sortFilter = field;
+            } else {
+                tokens.reverse();
+                this.reversedSort = !this.reversedSort;
+                this.sortedTokens = tokens;
+            }
+        },
+        sortUsersBy(field) {
+            let users = this.sortedUsers;
+
+            if (this.sortFilter !== field) {
+                if (field === 'name') {
+                    this.sortedUsers = orderBy(users, [user => user.name.toLowerCase()], ['asc']);
+                }
+
+                this.sortFilter = field;
+            } else {
+                users.reverse();
+                this.reversedSort = !this.reversedSort;
+                this.sortedUsers = users;
+            }
+        },
+
     },
     computed: {
         ...mapState([
@@ -438,7 +559,7 @@ export default {
         ]),
         filteredTokens() {
             let searchText = this.searchTextTokens.toLowerCase();
-            let tokens = this.tokens;
+            let tokens = this.sortedTokens;
 
             if (searchText) {
                 return tokens.reduce((acc, token) => {
@@ -456,7 +577,7 @@ export default {
         },
         filteredUsers() {
             const searchText = this.searchTextUsers.toLowerCase();
-            let users = this.users;
+            let users = this.sortedUsers;
 
             if (searchText) {
                 return users.reduce((acc, user) => {
@@ -483,7 +604,9 @@ export default {
             return this.searchTextUsers && this.filteredUsers && !this.filteredUsers.length;
         },
     },
-    mounted() {
+    created() {
+        const users = this.users;
+
         if (this.$route && this.$route.params && this.$route.params.userId) {
             this.viewUsers = false;
             this.viewTokens = true;
@@ -494,11 +617,16 @@ export default {
                     this.selectedUser = response.data;
                     this.setTokens(userId);
                 });
-        } else if (!this.users.length) {
+        }
+
+        if (!users.length) {
             getUsers()
                 .then(response => {
+                    this.sortedUsers = response.data;
                     this.setUsers(response.data);
                 });
+        } else {
+            this.sortedUsers = users;
         }
 
         EventBus.$on('closeModal:baseModal', () => {

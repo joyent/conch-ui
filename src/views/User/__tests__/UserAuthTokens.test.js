@@ -2,6 +2,7 @@ import UserAuthTokens from '../UserAuthTokens.vue';
 import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
 import * as users from '@api/users.js';
+import moment from 'moment';
 
 // Fixture
 import userAuthTokens from '@src/__fixtures__/userAuthTokens.js';
@@ -24,29 +25,95 @@ describe('UserAuthTokens.vue', () => {
         store = new Vuex.Store({ actions, state });
         mocks = { $nextTick: jest.fn() };
         wrapper = mount(UserAuthTokens, { localVue, mocks, store });
-        wrapper.setData({ tokens: userAuthTokens });
+        wrapper.setData({ sortedTokens: userAuthTokens });
     });
 
     // Helper functions
     const clickCreateToken = () => {
         wrapper.find('a.add').trigger('click');
     };
+
     const clickDeleteToken = () => {
         wrapper.find('.delete-token').trigger('click');
-    }
+    };
+
     const setTokenName = (name) => {
         wrapper.find('input').setValue(name);
     };
+
     const saveNewToken = () => {
         wrapper.find('a.create').trigger('click');
     };
+
+    describe('table row sorting', () => {
+        let sortBySpy;
+
+        beforeEach(() => {
+            wrapper.setData({ sortedTokens: userAuthTokens });
+            sortBySpy = jest.spyOn(wrapper.vm, 'sortBy');
+        });
+
+        const clickNameHeader = () => {
+            wrapper.find('.table-header-filter.token-name').trigger('click');
+        };
+
+        const clickLastUsedHeader = () => {
+            wrapper.find('.table-header-filter.last-used').trigger('click');
+        };
+
+        const clickCreatedHeader = () => {
+            wrapper.find('.table-header-filter.created').trigger('click');
+        };
+
+        test('should call the sortBy method when the "Name" table header is clicked', () => {
+            clickNameHeader();
+
+            expect(sortBySpy).toHaveBeenCalled();
+        });
+
+        test('should call the sortBy method when the "Last Used" table header is clicked', () => {
+            clickLastUsedHeader();
+
+            expect(sortBySpy).toHaveBeenCalled();
+        });
+
+        test('should call the sortBy method when the "Created" table header is clicked', () => {
+            clickCreatedHeader();
+
+            expect(sortBySpy).toHaveBeenCalled();
+        });
+
+        test('should reverse sort the tokens by "name" when "Name" table header is clicked twice', async () => {
+            // First click sorts table by token name alphabetically
+            clickNameHeader();
+            clickNameHeader();
+
+            expect(wrapper.findAll('.token .token-name').at(0).text()).toEqual(userAuthTokens[3].name);
+        });
+
+        test('should sort the tokens by "last_used" when "Last Used" table header is clicked', () => {
+            clickLastUsedHeader();
+
+            const lastUsed = moment(userAuthTokens[3].last_used).fromNow();
+
+            expect(wrapper.findAll('.token .last-used').at(0).text()).toEqual(lastUsed);
+        });
+
+        test('should sort the tokens by "created" when "Created" table header is clicked', () => {
+            clickCreatedHeader();
+
+            const created = moment(userAuthTokens[3].created).fromNow();
+
+            expect(wrapper.findAll('.token .created').at(0).text()).toEqual(created);
+        });
+    });
 
     test('should not display modal on initial render', () => {
         expect(wrapper.find('.modal').exists()).toBeFalsy();
     });
 
     test('should display spinner if tokens are still being retrieved from the API', () => {
-        wrapper.setData({ tokens: [], noTokens: false });
+        wrapper.setData({ sortedTokens: [], noTokens: false });
 
         expect(wrapper.find('.spinner').exists()).toBeTruthy();
     });
@@ -73,7 +140,7 @@ describe('UserAuthTokens.vue', () => {
     });
 
     test('should display tokens added by the user', () => {
-        expect(wrapper.html()).toContain('test 1');
+        expect(wrapper.html()).toContain(userAuthTokens[0].name);
     });
 
     test('should call createToken when valid token name is submitted', () => {
@@ -97,7 +164,7 @@ describe('UserAuthTokens.vue', () => {
     });
 
     test('should not display any token details on initial render', () => {
-        wrapper.setData({ tokens: [] });
+        wrapper.setData({ sortedTokens: [] });
         expect(wrapper.html()).toContain('You do not have any tokens.');
     });
 

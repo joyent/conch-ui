@@ -24,7 +24,7 @@ export const users = [
         force_password_change: false,
         id: "345a1234-9873-23ks-9983-221b8273629b",
         is_admin: true,
-        last_login: "2019-01-23T15:59:59.041066-08:00",
+        last_login: null,
         name: "Another User",
         refuse_session_auth: false,
         workspaces: [
