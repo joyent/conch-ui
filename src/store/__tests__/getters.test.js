@@ -25,15 +25,6 @@ describe('getters', () => {
         });
     });
 
-    describe('activeRackId', () => {
-        test('it returns the id of the active rack', () => {
-            state = { rackLayout };
-            const activeRackId = getters.activeRackId(state);
-
-            expect(activeRackId).toEqual(rackLayout.id);
-        });
-    });
-
     describe('currentWorkspaceId', () => {
         test('it returns the id of the current workspace', () => {
             state = { currentWorkspace: workspaces[0] };

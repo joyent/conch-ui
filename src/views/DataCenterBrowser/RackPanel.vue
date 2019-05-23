@@ -1,6 +1,6 @@
 <template>
     <nav class="panel rack-panel">
-        <p class="panel-heading has-text-centered">{{ this.activeRoomName }} Racks</p>
+        <p class="panel-heading has-text-centered">{{ activeRoomName }} Racks</p>
         <div class="panel-block">
             <p class="control has-icons-left">
                 <input type="text" class="input is-small" placeholder="Search Racks" v-model="rackFilterText">
@@ -33,7 +33,7 @@
             v-for="(rack, index) in filteredActiveRacks"
             :key="index"
             class="panel-block"
-            :class="{ 'is-active': activeRackId === rack.id }"
+            :class="{ 'is-active': rackLayout.id === rack.id }"
             @click="activateRack(rack)"
         >
             <div class="panel-icon">
@@ -71,11 +71,11 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'activeRackId',
             'currentWorkspaceId',
         ]),
         ...mapState([
             'activeRoomName',
+            'rackLayout',
         ]),
         filteredActiveRacks() {
             return this.activeRacks.reduce((acc, rack) => {
@@ -99,7 +99,7 @@ export default {
                 .then(response => {
                     this.setRackLayout(response);
 
-                    this.$router.push({ name: 'datacenterRack', params: { rackId: `${this.activeRackId}` } })
+                    this.$router.push({ name: 'datacenterRack', params: { rackId: `${this.rackLayout.id}` } })
                 });
         },
         rackFilterMatch(rack) {
