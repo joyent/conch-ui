@@ -22,7 +22,6 @@ describe('RackPanel.vue', () => {
     beforeEach(() => {
         actions = { setRackLayout: jest.fn() };
         getters = {
-            activeRackId: jest.fn(),
             activeRoomName: jest.fn(),
             currentWorkspaceId: jest.fn(),
         };
