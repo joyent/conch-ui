@@ -1,28 +1,31 @@
 import OverviewTab from '../OverviewTab';
 import Vuex from 'vuex';
+import VueRouter from 'vue-router';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { EventBus } from '@src/eventBus.js';
 
 // Fixtures
 import deviceDetails from '@src/__fixtures__/deviceDetails.js';
 import deviceSettings from '@src/__fixtures__/deviceSettings.js';
+import workspaces from '@src/__fixtures__/workspaces.js';
 
 const GlobalPlugins = {
     install(v) {
-        // Event bus
+        // EventBus
         v.prototype.$bus = EventBus;
     },
 };
 const localVue = createLocalVue();
+const router = new VueRouter();
 
 localVue.use(GlobalPlugins);
 localVue.use(Vuex);
+localVue.use(VueRouter);
 
 describe('OverviewTab.vue', () => {
     let actions;
     let button;
     let getters;
-    let mocks;
     let state;
     let store;
     let wrapper;
@@ -34,19 +37,19 @@ describe('OverviewTab.vue', () => {
             setShowDeviceInRack: jest.fn(),
         };
         getters = { activeDeviceId: state => (state.activeDeviceDetails.id) };
-        mocks = { $route: { path: '' }, $router: [] };
         state = {
             activeDeviceDetails: deviceDetails,
             activeDeviceSettings: deviceSettings,
+            currentWorkspace: workspaces[0],
         };
         store = new Vuex.Store({ actions, getters, state });
-        wrapper = shallowMount(OverviewTab, { localVue, mocks, store });
-        button = wrapper.find('button');
+        wrapper = shallowMount(OverviewTab, { localVue, router, store });
+        button = wrapper.find('button.show-device-in-rack');
     });
 
     // Helper function
     const clickButton = () => {
-        button.trigger('click');
+        wrapper.find('button.show-device-in-rack').trigger('click');
     };
 
     describe('Events', () => {
@@ -111,7 +114,7 @@ describe('OverviewTab.vue', () => {
         test('should not display "Show Device in Rack" button if device does not have a location', () => {
             state.activeDeviceDetails.location = null;
 
-            expect(wrapper.find('button').exists()).toBeFalsy();
+            expect(wrapper.find('button.show-device-in-rack').exists()).toBeFalsy();
         });
     });
 
@@ -202,6 +205,27 @@ describe('OverviewTab.vue', () => {
             state.activeDeviceDetails.latest_report.bios_version = "";
 
             expect(wrapper.find('.bios-version').html()).toContain('Unknown');
+        });
+    });
+
+    describe('device phase', () => {
+        test('should display a button to update device phase if user has write permissions', () => {
+            expect(state.currentWorkspace.role).toEqual('admin');
+            expect(wrapper.find('.update-phase').exists()).toBeTruthy();
+        });
+
+        test('should not display a button to update device phase if user does not have write permissions', () => {
+            const localCurrentWorkspace = workspaces[0];
+            localCurrentWorkspace.role = 'ro';
+            state.currentWorkspace = localCurrentWorkspace;
+            store = new Vuex.Store({ actions, getters, state });
+            wrapper = shallowMount(OverviewTab, { localVue, router, store });
+
+            expect(wrapper.find('.update-phase').exists()).toBeFalsy();
+        });
+
+        test('should display the current phase of the device', () => {
+            expect(wrapper.find('.device-phase').text()).toContain(state.activeDeviceDetails.phase);
         });
     });
 });

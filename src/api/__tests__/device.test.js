@@ -39,6 +39,20 @@ describe('device.js API', () => {
         });
     });
 
+    describe('getDevicePhase', () => {
+        beforeEach(() => {
+            nock(conchApi)
+                .get(`/device/${id}/phase`)
+                .reply(200);
+        });
+
+        test('should return a status of 200', async () => {
+            expect.assertions(1);
+            response = await device.getDevicePhase(id);
+            expect(response.status).toEqual(200);
+        });
+    });
+
     describe('getDeviceSettings', () => {
         beforeEach(() => {
             nock(conchApi)
@@ -111,6 +125,22 @@ describe('device.js API', () => {
         test('should return a status of 200', async () => {
             expect.assertions(1);
             response = await device.setAssetTag(id, assetTag);
+            expect(response.status).toEqual(200);
+        });
+    });
+
+    describe('setDevicePhase', () => {
+        const data = { phase: 'integration' };
+
+        beforeEach(() => {
+            nock(conchApi)
+                .post(`/device/${id}/phase`, data)
+                .reply(200);
+        });
+
+        test('should return a status of 200', async () => {
+            expect.assertions(1);
+            response = await device.setDevicePhase(id, data);
             expect(response.status).toEqual(200);
         });
     });

@@ -112,6 +112,7 @@ const deviceDetails = {
         },
     },
     nics: [],
+    phase: "integration",
     state: "ONLINE",
     system_uuid: "00000000-0000-0000-0000-341dd7y4z343",
     triton_setup: null,
