@@ -2,8 +2,9 @@ import RackPanel from '../RackPanel.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 
-// Fixture
+// Fixtures
 import activeRacks from '@src/__fixtures__/activeRacks.js';
+import rackLayout from '@src/__fixtures__/rackLayout.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -15,6 +16,7 @@ describe('RackPanel.vue', () => {
     let getters;
     let mocks;
     let propsData;
+    let state;
     let store;
     let wrapper;
     let wrapperHtml;
@@ -27,7 +29,8 @@ describe('RackPanel.vue', () => {
         };
         mocks = { $router: [] };
         propsData = { activeRacks };
-        store = new Vuex.Store({ actions, getters });
+        state = { rackLayout };
+        store = new Vuex.Store({ actions, getters, state });
         wrapper = shallowMount(RackPanel, { localVue, mocks, propsData, store });
         wrapperHtml = wrapper.html();
     });
