@@ -13,10 +13,18 @@
                     </div>
                 </div>
             </div>
-            <div class="level-right" v-if="activeDeviceDetails.location">
-                <div class="level-item">
+            <div class="level-right">
+                <div class="level-item" v-if="userHasPermissions">
                     <button
-                        class="button is-small is-link is-rounded"
+                        class="button update-phase is-small is-info"
+                        @click="updatingPhase = true"
+                    >
+                        Update Device Phase
+                    </button>
+                </div>
+                <div class="level-item" v-if="activeDeviceDetails.location">
+                    <button
+                        class="button show-device-in-rack is-small is-info"
                         @click="showDeviceInRack()"
                     >
                         Show Device in Rack
@@ -25,6 +33,16 @@
             </div>
         </div>
         <section class="info-tiles">
+            <div class="tile is-ancestor has-text-centered">
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <p class="subtitle">Phase</p>
+                        <p class="title device-phase is-capitalized">
+                            {{ activeDeviceDetails.phase }}
+                        </p>
+                    </article>
+                </div>
+            </div>
             <div class="tile is-ancestor has-text-centered">
                 <div class="tile is-parent is-vertical">
                     <article class="tile is-child box last-seen">
@@ -60,18 +78,32 @@
                 </div>
             </div>
         </section>
+        <transition name="fade">
+            <PhaseUpdateModal
+                :item="'device'"
+                :itemData="activeDeviceDetails"
+                v-if="updatingPhase"
+            />
+        </transition>
     </div>
 </template>
 
 <script>
 import moment from 'moment';
 import TimeToBurnin from './TimeToBurnin.vue';
+import PhaseUpdateModal from '@src/views/components/PhaseUpdateModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
     components: {
+        PhaseUpdateModal,
         TimeToBurnin,
+    },
+    data() {
+        return {
+            updatingPhase: false,
+        };
     },
     methods: {
         ...mapActions([
@@ -79,6 +111,9 @@ export default {
             'setHighlightDeviceId',
             'setShowDeviceInRack',
         ]),
+        closeModal() {
+            this.updatingPhase = false;
+        },
         showDeviceInRack() {
             const {
                 datacenter_room,
@@ -106,6 +141,7 @@ export default {
         ...mapState([
             'activeDeviceDetails',
             'activeDeviceSettings',
+            'currentWorkspace',
         ]),
         deviceTags() {
             const tags = [];
@@ -175,6 +211,14 @@ export default {
         uptimeSince() {
             return moment(this.activeDeviceDetails.uptime_since).fromNow(true);
         },
+        userHasPermissions() {
+            return this.currentWorkspace.role === 'admin' || this.currentWorkspace.role === 'rw';
+        },
+    },
+    mounted() {
+        EventBus.$on('closeModal:baseModal', () => {
+            this.closeModal();
+        });
     },
 };
 </script>

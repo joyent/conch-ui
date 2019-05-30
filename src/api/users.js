@@ -1,5 +1,14 @@
 import { clearToken, request, requestWithToken } from './request.js';
 
+
+export const createToken = (name) => {
+    return requestWithToken({
+        method: 'POST',
+        url: '/user/me/token',
+        data: { name },
+    });
+};
+
 export const createUser = (user) => {
     return requestWithToken({
         method: 'POST',
@@ -19,11 +28,33 @@ export const deactivateUser = (userId, params) => {
     });
 };
 
+export const deleteToken = (name) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/user/me/token/${name}`,
+    });
+};
+
 export const demoteUser = (userId) => {
     return requestWithToken({
         method: 'POST',
         url: `/user/${userId}`,
         data: { is_admin: false },
+    });
+};
+
+export const deleteUserToken = (name, userId) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/user/${userId}/token/${name}`,
+    });
+};
+
+export const deleteUserTokens = (userId, params) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/user/${userId}/revoke`,
+        params
     });
 };
 
@@ -64,10 +95,31 @@ export const getCurrentUser = () => {
     });
 };
 
+export const getToken = (name) => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/user/me/token/${name}`,
+    });
+};
+
+export const getTokens = () => {
+    return requestWithToken({
+        method: 'GET',
+        url: '/user/me/token',
+    });
+};
+
 export const getUser = (userId) => {
     return request({
         method: 'GET',
         url: `/user/${userId}`,
+    });
+};
+
+export const getUserTokens = (userId) => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/user/${userId}/token`,
     });
 };
 
@@ -96,76 +148,19 @@ export const updatePassword = (password, params) => {
     .then(clearToken());
 };
 
-// Tokens
-
-export const createToken = (name) => {
-    return requestWithToken({
-        method: 'POST',
-        url: '/user/me/token',
-        data: { name },
-    });
-};
-
-export const deleteToken = (name) => {
-    return requestWithToken({
-        method: 'DELETE',
-        url: `/user/me/token/${name}`,
-    });
-};
-
-// Used?
-export const getToken = (name) => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/user/me/token/${name}`,
-    });
-};
-
-// Profile page
-export const getTokens = () => {
-    return requestWithToken({
-        method: 'GET',
-        url: '/user/me/token',
-    });
-};
-
-export const deleteUserToken = (name, userId) => {
-    return requestWithToken({
-        method: 'DELETE',
-        url: `/user/${userId}/token/${name}`,
-    });
-};
-
-export const deleteUserTokens = (userId, params) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/user/${userId}/revoke`,
-        params
-    });
-};
-
-export const getUserTokens = (userId) => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/user/${userId}/token`,
-    });
-};
-
-
 export default {
     createToken,
-    deleteToken,
-    getToken,
-    getTokens,
-    deleteUserToken,
-    deleteUserTokens,
-
     createUser,
     deactivateUser,
+    deleteToken,
+    deleteUserToken,
+    deleteUserTokens,
     demoteUser,
     editUser,
     forcePasswordChange,
     getCurrentUser,
+    getToken,
+    getTokens,
     getUser,
     getUsers,
     promoteUser,

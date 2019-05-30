@@ -52,6 +52,24 @@ describe('users API', () => {
         });
     });
 
+    describe('deleteToken', () => {
+        let tokenName;
+
+        beforeEach(() => {
+            tokenName = 'testToken';
+
+            nock(conchApi)
+                .delete(`/user/me/token/${tokenName}`)
+                .reply(200, {});
+        });
+
+        test('should return a status of 200', async () => {
+            expect.assertions(1);
+            response = await Users.deleteToken(tokenName);
+            expect(response.status).toEqual(200);
+        });
+    });
+
     describe('demoteUser', () => {
         beforeEach(() => {
             userId = users[0].id;
@@ -118,6 +136,24 @@ describe('users API', () => {
         test('should return a status of 200', async () => {
             expect.assertions(1);
             response = await Users.getCurrentUser();
+            expect(response.status).toEqual(200);
+        });
+    });
+
+    describe('getToken', () => {
+        let tokenName;
+
+        beforeEach(() => {
+            tokenName = 'testToken';
+
+            nock(conchApi)
+                .get(`/user/me/token/${tokenName}`)
+                .reply(200, {});
+        });
+
+        test('should return a status of 200', async () => {
+            expect.assertions(1);
+            response = await Users.getToken(tokenName);
             expect(response.status).toEqual(200);
         });
     });

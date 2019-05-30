@@ -7,6 +7,13 @@ export const getDeviceDetails = (id) => {
     });
 };
 
+export const getDevicePhase = (id) => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/device/${id}/phase`,
+    });
+};
+
 export const getDeviceSettings = (id) => {
     return requestWithToken({
         method: 'GET',
@@ -39,10 +46,20 @@ export const setAssetTag = (id, assetTag) => {
     });
 };
 
+export const setDevicePhase = (id, data) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/device/${id}/phase`,
+        data
+    });
+};
+
 export default {
     getDeviceDetails,
+    getDevicePhase,
     getDeviceSettings,
     getDeviceValidations,
     getLocation,
     setAssetTag,
+    setDevicePhase,
 };

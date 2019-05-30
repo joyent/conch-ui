@@ -27,6 +27,22 @@
                     {{ progress }}
                 </a>
             </p>
+            <div
+                class="panel-block"
+                style="justify-content: center; position: relative;"
+            >
+                <p class="rack-phase">
+                    Rack Phase: <span class="is-capitalized">{{ rackLayout.phase }}</span>
+                </p>
+                <a
+                    class="button update-phase is-small is-primary"
+                    v-if="userHasPermissions"
+                    @click="updatingPhase = true"
+                    style="position: absolute; right: 12px;"
+                >
+                    Update Rack Phase
+                </a>
+            </div>
             <div class="panel-block">
                 <button
                     class="button is-primary is-outlined is-fullwidth is-small"
@@ -81,10 +97,18 @@
             </table>
         </nav>
         <EditLayoutModal :device-slots="normalizedSlots" />
+        <transition name="fade">
+            <PhaseUpdateModal
+                :item="'rack'"
+                :itemData="rackLayout"
+                v-if="updatingPhase"
+            />
+        </transition>
     </div>
 </template>
 
 <script>
+import PhaseUpdateModal from '@src/views/components/PhaseUpdateModal.vue';
 import EditLayoutModal from './EditLayoutModal.vue';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
 import Spinner from '@views/components/Spinner.vue';
@@ -103,6 +127,7 @@ export default {
     },
     components: {
         EditLayoutModal,
+        PhaseUpdateModal,
         ProgressIcon,
         Spinner,
     },
@@ -111,6 +136,7 @@ export default {
             deviceSearchText: '',
             selectedProgress: 'all',
             showModal: false,
+            updatingPhase: false,
         };
     },
     methods: {
@@ -126,6 +152,9 @@ export default {
 
             EventBus.$emit('openModal:deviceModal');
         },
+        closeModal() {
+            this.updatingPhase = false;
+        },
         deviceFilter(occupant) {
             const deviceId = occupant ? occupant.id.toLowerCase() : '';
             const assetTag = occupant && occupant.asset_tag ? occupant.asset_tag.toLowerCase() : '';
@@ -140,6 +169,7 @@ export default {
     },
     computed: {
         ...mapState([
+            'currentWorkspace',
             'highlightDeviceId',
             'rackLayout',
         ]),
@@ -182,6 +212,15 @@ export default {
                     };
                 });
         },
+        userHasPermissions() {
+            return this.currentWorkspace.role === 'admin' ||
+                   this.currentWorkspace.role === 'rw';
+        },
+    },
+    mounted() {
+        EventBus.$on('closeModal:baseModal', () => {
+            this.closeModal();
+        });
     },
 };
 </script>

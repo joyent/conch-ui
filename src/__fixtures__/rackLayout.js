@@ -2,6 +2,7 @@ export const rack = {
     datacenter: "eu-southwest-1f",
     id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
     name: "DS-23C-232168",
+    phase: "integration",
     role: "CERES",
     slots: [
         {
@@ -95,6 +96,7 @@ export const rackLayout = {
     datacenter: "eu-southwest-1f",
     id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
     name: "DS-23C-232168",
+    phase: "integration",
     role: "CERES",
     slots: {
         1: {
