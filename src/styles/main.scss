@@ -335,6 +335,30 @@ aside.menu {
 	}
 }
 
+.sign-in {
+	.api-version-notification {
+		.notification {
+			border-radius: 4px;
+			padding: 1.25em;
+
+			.help-link {
+				margin-top: 10px;
+				transition: color 0.1s ease-in-out;
+
+				&:hover {
+					color: $grey-darker;
+					transition: color 0.1s ease-in-out;
+				}
+			}
+
+			.api-version-help,
+			.button.conch-releases {
+				margin-top: 20px;
+			}
+		}
+	}
+}
+
 .session-notification {
 	.message-header {
 		padding: 0.6em 0.5em 0.6em 1.5em;

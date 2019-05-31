@@ -1,5 +1,16 @@
-
 // Conch API URI
 const conchApi = "http://localhost:5001";
 
-export { conchApi };
+// Conch API Releases
+const conchReleaseUrl = "https://github.com/joyent/conch/releases";
+
+// Conch API Version Requirements
+const breakingApiVersion = "3.0.0";
+const minimumApiVersion = "2.27.0";
+
+export {
+    breakingApiVersion,
+    conchApi,
+    conchReleaseUrl,
+    minimumApiVersion
+};

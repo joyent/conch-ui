@@ -1,5 +1,5 @@
 <template>
-    <section class="hero is-fullheight">
+    <section class="sign-in hero is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
                 <div
@@ -19,6 +19,35 @@
                             Your session has been invalidated. Please sign in again.
                         </div>
                     </article>
+                </div>
+                <div
+                    class="column is-6 is-offset-3 api-version-notification"
+                    v-if="incompatibleApiVersion"
+                >
+                    <div class="notification is-danger">
+                        <p>The API does not meet version requirements.</p>
+                        <a
+                            class="is-size-7 help-link"
+                            @click="showHelp = !showHelp"
+                        >
+                            How do I fix this problem?
+                        </a>
+                        <p class="api-version-help" v-if="showHelp">
+                            You need to update Conch API to a compatible version.
+                            <br>
+                            We recommend using the latest release preceding
+                            <strong class="has-text-white">
+                                v{{ breakingApiVersion }}
+                            </strong>.
+                            <a
+                                class="button is-info conch-releases"
+                                :href="conchReleaseUrl"
+                                target="_blank"
+                            >
+                                Latest Conch API Releases
+                            </a>
+                        </p>
+                    </div>
                 </div>
                 <div class="column is-4 is-offset-4">
                     <div class="box">
@@ -54,9 +83,10 @@
                             </div>
                             <button
                                 type="button"
-                                class="button is-primary is-fullwidth"
+                                class="button sign-in is-primary is-fullwidth"
                                 :class="{ 'is-loading': isLoading }"
                                 @click="signIn()"
+                                :disabled="incompatibleApiVersion"
                             >
                                 Login
                             </button>
@@ -70,6 +100,13 @@
 
 <script>
 import isEmpty from 'lodash/isEmpty';
+import semver from 'semver';
+import {
+    breakingApiVersion,
+    conchReleaseUrl,
+    minimumApiVersion
+} from '@src/config.js';
+import { getApiVersion } from '@api/conchApiVersion.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { getCurrentUser } from '@api/users.js';
 import { login } from '@api/authentication.js';
@@ -78,11 +115,17 @@ import { loadAllWorkspaces } from '@api/workspaces.js';
 export default {
     data() {
         return {
+            apiVersion: '',
             badLoginAttempt: false,
+            breakingApiVersion: '',
+            conchReleaseUrl: '',
             currentWorkspaceId: '',
             emailAddress: '',
+            incompatibleApiVersion: false,
             isLoading: false,
+            minimumApiVersion: '',
             password: '',
+            showHelp: false,
             showNotification: true,
         };
     },
@@ -167,6 +210,29 @@ export default {
             'invalidCredentials',
             'workspaces',
         ]),
+    },
+    created() {
+        this.breakingApiVersion = breakingApiVersion;
+        this.minimumApiVersion = minimumApiVersion;
+        this.conchReleaseUrl = conchReleaseUrl;
+
+        getApiVersion()
+            .then(response => {
+                const range = `${minimumApiVersion} - ${breakingApiVersion}`;
+                let apiVersion = response.data.version;
+                let index;
+
+                if (apiVersion.indexOf('-') !== -1) {
+                    index = apiVersion.indexOf('-');
+                    apiVersion = apiVersion.slice(0, index);
+                }
+
+                this.apiVersion = apiVersion;
+
+                if (!semver.satisfies(apiVersion, range)) {
+                    this.incompatibleApiVersion = true;
+                }
+            });
     },
 };
 </script>

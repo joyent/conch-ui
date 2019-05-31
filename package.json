@@ -14,6 +14,7 @@
     "lodash": "^4.17.14",
     "moment": "^2.22.1",
     "popper.js": "^1.12.5",
+    "semver": "^6.1.1",
     "tooltip.js": "^1.1.5",
     "vue": "^2.6.10",
     "vue-router": "^3.0.2",
