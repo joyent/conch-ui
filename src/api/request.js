@@ -16,7 +16,18 @@ export const setToken = (token) => {
 };
 
 export const request = (args) => {
+    const uiHeader = {
+        'X-Conch-UI': CONCH.GLOBALS.conchUIVersion,
+    };
+
+    if (args.headers) {
+        args.headers = Object.assign(args.headers, uiHeader);
+    } else {
+        args.headers = uiHeader;
+    }
+
     args.withCredentials = true;
+
     return axios(args);
 };
 
