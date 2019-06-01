@@ -3,12 +3,14 @@ import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import * as authentication from '@api/authentication.js';
 import * as users from '@api/users.js';
+import * as conchApiVersion from '@api/conchApiVersion.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 jest.mock('@api/request.js');
 jest.mock('@api/authentication.js');
+jest.mock('@api/conchApiVersion.js');
 
 describe('SignIn.vue', () => {
     let actions;
@@ -44,6 +46,10 @@ describe('SignIn.vue', () => {
 
     test('should not display warning text on initial render', () => {
         expect(wrapper.html()).not.toContain('Invalid email address or password');
+    });
+
+    test('should not display a disabled Login button on initial render', () => {
+        expect(wrapper.find('button.sign-in').attributes('disabled')).toBeFalsy();
     });
 
     test('should display warning text when bad login info is submitted', () => {
@@ -94,5 +100,27 @@ describe('SignIn.vue', () => {
         wrapper.find('button').trigger('click');
 
         expect(spy).toHaveBeenCalledWith({ user: 'validuser@joyent.com', password: 'goodPassword' });
+    });
+
+    describe('bad API version', () => {
+        beforeEach(() => {
+            jest.spyOn(conchApiVersion, 'getApiVersion').mockReturnValue(
+                Promise.resolve({
+                    data: {
+                        version: '2.25.0'
+                    },
+                })
+            );
+
+            wrapper = shallowMount(SignIn, { localVue, mocks, store });
+        });
+
+        test('should display a notification if API version does not meet requirements', () => {
+            expect(wrapper.find('.api-version-notification').exists()).toBeTruthy();
+        });
+
+        test('should disable login button if API version does not meet requirements', () => {
+            expect(wrapper.find('button.sign-in').attributes('disabled')).toBeTruthy();
+        });
     });
 });
