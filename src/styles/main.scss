@@ -439,7 +439,8 @@ progress::-webkit-progress-value {
 	}
 }
 
-.users-table {
+.users-table,
+.auth-users-table {
 	tfoot {
 		border-bottom-width: 1px;
 		border-bottom-color: $grey;
