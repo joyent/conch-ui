@@ -41,7 +41,7 @@
                 </li>
                 <li>
                     <a
-                        class="pagination-link"
+                        class="pagination-link page"
                         :class="{ 'is-current': currentPage === 1 }"
                         v-if="currentPage <= 2"
                         @click="paginate(1)"
@@ -49,14 +49,14 @@
                         1
                     </a>
                     <a
-                        class="pagination-link"
+                        class="pagination-link page"
                         v-else-if="currentPage === totalPages"
                         @click="paginate(currentPage - 2)"
                     >
                         {{ currentPage - 2 }}
                     </a>
                     <a
-                        class="pagination-link"
+                        class="pagination-link page"
                         @click="paginate(currentPage - 1)"
                         v-else
                     >
@@ -65,7 +65,7 @@
                 </li>
                 <li v-if="totalPages >= 2">
                     <a
-                        class="pagination-link"
+                        class="pagination-link page"
                         :class="{ 'is-current': currentPage === 2 }"
                         v-if="currentPage <= 2"
                         @click="paginate(2)"
@@ -73,14 +73,14 @@
                         2
                     </a>
                     <a
-                        class="pagination-link"
+                        class="pagination-link page"
                         @click="paginate(currentPage - 1)"
                         v-else-if="currentPage === totalPages"
                     >
                         {{ currentPage - 1}}
                     </a>
                     <a
-                        class="pagination-link"
+                        class="pagination-link page"
                         :class="{ 'is-current': currentPage !== 1 && currentPage !== totalPages }"
                         v-else
                     >
@@ -90,21 +90,21 @@
                 </li>
                 <li v-if="totalPages >= 3">
                     <a
-                        class="pagination-link"
+                        class="pagination-link page"
                         v-if="currentPage <= 2"
                         @click="paginate(3)"
                     >
                         3
                     </a>
                     <a
-                        class="pagination-link"
+                        class="pagination-link page"
                         :class="{ 'is-current': currentPage === totalPages }"
                         v-else-if="currentPage === totalPages"
                     >
                         {{ currentPage }}
                     </a>
                     <a
-                        class="pagination-link"
+                        class="pagination-link page"
                         @click="paginate(currentPage + 1)"
                         v-else
                     >
