@@ -29,7 +29,7 @@
         </div>
         <nav class="pagination">
             <ul class="pagination-list">
-                <li>
+                <li v-if="totalPages > 1">
                     <a
                         class="pagination-link prev"
                         :disabled="currentPage === 1"
@@ -40,14 +40,14 @@
                     </a>
                 </li>
                 <li>
-                    <div
+                    <a
                         class="pagination-link"
                         :class="{ 'is-current': currentPage === 1 }"
                         v-if="currentPage <= 2"
                         @click="paginate(1)"
                     >
                         1
-                    </div>
+                    </a>
                     <a
                         class="pagination-link"
                         v-else-if="currentPage === totalPages"
@@ -112,7 +112,7 @@
                     </a>
 
                 </li>
-                <li>
+                <li v-if="totalPages > 1">
                     <a
                         class="pagination-link next"
                         :disabled="currentPage === totalPages"

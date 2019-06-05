@@ -101,16 +101,47 @@ table.table {
     }
 
     .pagination {
-        a.next {
-            i {
-                margin-left: 10px;
+        .pagination-list {
+            li {
+                margin-bottom: 0;
+            }
+
+            a.next {
+                i {
+                    margin-left: 10px;
+                }
+            }
+
+            a.prev {
+                i {
+                    margin-right: 10px;
+                }
             }
         }
+    }
 
-        a.prev {
-            i {
-                margin-right: 10px;
-            }
+    .pagination-link {
+        background-color: $grey-darker;
+        border-color: $grey-light;
+        color: $grey-lighter;
+        border-radius: 4px;
+
+        &.is-current {
+            background-color: $grey-darker;
+            border-color: #209cee;
+            color: #209cee;
+            font-weight: bold;
+        }
+
+        &:hover {
+            border-color: $white;
+            color: $white;
+        }
+
+        &[disabled] {
+            background-color: $grey-light;
+            border-color: $grey-light;
+            color: $dark;
         }
     }
 }
