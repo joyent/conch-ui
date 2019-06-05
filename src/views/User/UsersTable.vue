@@ -244,8 +244,6 @@ export default {
         return {
             activeDropdown: null,
             currentPage: 1,
-            currentResultsEnd: 25,
-            currentResultsStart: 1,
             resultsPerPage: 25,
             reversedSort: false,
             sortFilter: '',
