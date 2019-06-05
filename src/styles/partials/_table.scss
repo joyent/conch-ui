@@ -36,9 +36,6 @@
 }
 
 table.table {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-
     td,
     tfoot th,
     thead th {
@@ -85,6 +82,34 @@ table.table {
                         border-color: #4E5D6C;
                     }
                 }
+            }
+        }
+    }
+}
+
+.table-pagination {
+    background-color: $grey-dark;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    .current-results {
+        flex-grow: 1;
+        margin: 0 20px;
+    }
+
+    .pagination {
+        a.next {
+            i {
+                margin-left: 10px;
+            }
+        }
+
+        a.prev {
+            i {
+                margin-right: 10px;
             }
         }
     }
