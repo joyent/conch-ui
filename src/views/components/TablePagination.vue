@@ -16,7 +16,8 @@
             </div>
         </div>
         <div class="current-results">
-            <p v-if="currentPage === 1 && currentPage === totalPages">
+            <p v-if="totalResults === 0">0 results</p>
+            <p v-else-if="currentPage === 1 && currentPage === totalPages">
                 1 - {{ totalResults }} of {{ totalResults }} results
             </p>
             <p v-else-if="currentPage === 1 && currentPage !== totalPages">
@@ -38,6 +39,17 @@
                         <i class="fas fa-arrow-left"></i>
                         <span>Prev</span>
                     </a>
+                </li>
+                <li v-if="totalPages > 4 && currentPage > 2">
+                    <a
+                        class="pagination-link page"
+                        @click="paginate(1)"
+                    >
+                        1
+                    </a>
+                </li>
+                <li v-if="totalPages > 4 && currentPage > 2">
+                    <span class="pagination-link ellipsis">...</span>
                 </li>
                 <li>
                     <a
@@ -111,6 +123,17 @@
                         {{ currentPage + 1 }}
                     </a>
 
+                </li>
+                <li v-if="totalPages > 4 && currentPage < totalPages - 2">
+                    <span class="pagination-link ellipsis">...</span>
+                </li>
+                <li v-if="totalPages > 4 && currentPage < totalPages - 2">
+                    <a
+                        class="pagination-link"
+                        @click="paginate(totalPages)"
+                    >
+                        <span>{{ totalPages }}</span>
+                    </a>
                 </li>
                 <li v-if="totalPages > 1">
                     <a
