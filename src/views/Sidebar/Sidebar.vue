@@ -23,6 +23,21 @@
                 </router-link>
             </li>
         </ul>
+        <p class="menu-label">Organizations</p>
+        <ul class="menu-list">
+            <li>
+                <router-link
+                    :to="{
+                        name: 'organization',
+                        params: { organizationId: 'a2dbe92ledsa99d' },
+                    }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-hat-wizard"></i>
+                    Star Wars Build Team
+                </router-link>
+            </li>
+        </ul>
         <p class="menu-label">Datacenter Builds</p>
         <ul class="menu-list">
             <li class="nav-item">
@@ -91,14 +106,20 @@
                     <span>Users</span>
                 </router-link>
             </li>
+            <li class="nav-item">
+                <router-link
+                    :to="{ name: 'organizations' }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-city"></i>
+                    Organizations
+                </router-link>
+            </li>
         </ul>
         <p class="menu-label">Conch</p>
         <ul class="menu-list">
             <li class="nav-item">
-                <router-link
-                    :to="{ name: 'user' }"
-                    active-class="is-active"
-                >
+                <router-link :to="{ name: 'user' }" active-class="is-active">
                     <i class="fas fa-lg fa-user"></i>
                     <span>Profile</span>
                 </router-link>
