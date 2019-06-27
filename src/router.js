@@ -13,6 +13,8 @@ import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import PasswordReset from './views/PasswordReset/PasswordReset.vue';
 import Builds from './views/Builds/Builds.vue';
 import SingleBuild from './views/Builds/SingleBuild.vue';
+import Organizations from './views/Organizations/Organizations.vue';
+import SingleOrganization from './views/Organizations/SingleOrganization.vue';
 
 Vue.use(Router);
 
@@ -155,6 +157,24 @@ export default new Router({
             name: 'passwordReset',
             component: {
                 PasswordReset,
+            },
+        },
+        {
+            path: '/admin/organizations',
+            name: 'organizations',
+            components: {
+                default: Organizations,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
+        },
+        {
+            path: '/organization/:organizationId',
+            name: 'organization',
+            components: {
+                default: SingleOrganization,
+                sidebar: Sidebar,
+                navbar: Navbar,
             },
         },
         {
