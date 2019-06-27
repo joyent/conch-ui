@@ -9,6 +9,21 @@
                 @click="navigateHomepage()"
             />
         </div>
+        <p class="menu-label">Organizations</p>
+        <ul class="menu-list">
+            <li>
+                <router-link
+                    :to="{
+                        name: 'organization',
+                        params: { organizationId: 'a2dbe92ledsa99d' },
+                    }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-hat-wizard"></i>
+                    Star Wars Build Team
+                </router-link>
+            </li>
+        </ul>
         <p class="menu-label">Datacenter Builds</p>
         <ul class="menu-list">
             <li class="nav-item">
@@ -18,7 +33,6 @@
                         params: { currentWorkspace: this.workspaceId },
                     }"
                     active-class="is-active"
-                    data-tooltip="Status"
                 >
                     <i class="fas fa-lg fa-satellite-dish"></i>
                     <span>Status</span>
@@ -31,7 +45,6 @@
                         params: { currentWorkspace: this.workspaceId },
                     }"
                     active-class="is-active"
-                    data-tooltip="Browse"
                 >
                     <i class="fas fa-lg fa-search"></i>
                     <span>Browse</span>
@@ -44,7 +57,6 @@
                         params: { currentWorkspace: this.workspaceId },
                     }"
                     active-class="is-active"
-                    data-tooltip="Devices"
                 >
                     <i class="fas fa-lg fa-server"></i>
                     <span>Devices</span>
@@ -54,11 +66,7 @@
         <p v-if="currentUser.is_admin" class="menu-label">Conch Admin</p>
         <ul class="menu-list" v-if="currentUser.is_admin">
             <li class="nav-item">
-                <router-link
-                    :to="{ name: 'tokens' }"
-                    active-class="is-active"
-                    data-tooltip="Tokens"
-                >
+                <router-link :to="{ name: 'tokens' }" active-class="is-active">
                     <i class="fas fa-lg fa-key"></i>
                     <span>Tokens</span>
                 </router-link>
@@ -67,27 +75,31 @@
                 <router-link
                     :to="{ name: 'user-management' }"
                     active-class="is-active"
-                    data-tooltip="Users"
                 >
                     <i class="fas fa-lg fa-users"></i>
                     <span>Users</span>
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link
+                    :to="{ name: 'organizations' }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-city"></i>
+                    Organizations
                 </router-link>
             </li>
         </ul>
         <p class="menu-label">Conch</p>
         <ul class="menu-list">
             <li class="nav-item">
-                <router-link
-                    :to="{ name: 'user' }"
-                    active-class="is-active"
-                    data-tooltip="Profile"
-                >
+                <router-link :to="{ name: 'user' }" active-class="is-active">
                     <i class="fas fa-lg fa-user"></i>
                     <span>Profile</span>
                 </router-link>
             </li>
             <li class="nav-item">
-                <a class="sign-out" @click="signOut()" data-tooltip="Log Out">
+                <a class="sign-out" @click="signOut()">
                     <i class="fas fa-lg fa-sign-out-alt"></i>
                     <span>Log Out</span>
                 </a>

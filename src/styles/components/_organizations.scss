@@ -1,0 +1,153 @@
+.organization {
+	.stats {
+		transition: all 0.2s ease-in-out;
+
+		&:hover {
+			background-color: lighten($grey-dark, 2%);
+			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+			transition: all 0.2s ease-in-out;
+		}
+	}
+
+	.tag {
+		border-radius: 4px;
+	}
+
+	.table-header {
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+	}
+
+	.datatable-simple {
+		transition: all 0.2s ease-in-out;
+
+		th {
+			border: none;
+		}
+
+		table.table {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		.datatable-header,
+		.row-simple {
+			display: flex;
+			align-items: stretch;
+		}
+
+		.row,
+		.row-simple {
+			background-color: darken($grey-darker, 4%);
+
+			td {
+				border: none;
+			}
+		}
+
+		.datatable-header {
+			display: flex;
+			background-color: #4A5DBD;
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+		}
+
+		.datatable-header-title,
+		.table-data {
+			align-items: center;
+			color: #bdcbdb;
+			display: flex;
+			flex-grow: 1;
+			font-weight: 700;
+			padding: 0.75rem;
+		}
+
+		.datatable-header-icon {
+			color: $white;
+			padding: 15px 12px;
+
+			&:hover {
+				color: $grey-lighter;
+			}
+		}
+
+		.datatable-header-icon,
+		.row-action-button {
+			align-items: center;
+			cursor: pointer;
+			display: flex;
+			justify-content: center;
+		}
+
+		.row-action-button a i &:hover {
+			color: $red;
+		}
+
+		.row-action-button,
+		.table-data {
+			border: none;
+		}
+
+		.datatable-footer {
+			background-color: $grey;
+			border-top: 1px solid #4E5D6C;
+			border-bottom-left-radius: 4px;
+			border-bottom-right-radius: 4px;
+			align-items: stretch;
+			display: flex;
+			font-weight: bold;
+			transition: background-color 0.2s ease-in-out;
+
+			a {
+				color: $white;
+			}
+
+			.datatable-footer-item {
+				align-items: center;
+				display: flex;
+				flex-basis: 0;
+				flex-grow: 1;
+				flex-shrink: 0;
+				justify-content: center;
+				padding: 0.75rem;
+
+				i {
+					margin: 0 15px;
+				}
+			}
+
+			&.add {
+				&:hover {
+					background-color: $green;
+					transition: background-color 0.2s ease-in-out;
+				}
+			}
+		}
+
+		&:hover {
+			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+			transition: all 0.2s ease-in-out;
+		}
+	}
+
+	.button-delete,
+	.fa-trash-alt {
+		&:hover {
+			color: $red;
+		}
+	}
+
+	.dropdown-item {
+		&.add {
+			&:hover {
+				color: $green;
+			}
+		}
+
+		&.remove {
+			&:hover {
+				color: $red;
+			}
+		}
+	}
+}

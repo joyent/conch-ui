@@ -10,6 +10,8 @@ import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTok
 import Navbar from './views/Navbar/Navbar.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
+import Organizations from './views/Organizations/Organizations.vue';
+import SingleOrganization from './views/Organizations/SingleOrganization.vue';
 
 Vue.use(Router);
 
@@ -117,6 +119,24 @@ export default new Router({
             name: 'user-management',
             components: {
                 default: UserManagement,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
+        },
+        {
+            path: '/admin/organizations',
+            name: 'organizations',
+            components: {
+                default: Organizations,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
+        },
+        {
+            path: '/organization/:organizationId',
+            name: 'organization',
+            components: {
+                default: SingleOrganization,
                 sidebar: Sidebar,
                 navbar: Navbar,
             },
