@@ -1,37 +1,103 @@
 <template>
     <Spinner v-if="!workspaceId" />
     <aside class="menu" v-else>
+        <div class="brand">
+            <img
+                class="brand-icon"
+                src="../../assets/brand.png"
+                width="150px"
+                @click="navigateHomepage()"
+            >
+        </div>
         <p class="menu-label">Datacenter Builds</p>
         <ul class="menu-list">
-            <li>
-                <router-link :to="{ name: 'status', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Status</router-link>
+            <li class="nav-item">
+                <router-link
+                    :to="{
+                        name: 'status',
+                        params: { currentWorkspace: this.workspaceId }
+                    }"
+                    active-class="is-active"
+                    data-tooltip="Status"
+                >
+                    <i class="fas fa-lg fa-satellite-dish"></i>
+                    <span>Status</span>
+                </router-link>
             </li>
-            <li>
-                <router-link :to="{ name: 'datacenter', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Browse</router-link>
+            <li class="nav-item">
+                <router-link
+                    :to="{
+                        name: 'datacenter',
+                        params: { currentWorkspace: this.workspaceId }
+                    }"
+                    active-class="is-active"
+                    data-tooltip="Browse"
+                >
+                    <i class="fas fa-lg fa-search"></i>
+                    <span>Browse</span>
+                </router-link>
             </li>
-            <li>
-                <router-link :to="{ name: 'devices', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Devices</router-link>
+            <li class="nav-item">
+                <router-link
+                    :to="{
+                        name: 'devices',
+                        params: { currentWorkspace: this.workspaceId }
+                    }"
+                    active-class="is-active"
+                    data-tooltip="Devices"
+                >
+                    <i class="fas fa-lg fa-server"></i>
+                    <span>Devices</span>
+                </router-link>
             </li>
         </ul>
-        <p class="menu-label" v-if="currentUser.is_admin">Conch Admin</p>
+        <p v-if="currentUser.is_admin" class="menu-label">Conch Admin</p>
         <ul class="menu-list" v-if="currentUser.is_admin">
-            <li>
-                <router-link :to="{ name: 'tokens' }" active-class="is-active">Tokens</router-link>
+            <li class="nav-item">
+                <router-link
+                    :to="{ name: 'tokens' }"
+                    active-class="is-active"
+                    data-tooltip="Tokens"
+                >
+                    <i class="fas fa-lg fa-key"></i>
+                    <span>Tokens</span>
+                </router-link>
             </li>
-            <li>
-                <router-link :to="{ name: 'user-management' }" active-class="is-active">Users</router-link>
+            <li class="nav-item">
+                <router-link
+                    :to="{ name: 'user-management' }"
+                    active-class="is-active"
+                    data-tooltip="Users"
+                >
+                    <i class="fas fa-lg fa-users"></i>
+                    <span>Users</span>
+                </router-link>
             </li>
         </ul>
         <p class="menu-label">Conch</p>
         <ul class="menu-list">
-            <li>
-                <router-link :to="{ name: 'user' }" active-class="is-active">Profile</router-link>
+            <li class="nav-item">
+                <router-link
+                    :to="{ name: 'user' }"
+                    active-class="is-active"
+                    data-tooltip="Profile"
+                >
+                    <i class="fas fa-lg fa-user"></i>
+                    <span>Profile</span>
+                </router-link>
             </li>
-            <li>
-                <a class="sign-out" @click="signOut()">Log out</a>
+            <li class="nav-item">
+                <a
+                    class="sign-out"
+                    @click="signOut()"
+                    data-tooltip="Log Out"
+                >
+                    <i class="fas fa-lg fa-sign-out-alt"></i>
+                    <span>Log Out</span>
+                </a>
             </li>
         </ul>
-        <br />
+        <!-- <br />
         <div class="box conch-versions">
             <p class="heading">Conch Versions</p>
             <div class="tags-container">
@@ -44,7 +110,7 @@
                     <div class="tag is-dark">{{ conchUIVersion }}</div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </aside>
 </template>
 
@@ -66,6 +132,12 @@ export default {
         };
     },
     methods: {
+        navigateHomepage() {
+            this.$router.push({
+                name: 'status',
+                params: { currentWorkspace: this.currentWorkspaceId },
+            });
+        },
         signOut() {
             logout()
                 .then(() => {
