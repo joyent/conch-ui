@@ -1,16 +1,6 @@
 <template>
 <div class="navbar" role="navigation">
-    <div class="navbar-brand">
-        <div class="navbar-item">
-            <a class="title">Conch</a>
-        </div>
-        <div class="navbar-burger" :class="{ 'is-active': menuActive }" @click="menuActive = !menuActive">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
-    <div class="navbar-menu" :class="{ 'is-active': menuActive }">
+    <div class="navbar-menu">
         <div class="navbar-end">
             <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">
@@ -18,18 +8,36 @@
                 </a>
                 <div class="navbar-dropdown is-right">
                     <ul v-if="sortedWorkspaceRoots.length">
-                        <li v-for="(workspace, index) in sortedWorkspaceRoots" :key="index">
-                            <a class="navbar-item" @click="changeWorkspace(workspace.id)">
+                        <li
+                            v-for="(workspace, index) in sortedWorkspaceRoots"
+                            :key="index"
+                        >
+                            <a
+                                class="navbar-item"
+                                @click="changeWorkspace(workspace.id)"
+                            >
                                 {{ workspace.name }}
                             </a>
                             <ul v-if="sortedWorkspaceGraph(workspace.id)">
-                                <li v-for="(sortedWorkspace, index) in sortedWorkspaceGraph(workspace.id)" :key="index">
-                                    <a class="navbar-item" @click="changeWorkspace(sortedWorkspace.id)">
+                                <li
+                                    v-for="(sortedWorkspace, index) in sortedWorkspaceGraph(workspace.id)"
+                                    :key="index"
+                                >
+                                    <a
+                                        class="navbar-item"
+                                        @click="changeWorkspace(sortedWorkspace.id)"
+                                    >
                                         {{ sortedWorkspace.name }}
                                     </a>
                                     <ul>
-                                        <li v-for="(sortedSubWorkspace, index) in sortedWorkspaceGraph(sortedWorkspace.id)" :key="index">
-                                            <a class="navbar-item" @click="changeWorkspace(sortedSubWorkspace.id)">
+                                        <li
+                                            v-for="(sortedSubWorkspace, index) in sortedWorkspaceGraph(sortedWorkspace.id)"
+                                            :key="index"
+                                        >
+                                            <a
+                                                class="navbar-item"
+                                                @click="changeWorkspace(sortedSubWorkspace.id)"
+                                            >
                                                 {{ sortedSubWorkspace.name }}
                                             </a>
                                         </li>
@@ -52,18 +60,11 @@ import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
-    data() {
-        return {
-            menuActive: false,
-        };
-    },
     methods: {
         ...mapActions([
             'setCurrentWorkspace',
         ]),
         changeWorkspace(workspaceId) {
-            this.menuActive = false;
-
             this.setCurrentWorkspace(this.loadCurrentWorkspace(workspaceId));
             sessionStorage.setItem('currentWorkspace', workspaceId);
 

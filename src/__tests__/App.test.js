@@ -71,7 +71,7 @@ describe('App.vue', () => {
 
             test('should display an unnamed router-view component for the main component', () => {
                 const component = wrapper.findAll('router-view-stub').filter(view => {
-                    return isEmpty(view.attributes());
+                    return !view.attributes('id');
                 });
 
                 expect(component.exists()).toBeTruthy();
@@ -93,14 +93,6 @@ describe('App.vue', () => {
                 });
 
                 expect(navbar.exists()).toBeTruthy();
-            });
-
-            test('should display an unnamed router-view component for the main component', () => {
-                const component = wrapper.findAll('router-view-stub').filter(view => {
-                    return isEmpty(view.attributes());
-                });
-
-                expect(component.exists()).toBeTruthy();
             });
         });
     });

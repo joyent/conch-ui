@@ -2,39 +2,27 @@
 
 exports[`Sidebar.vue should render correctly on initial render 1`] = `
 <aside class="menu">
+  <div class="brand"><img src="../../assets/brand.png" width="150px" class="brand-icon"></div>
   <p class="menu-label">Datacenter Builds</p>
   <ul class="menu-list">
-    <li>
-      <router-link-stub to="[object Object]" active-class="is-active">Status</router-link-stub>
+    <li class="nav-item">
+      <router-link-stub to="[object Object]" active-class="is-active" data-tooltip="Status"><i class="fas fa-lg fa-satellite-dish"></i> <span>Status</span></router-link-stub>
     </li>
-    <li>
-      <router-link-stub to="[object Object]" active-class="is-active">Browse</router-link-stub>
+    <li class="nav-item">
+      <router-link-stub to="[object Object]" active-class="is-active" data-tooltip="Browse"><i class="fas fa-lg fa-search"></i> <span>Browse</span></router-link-stub>
     </li>
-    <li>
-      <router-link-stub to="[object Object]" active-class="is-active">Devices</router-link-stub>
+    <li class="nav-item">
+      <router-link-stub to="[object Object]" active-class="is-active" data-tooltip="Devices"><i class="fas fa-lg fa-server"></i> <span>Devices</span></router-link-stub>
     </li>
   </ul>
   <!---->
   <!---->
   <p class="menu-label">Conch</p>
   <ul class="menu-list">
-    <li>
-      <router-link-stub to="[object Object]" active-class="is-active">Profile</router-link-stub>
+    <li class="nav-item">
+      <router-link-stub to="[object Object]" active-class="is-active" data-tooltip="Profile"><i class="fas fa-lg fa-user"></i> <span>Profile</span></router-link-stub>
     </li>
-    <li><a class="sign-out">Log out</a></li>
-  </ul> <br>
-  <div class="box conch-versions">
-    <p class="heading">Conch Versions</p>
-    <div class="tags-container">
-      <div class="tags has-addons">
-        <div class="tag is-primary">API</div>
-        <div class="tag is-dark">v2.21.2-10-gabc90b5f</div>
-      </div>
-      <div class="tags has-addons">
-        <div class="tag is-primary">UI</div>
-        <div class="tag is-dark">v2.22.1-31-gece90b5f</div>
-      </div>
-    </div>
-  </div>
+    <li class="nav-item"><a data-tooltip="Log Out" class="sign-out"><i class="fas fa-lg fa-sign-out-alt"></i> <span>Log Out</span></a></li>
+  </ul>
 </aside>
 `;
