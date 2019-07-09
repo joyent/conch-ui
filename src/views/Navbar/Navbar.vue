@@ -8,18 +8,36 @@
                 </a>
                 <div class="navbar-dropdown is-right">
                     <ul v-if="sortedWorkspaceRoots.length">
-                        <li v-for="(workspace, index) in sortedWorkspaceRoots" :key="index">
-                            <a class="navbar-item" @click="changeWorkspace(workspace.id)">
+                        <li
+                            v-for="(workspace, index) in sortedWorkspaceRoots"
+                            :key="index"
+                        >
+                            <a
+                                class="navbar-item"
+                                @click="changeWorkspace(workspace.id)"
+                            >
                                 {{ workspace.name }}
                             </a>
                             <ul v-if="sortedWorkspaceGraph(workspace.id)">
-                                <li v-for="(sortedWorkspace, index) in sortedWorkspaceGraph(workspace.id)" :key="index">
-                                    <a class="navbar-item" @click="changeWorkspace(sortedWorkspace.id)">
+                                <li
+                                    v-for="(sortedWorkspace, index) in sortedWorkspaceGraph(workspace.id)"
+                                    :key="index"
+                                >
+                                    <a
+                                        class="navbar-item"
+                                        @click="changeWorkspace(sortedWorkspace.id)"
+                                    >
                                         {{ sortedWorkspace.name }}
                                     </a>
                                     <ul>
-                                        <li v-for="(sortedSubWorkspace, index) in sortedWorkspaceGraph(sortedWorkspace.id)" :key="index">
-                                            <a class="navbar-item" @click="changeWorkspace(sortedSubWorkspace.id)">
+                                        <li
+                                            v-for="(sortedSubWorkspace, index) in sortedWorkspaceGraph(sortedWorkspace.id)"
+                                            :key="index"
+                                        >
+                                            <a
+                                                class="navbar-item"
+                                                @click="changeWorkspace(sortedSubWorkspace.id)"
+                                            >
                                                 {{ sortedSubWorkspace.name }}
                                             </a>
                                         </li>
