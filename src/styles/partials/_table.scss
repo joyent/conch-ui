@@ -36,9 +36,6 @@
 }
 
 table.table {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-
     td,
     tfoot th,
     thead th {
@@ -86,6 +83,69 @@ table.table {
                     }
                 }
             }
+        }
+    }
+}
+
+.table-pagination {
+    background-color: $grey-dark;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    .current-results {
+        flex-grow: 1;
+        margin: 0 20px;
+    }
+
+    .pagination {
+        .pagination-list {
+            li {
+                margin-bottom: 0;
+            }
+
+            a.next {
+                i {
+                    margin-left: 10px;
+                }
+            }
+
+            a.prev {
+                i {
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+
+    .pagination-link {
+        background-color: $grey-darker;
+        border-color: $grey;
+        color: $grey-lighter;
+        border-radius: 4px;
+
+        &.is-current {
+            background-color: $grey-darker;
+            border-color: #209cee;
+            color: #209cee;
+            font-weight: bold;
+        }
+
+        &:hover {
+            border-color: $grey-light;
+            color: $white;
+        }
+
+        &[disabled] {
+            background-color: $grey-light;
+            border-color: $grey-light;
+            color: $dark;
+        }
+
+        &.ellipsis {
+            border: 1px solid transparent;
         }
     }
 }
