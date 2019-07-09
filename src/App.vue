@@ -1,17 +1,11 @@
 <template>
     <div id="app">
         <SignIn v-if="this.$route.path === '/'" />
-        <div v-else>
-            <router-view name="navbar"></router-view>
-            <div class="section">
-                <div class="columns">
-                    <div class="column is-2">
-                        <router-view name="sidebar"></router-view>
-                    </div>
-                    <div class="column is-10">
-                        <router-view></router-view>
-                    </div>
-                </div>
+        <div class="signed-in" v-else>
+            <router-view name="sidebar"></router-view>
+            <div class="page">
+                <router-view name="navbar"></router-view>
+                <router-view class="page-content"></router-view>
             </div>
         </div>
     </div>

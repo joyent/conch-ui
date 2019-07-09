@@ -1,16 +1,6 @@
 <template>
 <div class="navbar" role="navigation">
-    <div class="navbar-brand">
-        <div class="navbar-item">
-            <a class="title">Conch</a>
-        </div>
-        <div class="navbar-burger" :class="{ 'is-active': menuActive }" @click="menuActive = !menuActive">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
-    <div class="navbar-menu" :class="{ 'is-active': menuActive }">
+    <div class="navbar-menu">
         <div class="navbar-end">
             <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">
@@ -52,18 +42,11 @@ import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
-    data() {
-        return {
-            menuActive: false,
-        };
-    },
     methods: {
         ...mapActions([
             'setCurrentWorkspace',
         ]),
         changeWorkspace(workspaceId) {
-            this.menuActive = false;
-
             this.setCurrentWorkspace(this.loadCurrentWorkspace(workspaceId));
             sessionStorage.setItem('currentWorkspace', workspaceId);
 
