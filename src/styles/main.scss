@@ -428,6 +428,15 @@ progress::-webkit-progress-value {
 	}
 }
 
+.users-table,
+.auth-users-table {
+	tfoot {
+		border-bottom-width: 1px;
+		border-bottom-color: $grey;
+		border-bottom-style: solid;
+	}
+}
+
 .user-management {
 	select {
 		background-color: $grey-darker;
