@@ -10,6 +10,8 @@ import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTok
 import Navbar from './views/Navbar/Navbar.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
+import Builds from './views/Builds/Builds.vue';
+import SingleBuild from './views/Builds/SingleBuild.vue';
 
 Vue.use(Router);
 
@@ -85,6 +87,32 @@ export default new Router({
                     ],
                 },
             ],
+        },
+        {
+            path: '/admin/builds',
+            name: 'builds',
+            components: {
+                default: Builds,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
+            children: [
+                {
+                    // when /admin/builds/:buildId is matched
+                    path: 'build/:buildId',
+                    name: 'buildDetails',
+                    component: Builds,
+                },
+            ],
+        },
+        {
+            path: '/builds/:buildId',
+            name: 'build',
+            components: {
+                default: SingleBuild,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
         },
         {
             path: '/user',
