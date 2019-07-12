@@ -9,6 +9,20 @@
                 @click="navigateHomepage()"
             />
         </div>
+        <p class="menu-label">Builds</p>
+        <ul class="menu-list">
+            <li>
+                <router-link
+                    :to="{
+                        name: 'build',
+                        params: { buildId: 'a2dbe92ledsa99d' }}"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-flask"></i>
+                    UK-West-1
+                </router-link>
+            </li>
+        </ul>
         <p class="menu-label">Datacenter Builds</p>
         <ul class="menu-list">
             <li class="nav-item">
@@ -18,7 +32,6 @@
                         params: { currentWorkspace: this.workspaceId },
                     }"
                     active-class="is-active"
-                    data-tooltip="Status"
                 >
                     <i class="fas fa-lg fa-satellite-dish"></i>
                     <span>Status</span>
@@ -31,7 +44,6 @@
                         params: { currentWorkspace: this.workspaceId },
                     }"
                     active-class="is-active"
-                    data-tooltip="Browse"
                 >
                     <i class="fas fa-lg fa-search"></i>
                     <span>Browse</span>
@@ -44,7 +56,6 @@
                         params: { currentWorkspace: this.workspaceId },
                     }"
                     active-class="is-active"
-                    data-tooltip="Devices"
                 >
                     <i class="fas fa-lg fa-server"></i>
                     <span>Devices</span>
@@ -55,9 +66,17 @@
         <ul class="menu-list" v-if="currentUser.is_admin">
             <li class="nav-item">
                 <router-link
+                    :to="{ name: 'builds' }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-memory"></i>
+                    Builds
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link
                     :to="{ name: 'tokens' }"
                     active-class="is-active"
-                    data-tooltip="Tokens"
                 >
                     <i class="fas fa-lg fa-key"></i>
                     <span>Tokens</span>
@@ -67,7 +86,6 @@
                 <router-link
                     :to="{ name: 'user-management' }"
                     active-class="is-active"
-                    data-tooltip="Users"
                 >
                     <i class="fas fa-lg fa-users"></i>
                     <span>Users</span>
@@ -80,16 +98,15 @@
                 <router-link
                     :to="{ name: 'user' }"
                     active-class="is-active"
-                    data-tooltip="Profile"
                 >
                     <i class="fas fa-lg fa-user"></i>
                     <span>Profile</span>
                 </router-link>
             </li>
             <li class="nav-item">
-                <a class="sign-out" @click="signOut()" data-tooltip="Log Out">
+                <a class="sign-out" @click="signOut()">
                     <i class="fas fa-lg fa-sign-out-alt"></i>
-                    <span>Log Out</span>
+                    <span>Sign Out</span>
                 </a>
             </li>
         </ul>
