@@ -33,6 +33,17 @@ progress::-webkit-progress-value {
 	stroke: none;
 }
 
+.device-modal {
+	.modal-card {
+		max-height: 700px;
+		min-height: 700px;
+
+		.tile.is-child {
+			padding: 14px 20px;
+		}
+	}
+}
+
 .panel-block.is-active {
 	border-left-width: 4px;
 	border-left-color: $primary;
