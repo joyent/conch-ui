@@ -18,7 +18,7 @@
                         params: { buildId: 'a2dbe92ledsa99d' }}"
                     active-class="is-active"
                 >
-                    <i class="fas fa-lg fa-flask"></i>
+                    <i class="fas fa-lg fa-drafting-compass"></i>
                     UK-West-1
                 </router-link>
             </li>
@@ -69,7 +69,7 @@
                     :to="{ name: 'builds' }"
                     active-class="is-active"
                 >
-                    <i class="fas fa-lg fa-memory"></i>
+                    <i class="fas fa-lg fa-flask"></i>
                     Builds
                 </router-link>
             </li>
