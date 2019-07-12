@@ -1,0 +1,193 @@
+.builds {
+	input {
+		background-color: $grey-darker;
+		border-color: $grey;
+		color: $grey-lighter;
+		margin-bottom: 15px;
+
+		&::placeholder {
+			color: $grey-lighter;
+		}
+	}
+
+	.box {
+		transition: all 0.2s ease-in-out;
+
+		&:hover {
+			background-color: lighten($grey-dark, 2%);
+			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+			transition: all 0.2s ease-in-out;
+		}
+	}
+
+	.build {
+		margin-bottom: 15px;
+
+		.box {
+			display: flex;
+			align-items: center;
+
+			.build-details {
+				display: flex;
+				flex-direction: column;
+				flex-grow: 1;
+				height: 100%;
+				justify-content: space-between;
+				padding: 10px 20px;
+			}
+
+			.build-progress {
+				background-color: lighten($grey-darker, 3%);
+				border-top-right-radius: 6px;
+				border-bottom-right-radius: 6px;
+				padding: 15px;
+			}
+
+			&.is-selected {
+				box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+				position: relative;
+				transform: scale(1.06);
+				z-index: 10;
+				// background: linear-gradient(to right, #f5af19, #f12711); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+			}
+		}
+	}
+
+	.selected-build {
+		position: sticky;
+		top: 0;
+
+		.selected-build-header {
+			display: flex;
+			margin-bottom: 6px;
+
+			.build-name {
+				flex-grow: 1;
+				margin: 0;
+			}
+
+			// .quick-actions {
+			// 	.button {
+			// 		background-color: #0476D0;
+			// 		border: none;
+			// 	}
+			// }
+		}
+
+		.box-header {
+			display: flex;
+			align-items: center;
+			margin-bottom: 15px;
+
+			i {
+				margin-right: 15px;
+			}
+
+			.heading {
+				margin: 0;
+				flex-grow: 1;
+			}
+
+			.fraction {
+				color: $grey-light;
+			}
+		}
+
+		.progress-devices,
+		.progress-racks {
+			display: flex;
+			align-items: center;
+
+			progress {
+				margin: 0;
+				height: 0.5rem;
+			}
+
+			.amount {
+				line-height: 25px;
+				margin-left: 10px;
+			}
+		}
+
+		.add,
+		.all {
+			border: none;
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+			transition: background-color 0.1s ease-in-out;
+
+			&:hover {
+				transition: background-color 0.1s ease-in-out;
+			}
+		}
+
+		.all {
+			background-color: #0476D0;
+
+			&:hover {
+				background-color: darken(#0476D0, 2%);
+			}
+		}
+
+		.add {
+			background-color: $green;
+
+			&:hover {
+				background-color: darken($green, 3%);
+			}
+		}
+
+		.button-group {
+			.button {
+				&:first-of-type {
+					border-bottom-left-radius: 4px;
+				}
+
+				&:last-of-type {
+					border-bottom-right-radius: 4px;
+				}
+			}
+		}
+
+		.box {
+			padding: 0;
+		}
+
+		.build-devices {
+			padding: 20px;
+		}
+
+		.users-table {
+			table {
+				border-radius: 4px;
+			}
+
+			tr {
+				td {
+					border: none;
+				}
+			}
+
+			.users-table-header {
+				border-bottom: 1px solid $grey;
+				font-weight: bold;
+
+				td {
+					border-top-left-radius: 5px;
+				}
+
+				&:hover {
+					background-color: $grey-dark;
+				}
+			}
+
+			.users-table-footer {
+				td {
+					padding: 0;
+					border-bottom-left-radius: 4px;
+					border-bottom-right-radius: 4px;
+				}
+			}
+		}
+	}
+}
