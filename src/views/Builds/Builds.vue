@@ -51,54 +51,61 @@
                             <p class="build-name title has-text-white">
                                 {{ selectedBuild.name }}
                             </p>
-                            <!-- <div class="dropdown quick-actions" :class="{ 'is-active': showQuickActions }">
-                                <div class="dropdown-trigger">
-                                    <a
-                                        class="button is-outlined"
-                                        @click="showQuickActions = !showQuickActions"
-                                    >
-                                        <span class="icon">
-                                             <i class="fas fa-cog"></i>
-                                        </span>
-                                        <span>Quick Actions</span>
-                                        <span class="icon is-small">
-                                            <i class="fas fa-angle-down" aria-hidden="true"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                    <div class="dropdown-content">
-                                    <a class="dropdown-item">
-                                        Add Device
-                                    </a>
-                                    <a class="dropdown-item">
-                                        Remove Device
-                                    </a>
-                                    <hr class="dropdown-divider">
-                                    <a class="dropdown-item">
-                                        Add Rack
-                                    </a>
-                                    <a class="dropdown-item">
-                                        Remove Rack
-                                    </a>
-                                    <hr class="dropdown-divider">
-                                    <a class="dropdown-item">
-                                        Add User
-                                    </a>
-                                    <a class="dropdown-item">
-                                        Remove User
-                                    </a>
-                                    <a class="dropdown-item">
-                                        Edit User Role
-                                    </a>
-                                    </div>
-                                </div>
-                            </div> -->
                         </div>
-                        <p class="build-id has-text-grey" style="margin-bottom: 20px;">
+                        <p class="build-id has-text-grey">
                             Build ID: {{ selectedBuild.id }}
                         </p>
-                        <div class="columns">
+                        <div class="tabs is-toggle">
+                            <ul>
+                                <li :class="{ 'is-active': currentTab === 'details' }">
+                                    <a
+                                        class="tab details-tab is-uppercase"
+                                        @click="currentTab = 'details'"
+                                    >
+                                        Details
+                                    </a>
+                                </li>
+                                <li :class="{ 'is-active': currentTab === 'users' }">
+                                    <a
+                                        class="tab users-tab is-uppercase"
+                                        @click="currentTab = 'users'"
+                                    >
+                                        Users
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="columns" v-if="currentTab === 'details'">
+                            <div class="column">
+                                <div class="box" style="padding: 20px; display: flex;">
+                                    <div class="box-header" style="margin-bottom: 0;">
+                                        <i class="fas fa-2x fa-calendar-alt"></i>
+                                    </div>
+                                    <div class="dates" style="display: flex; flex-grow: 1; justify-content: space-around; text-align: center;">
+                                        <div class="start-date">
+                                            <p class="heading is-size-6">Start Date</p>
+                                            <p>{{ getDate(selectedBuild.startDate) }}</p>
+                                        </div>
+                                        <div class="end-date">
+                                            <p class="heading is-size-6">End Date</p>
+                                            <p>{{ getDate(selectedBuild.endDate) }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="box sign-off" style="padding: 20px; display: flex;">
+                                    <div class="box-header">
+                                        <i class="fas fa-2x fa-signature"></i>
+                                        <div class="sign-off-details">
+                                            <p class="heading is-size-6">Sign Off</p>
+                                            <p>N/A</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columns" v-if="currentTab === 'details'">
                             <div class="column">
                                 <div class="box">
                                     <div class="build-devices">
@@ -168,7 +175,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="columns">
+                        <div class="columns" v-else>
                             <div class="column">
                                 <div class="box users-table">
                                     <table class="table is-hoverable is-fullwidth">
@@ -181,12 +188,12 @@
                                                 </td>
                                             </tr>
                                             <!-- <tr class="row" v-for="user in selectedBuild.users" :key="user.name"> -->
-                                            <tr class="row" v-for="i in 5" :key="i">
+                                            <tr class="row" v-for="user in selectedBuild.users" :key="user.name">
                                                 <td class="name">
-                                                    <span>{{ getUserName(i) }}</span>
+                                                    <span>{{ user.name }}</span>
                                                 </td>
                                                 <td class="role">
-                                                    <!-- <span>{{ user.role }}</span> -->
+                                                    <span>{{ user.role }}</span>
                                                 </td>
                                             </tr>
                                             <tr class="users-table-footer">
@@ -734,6 +741,7 @@ export default {
                 green: '#5cb85c',
                 red: '#d9534f',
             },
+            currentTab: 'details',
             searchText: '',
             selectedBuild: {},
             showQuickActions: false,
