@@ -44,19 +44,24 @@
 			}
 
 			&.is-selected {
+				background-color: lighten($grey-dark, 8%);
+				border-bottom-left-radius: 4px;
+				border-color: #209cee;
+				border-style: solid;
+				border-top-left-radius: 4px;
+				border-width: 0 0 0 4px;
 				box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
 				position: relative;
-				transform: scale(1.06);
 				z-index: 10;
-				// background: linear-gradient(to right, #f5af19, #f12711); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+				.build-progress {
+					background-color: lighten($grey-darker, 5%);
+				}
 			}
 		}
 	}
 
 	.selected-build {
-		position: sticky;
-		top: 0;
-
 		.tabs {
 			margin: 20px 0 25px;
 
@@ -89,11 +94,11 @@
 
 		.selected-build-header {
 			display: flex;
+			align-items: center;
 			margin-bottom: 6px;
 
 			.build-name {
-				flex-grow: 1;
-				margin: 0;
+				margin: 0 10px 0 0;
 			}
 		}
 
@@ -222,6 +227,12 @@
 					border-bottom-right-radius: 4px;
 				}
 			}
+		}
+	}
+
+	.users-tab {
+		.box {
+			padding: 20px;
 		}
 	}
 }
