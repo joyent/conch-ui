@@ -5,9 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const GitRevisionWebpackPlugin = require('git-revision-webpack-plugin');
 const webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const package = require('./package.json');
-
-const gitRevisionPlugin = new GitRevisionWebpackPlugin();
+const gitRevisionPlugin = new GitRevisionWebpackPlugin({ lightweightTags: true });
 
 module.exports = {
 	entry: {
