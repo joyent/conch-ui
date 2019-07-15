@@ -51,173 +51,89 @@
                             <p class="build-name title has-text-white">
                                 {{ selectedBuild.name }}
                             </p>
+                            <span
+                                class="tag build-status"
+                                :class="{
+                                    'is-success': selectedBuild.status === 'complete',
+                                    'is-info': selectedBuild.status === 'active'
+                                }"
+                                style="border-radius: 4px"
+                            >
+                                {{ selectedBuild.status }}
+                            </span>
                         </div>
                         <p class="build-id has-text-grey">
                             Build ID: {{ selectedBuild.id }}
                         </p>
                         <div class="tabs is-toggle">
                             <ul>
-                                <li :class="{ 'is-active': currentTab === 'details' }">
+                                <li :class="{ 'is-active': currentTab === 'OverviewTab' }">
                                     <a
-                                        class="tab details-tab is-uppercase"
-                                        @click="currentTab = 'details'"
+                                        class="tab overview-tab is-uppercase"
+                                        @click="changeTab('OverviewTab')"
                                     >
-                                        Details
+                                        Overview
                                     </a>
                                 </li>
-                                <li :class="{ 'is-active': currentTab === 'users' }">
+                                <li :class="{ 'is-active': currentTab === 'DevicesTab' }">
+                                    <a
+                                        class="tab devices-tab is-uppercase"
+                                        @click="changeTab('DevicesTab')"
+                                    >
+                                        Devices
+                                    </a>
+                                </li>
+                                <li :class="{ 'is-active': currentTab === 'RacksTab' }">
+                                    <a
+                                        class="tab racks-tab is-uppercase"
+                                        @click="changeTab('RacksTab')"
+                                    >
+                                        Racks
+                                    </a>
+                                </li>
+                                <li :class="{ 'is-active': currentTab === 'UsersTab' }">
                                     <a
                                         class="tab users-tab is-uppercase"
-                                        @click="currentTab = 'users'"
+                                        @click="changeTab('UsersTab')"
                                     >
                                         Users
                                     </a>
                                 </li>
                             </ul>
                         </div>
-                        <div class="columns" v-if="currentTab === 'details'">
-                            <div class="column">
-                                <div class="box" style="padding: 20px; display: flex;">
-                                    <div class="box-header" style="margin-bottom: 0;">
-                                        <i class="fas fa-2x fa-calendar-alt"></i>
-                                    </div>
-                                    <div class="dates" style="display: flex; flex-grow: 1; justify-content: space-around; text-align: center;">
-                                        <div class="start-date">
-                                            <p class="heading is-size-6">Start Date</p>
-                                            <p>{{ getDate(selectedBuild.startDate) }}</p>
-                                        </div>
-                                        <div class="end-date">
-                                            <p class="heading is-size-6">End Date</p>
-                                            <p>{{ getDate(selectedBuild.endDate) }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="column">
-                                <div class="box sign-off" style="padding: 20px; display: flex;">
-                                    <div class="box-header">
-                                        <i class="fas fa-2x fa-signature"></i>
-                                        <div class="sign-off-details">
-                                            <p class="heading is-size-6">Sign Off</p>
-                                            <p>N/A</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="columns" v-if="currentTab === 'details'">
-                            <div class="column">
-                                <div class="box">
-                                    <div class="build-devices">
-                                        <div class="box-header">
-                                            <i class="fas fa-2x fa-hdd"></i>
-                                            <p class="heading is-size-6">Devices Complete</p>
-                                            <p class="fraction">35 / 60</p>
-                                        </div>
-                                        <div class="progress-devices">
-                                            <progress
-                                                class="progress is-info"
-                                                :value="selectedBuild.progress"
-                                                max="100"
-                                            ></progress>
-                                            <span class="amount is-size-5">
-                                                {{ selectedBuild.progress }}&#37;
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <a class="button is-fullwidth all">
-                                        <span class="heading is-marginless is-size-7">
-                                            All Devices
-                                        </span>
-                                        <i
-                                            class="fas fa-lg fa-long-arrow-alt-right"
-                                            style="margin-left: 10px"
-                                        ></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="column">
-                                <div class="box">
-                                    <div class="build-devices">
-                                        <div class="box-header">
-                                            <i class="fas fa-2x fa-server"></i>
-                                            <p class="heading is-size-6">Racks Complete</p>
-                                            <p class="fraction">8 / 12</p>
-                                        </div>
-                                        <div class="progress-devices">
-                                            <progress
-                                                class="progress is-info"
-                                                :value="selectedBuild.progress"
-                                                max="100"
-                                            ></progress>
-                                            <span class="amount is-size-5">
-                                                {{ selectedBuild.progress }}&#37;
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="field has-addons button-group is-fullwidth">
-                                        <a class="button is-fullwidth add">
-                                            <i class="material-icons">add</i>
-                                            <span class="heading is-marginless is-size-7">
-                                                Add Rack
-                                            </span>
-                                        </a>
-                                        <a class="button is-fullwidth all">
-                                            <span class="heading is-marginless is-size-7">
-                                                All racks
-                                            </span>
-                                            <i
-                                                class="fas fa-lg fa-long-arrow-alt-right"
-                                                style="margin-left: 10px"
-                                            ></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="columns" v-else>
-                            <div class="column">
-                                <div class="box users-table">
-                                    <table class="table is-hoverable is-fullwidth">
-                                        <tbody>
-                                            <tr class="users-table-header">
-                                                <td colspan="2">
-                                                    <span class="heading is-size-6 is-marginless">
-                                                        Users
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                            <!-- <tr class="row" v-for="user in selectedBuild.users" :key="user.name"> -->
-                                            <tr class="row" v-for="user in selectedBuild.users" :key="user.name">
-                                                <td class="name">
-                                                    <span>{{ user.name }}</span>
-                                                </td>
-                                                <td class="role">
-                                                    <span>{{ user.role }}</span>
-                                                </td>
-                                            </tr>
-                                            <tr class="users-table-footer">
-                                                <td colspan="2">
-                                                    <a class="button is-fullwidth all">
-                                                        <span class="heading is-size-7 is-marginless">
-                                                            All Users
-                                                        </span>
-                                                        <i
-                                                            class="fas fa-lg fa-long-arrow-alt-right"
-                                                            style="margin-left: 10px"
-                                                        ></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                        <component
+                            v-bind:is="currentTab"
+                            :build="selectedBuild"
+                        ></component>
                     </div>
                 </div>
             </transition>
         </div>
+        <transition name="fade">
+            <BaseModal v-if="addDevice">
+                <template v-slot:icon>
+                    <i class="material-icons">add_circle_outline</i>
+                </template>
+                <template v-slot:title>
+                    <h1 class="title">Add a Device</h1>
+                </template>
+                <template v-slot:body>
+                    <table class="table">
+                        <tbody>
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                </template>
+                <template v-slot:footer>
+                    <a
+                        class="button confirm is-success is-fullwidth"
+                    >
+                        Add Device
+                        <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                    </a>
+                </template>
+            </BaseModal>
+        </transition>
     </div>
 </template>
 
@@ -226,13 +142,22 @@ import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import search from "fuzzysearch";
 import RadialProgressBar from '@views/components/RadialProgressBar.vue';
+import DevicesTab from './DevicesTab.vue';
+import OverviewTab from './OverviewTab.vue';
+import RacksTab from './RacksTab.vue';
+import UsersTab from './UsersTab.vue';
 
 export default {
     components: {
+        DevicesTab,
+        OverviewTab,
+        RacksTab,
         RadialProgressBar,
+        UsersTab,
     },
     data() {
         return {
+            addDevice: false,
             builds: [
                 {
                     id: '434a98d1-5317-7h64-3b60-12fe533456m1',
@@ -741,15 +666,25 @@ export default {
                 green: '#5cb85c',
                 red: '#d9534f',
             },
-            currentTab: 'details',
+            currentTab: 'OverviewTab',
+            devices: [
+                'ANDROID1',
+                'Astromech 210',
+                'Battle Droid',
+                'Translator Droid',
+                'Navigational Computer',
+                'TARS',
+                'PLEX',
+                'CASE',
+                'KIPP',
+            ],
             searchText: '',
             selectedBuild: {},
-            showQuickActions: false,
         };
     },
     methods: {
-        getDate(date) {
-            return moment(date).format('MM/DD/YYYY');
+        changeTab(tab) {
+            this.currentTab = tab;
         },
         graphColor(progress) {
             return progress === 100 ? this.colors.green : this.colors.blue;
