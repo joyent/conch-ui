@@ -1,0 +1,6 @@
+progress::-webkit-progress-value {
+	-webkit-transition: width 1.5s ease;
+	-moz-transition: width 1.5s ease;
+	-o-transition: width 1.5s ease;
+	transition: width 1s ease;
+}

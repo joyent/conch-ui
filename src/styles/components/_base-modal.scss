@@ -1,0 +1,56 @@
+.base-modal {
+	.modal-content {
+		border-radius: 5px;
+		width: 460px;
+
+		.notification {
+			padding: 1.5rem 1.5rem 1.25rem;
+
+			.modal-icon {
+				margin-bottom: 25px;
+			}
+
+			.title {
+				margin-bottom: 20px;
+			}
+
+			.subtitle {
+				padding: 10px;
+				text-align: center;
+
+				.name {
+					color: $white;
+				}
+
+				&.margin-small {
+					margin-bottom: 1rem;
+				}
+			}
+
+			.field.has-switch {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-bottom: 6px;
+
+				.switch.is-large {
+					margin-right: 8px;
+				}
+
+				.switch-text {
+					width: 30px;
+				}
+			}
+		}
+
+		footer {
+			.button {
+				padding: 25px;
+
+				i {
+					margin-left: 10px;
+				}
+			}
+		}
+	}
+}

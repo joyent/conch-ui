@@ -1,7 +1,7 @@
 <template>
     <div>
         <BaseModal
-            class="update-phase-modal"
+            class="phase-update-modal"
             v-if="!updateSuccess"
         >
             <template v-slot:icon>

@@ -90,7 +90,7 @@ describe('AuthenticationTokens.vue', () => {
             test('should display a modal when "Login Tokens" button is clicked', () => {
                 clickDeleteLoginTokens();
 
-                expect(wrapper.find('.modal-base').exists).toBeTruthy();
+                expect(wrapper.find('.base-modal').exists).toBeTruthy();
             });
 
             test('should display informative confirmation text on the delete login tokens modal about what action is being taken', () => {
@@ -104,14 +104,14 @@ describe('AuthenticationTokens.vue', () => {
                 clickDeleteLoginTokens();
                 wrapper.find('.modal-background').trigger('click');
 
-                expect(wrapper.find('.modal-base').exists()).toBeFalsy();
+                expect(wrapper.find('.base-modal').exists()).toBeFalsy();
             });
 
             test('should close the modal when the modal close button (x) is clicked', () => {
                 clickDeleteLoginTokens();
-                wrapper.find('.modal-base button.delete').trigger('click');
+                wrapper.find('.base-modal button.delete').trigger('click');
 
-                expect(wrapper.find('.modal-base').exists()).toBeFalsy();
+                expect(wrapper.find('.base-modal').exists()).toBeFalsy();
             });
 
             test('should display button with text "Delete Login Tokens" on the modal', () => {
@@ -139,7 +139,7 @@ describe('AuthenticationTokens.vue', () => {
                 wrapper.find('a.confirm').trigger('click');
 
                 wrapper.vm.$nextTick(() => {
-                    expect(wrapper.find('.modal-base .subtitle').text()).toEqual(successText);
+                    expect(wrapper.find('.base-modal .subtitle').text()).toEqual(successText);
                 });
             });
 
@@ -264,7 +264,7 @@ describe('AuthenticationTokens.vue', () => {
             test('should display a confirmation modal when the delete token button on a token row is clicked', () => {
                 clickDeleteTokenButton();
 
-                expect(wrapper.find('.modal-base').exists()).toBeTruthy();
+                expect(wrapper.find('.base-modal').exists()).toBeTruthy();
             });
 
             test('should display the name of the token being deleted on the confirmation modal', () => {
@@ -304,7 +304,7 @@ describe('AuthenticationTokens.vue', () => {
             test('should display a modal when the "Delete Auth Tokens" button is clicked ', () => {
                 clickDeleteAuthTokensButton();
 
-                expect(wrapper.find('.modal-base').exists).toBeTruthy();
+                expect(wrapper.find('.base-modal').exists).toBeTruthy();
             });
 
             test('should display informative confirmation text on the delete auth tokens modal', () => {

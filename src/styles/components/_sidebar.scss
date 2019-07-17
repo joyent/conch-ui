@@ -1,0 +1,93 @@
+aside.menu {
+	background-color: lighten($grey-darker, 2%);
+	position: fixed;
+	height: 100%;
+	top: 0;
+	left: 0;
+	overflow-x: hidden;
+	z-index: 1;
+	width: 200px;
+
+	a {
+		margin: 0 auto;
+		border-left-width: 3px;
+		border-left-style: solid;
+		border-left-color: transparent;
+
+		&:hover {
+			background-color: $grey-dark;
+			color: white;
+		}
+
+		&.is-active {
+			background-color: darken($grey-darker, 2%);
+			border-left-width: 3px;
+			border-left-style: solid;
+			border-left-color: #209cee;
+		}
+	}
+
+	.brand {
+		display: flex;
+		align-items: center;
+		padding: 8px;
+		text-align: center;
+
+		img {
+			cursor: pointer;
+			margin: 0 auto;
+		}
+	}
+
+	ul {
+		i {
+			margin: 0 15px 0 12px;
+		}
+
+		.nav-item a {
+			padding: 0.8em 0.75em;
+		}
+	}
+
+	.menu-label {
+		font-weight: bold;
+		padding: 0 20px;
+
+		&:first-of-type {
+			margin-top: 0;
+		}
+	}
+
+	.menu-list {
+		li {
+			ul {
+				border-left: none;
+				padding-left: 0.35em;
+			}
+		}
+    }
+
+    .conch-versions {
+        padding: 10px;
+
+        .tags-container {
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+
+            .tags {
+                display: inline-block;
+                margin-bottom: 0;
+
+                .tag {
+                    margin-bottom: 0;
+                }
+
+                &:first-of-type {
+                    margin-bottom: 5px;
+                }
+            }
+        }
+    }
+}
+

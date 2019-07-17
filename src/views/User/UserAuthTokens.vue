@@ -1,5 +1,5 @@
 <template>
-    <div class="tokens">
+    <div class="user-authentication-tokens">
         <div class="header">
             <span class="subtitle">
                 Authentication Tokens
