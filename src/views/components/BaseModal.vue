@@ -1,5 +1,5 @@
 <template>
-    <div class="modal modal-base" :class="{ 'is-active': isActive }">
+    <div class="modal base-modal" :class="{ 'is-active': isActive }">
         <div class="modal-background" @click="closeModal()"></div>
         <div class="modal-content">
             <div class="notification is-marginless">

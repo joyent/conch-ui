@@ -1,5 +1,5 @@
 <template>
-    <svg xmlns="http://www.w3.org/2000/svg" height="160" width="200" viewBox="0 0 200 160">
+    <svg class="radial-progress" xmlns="http://www.w3.org/2000/svg" height="160" width="200" viewBox="0 0 200 160">
         <path
             stroke="#ccc"
             d="M41 149.5a77 77 0 1 1 117.93 0"

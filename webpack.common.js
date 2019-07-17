@@ -73,7 +73,7 @@ module.exports = {
 		// render a HTML file that imports all the compiled source files
 		new HtmlWebpackPlugin({
 			template: 'src/index.html',
-			favicon: './src/styles/images/favicon.ico'
+			favicon: './src/assets/favicon.ico'
 		}),
 		// Global constants, which should mirror the global constants in jest.config.js
 		gitRevisionPlugin,

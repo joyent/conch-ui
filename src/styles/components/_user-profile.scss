@@ -1,0 +1,29 @@
+.user-profile {
+	section.content {
+		margin-top: 0.75rem;
+
+		.message-header {
+			i {
+				margin-right: 10px;
+			}
+
+			p {
+				margin-bottom: 0;
+			}
+		}
+
+		.button.save {
+			margin-top: 0.75rem;
+		}
+	}
+
+	.modal-card-body {
+		padding: 0px;
+
+		.message-body {
+			p {
+				margin-bottom: 20px;
+			}
+		}
+	}
+}

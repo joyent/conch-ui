@@ -1,0 +1,16 @@
+#app {
+	.signed-in {
+		display: flex;
+		height: 100%;
+	}
+
+	.page {
+		flex-grow: 1;
+		flex-shrink: 1;
+		margin-left: 200px;
+
+		.page-content {
+			padding: 20px;
+		}
+	}
+}

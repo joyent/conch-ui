@@ -1,0 +1,40 @@
+.phase-update-modal {
+	.selected-phase {
+		select {
+			background-color: #1f2d3b;
+			border-color: #4E5D6C;
+			border-radius: 4px;
+			color: #bdcbdb;
+
+			&:hover {
+				color: $white;
+			}
+		}
+	}
+
+	.current-phase {
+		background-color: $grey-darker;
+		border: 1px solid $grey;
+		color: #bdcbdb;
+		border-radius: 4px;
+		padding: 5px;
+		width: 175px;
+		margin: 0 auto;
+	}
+
+	.column {
+		&:first-of-type {
+			text-align: center;
+			align-items: center;
+			padding: 12px 0;
+			margin-right: 20px;
+		}
+
+		&:last-of-type {
+			text-align: center;
+			align-items: center;
+			padding: 12px 0;
+			margin-left: 20px;
+		}
+	}
+}

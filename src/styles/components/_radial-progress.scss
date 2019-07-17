@@ -1,0 +1,13 @@
+.radial-progress {
+	.has-stroke-info {
+		stroke: $info;
+	}
+
+	.has-stroke-success {
+		stroke: $success;
+	}
+
+	.has-stroke-danger {
+		stroke: $danger;
+	}
+}

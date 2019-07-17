@@ -1,0 +1,132 @@
+.authentication-tokens {
+	section.content {
+		margin-top: 0.75rem;
+	}
+
+	li:not(:last-of-type) {
+		margin-bottom: 5px;
+	}
+
+	select {
+		background-color: $grey-darker;
+		border-color: $grey;
+		color: #bdcbdb;
+	}
+
+	input {
+		&.input.search {
+			border-radius: 4px;
+		}
+	}
+
+	.auth-users-table {
+		th {
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+
+		td {
+			padding: 20px;
+
+			&:last-of-type {
+				text-align: right;
+			}
+
+			button {
+				&:first-of-type {
+					margin-right: 5px;
+				}
+			}
+		}
+
+		tr {
+			&.is-selected {
+				background-color: lighten($grey-darker, 2%);
+				border: 1px solid #209cee;
+				border-width: 0 0 0 1px;
+			}
+		}
+	}
+
+	.toggle-switches {
+		display: flex;
+		justify-content: space-around;
+	}
+
+	.selected-user {
+		&.box {
+			border-color: #209cee;
+			border-radius: 4px;
+			border-width: 0 4px 0 4px;
+			border-style: solid;
+		}
+
+		.tags {
+			margin-bottom: 0;
+			margin-right: 10px;
+
+			.tag {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	.no-results {
+		text-align: center;
+
+		p.title {
+			margin-top: 40px;
+		}
+
+		img {
+			margin-top: 20px;
+		}
+	}
+
+	.user-search {
+		input {
+			background-color: $grey-darker;
+			border-color: $grey;
+			color: #bdcbdb;
+
+			&::placeholder {
+				color: #bdcbdb;
+			}
+		}
+	}
+
+	.user-authentication-tokens {
+		.username {
+			flex-grow: 1;
+			margin-bottom: 0;
+		}
+
+		.delete-token {
+			&:hover {
+				color: $red;
+				cursor: pointer;
+			}
+		}
+	}
+
+	.user-search-row {
+		cursor: pointer;
+
+		td {
+			border: none;
+			padding: 15px 10px;
+		}
+
+		&:hover {
+			background-color: $grey-darker;
+		}
+	}
+
+	.auth-users-table {
+		tfoot {
+			border-bottom-width: 1px;
+			border-bottom-color: $grey;
+			border-bottom-style: solid;
+		}
+	}
+}
