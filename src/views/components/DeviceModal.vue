@@ -1,7 +1,7 @@
 <template>
     <div class="modal device-modal" :class="{ 'is-active': isActive }" style="align-items: start;">
         <div class="modal-background" @click="closeModal()"></div>
-        <div class="modal-card" style="margin-top: 5vh">
+        <div class="modal-card">
             <header class="modal-card-head">
                 <p class="modal-card-title has-text-left">
                     Device {{ activeDeviceId }}
