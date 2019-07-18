@@ -50,17 +50,13 @@ describe('UserProfile.vue', () => {
         wrapper.find('input.confirmation').setValue();
         wrapper.find('button.save').trigger('click');
 
-        expect(wrapper.html()).toContain(
-            'The passwords you entered do not match.'
-        );
+        expect(wrapper.html()).toContain('The passwords you entered do not');
     });
 
     test('should display password length warning when password is too short', () => {
         savePassword();
 
-        expect(wrapper.html()).toContain(
-            'Passwords must contain at least 5 characters.'
-        );
+        expect(wrapper.html()).toContain('Passwords must contain at least');
     });
 
     test('should close the warning when the close button is clicked', () => {

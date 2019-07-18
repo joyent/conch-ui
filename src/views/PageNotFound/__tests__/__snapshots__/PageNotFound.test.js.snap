@@ -16,7 +16,8 @@ exports[`PageNotFound.vue should render correctly on initial render 1`] = `
               Head back to the last known workspace.
             </p>
             <p class="is-size-5">
-              If you think something is broken, please report it.
+              If you think something is broken, please report
+              it.
             </p>
           </div>
           <p class="buttons"><a class="button is-rounded is-outlined is-info is-uppercase has-text-weight-semibold">

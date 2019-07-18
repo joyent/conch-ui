@@ -16,6 +16,7 @@ export const setToken = token => {
 };
 
 export const request = args => {
+    /* eslint-disable */
     const uiHeader = {
         'X-Conch-UI': CONCH.GLOBALS.conchUIVersion,
     };

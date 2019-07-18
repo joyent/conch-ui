@@ -15,33 +15,37 @@
                 </tr>
             </thead>
             <tbody>
-                <template v-for="(validation, index) in deviceValidations">
+                <template
+                    v-for="(validation, validationIndex) in deviceValidations"
+                >
                     <tr
-                        :class="{ 'is-selected': isRowSelected(index) }"
+                        :class="{
+                            'is-selected': isRowSelected(validationIndex),
+                        }"
                         class="row"
-                        @click="revealValidationDetails(index)"
+                        @click="revealValidationDetails(validationIndex)"
                         style="cursor: pointer;"
-                        :key="index"
+                        :key="validationIndex"
                     >
                         <td>
                             <div class="icon">
                                 <i
                                     class="fas fa-caret-down"
-                                    v-if="isRowSelected(index)"
+                                    v-if="isRowSelected(validationIndex)"
                                 ></i>
                                 <i class="fas fa-caret-right" v-else></i>
                             </div>
                         </td>
                         <td class="has-text-centered">
                             <template
-                                v-for="(result, index) in resultCount(
+                                v-for="(result, resultIndex) in resultCount(
                                     validation.results
                                 )"
                             >
                                 <span
                                     class="tag"
                                     :class="resultCountStyle(result[0])"
-                                    :key="index"
+                                    :key="resultIndex"
                                 >
                                     {{ result[1] }}
                                 </span>
@@ -79,7 +83,10 @@
                             </span>
                         </td>
                     </tr>
-                    <tr v-if="isRowSelected(index)" :key="`${index}a`">
+                    <tr
+                        v-if="isRowSelected(validationIndex)"
+                        :key="`${validationIndex}a`"
+                    >
                         <td></td>
                         <td colspan="3">
                             <div class="content">

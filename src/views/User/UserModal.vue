@@ -196,12 +196,11 @@ export default {
     props: {
         action: {
             type: String,
-            required: false,
-            default: '',
+            required: true,
         },
         user: {
             type: Object,
-            required: false,
+            required: true,
         },
     },
     data() {

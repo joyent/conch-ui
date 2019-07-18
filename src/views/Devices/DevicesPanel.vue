@@ -72,9 +72,11 @@ import { deviceToProgress } from '@views/shared/utils.js';
 export default {
     props: {
         hardwareProductLookup: {
+            type: Object,
             required: true,
         },
         workspaceDevices: {
+            type: Object,
             required: true,
         },
     },

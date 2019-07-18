@@ -1,6 +1,6 @@
 import axios from 'axios';
-import jest from 'jest';
 
+/* eslint-disable */
 jest.mock('axios');
 
 axios.mockImplementation(args => {

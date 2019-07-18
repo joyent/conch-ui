@@ -1,6 +1,7 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const GitRevisionWebpackPlugin = require('git-revision-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
@@ -30,6 +31,7 @@ module.exports = {
             config.devServer = {
                 contentBase: './dist',
                 hot: true,
+                open: true,
                 overlay: {
                     warnings: true,
                     errors: true,
@@ -37,10 +39,9 @@ module.exports = {
                 proxy: {
                     '/': {
                         target: 'http://localhost:5001',
+                        secure: false,
+                        ws: false,
                     },
-                },
-                watchOptions: {
-                    poll: true,
                 },
             };
 
@@ -62,6 +63,13 @@ module.exports = {
         });
 
         config.plugins.push(gitRevisionPlugin);
+
+        config.plugins.push(
+            new HtmlWebpackPlugin({
+                template: './src/index.html',
+                favicon: './src/assets/favicon.ico',
+            })
+        );
 
         config.plugins.push(
             new webpack.DefinePlugin({

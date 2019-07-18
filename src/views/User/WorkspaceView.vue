@@ -98,7 +98,7 @@ export default {
             required: false,
             default: '',
         },
-        users: {
+        filteredUsers: {
             type: Array,
             required: true,
         },
@@ -180,8 +180,8 @@ export default {
             return this.filteredWorkspaces.reduce((acc, workspace) => {
                 const users = [];
 
-                for (let i = 0; i < this.users.length; i++) {
-                    const user = this.users[i];
+                for (let i = 0; i < this.filteredUsers.length; i++) {
+                    const user = this.filteredUsers[i];
                     const match = user.workspaces.find(userWorkspace => {
                         return userWorkspace.id === workspace.id;
                     });

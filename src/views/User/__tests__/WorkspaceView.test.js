@@ -16,7 +16,7 @@ describe('WorkspaceView.vue', () => {
     let wrapper;
 
     beforeEach(() => {
-        propsData = { users };
+        propsData = { filteredUsers: users };
         state = { workspaces };
         store = new Vuex.Store({ state });
         wrapper = shallowMount(WorkspaceView, { localVue, propsData, store });

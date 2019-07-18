@@ -22,10 +22,10 @@
                                 <ul v-if="sortedWorkspaceGraph(workspace.id)">
                                     <li
                                         v-for="(sortedWorkspace,
-                                        index) in sortedWorkspaceGraph(
+                                        sortedWorkspaceIndex) in sortedWorkspaceGraph(
                                             workspace.id
                                         )"
-                                        :key="index"
+                                        :key="sortedWorkspaceIndex"
                                     >
                                         <a
                                             class="navbar-item"
@@ -40,10 +40,10 @@
                                         <ul>
                                             <li
                                                 v-for="(sortedSubWorkspace,
-                                                index) in sortedWorkspaceGraph(
+                                                sortedSubWorkspaceIndex) in sortedWorkspaceGraph(
                                                     sortedWorkspace.id
                                                 )"
-                                                :key="index"
+                                                :key="sortedSubWorkspaceIndex"
                                             >
                                                 <a
                                                     class="navbar-item"

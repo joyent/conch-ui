@@ -151,7 +151,7 @@
                         </div>
                         <div v-else>
                             <WorkspaceView
-                                :users="filteredUsers"
+                                :filtered-users="filteredUsers"
                                 :search-text="searchTextWorkspaces"
                             />
                         </div>

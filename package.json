@@ -11,7 +11,7 @@
     "jest:watch": "vue-cli-service test:unit -c=./jest.config.js --watch --passWithNoTests",
     "jest:watch:all": "vue-cli-service test:unit -c=./jest.config.js --watchAll --passWithNoTests",
     "lint": "vue-cli-service lint",
-    "serve": "vue-cli-service serve"
+    "start": "vue-cli-service serve"
   },
   "dependencies": {
     "axios": "^0.18.0",

@@ -215,14 +215,14 @@ export default {
                             a.name > b.name ? 1 : -1;
                         });
 
-                        return;
+                        return racks;
                     }
                 });
 
                 return racks;
             }
 
-            return;
+            return [];
         },
         hasRackRooms() {
             return this.rackRooms.length > 0;

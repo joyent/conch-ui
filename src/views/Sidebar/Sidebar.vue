@@ -164,6 +164,7 @@ export default {
         },
     },
     created() {
+        /* eslint-disable */
         this.conchUIVersion = CONCH.GLOBALS.conchUIVersion;
 
         getApiVersion().then(response => {
