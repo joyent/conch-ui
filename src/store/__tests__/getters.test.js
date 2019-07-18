@@ -1,11 +1,9 @@
 import getters from '../getters.js';
 
 // Fixtures
-import activeDevice from '@src/__fixtures__/activeDevice.js'
-import activeRoom from '@src/__fixtures__/activeRoom.js';
+import activeDevice from '@src/__fixtures__/activeDevice.js';
 import allRooms from '@src/__fixtures__/allRooms.js';
 import devicesByWorkspaceId from '@src/__fixtures__/devicesByWorkspace.js';
-import rackLayout from '@src/__fixtures__/rackLayout.js';
 import rackRoomsByWorkspaceId from '@src/__fixtures__/rackRoomsByWorkspace.js';
 import workspaces from '@src/__fixtures__/workspaces.js';
 
@@ -78,7 +76,9 @@ describe('getters', () => {
         test('it returns the rack rooms from the workspace', () => {
             const workspaceId = workspaces[3].id;
             state = { rackRoomsByWorkspace: rackRoomsByWorkspaceId };
-            const rackRooms = getters.getRackRoomsByWorkspace(state)(workspaceId);
+            const rackRooms = getters.getRackRoomsByWorkspace(state)(
+                workspaceId
+            );
 
             expect(rackRooms).toMatchObject(rackRoomsByWorkspaceId[0]);
         });
@@ -125,7 +125,7 @@ describe('getters', () => {
         test('it returns the first workspace in state when no current or global workspace exists', () => {
             const firstWorkspace = workspaces[2];
             const secondWorkspace = workspaces[3];
-            const nonGlobalWorkspaces = [ firstWorkspace, secondWorkspace ];
+            const nonGlobalWorkspaces = [firstWorkspace, secondWorkspace];
             state = { workspaces: nonGlobalWorkspaces };
             const workspace = getters.loadCurrentWorkspace(state)();
 

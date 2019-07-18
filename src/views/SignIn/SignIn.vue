@@ -16,7 +16,8 @@
                             ></button>
                         </div>
                         <div class="message-body">
-                            Your session has been invalidated. Please sign in again.
+                            Your session has been invalidated. Please sign in
+                            again.
                         </div>
                     </article>
                 </div>
@@ -33,12 +34,13 @@
                             How do I fix this problem?
                         </a>
                         <p class="api-version-help" v-if="showHelp">
-                            You need to update Conch API to a compatible version.
-                            <br>
+                            You need to update Conch API to a compatible
+                            version.
+                            <br />
                             We recommend using the latest release preceding
                             <strong class="has-text-white">
-                                v{{ breakingApiVersion }}
-                            </strong>.
+                                v{{ breakingApiVersion }} </strong
+                            >.
                             <a
                                 class="button is-info conch-releases"
                                 :href="conchReleaseUrl"
@@ -67,7 +69,7 @@
                                         placeholder="Email address"
                                         v-model="emailAddress"
                                         @keyup.enter="signIn()"
-                                    >
+                                    />
                                 </div>
                             </div>
                             <div class="field">
@@ -78,7 +80,7 @@
                                         placeholder="Password"
                                         v-model="password"
                                         @keyup.enter="signIn()"
-                                    >
+                                    />
                                 </div>
                             </div>
                             <button
@@ -104,7 +106,7 @@ import semver from 'semver';
 import {
     breakingApiVersion,
     conchReleaseUrl,
-    minimumApiVersion
+    minimumApiVersion,
 } from '@src/config.js';
 import { getApiVersion } from '@api/conchApiVersion.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -137,18 +139,20 @@ export default {
             'setWorkspaces',
         ]),
         initWorkspaceData() {
-            return loadAllWorkspaces()
-                .then(response => {
-                    const workspaces = response.data;
+            return loadAllWorkspaces().then(response => {
+                const workspaces = response.data;
 
-                    this.setWorkspaces(workspaces);
-                    this.setCurrentWorkspace(this.loadCurrentWorkspace());
+                this.setWorkspaces(workspaces);
+                this.setCurrentWorkspace(this.loadCurrentWorkspace());
 
-                    this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
-                    sessionStorage.setItem('currentWorkspace', this.currentWorkspaceId);
+                this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
+                sessionStorage.setItem(
+                    'currentWorkspace',
+                    this.currentWorkspaceId
+                );
 
-                    return Promise.resolve();
-                });
+                return Promise.resolve();
+            });
         },
         signIn() {
             this.isLoading = true;
@@ -160,39 +164,41 @@ export default {
                 };
 
                 login(data)
-                    .then(response => {
-                        getCurrentUser()
-                            .then(response => {
-                                const currentUser = response.data;
-                                this.setCurrentUser(currentUser);
+                    .then(() => {
+                        getCurrentUser().then(response => {
+                            const currentUser = response.data;
+                            this.setCurrentUser(currentUser);
 
-                                if (currentUser.force_password_change) {
-                                    this.setForcePasswordChange();
-                                    this.$router.push({ name: 'user' });
-                                } else {
-                                    if (isEmpty(this.workspaces)) {
-                                        this.initWorkspaceData()
-                                            .then(() => {
-                                                this.$router.push({
-                                                    name: 'status',
-                                                    params: {
-                                                        currentWorkspace: this.currentWorkspaceId
-                                                    }
-                                                });
-                                            });
-                                    } else {
-                                        this.setCurrentWorkspace(this.loadCurrentWorkspace());
+                            if (currentUser.force_password_change) {
+                                this.setForcePasswordChange();
+                                this.$router.push({ name: 'user' });
+                            } else {
+                                if (isEmpty(this.workspaces)) {
+                                    this.initWorkspaceData().then(() => {
                                         this.$router.push({
                                             name: 'status',
                                             params: {
-                                                currentWorkspace: this.$store.getters.currentWorkspaceId
-                                            }
+                                                currentWorkspace: this
+                                                    .currentWorkspaceId,
+                                            },
                                         });
-                                    }
+                                    });
+                                } else {
+                                    this.setCurrentWorkspace(
+                                        this.loadCurrentWorkspace()
+                                    );
+                                    this.$router.push({
+                                        name: 'status',
+                                        params: {
+                                            currentWorkspace: this.$store
+                                                .getters.currentWorkspaceId,
+                                        },
+                                    });
                                 }
-                            });
+                            }
+                        });
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         this.isLoading = false;
                         this.badLoginAttempt = true;
                     });
@@ -203,36 +209,30 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'loadCurrentWorkspace'
-        ]),
-        ...mapState([
-            'invalidCredentials',
-            'workspaces',
-        ]),
+        ...mapGetters(['loadCurrentWorkspace']),
+        ...mapState(['invalidCredentials', 'workspaces']),
     },
     created() {
         this.breakingApiVersion = breakingApiVersion;
         this.minimumApiVersion = minimumApiVersion;
         this.conchReleaseUrl = conchReleaseUrl;
 
-        getApiVersion()
-            .then(response => {
-                const range = `${minimumApiVersion} - ${breakingApiVersion}`;
-                let apiVersion = response.data.version;
-                let index;
+        getApiVersion().then(response => {
+            const range = `${minimumApiVersion} - ${breakingApiVersion}`;
+            let apiVersion = response.data.version;
+            let index;
 
-                if (apiVersion.indexOf('-') !== -1) {
-                    index = apiVersion.indexOf('-');
-                    apiVersion = apiVersion.slice(0, index);
-                }
+            if (apiVersion.indexOf('-') !== -1) {
+                index = apiVersion.indexOf('-');
+                apiVersion = apiVersion.slice(0, index);
+            }
 
-                this.apiVersion = apiVersion;
+            this.apiVersion = apiVersion;
 
-                if (!semver.satisfies(apiVersion, range)) {
-                    this.incompatibleApiVersion = true;
-                }
-            });
+            if (!semver.satisfies(apiVersion, range)) {
+                this.incompatibleApiVersion = true;
+            }
+        });
     },
 };
 </script>

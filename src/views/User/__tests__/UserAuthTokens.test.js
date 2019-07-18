@@ -37,7 +37,7 @@ describe('UserAuthTokens.vue', () => {
         wrapper.find('.delete-token').trigger('click');
     };
 
-    const setTokenName = (name) => {
+    const setTokenName = name => {
         wrapper.find('input').setValue(name);
     };
 
@@ -88,7 +88,12 @@ describe('UserAuthTokens.vue', () => {
             clickNameHeader();
             clickNameHeader();
 
-            expect(wrapper.findAll('.token .token-name').at(0).text()).toEqual(userAuthTokens[3].name);
+            expect(
+                wrapper
+                    .findAll('.token .token-name')
+                    .at(0)
+                    .text()
+            ).toEqual(userAuthTokens[3].name);
         });
 
         test('should sort the tokens by "last_used" when "Last Used" table header is clicked', () => {
@@ -96,7 +101,12 @@ describe('UserAuthTokens.vue', () => {
 
             const lastUsed = moment(userAuthTokens[3].last_used).fromNow();
 
-            expect(wrapper.findAll('.token .last-used').at(0).text()).toEqual(lastUsed);
+            expect(
+                wrapper
+                    .findAll('.token .last-used')
+                    .at(0)
+                    .text()
+            ).toEqual(lastUsed);
         });
 
         test('should sort the tokens by "created" when "Created" table header is clicked', () => {
@@ -104,7 +114,12 @@ describe('UserAuthTokens.vue', () => {
 
             const created = moment(userAuthTokens[3].created).fromNow();
 
-            expect(wrapper.findAll('.token .created').at(0).text()).toEqual(created);
+            expect(
+                wrapper
+                    .findAll('.token .created')
+                    .at(0)
+                    .text()
+            ).toEqual(created);
         });
     });
 
@@ -169,7 +184,7 @@ describe('UserAuthTokens.vue', () => {
     });
 
     test('should call the closeModal method when modal background is clicked', () => {
-        const spy = spyOn(wrapper.vm, 'closeModal');
+        const spy = jest.spyOn(wrapper.vm, 'closeModal');
 
         clickDeleteToken();
         wrapper.find('.modal-background').trigger('click');
@@ -182,7 +197,7 @@ describe('UserAuthTokens.vue', () => {
     });
 
     test('should call the removeToken method when "Delete Token" button is clicked', () => {
-        const spy = spyOn(wrapper.vm, 'removeToken');
+        const spy = jest.spyOn(wrapper.vm, 'removeToken');
 
         clickDeleteToken();
         wrapper.find('a.confirm').trigger('click');
@@ -202,10 +217,14 @@ describe('UserAuthTokens.vue', () => {
         setTokenName('test 1');
         saveNewToken();
 
-        await new Promise(resolve => setTimeout(() => {
-            expect(wrapper.find('.duplicate-name-error').exists()).toBeTruthy();
-            resolve();
-        }, 10));
+        await new Promise(resolve =>
+            setTimeout(() => {
+                expect(
+                    wrapper.find('.duplicate-name-error').exists()
+                ).toBeTruthy();
+                resolve();
+            }, 10)
+        );
     });
 
     test('should display a success message when a token is successfully created', async () => {
@@ -213,9 +232,11 @@ describe('UserAuthTokens.vue', () => {
         setTokenName('test 1');
         saveNewToken();
 
-        await new Promise(resolve => setTimeout(() => {
-            expect(wrapper.find('.message.success').exists()).toBeTruthy();
-            resolve();
-        }, 10));
+        await new Promise(resolve =>
+            setTimeout(() => {
+                expect(wrapper.find('.message.success').exists()).toBeTruthy();
+                resolve();
+            }, 10)
+        );
     });
 });

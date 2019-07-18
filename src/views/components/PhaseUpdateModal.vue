@@ -1,9 +1,6 @@
 <template>
     <div>
-        <BaseModal
-            class="phase-update-modal"
-            v-if="!updateSuccess"
-        >
+        <BaseModal class="phase-update-modal" v-if="!updateSuccess">
             <template v-slot:icon>
                 <i class="fas fa-4x fa-hdd" v-if="item === 'device'"></i>
                 <i class="fas fa-4x fa-server" v-else-if="item === 'rack'"></i>
@@ -19,23 +16,37 @@
                     style="margin-bottom: 10px;"
                 >
                     <span class="device-id" v-if="item === 'device'">
-                        Device: <strong class="has-text-white">{{ itemData.id }}</strong>
+                        Device:
+                        <strong class="has-text-white">{{
+                            itemData.id
+                        }}</strong>
                     </span>
                     <span class="rack-name" v-else-if="item === 'rack'">
-                        Rack: <strong class="has-text-white">{{ itemData.name }}</strong>
+                        Rack:
+                        <strong class="has-text-white">{{
+                            itemData.name
+                        }}</strong>
                     </span>
                 </div>
-                <div class="columns" style="position: relative; margin: 10px 0;">
+                <div
+                    class="columns"
+                    style="position: relative; margin: 10px 0;"
+                >
                     <div class="column phase">
-                        <p class="subtitle" style="margin-bottom: 20px; padding: 0;">
+                        <p
+                            class="subtitle"
+                            style="margin-bottom: 20px; padding: 0;"
+                        >
                             Current Phase:
                         </p>
                         <p class="is-capitalized current-phase">
-                            {{ itemData.phase}}
+                            {{ itemData.phase }}
                         </p>
                     </div>
                     <div class="divider is-vertical">
-                        <i class="fas fa fa-long-arrow-alt-right has-text-grey-light"></i>
+                        <i
+                            class="fas fa fa-long-arrow-alt-right has-text-grey-light"
+                        ></i>
                     </div>
                     <div class="column">
                         <p
@@ -72,7 +83,7 @@
                             v-model="updateRackDevices"
                             :true-value="true"
                             :false-value="false"
-                        >
+                        />
                         <span class="slider round is-success"></span>
                     </label>
                     <span style="margin-left: 12px; width: 22px;">
@@ -89,16 +100,17 @@
                     v-if="!samePhase"
                 >
                     <span>
-                        Update phase to <strong class="has-text-white is-capitalized">{{ selectedPhase }}</strong>
+                        Update phase to
+                        <strong class="has-text-white is-capitalized">{{
+                            selectedPhase
+                        }}</strong>
                     </span>
                     <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                 </a>
-                <a
-                    class="button confirm is-danger is-fullwidth"
-                    v-else
-                >
+                <a class="button confirm is-danger is-fullwidth" v-else>
                     <span>
-                        This {{ item }} is already in the {{ selectedPhase }} phase!
+                        This {{ item }} is already in the
+                        {{ selectedPhase }} phase!
                     </span>
                 </a>
             </template>
@@ -114,10 +126,7 @@
                 <p class="subtitle">
                     <span>
                         The phase for
-                        <strong
-                            class="has-text-white"
-                            v-if="item === 'device'"
-                        >
+                        <strong class="has-text-white" v-if="item === 'device'">
                             {{ itemData.id }}
                         </strong>
                         <strong
@@ -187,10 +196,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setActiveDeviceDetails',
-            'setRackLayout',
-        ]),
+        ...mapActions(['setActiveDeviceDetails', 'setRackLayout']),
         closeModal() {
             this.updateSuccess = false;
             EventBus.$emit('closeModal:baseModal');
@@ -201,34 +207,31 @@ export default {
             const id = this.itemData.id;
 
             if (this.item === 'device') {
-                setDevicePhase(id, data)
-                    .then(response => {
-                        this.setActiveDeviceDetails(response.data);
+                setDevicePhase(id, data).then(response => {
+                    this.setActiveDeviceDetails(response.data);
+                    this.isLoading = false;
+                    this.updatingPhase = false;
+                    this.updateSuccess = true;
+                });
+            } else if (this.item === 'rack') {
+                const params = { rack_only: this.updateRackDevices ? 0 : 1 };
+
+                setRackPhase(id, data, params).then(() => {
+                    getRackById(
+                        this.currentWorkspace.id,
+                        this.rackLayout.id
+                    ).then(response => {
+                        this.setRackLayout(response);
                         this.isLoading = false;
                         this.updatingPhase = false;
                         this.updateSuccess = true;
                     });
-            } else if (this.item === 'rack') {
-                const params = { rack_only: this.updateRackDevices ? 0 : 1 };
-
-                setRackPhase(id, data, params)
-                    .then(() => {
-                        getRackById(this.currentWorkspace.id, this.rackLayout.id)
-                            .then(response => {
-                                this.setRackLayout(response);
-                                this.isLoading = false;
-                                this.updatingPhase = false;
-                                this.updateSuccess = true;
-                            });
-                    });
+                });
             }
         },
     },
     computed: {
-        ...mapState([
-            'currentWorkspace',
-            'rackLayout',
-        ]),
+        ...mapState(['currentWorkspace', 'rackLayout']),
         samePhase() {
             return this.itemData.phase === this.selectedPhase;
         },

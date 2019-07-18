@@ -1,7 +1,7 @@
 <template>
     <div class="device-inspector">
         <section class="section" v-if="!hasActiveDevice">
-            <Spinner/>
+            <Spinner />
         </section>
         <div class="tabs-container" v-else>
             <div class="tabs is-centered is-boxed is-small">
@@ -32,7 +32,11 @@ import StorageTab from './StorageTab.vue';
 import ValidationTab from './ValidationTab.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getDeviceDetails, getDeviceSettings, getDeviceValidations } from '@api/device.js';
+import {
+    getDeviceDetails,
+    getDeviceSettings,
+    getDeviceValidations,
+} from '@api/device.js';
 import { getValidations } from '@api/validations.js';
 import { getRackById } from '@api/workspaces';
 
@@ -88,39 +92,34 @@ export default {
             'setValidations',
         ]),
         setActiveDeviceData() {
-            getDeviceSettings(this.activeDeviceId)
-                .then(response => {
-                    this.setActiveDeviceSettings(response.data);
-                });
+            getDeviceSettings(this.activeDeviceId).then(response => {
+                this.setActiveDeviceSettings(response.data);
+            });
 
-            getDeviceDetails(this.activeDeviceId)
-                .then(response => {
-                    const deviceDetails = response.data;
-                    this.setActiveDeviceDetails(deviceDetails);
+            getDeviceDetails(this.activeDeviceId).then(response => {
+                const deviceDetails = response.data;
+                this.setActiveDeviceDetails(deviceDetails);
 
-                    if (deviceDetails.location) {
-                        const {
-                            datacenter_room,
-                            rack
-                        } = deviceDetails.location;
+                if (deviceDetails.location) {
+                    const { datacenter_room, rack } = deviceDetails.location;
 
-                        if (datacenter_room && datacenter_room.az) {
-                            this.setActiveRoomName(datacenter_room.az);
-                        }
-
-                        if (rack && rack.id) {
-                            getRackById(this.currentWorkspaceId, rack.id)
-                                .then(response => {
-                                    this.setRackLayout(response);
-                                });
-                        }
+                    if (datacenter_room && datacenter_room.az) {
+                        this.setActiveRoomName(datacenter_room.az);
                     }
-                });
 
-            getDeviceValidations(this.activeDeviceId)
-                .then(response => {
-                    this.setActiveDeviceValidations(response.data);
-                });
+                    if (rack && rack.id) {
+                        getRackById(this.currentWorkspaceId, rack.id).then(
+                            response => {
+                                this.setRackLayout(response);
+                            }
+                        );
+                    }
+                }
+            });
+
+            getDeviceValidations(this.activeDeviceId).then(response => {
+                this.setActiveDeviceValidations(response.data);
+            });
 
             if (isEmpty(this.validations)) {
                 getValidations().then(response => {

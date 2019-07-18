@@ -93,22 +93,30 @@ describe('utils.js', () => {
 
     describe('roomToProgress', () => {
         test('should return "validated" if device_progress of all rack room racks is "VALID"', () => {
-            const progress = utils.roomToProgress(rackRooms[Object.keys(rackRooms)[0]]);
+            const progress = utils.roomToProgress(
+                rackRooms[Object.keys(rackRooms)[0]]
+            );
             expect(progress).toEqual('validated');
         });
 
         test('should return "in progress" if device_progress of any rack room racks is "PASS"', () => {
-            const progress = utils.roomToProgress(rackRooms[Object.keys(rackRooms)[1]]);
+            const progress = utils.roomToProgress(
+                rackRooms[Object.keys(rackRooms)[1]]
+            );
             expect(progress).toEqual('in progress');
         });
 
         test('should return "failing" if device_progress of any rack room racks is "FAIL"', () => {
-            const progress = utils.roomToProgress(rackRooms[Object.keys(rackRooms)[2]]);
+            const progress = utils.roomToProgress(
+                rackRooms[Object.keys(rackRooms)[2]]
+            );
             expect(progress).toEqual('failing');
         });
 
         test('should return "not started" if device_progress of rack room racks are not "FAIL", "PASS" or "VALID"', () => {
-            const progress = utils.roomToProgress(rackRooms[Object.keys(rackRooms)[3]]);
+            const progress = utils.roomToProgress(
+                rackRooms[Object.keys(rackRooms)[3]]
+            );
             expect(progress).toEqual('not started');
         });
     });

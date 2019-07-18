@@ -1,11 +1,12 @@
 import axios from 'axios';
+import jest from 'jest';
 
 jest.mock('axios');
 
 axios.mockImplementation(args => {
     args.data = {};
 
-    return Promise.resolve(args)
+    return Promise.resolve(args);
 });
 
 const token = true;
@@ -22,12 +23,12 @@ export const setToken = () => {
     return Promise.resolve(true);
 };
 
-export const request = (args) => {
+export const request = args => {
     args.withCredentials = true;
     return axios(args);
 };
 
-export const requestWithToken = (args) => {
+export const requestWithToken = args => {
     const token = getToken();
 
     if (!token) {
@@ -35,7 +36,7 @@ export const requestWithToken = (args) => {
     }
 
     args.headers = {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
     };
 
     return request(args).catch(error => {

@@ -32,7 +32,7 @@ describe('users API', () => {
         test('should return an object containing the created user', async () => {
             expect.assertions(1);
             response = await Users.createUser(user);
-            expect(response.data).toMatchObject(users[0])
+            expect(response.data).toMatchObject(users[0]);
         });
     });
 
@@ -206,7 +206,7 @@ describe('users API', () => {
         beforeEach(() => {
             nock(conchApi)
                 .post('/user/me/password')
-                .reply(200, {})
+                .reply(200, {});
         });
 
         test('should return a status of 200', async () => {

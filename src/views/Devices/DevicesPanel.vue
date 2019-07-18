@@ -1,7 +1,8 @@
 <template>
     <nav class="panel">
         <p class="panel-heading">
-            {{ filteredDevices.length }} of {{ workspaceDevices.length }} Devices
+            {{ filteredDevices.length }} of
+            {{ workspaceDevices.length }} Devices
         </p>
         <div class="panel-block">
             <p class="control has-icons-left">
@@ -10,7 +11,7 @@
                     class="input is-small"
                     placeholder="Search Devices"
                     v-model="deviceSearchText"
-                >
+                />
                 <span class="icon is-small is-left">
                     <i class="fas fa-search"></i>
                 </span>
@@ -65,7 +66,6 @@ import ProgressIcon from '@views/components/ProgressIcon.vue';
 import search from 'fuzzysearch';
 import sortBy from 'lodash/sortBy';
 import isEmpty from 'lodash/isEmpty';
-import moment from 'moment';
 import { mapActions, mapGetters } from 'vuex';
 import { deviceToProgress } from '@views/shared/utils.js';
 
@@ -89,28 +89,36 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setActiveDevice',
-        ]),
+        ...mapActions(['setActiveDevice']),
         activateDevice(device) {
             this.setActiveDevice(device);
-            this.$router.push({ name: 'device', params: { deviceId: this.activeDeviceId } });
+            this.$router.push({
+                name: 'device',
+                params: { deviceId: this.activeDeviceId },
+            });
         },
         deviceFilter(device) {
             const deviceId = device && device.id ? device.id.toLowerCase() : '';
-            const assetTag = device && device.asset_tag ? device.asset_tag.toLowerCase() : '';
-            const progressFilter = this.selectedProgress === 'all' || this.selectedProgress === deviceToProgress(device);
-            const productFilter = this.selectedProductId === 'all' || this.selectedProductId === device.hardware_product;
-            const searchFilter = search(this.deviceSearchTextLowerCase, deviceId) || search(this.deviceSearchTextLowerCase, assetTag);
+            const assetTag =
+                device && device.asset_tag
+                    ? device.asset_tag.toLowerCase()
+                    : '';
+            const progressFilter =
+                this.selectedProgress === 'all' ||
+                this.selectedProgress === deviceToProgress(device);
+            const productFilter =
+                this.selectedProductId === 'all' ||
+                this.selectedProductId === device.hardware_product;
+            const searchFilter =
+                search(this.deviceSearchTextLowerCase, deviceId) ||
+                search(this.deviceSearchTextLowerCase, assetTag);
 
             return progressFilter && productFilter && searchFilter;
         },
         deviceToProgress,
     },
     computed: {
-        ...mapGetters([
-            'activeDeviceId',
-        ]),
+        ...mapGetters(['activeDeviceId']),
         availableDeviceProgress() {
             return Array.from(
                 this.workspaceDevices.reduce((acc, device) => {
@@ -120,11 +128,16 @@ export default {
             ).sort();
         },
         availableProducts() {
-            if (!isEmpty(this.hardwareProductLookup) && this.workspaceDevices.length) {
+            if (
+                !isEmpty(this.hardwareProductLookup) &&
+                this.workspaceDevices.length
+            ) {
                 const products = sortBy(
                     Array.from(
                         this.workspaceDevices.reduce((acc, device) => {
-                            const match = this.hardwareProductLookup[device.hardware_product];
+                            const match = this.hardwareProductLookup[
+                                device.hardware_product
+                            ];
 
                             if (match) {
                                 acc.add(match);
@@ -132,7 +145,8 @@ export default {
 
                             return acc;
                         }, new Set())
-                    ), 'name'
+                    ),
+                    'name'
                 );
 
                 if (products.length) {

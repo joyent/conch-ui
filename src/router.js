@@ -50,8 +50,8 @@ export default new Router({
                     path: ':deviceId',
                     name: 'device',
                     component: Devices,
-                }
-            ]
+                },
+            ],
         },
         {
             path: '/:currentWorkspace/datacenter',

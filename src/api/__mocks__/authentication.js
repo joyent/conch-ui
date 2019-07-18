@@ -2,11 +2,10 @@ export const isForcePasswordChange = () => {
     return Promise.resolve(true);
 };
 
-export const isLoggedIn = token => (
-    !!token ? Promise.resolve(true) : Promise.reject(false)
-);
+export const isLoggedIn = token =>
+    token ? Promise.resolve(true) : Promise.reject(false);
 
-export const login = (data) => {
+export const login = data => {
     return new Promise((resolve, reject) => {
         const { user, password } = data;
 
@@ -24,7 +23,7 @@ export const login = (data) => {
     });
 };
 
-export const logout = () => (Promise.resolve(true));
+export const logout = () => Promise.resolve(true);
 
 export default {
     isForcePasswordChange,

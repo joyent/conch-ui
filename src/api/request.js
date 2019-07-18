@@ -11,11 +11,11 @@ export const getToken = () => {
     return sessionStorage.getItem('token');
 };
 
-export const setToken = (token) => {
+export const setToken = token => {
     sessionStorage.setItem('token', token);
 };
 
-export const request = (args) => {
+export const request = args => {
     const uiHeader = {
         'X-Conch-UI': CONCH.GLOBALS.conchUIVersion,
     };
@@ -31,7 +31,7 @@ export const request = (args) => {
     return axios(args);
 };
 
-export const requestWithToken = (args) => {
+export const requestWithToken = args => {
     const token = getToken();
 
     if (!token) {
@@ -39,7 +39,7 @@ export const requestWithToken = (args) => {
     }
 
     args.headers = {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
     };
 
     return request(args).catch(error => {
@@ -52,11 +52,10 @@ export const requestWithToken = (args) => {
         }
 
         if (errorResponse.status && errorResponse.status === 401) {
-            logout()
-                .then(() => {
-                    store.dispatch('setInvalidCredentials');
-                    router.push({ name: 'signIn' });
-                });
+            logout().then(() => {
+                store.dispatch('setInvalidCredentials');
+                router.push({ name: 'signIn' });
+            });
         }
 
         return Promise.reject(errorResponse);

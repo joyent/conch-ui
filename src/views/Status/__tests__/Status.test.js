@@ -29,7 +29,7 @@ describe('Status.vue', () => {
     let wrapper;
 
     beforeEach(() => {
-        actions = { setRackRooms: jest.fn() }
+        actions = { setRackRooms: jest.fn() };
         getters = {
             currentWorkspaceId: jest.fn(),
             currentWorkspaceName: jest.fn(),
@@ -67,8 +67,14 @@ describe('Status.vue', () => {
     test('should call setWorkspaceDevices and setWorkspaceRacks on changeWorkspace:status event', () => {
         expect.assertions(2);
 
-        const spySetWorkspaceDevices = jest.spyOn(wrapper.vm, 'setWorkspaceDevices');
-        const spySetWorkspaceRacks = jest.spyOn(wrapper.vm, 'setWorkspaceRacks');
+        const spySetWorkspaceDevices = jest.spyOn(
+            wrapper.vm,
+            'setWorkspaceDevices'
+        );
+        const spySetWorkspaceRacks = jest.spyOn(
+            wrapper.vm,
+            'setWorkspaceRacks'
+        );
 
         EventBus.$on('changeWorkspace:status', () => {
             expect(spySetWorkspaceDevices).toHaveBeenCalled();
@@ -76,5 +82,5 @@ describe('Status.vue', () => {
         });
 
         EventBus.$emit('changeWorkspace:status');
-    })
+    });
 });

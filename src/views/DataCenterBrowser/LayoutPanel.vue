@@ -11,7 +11,7 @@
                         class="input is-small"
                         placeholder="Search Device"
                         v-model="deviceSearchText"
-                    >
+                    />
                     <span class="icon is-small is-left">
                         <i class="fas fa-search"></i>
                     </span>
@@ -32,7 +32,8 @@
                 style="justify-content: center; position: relative;"
             >
                 <p class="rack-phase">
-                    Rack Phase: <span class="is-capitalized">{{ rackLayout.phase }}</span>
+                    Rack Phase:
+                    <span class="is-capitalized">{{ rackLayout.phase }}</span>
                 </p>
                 <a
                     class="button update-phase is-small is-primary"
@@ -64,7 +65,12 @@
                 </thead>
                 <tbody>
                     <tr
-                        :class="{ 'is-selected': slot.occupant && highlightDeviceId && slot.occupant.id === highlightDeviceId }"
+                        :class="{
+                            'is-selected':
+                                slot.occupant &&
+                                highlightDeviceId &&
+                                slot.occupant.id === highlightDeviceId,
+                        }"
                         v-for="(slot, index) in filteredSlots"
                         :key="index"
                         @click="activateDevice(slot)"
@@ -78,10 +84,17 @@
                         </td>
                         <td>{{ slot.name }}</td>
                         <td class="has-text-right ">
-                            <span class="has-text-light" v-if="slot.occupant">{{ slot.occupant.id }}</span>
+                            <span class="has-text-light" v-if="slot.occupant">
+                                {{ slot.occupant.id }}
+                            </span>
                         </td>
                         <td class="has-text-right">
-                            <span class="has-text-grey-light" v-if="slot.occupant">{{ slot.occupant.asset_tag }}</span>
+                            <span
+                                class="has-text-grey-light"
+                                v-if="slot.occupant"
+                            >
+                                {{ slot.occupant.asset_tag }}
+                            </span>
                         </td>
                     </tr>
                 </tbody>
@@ -100,7 +113,7 @@
         <transition name="fade">
             <PhaseUpdateModal
                 :item="'rack'"
-                :itemData="rackLayout"
+                :item-data="rackLayout"
                 v-if="updatingPhase"
             />
         </transition>
@@ -113,7 +126,7 @@ import EditLayoutModal from './EditLayoutModal.vue';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
 import Spinner from '@views/components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
 import { EventBus } from '@src/eventBus.js';
 import { deviceToProgress } from '@views/shared/utils.js';
 import { mapActions, mapState } from 'vuex';
@@ -121,6 +134,7 @@ import { mapActions, mapState } from 'vuex';
 export default {
     props: {
         rackLoading: {
+            type: Boolean,
             required: true,
             default: false,
         },
@@ -140,9 +154,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setActiveDevice',
-        ]),
+        ...mapActions(['setActiveDevice']),
         activateDevice(slot) {
             const device = slot.occupant;
 
@@ -157,9 +169,16 @@ export default {
         },
         deviceFilter(occupant) {
             const deviceId = occupant ? occupant.id.toLowerCase() : '';
-            const assetTag = occupant && occupant.asset_tag ? occupant.asset_tag.toLowerCase() : '';
-            const progressFilter = this.selectedProgress === 'all' || this.selectedProgress === deviceToProgress(occupant);
-            const searchFilter = search(this.deviceSearchTextLowerCase, deviceId) || search(this.deviceSearchTextLowerCase, assetTag);
+            const assetTag =
+                occupant && occupant.asset_tag
+                    ? occupant.asset_tag.toLowerCase()
+                    : '';
+            const progressFilter =
+                this.selectedProgress === 'all' ||
+                this.selectedProgress === deviceToProgress(occupant);
+            const searchFilter =
+                search(this.deviceSearchTextLowerCase, deviceId) ||
+                search(this.deviceSearchTextLowerCase, assetTag);
 
             return progressFilter && searchFilter;
         },
@@ -168,31 +187,32 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            'currentWorkspace',
-            'highlightDeviceId',
-            'rackLayout',
-        ]),
+        ...mapState(['currentWorkspace', 'highlightDeviceId', 'rackLayout']),
         availableDeviceProgress() {
             return Array.from(
-                Object.keys(this.rackLayout.slots || {}).reduce((acc, slotId) => {
-                    const occupant = this.rackLayout.slots[slotId].occupant;
+                Object.keys(this.rackLayout.slots || {}).reduce(
+                    (acc, slotId) => {
+                        const occupant = this.rackLayout.slots[slotId].occupant;
 
-                    if (occupant) {
-                        acc.add(deviceToProgress(occupant));
-                    } else {
-                        acc.add('unassigned');
-                    }
+                        if (occupant) {
+                            acc.add(deviceToProgress(occupant));
+                        } else {
+                            acc.add('unassigned');
+                        }
 
-                    return acc;
-                }, new Set(['all']))
+                        return acc;
+                    },
+                    new Set(['all'])
+                )
             ).sort();
         },
         deviceSearchTextLowerCase() {
             return this.deviceSearchText.toLowerCase();
         },
         filteredSlots() {
-            return this.normalizedSlots.filter(slot => this.deviceFilter(slot.occupant));
+            return this.normalizedSlots.filter(slot =>
+                this.deviceFilter(slot.occupant)
+            );
         },
         hasRackLayout() {
             return !isEmpty(this.rackLayout);
@@ -207,14 +227,18 @@ export default {
                     return {
                         id: slotId,
                         name: slot.name,
-                        progress: occupant ? deviceToProgress(occupant) : 'unassigned',
-                        occupant: occupant
+                        progress: occupant
+                            ? deviceToProgress(occupant)
+                            : 'unassigned',
+                        occupant: occupant,
                     };
                 });
         },
         userHasPermissions() {
-            return this.currentWorkspace.role === 'admin' ||
-                   this.currentWorkspace.role === 'rw';
+            return (
+                this.currentWorkspace.role === 'admin' ||
+                this.currentWorkspace.role === 'rw'
+            );
         },
     },
     mounted() {

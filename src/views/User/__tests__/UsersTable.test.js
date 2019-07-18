@@ -19,7 +19,7 @@ describe('UsersTable.vue', () => {
     });
 
     // Helper function
-    const clickElement = (element) => {
+    const clickElement = element => {
         wrapper.find(element).trigger('click');
     };
 

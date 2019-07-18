@@ -10,18 +10,24 @@
                 <th>
                     <a
                         class="table-header-filter"
-                        :class="{ 'has-text-white': sortFilter === 'workspace_name' }"
+                        :class="{
+                            'has-text-white': sortFilter === 'workspace_name',
+                        }"
                         @click="sortByName()"
                     >
                         Workspace Name
                         <i
                             class="fas fa-angle-down"
-                            v-if="sortFilter === 'workspace_name' && !reversedSort"
+                            v-if="
+                                sortFilter === 'workspace_name' && !reversedSort
+                            "
                             style="margin-left: 10px;"
                         ></i>
                         <i
                             class="fas fa-angle-up"
-                            v-else-if="sortFilter === 'workspace_name' && reversedSort"
+                            v-else-if="
+                                sortFilter === 'workspace_name' && reversedSort
+                            "
                             style="margin-left: 10px;"
                         ></i>
                     </a>
@@ -76,7 +82,7 @@
 <script>
 import Spinner from '@src/views/components/Spinner.vue';
 import UsersTable from './UsersTable.vue';
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
 import isEmpty from 'lodash/isEmpty';
 import orderBy from 'lodash/orderBy';
 import { mapState } from 'vuex';
@@ -90,6 +96,7 @@ export default {
         searchText: {
             type: String,
             required: false,
+            default: '',
         },
         users: {
             type: Array,
@@ -110,7 +117,7 @@ export default {
                 return users.filter(user => {
                     return user.is_admin === true;
                 }).length;
-            };
+            }
 
             return 0;
         },
@@ -149,9 +156,7 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            'workspaces',
-        ]),
+        ...mapState(['workspaces']),
         filteredWorkspaces() {
             const searchText = this.searchText;
             let workspaces = this.sortedWorkspaces;
@@ -159,7 +164,7 @@ export default {
             if (searchText) {
                 return workspaces.reduce((acc, workspace) => {
                     const name = workspace.name.toLowerCase();
-                    const text = searchText.toLowerCase()
+                    const text = searchText.toLowerCase();
 
                     if (search(text, name)) {
                         acc.push(workspace);
@@ -190,10 +195,14 @@ export default {
 
                 return acc;
             }, {});
-        }
+        },
     },
     mounted() {
-        this.sortedWorkspaces = orderBy(this.workspaces, [workspace => workspace.name.toLowerCase()], ['asc']);
+        this.sortedWorkspaces = orderBy(
+            this.workspaces,
+            [workspace => workspace.name.toLowerCase()],
+            ['asc']
+        );
     },
 };
 </script>

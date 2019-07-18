@@ -7,14 +7,15 @@
                     <h2 class="subtitle is-5">
                         The page you're looking for must be in another castle.
                     </h2>
-                    <hr>
+                    <hr />
                     <div class="action">
                         <div class="text">
                             <p class="is-size-5">
                                 Head back to the last known workspace.
                             </p>
                             <p class="is-size-5">
-                                If you think something is broken, please report it.
+                                If you think something is broken, please report
+                                it.
                             </p>
                         </div>
                         <p class="buttons">
@@ -22,7 +23,7 @@
                                 class="button is-rounded is-outlined is-info is-uppercase has-text-weight-semibold"
                                 @click="routeLastKnownWorkspace()"
                             >
-                                    Last Known Workspace
+                                Last Known Workspace
                             </a>
                             <a
                                 class="button is-rounded is-outlined is-danger is-uppercase has-text-weight-semibold"
@@ -35,7 +36,7 @@
                     </div>
                 </div>
                 <div class="column is-5 is-offset-1 image">
-                    <img src="../../assets/castle.svg" width="500">
+                    <img src="../../assets/castle.svg" width="500" />
                 </div>
             </div>
         </div>
@@ -43,7 +44,6 @@
 </template>
 
 <script>
-import { loadCurrentWorkspace } from '../../store/getters';
 import { mapGetters, mapState } from 'vuex';
 
 export default {
@@ -64,7 +64,7 @@ export default {
             }
 
             if (!currentWorkspaceId) {
-                currentWorkspaceId = this.workspaces[0].id
+                currentWorkspaceId = this.workspaces[0].id;
             }
 
             this.$router.push({
@@ -74,13 +74,8 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspaceId',
-            'loadCurrentWorkspace',
-        ]),
-        ...mapState([
-            'workspaces'
-        ]),
+        ...mapGetters(['currentWorkspaceId', 'loadCurrentWorkspace']),
+        ...mapState(['workspaces']),
     },
 };
 </script>

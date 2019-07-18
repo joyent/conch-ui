@@ -1,6 +1,6 @@
 <template>
     <div class="user-management">
-        <Spinner v-if="users.length < 1"/>
+        <Spinner v-if="users.length < 1" />
         <div class="users" v-else>
             <div class="columns is-vcentered">
                 <div class="column">
@@ -14,7 +14,10 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a class="filter-admin" @click="setUserFilters('admin_users')">
+                    <a
+                        class="filter-admin"
+                        @click="setUserFilters('admin_users')"
+                    >
                         <div class="box users-stats">
                             <h2 class="is-6">Admin Users</h2>
                             <span class="is-size-3 has-text-info">
@@ -24,7 +27,10 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a class="filter-regular" @click="setUserFilters('regular_users')">
+                    <a
+                        class="filter-regular"
+                        @click="setUserFilters('regular_users')"
+                    >
                         <div class="box users-stats">
                             <h2 class="is-6">Regular Users</h2>
                             <span class="is-size-3 has-text-info">
@@ -34,7 +40,10 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a class="filter-inactive" @click="statisticFilter = 'inactive'">
+                    <a
+                        class="filter-inactive"
+                        @click="statisticFilter = 'inactive'"
+                    >
                         <div class="box users-stats">
                             <h2 class="is-6">Inactive Users</h2>
                             <span class="is-size-3 has-text-info">
@@ -44,7 +53,10 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a class="filter-auth-issues" @click="statisticFilter = 'authentication_issues'">
+                    <a
+                        class="filter-auth-issues"
+                        @click="statisticFilter = 'authentication_issues'"
+                    >
                         <div class="box users-stats">
                             <h2 class="is-6">Authentication Issues</h2>
                             <span class="is-size-3 has-text-info">
@@ -99,7 +111,7 @@
                                 type="text"
                                 placeholder="Search Users"
                                 v-model="searchText"
-                            >
+                            />
                             <span class="icon is-small is-left">
                                 <i class="fas fa-search"></i>
                             </span>
@@ -113,7 +125,7 @@
                                 type="text"
                                 placeholder="Search Workspaces"
                                 v-model="searchTextWorkspaces"
-                            >
+                            />
                             <span class="icon is-small is-left">
                                 <i class="fas fa-search"></i>
                             </span>
@@ -124,7 +136,10 @@
                             class="button create is-primary is-pulled-right"
                             @click="action = 'create'"
                         >
-                            <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                            <i
+                                class="fas fa-plus"
+                                style="margin-right: 8px;"
+                            ></i>
                             Add User
                         </button>
                     </div>
@@ -146,7 +161,7 @@
                         <img
                             src="../../assets/no-search-results.svg"
                             width="30%"
-                        >
+                        />
                     </div>
                 </transition>
             </div>
@@ -167,7 +182,7 @@
 </template>
 
 <script>
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
 import UserActionModal from './UserActionModal.vue';
 import UserModal from './UserModal.vue';
 import Spinner from '@src/views/components/Spinner.vue';
@@ -199,13 +214,13 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setUsers',
-        ]),
+        ...mapActions(['setUsers']),
         getIndex(users, userId) {
-            return users.map(user => {
-                return user.id;
-            }).indexOf(userId);
+            return users
+                .map(user => {
+                    return user.id;
+                })
+                .indexOf(userId);
         },
         openModal(action, user) {
             this.action = action;
@@ -230,9 +245,7 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            'users',
-        ]),
+        ...mapState(['users']),
         adminUsersCount() {
             return this.users.filter(user => user.is_admin === true).length;
         },
@@ -258,10 +271,7 @@ export default {
                     const name = user.name.toLowerCase();
                     const email = user.email.toLowerCase();
 
-                    if (
-                        search(searchText, name) ||
-                        search(searchText, email)
-                    ) {
+                    if (search(searchText, name) || search(searchText, email)) {
                         acc.push(user);
                     }
 
@@ -272,9 +282,7 @@ export default {
             if (this.statisticFilter) {
                 const statisticFilter = this.statisticFilter;
 
-                if (statisticFilter === 'all_users') {
-                    users = users;
-                } else if (statisticFilter === 'admins') {
+                if (statisticFilter === 'admins') {
                     users = users.filter(user => user.is_admin === true);
                 } else if (statisticFilter === 'regular_users') {
                     users = users.filter(user => user.is_admin === false);
@@ -286,8 +294,7 @@ export default {
                             user.force_password_change === true ||
                             user.refuse_session_auth === true
                         )
-
-                        return user;
+                            return user;
                     });
                 }
             }
@@ -299,14 +306,13 @@ export default {
         },
         regularUsersCount() {
             return this.users.filter(user => user.is_admin === false).length;
-        }
+        },
     },
     mounted() {
         if (!this.users.length) {
-            getUsers()
-                .then(response => {
-                    this.setUsers(response.data);
-                });
+            getUsers().then(response => {
+                this.setUsers(response.data);
+            });
         }
 
         EventBus.$on('open-modal', data => {
@@ -321,24 +327,23 @@ export default {
             this.action = '';
         });
 
-        EventBus.$on('action-success', (actionData) => {
+        EventBus.$on('action-success', actionData => {
             const userId = actionData.userId;
             const users = this.users;
 
             if (actionData.action !== 'deactivate') {
-                getUser(userId)
-                    .then(response => {
-                        const newUser = response.data;
+                getUser(userId).then(response => {
+                    const newUser = response.data;
 
-                        if (actionData.action && actionData.action === 'create') {
-                            users.push(newUser);
-                            this.setUsers(users);
-                        } else {
-                            const index = this.getIndex(users, userId);
-                            users.splice(index, 1, newUser);
-                            this.setUsers(users);
-                        }
-                    });
+                    if (actionData.action && actionData.action === 'create') {
+                        users.push(newUser);
+                        this.setUsers(users);
+                    } else {
+                        const index = this.getIndex(users, userId);
+                        users.splice(index, 1, newUser);
+                        this.setUsers(users);
+                    }
+                });
             } else if (actionData && actionData.action === 'deactivate') {
                 const index = this.getIndex(users, userId);
                 users.splice(index, 1);

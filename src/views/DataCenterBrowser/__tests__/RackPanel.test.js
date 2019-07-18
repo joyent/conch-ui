@@ -31,18 +31,26 @@ describe('RackPanel.vue', () => {
         propsData = { activeRacks };
         state = { rackLayout };
         store = new Vuex.Store({ actions, getters, state });
-        wrapper = shallowMount(RackPanel, { localVue, mocks, propsData, store });
+        wrapper = shallowMount(RackPanel, {
+            localVue,
+            mocks,
+            propsData,
+            store,
+        });
         wrapperHtml = wrapper.html();
     });
 
     // Helper function
     const clickProgressFilter = () => {
-        wrapper.findAll('.panel-tabs a').at(1).trigger('click');
+        wrapper
+            .findAll('.panel-tabs a')
+            .at(1)
+            .trigger('click');
     };
 
     test('should call activateRack method with the rack as parameter when a rack row is clicked', () => {
         const roomRow = wrapper.find('a.panel-block');
-        const spy = jest.spyOn(wrapper.vm, 'activateRack')
+        const spy = jest.spyOn(wrapper.vm, 'activateRack');
 
         roomRow.trigger('click');
 
@@ -101,6 +109,6 @@ describe('RackPanel.vue', () => {
         wrapperHtml = wrapper.html();
 
         expect(wrapperHtml).toContain('AB');
-        expect(wrapperHtml).not.toContain('BC')
+        expect(wrapperHtml).not.toContain('BC');
     });
 });

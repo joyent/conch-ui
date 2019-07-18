@@ -1,9 +1,16 @@
 <template>
     <nav class="panel rack-panel">
-        <p class="panel-heading has-text-centered">{{ activeRoomName }} Racks</p>
+        <p class="panel-heading has-text-centered">
+            {{ activeRoomName }} Racks
+        </p>
         <div class="panel-block">
             <p class="control has-icons-left">
-                <input type="text" class="input is-small" placeholder="Search Racks" v-model="rackFilterText">
+                <input
+                    type="text"
+                    class="input is-small"
+                    placeholder="Search Racks"
+                    v-model="rackFilterText"
+                />
                 <span class="icon is-small is-left">
                     <i class="fas fa-search"></i>
                 </span>
@@ -45,7 +52,7 @@
 </template>
 
 <script>
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { getRackById } from '@api/workspaces';
@@ -54,6 +61,7 @@ import { EventBus } from '@src/eventBus.js';
 export default {
     props: {
         activeRacks: {
+            type: Array,
             required: true,
         },
     },
@@ -70,13 +78,8 @@ export default {
         };
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspaceId',
-        ]),
-        ...mapState([
-            'activeRoomName',
-            'rackLayout',
-        ]),
+        ...mapGetters(['currentWorkspaceId']),
+        ...mapState(['activeRoomName', 'rackLayout']),
         filteredActiveRacks() {
             return this.activeRacks.reduce((acc, rack) => {
                 if (this.rackFilterMatch(rack)) {
@@ -91,39 +94,49 @@ export default {
         },
     },
     methods: {
-        ...mapActions([
-            'setRackLayout',
-        ]),
+        ...mapActions(['setRackLayout']),
         activateRack(rack) {
-            getRackById(this.currentWorkspaceId, rack.id)
-                .then(response => {
-                    this.setRackLayout(response);
+            getRackById(this.currentWorkspaceId, rack.id).then(response => {
+                this.setRackLayout(response);
 
-                    this.$router.push({ name: 'datacenterRack', params: { rackId: `${this.rackLayout.id}` } })
+                this.$router.push({
+                    name: 'datacenterRack',
+                    params: { rackId: `${this.rackLayout.id}` },
                 });
+            });
         },
         rackFilterMatch(rack) {
-            return this.rackNameFilter(rack.name) && this.rackRoleFilter(rack.role) && this.rackProgressFilter(rack);
+            return (
+                this.rackNameFilter(rack.name) &&
+                this.rackRoleFilter(rack.role) &&
+                this.rackProgressFilter(rack)
+            );
         },
         rackNameFilter(rackName) {
             return search(this.rackFilterTextLowerCase, rackName.toLowerCase());
         },
         rackToProgress(rack) {
-            if (rack["device_progress"]["FAIL"]) {
-                return "failing";
-            } else if (rack["device_progress"]["PASS"]) {
-                return "in progress";
-            } else if (rack["device_progress"]["VALID"]) {
-                return "validated";
+            if (rack['device_progress']['FAIL']) {
+                return 'failing';
+            } else if (rack['device_progress']['PASS']) {
+                return 'in progress';
+            } else if (rack['device_progress']['VALID']) {
+                return 'validated';
             } else {
-                return "not started";
+                return 'not started';
             }
         },
         rackRoleFilter(role) {
-            return this.selectedRole === 'all' || this.selectedRole === role.toLowerCase();
+            return (
+                this.selectedRole === 'all' ||
+                this.selectedRole === role.toLowerCase()
+            );
         },
         rackProgressFilter(rack) {
-            return this.selectedProgress === 'all' || this.selectedProgress === this.rackToProgress(rack);
+            return (
+                this.selectedProgress === 'all' ||
+                this.selectedProgress === this.rackToProgress(rack)
+            );
         },
     },
     created() {
@@ -145,7 +158,7 @@ export default {
                 acc.add(this.rackToProgress(rack));
 
                 return acc;
-            }, new Set(["all"]))
+            }, new Set(['all']))
         ).sort();
     },
     mounted() {

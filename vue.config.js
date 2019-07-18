@@ -17,7 +17,7 @@ module.exports = {
             // remove all but english (US) and korean locales from moment.js
             config.plugins.push(
                 new webpack.ContextReplacementPlugin(
-                    /moment[\/\\]locale$/,
+                    /moment[/\\]locale$/,
                     /en-us|ko/
                 )
             );

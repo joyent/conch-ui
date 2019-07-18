@@ -7,7 +7,7 @@ import rackRooms from '@src/__fixtures__/rackRooms';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe.skip('RackProgress.vue', () => {
+describe('RackProgress.vue', () => {
     let propsData;
     let state;
     let store;

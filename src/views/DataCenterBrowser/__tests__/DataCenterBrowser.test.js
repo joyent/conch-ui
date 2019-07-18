@@ -90,7 +90,10 @@ describe('DataCenterBrowser.vue', () => {
         searchInput.trigger('focus');
         searchInput.setValue(devices[0].id);
 
-        wrapper.findAll('.dropdown-item').at(0).trigger('click');
+        wrapper
+            .findAll('.dropdown-item')
+            .at(0)
+            .trigger('click');
         expect(wrapper.find('.dropdown-content').exists()).toBeFalsy();
     });
 });

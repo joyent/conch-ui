@@ -6,7 +6,9 @@
                     <i class="fas fa-4x fa-address-card has-text-info"></i>
                 </template>
                 <template v-slot:title>
-                    <h1 class="title is-3" v-if="action === 'create'">Create User</h1>
+                    <h1 class="title is-3" v-if="action === 'create'">
+                        Create User
+                    </h1>
                     <h1 class="title is-3" v-else>Edit User</h1>
                 </template>
                 <template v-slot:body>
@@ -20,7 +22,7 @@
                                     type="text"
                                     placeholder="Name"
                                     v-model="name"
-                                >
+                                />
                                 <span
                                     class="icon is-small is-right has-text-danger"
                                     v-if="errors.name"
@@ -41,11 +43,13 @@
                             <div class="control has-icons-right">
                                 <input
                                     class="input"
-                                    :class="{ 'is-danger': errors.invalidEmail }"
+                                    :class="{
+                                        'is-danger': errors.invalidEmail,
+                                    }"
                                     type="email"
                                     placeholder="Email"
                                     v-model="email"
-                                >
+                                />
                                 <span
                                     class="icon is-small is-right has-text-danger"
                                     v-if="errors.invalidEmail"
@@ -55,7 +59,9 @@
                             </div>
                             <p
                                 class="error has-text-danger is-size-6"
-                                v-if="errors.invalidEmail || errors.duplicateEmail"
+                                v-if="
+                                    errors.invalidEmail || errors.duplicateEmail
+                                "
                                 style="padding-top: 5px;"
                             >
                                 <span v-if="errors.invalidEmail">
@@ -75,7 +81,7 @@
                                     type="text"
                                     placeholder="Password"
                                     v-model="password"
-                                >
+                                />
                                 <span
                                     class="icon is-small is-right has-text-danger"
                                     v-if="errors.password"
@@ -100,7 +106,7 @@
                                     v-model="isAdmin"
                                     :true-value="true"
                                     :false-value="false"
-                                >
+                                />
                                 <span class="slider round is-success"></span>
                             </label>
                             <span style="margin-left: 8px;">
@@ -137,7 +143,10 @@
                         class="far fa-3x fa-check-circle has-text-success"
                         v-if="success"
                     ></i>
-                    <i v-else class="fas fa-3x fa-id-badge has-text-warning"></i>
+                    <i
+                        v-else
+                        class="fas fa-3x fa-id-badge has-text-warning"
+                    ></i>
                 </template>
                 <template v-slot:title>
                     <span v-if="success">
@@ -146,10 +155,15 @@
                 </template>
                 <template v-slot:body>
                     <p class="subtitle" v-if="success && action === 'create'">
-                        <strong class="has-text-white">{{ name }}</strong> has been successfully created.
+                        <strong class="has-text-white">{{ name }}</strong> has
+                        been successfully created.
                     </p>
-                    <p class="subtitle" v-else-if="success && action === 'edit'">
-                        <strong class="has-text-white">{{ name }}</strong> has been successfully updated.
+                    <p
+                        class="subtitle"
+                        v-else-if="success && action === 'edit'"
+                    >
+                        <strong class="has-text-white">{{ name }}</strong> has
+                        been successfully updated.
                     </p>
                     <p class="subtitle" v-else>
                         No information was changed.
@@ -183,6 +197,7 @@ export default {
         action: {
             type: String,
             required: false,
+            default: '',
         },
         user: {
             type: Object,
@@ -241,13 +256,10 @@ export default {
                         this.success = true;
                         this.isLoading = false;
 
-                        EventBus.$emit(
-                            'action-success',
-                            {
-                                userId,
-                                action: 'create'
-                            }
-                        );
+                        EventBus.$emit('action-success', {
+                            userId,
+                            action: 'create',
+                        });
                     })
                     .catch(error => {
                         if (error.status === 409) {
@@ -268,10 +280,10 @@ export default {
                 this.email === this.user.email &&
                 this.isAdmin === this.user.is_admin
             ) {
-                    this.actionComplete = true;
-                    this.isLoading = false;
+                this.actionComplete = true;
+                this.isLoading = false;
 
-                    return;
+                return;
             }
 
             if (this.validateForm()) {
@@ -283,7 +295,7 @@ export default {
                 };
 
                 Users.editUser(editedUser)
-                    .then(response => {
+                    .then(() => {
                         this.actionComplete = true;
                         this.success = true;
                         this.isLoading = false;
@@ -308,7 +320,7 @@ export default {
             };
         },
         validEmail() {
-            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(this.email);
         },
         validateForm() {
@@ -326,14 +338,16 @@ export default {
                 this.errors.password = true;
             }
 
-            return Object.values(this.errors).some(error => error === true) ? false : true;
-        }
+            return Object.values(this.errors).some(error => error === true)
+                ? false
+                : true;
+        },
     },
     mounted() {
         const action = this.action;
         const user = this.user;
 
-        if (user && action && action  === 'edit') {
+        if (user && action && action === 'edit') {
             this.email = user.email;
             this.name = user.name;
             this.password = user.password;

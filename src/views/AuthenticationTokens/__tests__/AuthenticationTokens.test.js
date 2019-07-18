@@ -24,7 +24,7 @@ describe('AuthenticationTokens.vue', () => {
         actions = {
             setAuthTokens: jest.fn(),
             setUserAuthTokens: jest.fn(),
-            setUsers: jest.fn() ,
+            setUsers: jest.fn(),
         };
         mocks = { $router: [] };
         state = { authTokens, currentUser: users[0], users };
@@ -64,13 +64,15 @@ describe('AuthenticationTokens.vue', () => {
         test('should filter displayed user results when search text is entered into search input field', () => {
             wrapper.find('input.search').setValue('another');
 
-            expect(wrapper.findAll('tr').length).toEqual(1);
+            expect(wrapper.findAll('tr')).toHaveLength(1);
         });
 
         test('should sort displayed user results when "User Name" header is clicked', () => {
             clickUserNameHeader();
 
-            expect(wrapper.find('.row .username').text()).toEqual(users[1].name);
+            expect(wrapper.find('.row .username').text()).toEqual(
+                users[1].name
+            );
         });
 
         test('should reverse sort displayed user results when "User Name" header is clicked twice', () => {
@@ -78,7 +80,9 @@ describe('AuthenticationTokens.vue', () => {
             clickUserNameHeader();
             clickUserNameHeader();
 
-            expect(wrapper.find('.row .username').text()).toEqual(users[0].name);
+            expect(wrapper.find('.row .username').text()).toEqual(
+                users[0].name
+            );
         });
 
         describe('delete login tokens modals', () => {
@@ -94,10 +98,12 @@ describe('AuthenticationTokens.vue', () => {
             });
 
             test('should display informative confirmation text on the delete login tokens modal about what action is being taken', () => {
-                const expectedText = `Are you sure you want to delete the login tokens for ${users[0].name}?`
+                const expectedText = `Are you sure you want to delete the login tokens for ${users[0].name}?`;
                 clickDeleteLoginTokens();
 
-                expect(wrapper.find('.modal-content .subtitle').text()).toEqual(expectedText);
+                expect(wrapper.find('.modal-content .subtitle').text()).toEqual(
+                    expectedText
+                );
             });
 
             test('should close the modal when the modal background is clicked', () => {
@@ -117,7 +123,9 @@ describe('AuthenticationTokens.vue', () => {
             test('should display button with text "Delete Login Tokens" on the modal', () => {
                 clickDeleteLoginTokens();
 
-                expect(wrapper.find('a.confirm').text()).toEqual('Delete Login Tokens');
+                expect(wrapper.find('a.confirm').text()).toEqual(
+                    'Delete Login Tokens'
+                );
             });
 
             test('should call the deleteUserTokens method with the userId and login_only: 1 as params', () => {
@@ -133,23 +141,33 @@ describe('AuthenticationTokens.vue', () => {
 
             test('should display a modal with a success message if login tokens are successfully deleted', () => {
                 const successText = `${users[0].name}'s login tokens have been deleted.`;
-                jest.spyOn(usersApi, 'deleteUserTokens').mockResolvedValueOnce(true);
+                jest.spyOn(usersApi, 'deleteUserTokens').mockResolvedValueOnce(
+                    true
+                );
 
                 clickDeleteLoginTokens();
                 wrapper.find('a.confirm').trigger('click');
 
                 wrapper.vm.$nextTick(() => {
-                    expect(wrapper.find('.base-modal .subtitle').text()).toEqual(successText);
+                    expect(
+                        wrapper.find('.base-modal .subtitle').text()
+                    ).toEqual(successText);
                 });
             });
 
             test('should display a table containing tokens for the selected user when "Auth Tokens" button is clicked', () => {
                 store = new Vuex.Store({ actions, state });
-                wrapper = mount(AuthenticationTokens, { localVue, mocks, store });
+                wrapper = mount(AuthenticationTokens, {
+                    localVue,
+                    mocks,
+                    store,
+                });
 
                 wrapper.find('.view-auth-tokens').trigger('click');
 
-                expect(wrapper.find('.authentication-tokens-table').exists()).toBeTruthy();
+                expect(
+                    wrapper.find('.authentication-tokens-table').exists()
+                ).toBeTruthy();
             });
         });
     });
@@ -164,7 +182,9 @@ describe('AuthenticationTokens.vue', () => {
         });
 
         test('should display the username of the selected user at the top of the page', () => {
-            expect(wrapper.find('.selected-user .name').text()).toEqual(users[0].name);
+            expect(wrapper.find('.selected-user .name').text()).toEqual(
+                users[0].name
+            );
         });
 
         test('should display a table row for each token returned by the API', () => {
@@ -205,21 +225,27 @@ describe('AuthenticationTokens.vue', () => {
 
             // Helper function
             const clickTokenNameHeader = () => {
-                wrapper.find('.table-header-filter.token-name').trigger('click');
+                wrapper
+                    .find('.table-header-filter.token-name')
+                    .trigger('click');
             };
 
             test('should filter displayed token results when search text is entered into search input field', () => {
                 wrapper.find('input.search').setValue('apple');
                 const rows = wrapper.findAll('tr');
 
-                expect(rows.length).toEqual(1);
-                expect(wrapper.find('.token .token-name').text()).toEqual(firstAuthTokenName);
+                expect(rows).toHaveLength(1);
+                expect(wrapper.find('.token .token-name').text()).toEqual(
+                    firstAuthTokenName
+                );
             });
 
             test('should sort displayed user results when "Token Name" header is clicked', () => {
                 clickTokenNameHeader();
 
-                expect(wrapper.find('.token .token-name').text()).toEqual(firstAuthTokenName);
+                expect(wrapper.find('.token .token-name').text()).toEqual(
+                    firstAuthTokenName
+                );
             });
 
             test('should reverse sort displayed user results when "Token Name" header is clicked twice', () => {
@@ -227,26 +253,32 @@ describe('AuthenticationTokens.vue', () => {
                 clickTokenNameHeader();
                 clickTokenNameHeader();
 
-                expect(wrapper.find('.token .token-name').text()).toEqual(fourthAuthTokenName);
+                expect(wrapper.find('.token .token-name').text()).toEqual(
+                    fourthAuthTokenName
+                );
             });
 
             test('should sort displayed user results when "Last Used" header is clicked', () => {
                 wrapper.find('.table-header-filter.last-used').trigger('click');
 
-                expect(wrapper.find('.token .token-name').text()).toEqual(fourthAuthTokenName);
+                expect(wrapper.find('.token .token-name').text()).toEqual(
+                    fourthAuthTokenName
+                );
             });
 
             test('should sort displayed user results when "Created" header is clicked', () => {
                 wrapper.find('.table-header-filter.created').trigger('click');
 
-                expect(wrapper.find('.token .token-name').text()).toEqual(userAuthTokens[2].name);
+                expect(wrapper.find('.token .token-name').text()).toEqual(
+                    userAuthTokens[2].name
+                );
             });
         });
 
         describe('view auth tokens modals', () => {
             beforeEach(() => {
                 wrapper.setData({
-                    sortedTokens: userAuthTokens
+                    sortedTokens: userAuthTokens,
                 });
             });
 
@@ -270,13 +302,17 @@ describe('AuthenticationTokens.vue', () => {
             test('should display the name of the token being deleted on the confirmation modal', () => {
                 clickDeleteTokenButton();
 
-                expect(wrapper.find('.subtitle').text()).toContain(userAuthTokens[0].name);
+                expect(wrapper.find('.subtitle').text()).toContain(
+                    userAuthTokens[0].name
+                );
             });
 
             test('should display a button with text "Delete Token" on the modal', () => {
                 clickDeleteTokenButton();
 
-                expect(wrapper.find('a.confirm').text()).toEqual('Delete Token');
+                expect(wrapper.find('a.confirm').text()).toEqual(
+                    'Delete Token'
+                );
             });
 
             test('should call the deleteToken method when "Delete Token" button is clicked', () => {
@@ -308,10 +344,12 @@ describe('AuthenticationTokens.vue', () => {
             });
 
             test('should display informative confirmation text on the delete auth tokens modal', () => {
-                const confirmationMessage = `Are you sure you want to delete the auth tokens for ${users[0].name}?`
+                const confirmationMessage = `Are you sure you want to delete the auth tokens for ${users[0].name}?`;
                 clickDeleteAuthTokensButton();
 
-                expect(wrapper.find('.subtitle').text()).toEqual(confirmationMessage);
+                expect(wrapper.find('.subtitle').text()).toEqual(
+                    confirmationMessage
+                );
             });
         });
     });

@@ -19,13 +19,13 @@ describe('DeviceInspector.vue', () => {
 
     beforeEach(() => {
         actions = {
-            'clearShowDeviceInRack': jest.fn(),
-            'setActiveDeviceDetails': jest.fn(),
-            'setActiveDeviceSettings': jest.fn(),
-            'setActiveDeviceValidations': jest.fn(),
-            'setActiveRoomName': jest.fn(),
-            'setRackLayout': jest.fn(),
-            'setValidations': jest.fn(),
+            clearShowDeviceInRack: jest.fn(),
+            setActiveDeviceDetails: jest.fn(),
+            setActiveDeviceSettings: jest.fn(),
+            setActiveDeviceValidations: jest.fn(),
+            setActiveRoomName: jest.fn(),
+            setRackLayout: jest.fn(),
+            setValidations: jest.fn(),
         };
         getters = {
             activeDeviceId: jest.fn(),

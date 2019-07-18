@@ -27,7 +27,6 @@ describe('TimeToBurnin.vue', () => {
         expect(wrapper.find('.spinner')).toBeTruthy();
     });
 
-
     test('should display "Burn-in Complete" when percentage is 100', () => {
         expect(wrapper.html()).toContain('Burn-in Complete');
     });
@@ -47,7 +46,7 @@ describe('TimeToBurnin.vue', () => {
     });
 
     test('should display the RadialProgress component when required data is present and device health is fail', () => {
-        state.activeDeviceDetails.health = "fail";
+        state.activeDeviceDetails.health = 'fail';
         wrapper = shallowMount(TimeToBurnin, { localVue, store });
         const wrapperHtml = wrapper.html();
 
@@ -64,7 +63,7 @@ describe('TimeToBurnin.vue', () => {
 
     test('should display "Device has not reported" when last_seen is null', () => {
         state.activeDeviceDetails.last_seen = null;
-        wrapper = shallowMount(TimeToBurnin, { localVue, store })
+        wrapper = shallowMount(TimeToBurnin, { localVue, store });
 
         expect(wrapper.html()).toContain('Device has not reported');
     });

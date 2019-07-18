@@ -11,11 +11,13 @@ import { mapState } from 'vuex';
 
 export default {
     computed: {
-        ...mapState([
-            'activeDeviceDetails',
-        ]),
+        ...mapState(['activeDeviceDetails']),
         latestReport() {
-            return JSON.stringify(this.activeDeviceDetails.latest_report || {}, null, '  ');
+            return JSON.stringify(
+                this.activeDeviceDetails.latest_report || {},
+                null,
+                '  '
+            );
         },
     },
 };

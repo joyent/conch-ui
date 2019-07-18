@@ -33,12 +33,15 @@ describe('EditLayoutModal.vue', () => {
         state = { rackLayout: {} };
         store = new Vuex.Store({ getters, state });
         wrapper = shallowMount(EditLayoutModal, {
-            localVue, methods, propsData, store
+            localVue,
+            methods,
+            propsData,
+            store,
         });
     });
 
     // Helper function
-    const clickElement = (item) => {
+    const clickElement = item => {
         wrapper.find(item).trigger('click');
     };
 
@@ -70,7 +73,10 @@ describe('EditLayoutModal.vue', () => {
     test('should set isActive = false on closeModal:editLayoutModal event emission', () => {
         methods = {};
         wrapper = shallowMount(EditLayoutModal, {
-            localVue, methods, propsData, store
+            localVue,
+            methods,
+            propsData,
+            store,
         });
         wrapper.setData({ isActive: true });
 
@@ -88,25 +94,33 @@ describe('EditLayoutModal.vue', () => {
         expect.assertions(1);
         methods = {};
         wrapper = shallowMount(EditLayoutModal, {
-            localVue, methods, propsData, store
+            localVue,
+            methods,
+            propsData,
+            store,
         });
         const firstInput = wrapper.findAll('input.serial-number').at(0);
         const secondInput = wrapper.findAll('input.serial-number').at(1);
 
-        secondInput.setValue(firstInput.element.value)
+        secondInput.setValue(firstInput.element.value);
 
-        await new Promise(resolve => setTimeout(() => {
-            clickElement('button.save');
-            expect(wrapper.html()).toContain('Device serial is duplicated')
-            resolve();
-        }, 800));
+        await new Promise(resolve =>
+            setTimeout(() => {
+                clickElement('button.save');
+                expect(wrapper.html()).toContain('Device serial is duplicated');
+                resolve();
+            }, 800)
+        );
     });
 
     test('should update slot serial number if no duplicate entries exist', async () => {
         expect.assertions(2);
         methods = {};
         wrapper = shallowMount(EditLayoutModal, {
-            localVue, methods, propsData, store
+            localVue,
+            methods,
+            propsData,
+            store,
         });
         const firstInput = wrapper.findAll('input.serial-number').at(0);
         const slot = rack.slots[0];
@@ -114,28 +128,37 @@ describe('EditLayoutModal.vue', () => {
         expect(firstInput.element.value).toEqual(slot.occupant.id);
         firstInput.setValue('ABCDEFG');
 
-        await new Promise(resolve => setTimeout(() => {
-            clickElement('button.save');
-            expect(wrapper.vm.assignments[slot.id].id).toEqual('ABCDEFG');
-            resolve();
-        }, 800));
+        await new Promise(resolve =>
+            setTimeout(() => {
+                clickElement('button.save');
+                expect(wrapper.vm.assignments[slot.id].id).toEqual('ABCDEFG');
+                resolve();
+            }, 800)
+        );
     });
 
     test('should update slot asset tag', async () => {
         expect.assertions(1);
         methods = {};
         wrapper = shallowMount(EditLayoutModal, {
-            localVue, methods, propsData, store
+            localVue,
+            methods,
+            propsData,
+            store,
         });
         const firstInput = wrapper.findAll('input.asset-tag').at(0);
         const slot = rack.slots[0];
 
         firstInput.setValue('ABCDEFG');
 
-        await new Promise(resolve => setTimeout(() => {
-            clickElement('button.save');
-            expect(wrapper.vm.assignments[slot.id].assetTag).toEqual('ABCDEFG');
-            resolve();
-        }, 800));
+        await new Promise(resolve =>
+            setTimeout(() => {
+                clickElement('button.save');
+                expect(wrapper.vm.assignments[slot.id].assetTag).toEqual(
+                    'ABCDEFG'
+                );
+                resolve();
+            }, 800)
+        );
     });
 });

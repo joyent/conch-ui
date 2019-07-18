@@ -1,6 +1,5 @@
 import App from '../App.vue';
 import Vuex from 'vuex';
-import isEmpty from 'lodash/isEmpty';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 
@@ -54,25 +53,31 @@ describe('App.vue', () => {
             });
 
             test('should display the navbar router-view component', () => {
-                const navbar = wrapper.findAll('router-view-stub').filter(view => {
-                    return view.attributes('name') === 'navbar';
-                });
+                const navbar = wrapper
+                    .findAll('router-view-stub')
+                    .filter(view => {
+                        return view.attributes('name') === 'navbar';
+                    });
 
                 expect(navbar.exists()).toBeTruthy();
             });
 
             test('should display the sidebar router-view component', () => {
-                const navbar = wrapper.findAll('router-view-stub').filter(view => {
-                    return view.attributes('name') === 'sidebar';
-                });
+                const navbar = wrapper
+                    .findAll('router-view-stub')
+                    .filter(view => {
+                        return view.attributes('name') === 'sidebar';
+                    });
 
                 expect(navbar.exists()).toBeTruthy();
             });
 
             test('should display an unnamed router-view component for the main component', () => {
-                const component = wrapper.findAll('router-view-stub').filter(view => {
-                    return !view.attributes('id');
-                });
+                const component = wrapper
+                    .findAll('router-view-stub')
+                    .filter(view => {
+                        return !view.attributes('id');
+                    });
 
                 expect(component.exists()).toBeTruthy();
             });
@@ -80,28 +85,32 @@ describe('App.vue', () => {
 
         describe('path contains currentWorkspace', () => {
             test('should display the navbar router-view component', () => {
-                const navbar = wrapper.findAll('router-view-stub').filter(view => {
-                    return view.attributes('name') === 'navbar';
-                });
+                const navbar = wrapper
+                    .findAll('router-view-stub')
+                    .filter(view => {
+                        return view.attributes('name') === 'navbar';
+                    });
 
                 expect(navbar.exists()).toBeTruthy();
             });
 
             test('should display the sidebar router-view component', () => {
-                const navbar = wrapper.findAll('router-view-stub').filter(view => {
-                    return view.attributes('name') === 'sidebar';
-                });
+                const navbar = wrapper
+                    .findAll('router-view-stub')
+                    .filter(view => {
+                        return view.attributes('name') === 'sidebar';
+                    });
 
                 expect(navbar.exists()).toBeTruthy();
             });
         });
     });
 
-    describe.skip('Page refresh/reload correct data', () => {
-        // sessionStorage.setItem('token', 'my-token');
-        // jest.mock('../api/request.js');
-        // jest.mock('../api/authentication.js');
-        // const auth = jest.genMockFromModule('../api/authentication.js');
-        // auth.isLoggedIn = jest.fn(() => true);
-    });
+    // describe.skip('Page refresh/reload correct data', () => {
+    //     sessionStorage.setItem('token', 'my-token');
+    //     jest.mock('../api/request.js');
+    //     jest.mock('../api/authentication.js');
+    //     const auth = jest.genMockFromModule('../api/authentication.js');
+    //     auth.isLoggedIn = jest.fn(() => true);
+    // });
 });

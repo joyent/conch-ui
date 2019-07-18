@@ -3,10 +3,7 @@
         <div class="select-with-label">
             <label class="select-label">Rows</label>
             <div class="select results-per-page">
-                <select
-                    v-model="resultsPerPage"
-                    @change="changeResultsPerPage"
-                >
+                <select v-model="resultsPerPage" @change="changeResultsPerPage">
                     <option value="25">25</option>
                     <option v-if="totalResults > 25" value="50">50</option>
                     <option v-if="totalResults > 50" value="75">75</option>
@@ -23,8 +20,13 @@
             <p v-else-if="currentPage === 1 && currentPage !== totalPages">
                 1 - {{ resultsPerPage }} of {{ totalResults }} results
             </p>
-            <p v-else-if="currentPage > 1 && currentResultsStart !== totalResults">
-                {{ currentResultsStart }} - {{ currentResultsEnd }} of {{ totalResults }} results
+            <p
+                v-else-if="
+                    currentPage > 1 && currentResultsStart !== totalResults
+                "
+            >
+                {{ currentResultsStart }} - {{ currentResultsEnd }} of
+                {{ totalResults }} results
             </p>
             <p v-else>{{ totalResults }} of {{ totalResults }} results</p>
         </div>
@@ -41,10 +43,7 @@
                     </a>
                 </li>
                 <li v-if="totalPages > 4 && currentPage > 2">
-                    <a
-                        class="pagination-link page"
-                        @click="paginate(1)"
-                    >
+                    <a class="pagination-link page" @click="paginate(1)">
                         1
                     </a>
                 </li>
@@ -72,7 +71,7 @@
                         @click="paginate(currentPage - 1)"
                         v-else
                     >
-                        {{ currentPage - 1}}
+                        {{ currentPage - 1 }}
                     </a>
                 </li>
                 <li v-if="totalPages >= 2">
@@ -89,16 +88,18 @@
                         @click="paginate(currentPage - 1)"
                         v-else-if="currentPage === totalPages"
                     >
-                        {{ currentPage - 1}}
+                        {{ currentPage - 1 }}
                     </a>
                     <a
                         class="pagination-link page"
-                        :class="{ 'is-current': currentPage !== 1 && currentPage !== totalPages }"
+                        :class="{
+                            'is-current':
+                                currentPage !== 1 && currentPage !== totalPages,
+                        }"
                         v-else
                     >
                         {{ currentPage }}
                     </a>
-
                 </li>
                 <li v-if="totalPages >= 3">
                     <a
@@ -122,16 +123,12 @@
                     >
                         {{ currentPage + 1 }}
                     </a>
-
                 </li>
                 <li v-if="totalPages > 4 && currentPage < totalPages - 2">
                     <span class="pagination-link ellipsis">...</span>
                 </li>
                 <li v-if="totalPages > 4 && currentPage < totalPages - 2">
-                    <a
-                        class="pagination-link"
-                        @click="paginate(totalPages)"
-                    >
+                    <a class="pagination-link" @click="paginate(totalPages)">
                         <span>{{ totalPages }}</span>
                     </a>
                 </li>
@@ -172,7 +169,7 @@ export default {
             const resultsPerPage = this.resultsPerPage;
             const totalResults = this.totalResults;
 
-            if ((currentPage * resultsPerPage) > totalResults) {
+            if (currentPage * resultsPerPage > totalResults) {
                 return totalResults;
             } else {
                 return resultsPerPage * currentPage;
@@ -182,7 +179,7 @@ export default {
             if (this.currentPage === 1) {
                 return 1;
             } else {
-                return (this.resultsPerPage * (this.currentPage - 1)) + 1;
+                return this.resultsPerPage * (this.currentPage - 1) + 1;
             }
         },
         totalPages() {

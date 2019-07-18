@@ -123,7 +123,7 @@ export default {
                 'Serial Number',
                 'Enclosure',
                 'HBA',
-                'Slot Number'
+                'Slot Number',
             ],
             diskDetailsRows: [],
         };
@@ -144,15 +144,14 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            'activeDeviceDetails',
-        ]),
+        ...mapState(['activeDeviceDetails']),
         disks() {
             const activeDeviceDetails = this.activeDeviceDetails;
 
             return activeDeviceDetails.latest_report &&
-                   activeDeviceDetails.latest_report.disks ?
-                   activeDeviceDetails.latest_report.disks : {};
+                activeDeviceDetails.latest_report.disks
+                ? activeDeviceDetails.latest_report.disks
+                : {};
         },
         sortedDisks() {
             return Object.entries(this.disks)
@@ -169,11 +168,13 @@ export default {
                         model: disk.model,
                         size: disk.size,
                         slot: disk.slot,
-                        sortKey: 100 * (parseInt(disk.hba) || 0) + (parseInt(disk.slot) || 0),
+                        sortKey:
+                            100 * (parseInt(disk.hba) || 0) +
+                            (parseInt(disk.slot) || 0),
                         temperature: disk.temperature,
                         transport: disk.transport,
                         vendor: disk.vendor,
-                    }
+                    };
                 })
                 .sort((a, b) => a.sortKey - b.sortKey);
         },

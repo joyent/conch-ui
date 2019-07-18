@@ -11,7 +11,12 @@ describe('TablePagination.vue', () => {
     });
 
     test('should display the first page button as "is-current" on initial render', () => {
-        expect(wrapper.findAll('.page').at(0).classes()).toContain('is-current');
+        expect(
+            wrapper
+                .findAll('.page')
+                .at(0)
+                .classes()
+        ).toContain('is-current');
     });
 
     test('should show "Prev" button as disabled on initial render', () => {
@@ -19,26 +24,47 @@ describe('TablePagination.vue', () => {
     });
 
     test('should only display one page button as "is-current" at a time', () => {
-        expect(wrapper.findAll('.is-current').length).toEqual(1);
+        expect(wrapper.findAll('.is-current')).toHaveLength(1);
     });
 
     test('should set page button to "is-current" when it is clicked', () => {
-        wrapper.findAll('.page').at(1).trigger('click');
+        wrapper
+            .findAll('.page')
+            .at(1)
+            .trigger('click');
 
-        expect(wrapper.findAll('.page').at(1).classes()).toContain('is-current');
+        expect(
+            wrapper
+                .findAll('.page')
+                .at(1)
+                .classes()
+        ).toContain('is-current');
     });
 
     test('should set the previous page button as new current page when "Prev" button is clicked', () => {
-        wrapper.findAll('.page').at(1).trigger('click');
+        wrapper
+            .findAll('.page')
+            .at(1)
+            .trigger('click');
         wrapper.find('.prev').trigger('click');
 
-        expect(wrapper.findAll('.page').at(0).classes()).toContain('is-current');
+        expect(
+            wrapper
+                .findAll('.page')
+                .at(0)
+                .classes()
+        ).toContain('is-current');
     });
 
     test('should set the next page button as new current page when "Next" button is clicked', () => {
         wrapper.find('.next').trigger('click');
 
-        expect(wrapper.findAll('.page').at(1).classes()).toContain('is-current');
+        expect(
+            wrapper
+                .findAll('.page')
+                .at(1)
+                .classes()
+        ).toContain('is-current');
     });
 
     test('should not display "Prev" button when only one page exists', () => {
@@ -55,7 +81,10 @@ describe('TablePagination.vue', () => {
 
     test('should show "Next" button as disabled when the last available page is the current page', () => {
         wrapper.setData({ resultsPerPage: 75 });
-        wrapper.findAll('.page').at(1).trigger('click');
+        wrapper
+            .findAll('.page')
+            .at(1)
+            .trigger('click');
 
         expect(wrapper.find('.next').attributes('disabled')).toBeTruthy();
     });

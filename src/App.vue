@@ -17,10 +17,14 @@ import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { isLoggedIn } from '@api/authentication.js';
 import { loadAllWorkspaces, getRackById } from '@api/workspaces.js';
-import { getDeviceSettings, getDeviceDetails, getDeviceValidations } from '@api/device.js';
+import {
+    getDeviceDetails,
+    getDeviceSettings,
+    getDeviceValidations,
+} from '@api/device.js';
 import { getCurrentUser } from '@api/users.js';
 import { getValidations } from '@api/validations.js';
-import { getRackRooms, roomToProgress, getWorkspaceRacks } from '@views/shared/utils.js';
+import { getRackRooms, getWorkspaceRacks } from '@views/shared/utils.js';
 
 export default {
     components: {
@@ -41,62 +45,62 @@ export default {
             'setWorkspaces',
         ]),
         findWorkspaceById(id) {
-            return this.workspaces.find(workspace => workspace.id === id) ||
-                   null;
+            return (
+                this.workspaces.find(workspace => workspace.id === id) || null
+            );
         },
         setRoomsAndStore() {
             const currentWorkspaceId = this.currentWorkspaceId;
 
-            getWorkspaceRacks(currentWorkspaceId)
-                .then(response => {
-                    const rooms = response;
+            getWorkspaceRacks(currentWorkspaceId).then(response => {
+                const rooms = response;
 
-                    this.setAllRooms(getRackRooms(rooms));
+                this.setAllRooms(getRackRooms(rooms));
 
-                    // Sets store based on params in current route URL
-                    if (this.$route.params) {
-                        const routeParams = this.$route.params;
+                // Sets store based on params in current route URL
+                if (this.$route.params) {
+                    const routeParams = this.$route.params;
 
-                        if (routeParams.deviceId) {
-                            const activeDeviceId = routeParams.deviceId;
+                    if (routeParams.deviceId) {
+                        const activeDeviceId = routeParams.deviceId;
 
-                            getDeviceSettings(activeDeviceId)
-                                .then(response => {
-                                    this.setActiveDeviceSettings(response.data);
-                                });
-                            getDeviceDetails(activeDeviceId)
-                                .then(response => {
-                                    const activeDeviceDetails = response.data;
-                                    this.setActiveDevice(activeDeviceDetails)
-                                    this.setActiveDeviceDetails(activeDeviceDetails);
-                                });
-                            getDeviceValidations(activeDeviceId)
-                                .then(response => {
-                                    this.setActiveDeviceValidations(response.data);
-                                });
-                            getValidations()
-                                .then(response => {
-                                    this.setValidations(response.data);
-                                });
-                        }
-
-                        if (routeParams.roomName) {
-                            this.setActiveRoomName(routeParams.roomName);
-                        }
-
-                        if (routeParams.rackId) {
-                            getRackById(currentWorkspaceId, routeParams.rackId)
-                                .then(response => {
-                                    this.setRackLayout(response);
-                                    this.rackLoading = false;
-                                });
-                        }
+                        getDeviceSettings(activeDeviceId).then(response => {
+                            this.setActiveDeviceSettings(response.data);
+                        });
+                        getDeviceDetails(activeDeviceId).then(response => {
+                            const activeDeviceDetails = response.data;
+                            this.setActiveDevice(activeDeviceDetails);
+                            this.setActiveDeviceDetails(activeDeviceDetails);
+                        });
+                        getDeviceValidations(activeDeviceId).then(response => {
+                            this.setActiveDeviceValidations(response.data);
+                        });
+                        getValidations().then(response => {
+                            this.setValidations(response.data);
+                        });
                     }
-                });
+
+                    if (routeParams.roomName) {
+                        this.setActiveRoomName(routeParams.roomName);
+                    }
+
+                    if (routeParams.rackId) {
+                        getRackById(
+                            currentWorkspaceId,
+                            routeParams.rackId
+                        ).then(response => {
+                            this.setRackLayout(response);
+                            this.rackLoading = false;
+                        });
+                    }
+                }
+            });
         },
         setWorkspace(currentWorkspaceId) {
             if (currentWorkspaceId) {
-                this.setCurrentWorkspace(this.findWorkspaceById(currentWorkspaceId));
+                this.setCurrentWorkspace(
+                    this.findWorkspaceById(currentWorkspaceId)
+                );
             } else {
                 this.setCurrentWorkspace(this.loadCurrentWorkspace());
             }
@@ -108,11 +112,7 @@ export default {
             'currentWorkspaceId',
             'loadCurrentWorkspace',
         ]),
-        ...mapState([
-            'currentUser',
-            'currentWorkspace',
-            'workspaces',
-        ]),
+        ...mapState(['currentUser', 'currentWorkspace', 'workspaces']),
         hasWorkspace() {
             return !isEmpty(this.currentWorkspace);
         },
@@ -129,22 +129,20 @@ export default {
             }
 
             if (isEmpty(this.workspaces)) {
-                loadAllWorkspaces()
-                    .then(response => {
-                        this.setWorkspaces(response.data);
-                        this.setWorkspace(currentWorkspaceId);
-                        this.setRoomsAndStore();
-                    });
+                loadAllWorkspaces().then(response => {
+                    this.setWorkspaces(response.data);
+                    this.setWorkspace(currentWorkspaceId);
+                    this.setRoomsAndStore();
+                });
             } else {
                 this.setWorkspace(currentWorkspaceId);
                 this.setRoomsAndStore();
             }
 
             if (isEmpty(this.currentUser)) {
-                getCurrentUser()
-                    .then(response => {
-                        this.setCurrentUser(response.data);
-                    });
+                getCurrentUser().then(response => {
+                    this.setCurrentUser(response.data);
+                });
             }
         }
     },

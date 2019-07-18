@@ -82,7 +82,9 @@ describe('UserActionModal.vue', () => {
         });
 
         test('should display the fa-arrow-alt-circle-down icon if the action prop is "demote"', () => {
-            expect(wrapper.find('.fa-arrow-alt-circle-down').exists()).toBeTruthy();
+            expect(
+                wrapper.find('.fa-arrow-alt-circle-down').exists()
+            ).toBeTruthy();
         });
 
         test('should call the demoteUser method when action prop is "demote" and confirm button is clicked', () => {
@@ -106,7 +108,9 @@ describe('UserActionModal.vue', () => {
         });
 
         test('should display the fa-arrow-alt-circle-up icon if the action prop is "promote"', () => {
-            expect(wrapper.find('.fa-arrow-alt-circle-up').exists()).toBeTruthy();
+            expect(
+                wrapper.find('.fa-arrow-alt-circle-up').exists()
+            ).toBeTruthy();
         });
 
         test('should call the promoteUser method when action prop is "promote" and confirm button is clicked', () => {
@@ -124,7 +128,9 @@ describe('UserActionModal.vue', () => {
         });
 
         test('should display warning containing "reset" when action prop is "reset-pwd"', () => {
-            expect(wrapper.find('.subtitle').html()).toContain('reset the password');
+            expect(wrapper.find('.subtitle').html()).toContain(
+                'reset the password'
+            );
         });
 
         test('should display the fa-unlock-alt icon if the action prop is "reset-pwd"', () => {
@@ -161,7 +167,9 @@ describe('UserActionModal.vue', () => {
         });
 
         test('should display warning containing "delete the auth tokens" when action prop is "delete-auth-tokens"', async () => {
-            expect(wrapper.find('.subtitle').html()).toContain('delete the auth tokens');
+            expect(wrapper.find('.subtitle').html()).toContain(
+                'delete the auth tokens'
+            );
         });
 
         test('should display the fa-times-circle icon when action prop is "delete-auth-tokens"', async () => {
@@ -183,7 +191,9 @@ describe('UserActionModal.vue', () => {
         });
 
         test('should display warning text containing "delete the login tokens" when action prop is "delete-login-tokens"', async () => {
-            expect(wrapper.find('.subtitle').html()).toContain('delete the login tokens');
+            expect(wrapper.find('.subtitle').html()).toContain(
+                'delete the login tokens'
+            );
         });
 
         test('should display the fa-times-circle icon when action prop is "delete-login-tokens"', () => {

@@ -38,7 +38,10 @@ export const setActiveDeviceSettings = ({ commit }, activeDeviceSettings) => {
     commit('setActiveDeviceSettings', activeDeviceSettings);
 };
 
-export const setActiveDeviceValidations = ({ commit }, activeDeviceValidations) => {
+export const setActiveDeviceValidations = (
+    { commit },
+    activeDeviceValidations
+) => {
     commit('setActiveDeviceValidations', activeDeviceValidations);
 };
 

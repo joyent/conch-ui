@@ -7,7 +7,7 @@
                 src="../../assets/brand.png"
                 width="150px"
                 @click="navigateHomepage()"
-            >
+            />
         </div>
         <p class="menu-label">Datacenter Builds</p>
         <ul class="menu-list">
@@ -15,7 +15,7 @@
                 <router-link
                     :to="{
                         name: 'status',
-                        params: { currentWorkspace: this.workspaceId }
+                        params: { currentWorkspace: this.workspaceId },
                     }"
                     active-class="is-active"
                     data-tooltip="Status"
@@ -28,7 +28,7 @@
                 <router-link
                     :to="{
                         name: 'datacenter',
-                        params: { currentWorkspace: this.workspaceId }
+                        params: { currentWorkspace: this.workspaceId },
                     }"
                     active-class="is-active"
                     data-tooltip="Browse"
@@ -41,7 +41,7 @@
                 <router-link
                     :to="{
                         name: 'devices',
-                        params: { currentWorkspace: this.workspaceId }
+                        params: { currentWorkspace: this.workspaceId },
                     }"
                     active-class="is-active"
                     data-tooltip="Devices"
@@ -87,11 +87,7 @@
                 </router-link>
             </li>
             <li class="nav-item">
-                <a
-                    class="sign-out"
-                    @click="signOut()"
-                    data-tooltip="Log Out"
-                >
+                <a class="sign-out" @click="signOut()" data-tooltip="Log Out">
                     <i class="fas fa-lg fa-sign-out-alt"></i>
                     <span>Log Out</span>
                 </a>
@@ -139,20 +135,14 @@ export default {
             });
         },
         signOut() {
-            logout()
-                .then(() => {
-                    this.$router.push({ name: 'signIn' });
-                });
+            logout().then(() => {
+                this.$router.push({ name: 'signIn' });
+            });
         },
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspaceId',
-        ]),
-        ...mapState([
-            'currentUser',
-            'currentWorkspace',
-        ]),
+        ...mapGetters(['currentWorkspaceId']),
+        ...mapState(['currentUser', 'currentWorkspace']),
         workspaceId() {
             let workspaceId = this.currentWorkspaceId;
 

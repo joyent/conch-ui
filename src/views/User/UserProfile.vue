@@ -11,17 +11,25 @@
                         <transition name="fade">
                             <article
                                 class="message is-danger"
-                                v-if="showError && (errors.passwordLength || errors.passwordMismatch)"
+                                v-if="
+                                    showError &&
+                                        (errors.passwordLength ||
+                                            errors.passwordMismatch)
+                                "
                             >
                                 <div class="message-header">
                                     <p>
                                         <i class="fas fa-exclamation-circle">
                                         </i>
                                         <span v-if="errors.passwordLength">
-                                            Passwords must contain at least 5 characters.
+                                            Passwords must contain at least 5
+                                            characters.
                                         </span>
-                                        <span v-else-if="errors.passwordMismatch">
-                                            The passwords you entered do not match.
+                                        <span
+                                            v-else-if="errors.passwordMismatch"
+                                        >
+                                            The passwords you entered do not
+                                            match.
                                         </span>
                                     </p>
                                     <button
@@ -44,21 +52,23 @@
                                         class="input password"
                                         :class="{
                                             'is-danger': errors.passwordLength,
-                                            'is-success': validPassword
+                                            'is-success': validPassword,
                                         }"
                                         type="password"
                                         placeholder="New Password"
                                         v-model="password"
                                         ref="passwordInput"
                                         @blur="validatePassword()"
-                                    >
+                                    />
                                     <span
                                         class="icon is-small is-right has-text-danger"
                                         v-if="errors.passwordLength"
                                     >
-                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <i
+                                            class="fas fa-exclamation-triangle"
+                                        ></i>
                                     </span>
-                                   <span
+                                    <span
                                         class="icon is-small is-right has-text-success"
                                         v-if="validPassword"
                                     >
@@ -72,22 +82,25 @@
                                     <input
                                         class="input confirmation"
                                         :class="{
-                                            'is-danger': errors.passwordMismatch,
-                                            'is-success': validConfirmPassword
+                                            'is-danger':
+                                                errors.passwordMismatch,
+                                            'is-success': validConfirmPassword,
                                         }"
                                         type="password"
                                         placeholder="Confirm Password"
                                         v-model="confirmPassword"
                                         ref="confirmPassword"
                                         @blur="validateConfirmPassword()"
-                                    >
+                                    />
                                     <span
                                         class="icon is-small is-right has-text-danger"
                                         v-if="errors.passwordMismatch"
                                     >
-                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <i
+                                            class="fas fa-exclamation-triangle"
+                                        ></i>
                                     </span>
-                                   <span
+                                    <span
                                         class="icon is-small is-right has-text-success"
                                         v-if="validConfirmPassword"
                                     >
@@ -104,8 +117,10 @@
                                         v-model="clearTokens"
                                         :true-value="true"
                                         :false-value="false"
-                                    >
-                                    <span class="slider round is-success"></span>
+                                    />
+                                    <span
+                                        class="slider round is-success"
+                                    ></span>
                                 </label>
                                 <span style="margin-left: 8px;">
                                     <strong v-if="clearTokens">Yes</strong>
@@ -123,12 +138,18 @@
                                             v-model="clearAllTokens"
                                             :true-value="true"
                                             :false-value="false"
-                                        >
-                                        <span class="slider round is-success"></span>
+                                        />
+                                        <span
+                                            class="slider round is-success"
+                                        ></span>
                                     </label>
                                     <span style="margin-left: 8px;">
-                                        <strong v-if="clearAllTokens">Clear All Tokens</strong>
-                                        <strong v-else>Clear Login Tokens Only</strong>
+                                        <strong v-if="clearAllTokens"
+                                            >Clear All Tokens</strong
+                                        >
+                                        <strong v-else
+                                            >Clear Login Tokens Only</strong
+                                        >
                                     </span>
                                 </div>
                             </transition>
@@ -137,7 +158,8 @@
                                 :class="{ 'is-loading': isLoading }"
                                 :disabled="isLoading"
                                 @click="savePassword()"
-                                type="button">
+                                type="button"
+                            >
                                 Save
                             </button>
                         </form>
@@ -207,10 +229,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'clearForcePasswordChange',
-            'setUserAuthTokens',
-        ]),
+        ...mapActions(['clearForcePasswordChange', 'setUserAuthTokens']),
         validateConfirmPassword() {
             this.validConfirmPassword = false;
             const confirmPassword = this.confirmPassword;
@@ -278,18 +297,15 @@ export default {
                     params.clear_tokens = 0;
                 }
 
-                updatePassword(password, params)
-                    .then(() => {
-                        this.$router.push({ name: 'signIn' });
-                        this.isLoading = false;
-                    });
+                updatePassword(password, params).then(() => {
+                    this.$router.push({ name: 'signIn' });
+                    this.isLoading = false;
+                });
             }
         },
     },
     computed: {
-        ...mapState([
-            'forcePasswordChange',
-        ]),
+        ...mapState(['forcePasswordChange']),
     },
     mounted() {
         if (this.forcePasswordChange) {

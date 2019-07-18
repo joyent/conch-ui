@@ -1,7 +1,6 @@
 import { clearToken, request, requestWithToken } from './request.js';
 
-
-export const createToken = (name) => {
+export const createToken = name => {
     return requestWithToken({
         method: 'POST',
         url: '/user/me/token',
@@ -9,13 +8,12 @@ export const createToken = (name) => {
     });
 };
 
-export const createUser = (user) => {
+export const createUser = user => {
     return requestWithToken({
         method: 'POST',
         url: '/user',
         data: user,
-    })
-    .catch(error => {
+    }).catch(error => {
         return Promise.reject(error);
     });
 };
@@ -28,14 +26,14 @@ export const deactivateUser = (userId, params) => {
     });
 };
 
-export const deleteToken = (name) => {
+export const deleteToken = name => {
     return requestWithToken({
         method: 'DELETE',
         url: `/user/me/token/${name}`,
     });
 };
 
-export const demoteUser = (userId) => {
+export const demoteUser = userId => {
     return requestWithToken({
         method: 'POST',
         url: `/user/${userId}`,
@@ -54,11 +52,11 @@ export const deleteUserTokens = (userId, params) => {
     return requestWithToken({
         method: 'POST',
         url: `/user/${userId}/revoke`,
-        params
+        params,
     });
 };
 
-export const editUser = (user) => {
+export const editUser = user => {
     const data = {};
 
     data.is_admin = user.is_admin;
@@ -74,14 +72,13 @@ export const editUser = (user) => {
     return requestWithToken({
         method: 'POST',
         url: `/user/${user.id}`,
-        data
-    })
-    .catch(error => {
+        data,
+    }).catch(error => {
         return Promise.reject(error);
     });
 };
 
-export const forcePasswordChange = (userId) => {
+export const forcePasswordChange = userId => {
     return requestWithToken({
         method: 'DELETE',
         url: `/user/${userId}/password`,
@@ -95,7 +92,7 @@ export const getCurrentUser = () => {
     });
 };
 
-export const getToken = (name) => {
+export const getToken = name => {
     return requestWithToken({
         method: 'GET',
         url: `/user/me/token/${name}`,
@@ -109,14 +106,14 @@ export const getTokens = () => {
     });
 };
 
-export const getUser = (userId) => {
+export const getUser = userId => {
     return request({
         method: 'GET',
         url: `/user/${userId}`,
     });
 };
 
-export const getUserTokens = (userId) => {
+export const getUserTokens = userId => {
     return requestWithToken({
         method: 'GET',
         url: `/user/${userId}/token`,
@@ -130,7 +127,7 @@ export const getUsers = () => {
     });
 };
 
-export const promoteUser = (userId) => {
+export const promoteUser = userId => {
     return requestWithToken({
         method: 'POST',
         url: `/user/${userId}`,
@@ -144,8 +141,7 @@ export const updatePassword = (password, params) => {
         url: '/user/me/password',
         data: { password },
         params,
-    })
-    .then(clearToken());
+    }).then(clearToken());
 };
 
 export default {

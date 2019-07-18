@@ -4,7 +4,7 @@ import {
     getToken,
     setToken,
     request,
-    requestWithToken
+    requestWithToken,
 } from '../request.js';
 
 jest.mock('axios');
@@ -53,8 +53,8 @@ describe('request API', () => {
                 },
             };
             const response = {
-                 status: 200,
-                 data: { userId: '12345' },
+                status: 200,
+                data: { userId: '12345' },
             };
 
             axios.mockResolvedValueOnce(response);

@@ -20,7 +20,11 @@
                 ></i>
                 <i
                     class="far fa-4x fa-times-circle has-text-danger"
-                    v-else-if="(action === 'delete-login-tokens' || action === 'delete-auth-tokens') && !hasNoTokens"
+                    v-else-if="
+                        (action === 'delete-login-tokens' ||
+                            action === 'delete-auth-tokens') &&
+                            !hasNoTokens
+                    "
                 ></i>
                 <i
                     class="far fa-4x fa-check-circle has-text-success"
@@ -37,10 +41,13 @@
             </template>
             <template v-slot:body>
                 <p class="subtitle" v-if="hasNoTokens">
-                    <strong class="name">{{ user.name }}</strong> has no auth tokens.
+                    <strong class="name">{{ user.name }}</strong> has no auth
+                    tokens.
                 </p>
                 <p class="subtitle" v-else>
-                    Are you sure you want to {{ actionText }} <strong class="name">{{ user.name }}</strong>?
+                    Are you sure you want to {{ actionText }}
+                    <strong class="name">{{ user.name }}</strong
+                    >?
                 </p>
             </template>
             <template v-slot:footer>
@@ -79,7 +86,9 @@
             </template>
             <template v-slot:body>
                 <p class="subtitle margin-small">
-                    Do you want to clear <strong class="has-text-white">{{ user.name }}</strong>'s tokens?
+                    Do you want to clear
+                    <strong class="has-text-white">{{ user.name }}</strong
+                    >'s tokens?
                 </p>
                 <div class="field has-switch has-text-centered">
                     <label class="switch is-large">
@@ -89,7 +98,7 @@
                             v-model="clearTokens"
                             :true-value="true"
                             :false-value="false"
-                        >
+                        />
                         <span class="slider round is-success"></span>
                     </label>
                     <div class="switch-text">
@@ -104,10 +113,14 @@
                     @click="confirm()"
                 >
                     <span v-if="clearTokens">
-                        Clear <strong class="has-text-white"> {{ user.name }}</strong>'s tokens
+                        Clear
+                        <strong class="has-text-white"> {{ user.name }}</strong
+                        >'s tokens
                     </span>
                     <span v-else>
-                        Do not clear <strong class="has-text-white">{{ user.name}}</strong>'s tokens
+                        Do not clear
+                        <strong class="has-text-white">{{ user.name }}</strong
+                        >'s tokens
                     </span>
                     <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                 </a>
@@ -122,16 +135,24 @@
             </template>
             <template v-slot:body>
                 <p class="subtitle" v-if="action === 'reset-pwd'">
-                    <strong class="has-text-white">{{ user.name }}</strong>'s password has been reset.
+                    <strong class="has-text-white">{{ user.name }}</strong
+                    >'s password has been reset.
                 </p>
-                <p class="subtitle" v-else-if="action === 'delete-login-tokens'">
-                    <strong class="has-text-white">{{ user.name }}</strong>'s login tokens have been successfully deleted.
+                <p
+                    class="subtitle"
+                    v-else-if="action === 'delete-login-tokens'"
+                >
+                    <strong class="has-text-white">{{ user.name }}</strong
+                    >'s login tokens have been successfully deleted.
                 </p>
                 <p class="subtitle" v-else-if="action === 'delete-auth-tokens'">
-                    <strong class="has-text-white">{{ user.name }}</strong>'s auth tokens have been successfully deleted.
+                    <strong class="has-text-white">{{ user.name }}</strong
+                    >'s auth tokens have been successfully deleted.
                 </p>
                 <p class="subtitle" v-else>
-                    <strong class="has-text-white">{{ user.name }}</strong> has been successfully <strong class="has-text-white">{{ action }}d</strong>.
+                    <strong class="has-text-white">{{ user.name }}</strong> has
+                    been successfully
+                    <strong class="has-text-white">{{ action }}d</strong>.
                 </p>
             </template>
             <template v-slot:footer>
@@ -173,7 +194,7 @@ export default {
         user: {
             type: Object,
             required: true,
-        }
+        },
     },
     data() {
         return {
@@ -187,9 +208,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'clearUserAuthTokens',
-        ]),
+        ...mapActions(['clearUserAuthTokens']),
         closeModal() {
             this.isActive = false;
             this.hasNoTokens = false;
@@ -207,20 +226,17 @@ export default {
             const userId = this.user.id;
 
             if (action === 'reset-pwd') {
-                forcePasswordChange(userId)
-                    .then(() => {
-                        this.triggerSuccess(userId);
-                    });
+                forcePasswordChange(userId).then(() => {
+                    this.triggerSuccess(userId);
+                });
             } else if (action === 'promote') {
-                promoteUser(userId)
-                    .then(() => {
-                        this.triggerSuccess(userId);
-                    });
+                promoteUser(userId).then(() => {
+                    this.triggerSuccess(userId);
+                });
             } else if (action === 'demote') {
-                demoteUser(userId)
-                    .then(() => {
-                        this.triggerSuccess(userId);
-                    });
+                demoteUser(userId).then(() => {
+                    this.triggerSuccess(userId);
+                });
             } else if (action === 'deactivate') {
                 const params = {};
 
@@ -230,29 +246,26 @@ export default {
                     params.clear_tokens = 0;
                 }
 
-                deactivateUser(userId, params)
-                    .then(() => {
-                        this.deactivateConfirmed = false;
-                        this.triggerSuccess(userId, true);
-                    });
+                deactivateUser(userId, params).then(() => {
+                    this.deactivateConfirmed = false;
+                    this.triggerSuccess(userId, true);
+                });
             } else if (action === 'delete-auth-tokens') {
                 const params = { api_only: 1 };
 
-                deleteUserTokens(userId, params)
-                    .then(() => {
-                        if (userId === this.currentUser.id) {
-                            this.clearUserAuthTokens();
-                        }
+                deleteUserTokens(userId, params).then(() => {
+                    if (userId === this.currentUser.id) {
+                        this.clearUserAuthTokens();
+                    }
 
-                        this.triggerSuccess(userId);
-                    });
+                    this.triggerSuccess(userId);
+                });
             } else if (action === 'delete-login-tokens') {
                 const params = { login_only: 1 };
 
-                deleteUserTokens(userId, params)
-                    .then(() => {
-                        this.triggerSuccess(userId);
-                    });
+                deleteUserTokens(userId, params).then(() => {
+                    this.triggerSuccess(userId);
+                });
             }
         },
         triggerSuccess(userId, deactivate = false) {
@@ -261,30 +274,30 @@ export default {
             });
 
             if (deactivate) {
-                EventBus.$emit('action-success', { userId, action: 'deactivate' });
+                EventBus.$emit('action-success', {
+                    userId,
+                    action: 'deactivate',
+                });
             } else {
                 EventBus.$emit('action-success', { userId });
             }
         },
     },
     computed: {
-        ...mapState([
-            'currentUser',
-        ]),
+        ...mapState(['currentUser']),
     },
     created() {
         const action = this.action;
 
         if (action === 'delete-auth-tokens') {
-            getUserTokens(this.user.id)
-                .then(response => {
-                    if (!response.data.length) {
-                        this.hasNoTokens = true;
-                    } else {
-                        this.actionText = 'delete the auth tokens for';
-                        this.titleText = 'Delete Auth Tokens?';
-                    }
-                });
+            getUserTokens(this.user.id).then(response => {
+                if (!response.data.length) {
+                    this.hasNoTokens = true;
+                } else {
+                    this.actionText = 'delete the auth tokens for';
+                    this.titleText = 'Delete Auth Tokens?';
+                }
+            });
         } else if (action === 'delete-login-tokens') {
             this.actionText = 'delete the login tokens for';
             this.titleText = 'Delete Login Tokens?';

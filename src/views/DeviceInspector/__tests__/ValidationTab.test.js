@@ -25,7 +25,7 @@ describe('ValidationTab.vue', () => {
     // Helper function
     const clickRow = () => {
         row.trigger('click');
-    }
+    };
 
     test('should display loading indicator when disks is empty', () => {
         state.activeDeviceValidations = [];
@@ -46,7 +46,11 @@ describe('ValidationTab.vue', () => {
 
     test('should call the revealValidationDetails method with the disk index when a row is clicked', () => {
         const methods = { revealValidationDetails: jest.fn() };
-        const wrapper = shallowMount(ValidationTab, { localVue, methods, store });
+        const wrapper = shallowMount(ValidationTab, {
+            localVue,
+            methods,
+            store,
+        });
         wrapper.find('.row').trigger('click');
 
         expect(methods.revealValidationDetails).toHaveBeenCalledWith(0);

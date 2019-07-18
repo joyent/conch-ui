@@ -11,13 +11,15 @@
                         >
                             <h1 class="title is-3">Users</h1>
                             <div class="table-filter">
-                                <div class="control has-icons-left has-icons-right">
+                                <div
+                                    class="control has-icons-left has-icons-right"
+                                >
                                     <input
                                         class="input search"
                                         type="text"
                                         placeholder="Search Users"
                                         v-model="searchTextUsers"
-                                    >
+                                    />
                                     <span class="icon is-small is-left">
                                         <i class="fas fa-search"></i>
                                     </span>
@@ -33,18 +35,27 @@
                                 <th>
                                     <a
                                         class="table-header-filter username"
-                                        :class="{ 'has-text-white': sortFilter === 'name' }"
+                                        :class="{
+                                            'has-text-white':
+                                                sortFilter === 'name',
+                                        }"
                                         @click="sortUsersBy('name')"
                                     >
                                         User Name
                                         <i
                                             class="fas fa-angle-down"
-                                            v-if="sortFilter === 'name' && !reversedSort"
+                                            v-if="
+                                                sortFilter === 'name' &&
+                                                    !reversedSort
+                                            "
                                             style="margin-left: 10px;"
                                         ></i>
                                         <i
                                             class="fas fa-angle-up"
-                                            v-else-if="sortFilter === 'name' && reversedSort"
+                                            v-else-if="
+                                                sortFilter === 'name' &&
+                                                    reversedSort
+                                            "
                                             style="margin-left: 10px;"
                                         ></i>
                                     </a>
@@ -59,13 +70,21 @@
                             <tbody>
                                 <tr
                                     class="row"
-                                    v-for="user in paginatedResults(filteredUsers)"
+                                    v-for="user in paginatedResults(
+                                        filteredUsers
+                                    )"
                                     :key="user.id"
-                                    :class="{ 'is-selected': selectedUser && selectedUser.id === user.id }"
+                                    :class="{
+                                        'is-selected':
+                                            selectedUser &&
+                                            selectedUser.id === user.id,
+                                    }"
                                 >
                                     <td style="width: 50px;">
                                         <span style="margin-right: 20px;">
-                                            <i class="fas fa-2x fa-user-circle"></i>
+                                            <i
+                                                class="fas fa-2x fa-user-circle"
+                                            ></i>
                                         </span>
                                     </td>
                                     <td class="username">
@@ -85,7 +104,12 @@
                                         </a>
                                         <a
                                             class="button delete-login-tokens is-danger"
-                                            @click="openModalMultipleTokens('login', user)"
+                                            @click="
+                                                openModalMultipleTokens(
+                                                    'login',
+                                                    user
+                                                )
+                                            "
                                         >
                                             <i
                                                 class="fas fa-trash-alt"
@@ -97,17 +121,16 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <TablePagination :total-results="filteredUsers.length" />
+                        <TablePagination
+                            :total-results="filteredUsers.length"
+                        />
                     </div>
                 </div>
             </div>
         </div>
         <div class="columns">
             <div class="column" v-if="selectedUser && viewTokens">
-                <div
-                    class="box selected-user"
-                    style="margin-bottom: 12px;"
-                >
+                <div class="box selected-user" style="margin-bottom: 12px;">
                     <div
                         class="user-heading is-flex"
                         style="align-items: center; justify-content: center;"
@@ -144,25 +167,29 @@
                                     Authentication Tokens
                                 </h1>
                                 <div class="table-filter">
-                                    <div class="control has-icons-left has-icons-right">
+                                    <div
+                                        class="control has-icons-left has-icons-right"
+                                    >
                                         <input
                                             class="input search"
                                             type="text"
                                             placeholder="Search Tokens"
                                             v-model="searchTextTokens"
-                                        >
-                                        <span
-                                            class="icon is-small is-left"
-                                        >
+                                        />
+                                        <span class="icon is-small is-left">
                                             <i class="fas fa-search"></i>
                                         </span>
                                     </div>
                                     <div
-                                        v-if="sortedTokens && sortedTokens.length"
+                                        v-if="
+                                            sortedTokens && sortedTokens.length
+                                        "
                                     >
                                         <a
                                             class="button delete-auth-tokens is-danger"
-                                            @click="openModalMultipleTokens('auth')"
+                                            @click="
+                                                openModalMultipleTokens('auth')
+                                            "
                                         >
                                             Delete Auth Tokens
                                         </a>
@@ -178,18 +205,27 @@
                                     <th>
                                         <a
                                             class="table-header-filter token-name"
-                                            :class="{ 'has-text-white': sortFilter === 'name' }"
+                                            :class="{
+                                                'has-text-white':
+                                                    sortFilter === 'name',
+                                            }"
                                             @click="sortTokensBy('name')"
                                         >
                                             Token Name
                                             <i
                                                 class="fas fa-angle-down"
-                                                v-if="sortFilter === 'name' && !reversedSort"
+                                                v-if="
+                                                    sortFilter === 'name' &&
+                                                        !reversedSort
+                                                "
                                                 style="margin-left: 10px;"
                                             ></i>
                                             <i
                                                 class="fas fa-angle-up"
-                                                v-else-if="sortFilter === 'name' && reversedSort"
+                                                v-else-if="
+                                                    sortFilter === 'name' &&
+                                                        reversedSort
+                                                "
                                                 style="margin-left: 10px;"
                                             ></i>
                                         </a>
@@ -197,18 +233,29 @@
                                     <th>
                                         <a
                                             class="table-header-filter last-used"
-                                            :class="{ 'has-text-white': sortFilter === 'last_used' }"
+                                            :class="{
+                                                'has-text-white':
+                                                    sortFilter === 'last_used',
+                                            }"
                                             @click="sortTokensBy('last_used')"
                                         >
                                             Last Used
                                             <i
                                                 class="fas fa-angle-down"
-                                                v-if="sortFilter === 'last_used' && !reversedSort"
+                                                v-if="
+                                                    sortFilter ===
+                                                        'last_used' &&
+                                                        !reversedSort
+                                                "
                                                 style="margin-left: 10px;"
                                             ></i>
                                             <i
                                                 class="fas fa-angle-up"
-                                                v-else-if="sortFilter === 'last_used' && reversedSort"
+                                                v-else-if="
+                                                    sortFilter ===
+                                                        'last_used' &&
+                                                        reversedSort
+                                                "
                                                 style="margin-left: 10px;"
                                             ></i>
                                         </a>
@@ -216,18 +263,27 @@
                                     <th>
                                         <a
                                             class="table-header-filter created"
-                                            :class="{ 'has-text-white': sortFilter === 'created' }"
+                                            :class="{
+                                                'has-text-white':
+                                                    sortFilter === 'created',
+                                            }"
                                             @click="sortTokensBy('created')"
                                         >
                                             Created
                                             <i
                                                 class="fas fa-angle-down"
-                                                v-if="sortFilter === 'created' && !reversedSort"
+                                                v-if="
+                                                    sortFilter === 'created' &&
+                                                        !reversedSort
+                                                "
                                                 style="margin-left: 10px;"
                                             ></i>
                                             <i
                                                 class="fas fa-angle-up"
-                                                v-else-if="sortFilter === 'created' && reversedSort"
+                                                v-else-if="
+                                                    sortFilter === 'created' &&
+                                                        reversedSort
+                                                "
                                                 style="margin-left: 10px;"
                                             ></i>
                                         </a>
@@ -250,7 +306,9 @@
                                         <td class="has-text-centered">
                                             <span>{{ i + 1 }}</span>
                                         </td>
-                                        <td class="token-name">{{ token.name }}</td>
+                                        <td class="token-name">{{
+                                            token.name
+                                        }}</td>
                                         <td v-if="token.last_used">
                                             {{ getDate(token.last_used) }}
                                         </td>
@@ -262,7 +320,11 @@
                                         >
                                             <span
                                                 class="icon delete-token"
-                                                @click="openModalSingleToken(token.name)"
+                                                @click="
+                                                    openModalSingleToken(
+                                                        token.name
+                                                    )
+                                                "
                                             >
                                                 <i class="fas fa-trash-alt"></i>
                                             </span>
@@ -278,7 +340,10 @@
                     style="padding: 40px;"
                 >
                     <p class="title no-tokens is-5 has-text-centered">
-                        <strong class="has-text-white">{{ selectedUser.name }}</strong> does not have any auth tokens.
+                        <strong class="has-text-white">{{
+                            selectedUser.name
+                        }}</strong>
+                        does not have any auth tokens.
                     </p>
                 </div>
             </div>
@@ -306,10 +371,17 @@
                 </template>
                 <template v-slot:body>
                     <p class="subtitle" v-if="tokenType">
-                        Are you sure you want to delete the {{ tokenType }} tokens for <strong class="has-text-white">{{ selectedUser.name }}</strong>?
+                        Are you sure you want to delete the
+                        {{ tokenType }} tokens for
+                        <strong class="has-text-white">
+                            {{ selectedUser.name }}
+                        </strong>
+                        ?
                     </p>
                     <p class="subtitle" v-else>
-                        Are you sure you want to delete <strong class="has-text-white">{{ tokenName }}</strong>?
+                        Are you sure you want to delete
+                        <strong class="has-text-white"> {{ tokenName }} </strong
+                        >?
                     </p>
                 </template>
                 <template v-slot:footer>
@@ -348,13 +420,20 @@
                 </template>
                 <template v-slot:body>
                     <p class="subtitle" v-if="deletingAuthTokens">
-                        <strong class="has-text-white">{{ selectedUser.name }}</strong>'s auth tokens have been deleted.
+                        <strong class="has-text-white">{{
+                            selectedUser.name
+                        }}</strong
+                        >'s auth tokens have been deleted.
                     </p>
                     <p class="subtitle" v-else-if="deletingLoginTokens">
-                        <strong class="has-text-white">{{ selectedUser.name }}</strong>'s login tokens have been deleted.
+                        <strong class="has-text-white">{{
+                            selectedUser.name
+                        }}</strong
+                        >'s login tokens have been deleted.
                     </p>
                     <p class="subtitle" v-else>
-                        <strong class="has-text-white">{{ tokenName }}</strong> has been deleted.
+                        <strong class="has-text-white">{{ tokenName }}</strong>
+                        has been deleted.
                     </p>
                 </template>
                 <template v-slot:footer>
@@ -372,7 +451,7 @@
 </template>
 
 <script>
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
 import { EventBus } from '@src/eventBus.js';
@@ -382,10 +461,9 @@ import TablePagination from '@src/views/components/TablePagination.vue';
 import {
     deleteUserToken,
     deleteUserTokens,
-    getTokens,
     getUser,
     getUserTokens,
-    getUsers
+    getUsers,
 } from '@api/users.js';
 import { logout } from '@api/authentication.js';
 import { mapActions, mapState } from 'vuex';
@@ -418,15 +496,12 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setUserAuthTokens',
-            'setUsers',
-        ]),
+        ...mapActions(['setUserAuthTokens', 'setUsers']),
         closeModal() {
             this.deleting = false;
-            this.deletingAuthTokens = false,
-            this.deletingLoginTokens = false,
-            this.deleteSuccess = false;
+            (this.deletingAuthTokens = false),
+                (this.deletingLoginTokens = false),
+                (this.deleteSuccess = false);
             this.tokenName = '';
             this.tokenType = '';
         },
@@ -438,44 +513,40 @@ export default {
             this.sortedTokens = null;
         },
         deleteToken(tokenName) {
-            deleteUserToken(tokenName, this.selectedUser.id)
-                .then(response => {
-                    this.deleting = false;
-                    this.deleteSuccess = true;
+            deleteUserToken(tokenName, this.selectedUser.id).then(() => {
+                this.deleting = false;
+                this.deleteSuccess = true;
 
-                    this.setTokens(this.selectedUser.id);
-                });
+                this.setTokens(this.selectedUser.id);
+            });
         },
         deleteAuthTokens() {
             const params = { api_only: 1 };
             const userId = this.selectedUser.id;
             this.deletingAuthTokens = true;
 
-            deleteUserTokens(userId, params)
-                .then(() => {
-                    this.deleting = false;
-                    this.deleteSuccess = true;
+            deleteUserTokens(userId, params).then(() => {
+                this.deleting = false;
+                this.deleteSuccess = true;
 
-                    this.setTokens(userId);
-                });
+                this.setTokens(userId);
+            });
         },
         deleteLoginTokens() {
             const params = { login_only: 1 };
             const userId = this.selectedUser.id;
             this.deletingLoginTokens = true;
 
-            deleteUserTokens(userId, params)
-                .then(() => {
-                    this.deleting = false;
-                    this.deleteSuccess = true;
+            deleteUserTokens(userId, params).then(() => {
+                this.deleting = false;
+                this.deleteSuccess = true;
 
-                    if (userId === this.currentUser.id) {
-                        logout()
-                            .then(() => {
-                                this.$router.push({ name: 'signIn' });
-                            });
-                    }
-                });
+                if (userId === this.currentUser.id) {
+                    logout().then(() => {
+                        this.$router.push({ name: 'signIn' });
+                    });
+                }
+            });
         },
         getDate(date) {
             return moment(date).fromNow();
@@ -505,11 +576,15 @@ export default {
                 resultSetStartIndex = this.resultsPerPage * this.currentPage;
                 resultSetEndIndex = paginatedData.length;
             } else {
-                resultSetStartIndex = (this.resultsPerPage * (this.currentPage -1 ));
+                resultSetStartIndex =
+                    this.resultsPerPage * (this.currentPage - 1);
                 resultSetEndIndex = this.resultsPerPage * this.currentPage;
             }
 
-            paginatedData = paginatedData.slice(resultSetStartIndex, resultSetEndIndex);
+            paginatedData = paginatedData.slice(
+                resultSetStartIndex,
+                resultSetEndIndex
+            );
 
             return paginatedData;
         },
@@ -522,34 +597,49 @@ export default {
             this.sortFilter = '';
         },
         setTokens(userId) {
-            getUserTokens(userId)
-                .then(response => {
-                    const tokens = response.data;
-                    this.sortedTokens = tokens;
+            getUserTokens(userId).then(response => {
+                const tokens = response.data;
+                this.sortedTokens = tokens;
 
-                    if (this.selectedUser) {
-                        if (this.currentUser.id === this.selectedUser.id) {
-                            this.setUserAuthTokens(tokens);
-                        }
+                if (this.selectedUser) {
+                    if (this.currentUser.id === this.selectedUser.id) {
+                        this.setUserAuthTokens(tokens);
                     }
-                });
+                }
+            });
         },
         sortTokensBy(field) {
             let tokens = this.sortedTokens;
 
             if (this.sortFilter !== field) {
                 if (field === 'name') {
-                    this.sortedTokens = orderBy(tokens, [token => token.name.toLowerCase()], ['asc']);
+                    this.sortedTokens = orderBy(
+                        tokens,
+                        [token => token.name.toLowerCase()],
+                        ['asc']
+                    );
                 } else if (field === 'last_used') {
-                    const unusedTokens = tokens.filter(token => token.last_used == null);
-                    const usedTokens = tokens.filter(token => token.last_used != null);
+                    const unusedTokens = tokens.filter(
+                        token => token.last_used == null
+                    );
+                    const usedTokens = tokens.filter(
+                        token => token.last_used != null
+                    );
 
-                    tokens = orderBy(usedTokens, [token => token.last_used], ['desc']);
+                    tokens = orderBy(
+                        usedTokens,
+                        [token => token.last_used],
+                        ['desc']
+                    );
                     tokens = tokens.concat(unusedTokens);
 
                     this.sortedTokens = tokens;
                 } else if (field === 'created') {
-                    this.sortedTokens = orderBy(tokens, [token => token.created], ['desc']);
+                    this.sortedTokens = orderBy(
+                        tokens,
+                        [token => token.created],
+                        ['desc']
+                    );
                 }
 
                 this.sortFilter = field;
@@ -564,7 +654,11 @@ export default {
 
             if (this.sortFilter !== field) {
                 if (field === 'name') {
-                    this.sortedUsers = orderBy(users, [user => user.name.toLowerCase()], ['asc']);
+                    this.sortedUsers = orderBy(
+                        users,
+                        [user => user.name.toLowerCase()],
+                        ['asc']
+                    );
                 }
 
                 this.sortFilter = field;
@@ -574,13 +668,9 @@ export default {
                 this.sortedUsers = users;
             }
         },
-
     },
     computed: {
-        ...mapState([
-            'currentUser',
-            'users',
-        ]),
+        ...mapState(['currentUser', 'users']),
         filteredTokens() {
             let searchText = this.searchTextTokens.toLowerCase();
             let tokens = this.sortedTokens;
@@ -608,10 +698,7 @@ export default {
                     const name = user.name.toLowerCase();
                     const email = user.email.toLowerCase();
 
-                    if (
-                        search(searchText, name) ||
-                        search(searchText, email)
-                    ) {
+                    if (search(searchText, name) || search(searchText, email)) {
                         acc.push(user);
                     }
 
@@ -622,10 +709,18 @@ export default {
             return users;
         },
         noSearchResultsTokens() {
-            return this.searchTextTokens && this.filteredTokens && !this.filteredTokens.length;
+            return (
+                this.searchTextTokens &&
+                this.filteredTokens &&
+                !this.filteredTokens.length
+            );
         },
         noSearchResultsUsers() {
-            return this.searchTextUsers && this.filteredUsers && !this.filteredUsers.length;
+            return (
+                this.searchTextUsers &&
+                this.filteredUsers &&
+                !this.filteredUsers.length
+            );
         },
     },
     created() {
@@ -636,19 +731,17 @@ export default {
             this.viewTokens = true;
             const userId = this.$route.params.userId;
 
-            getUser(userId)
-                .then(response => {
-                    this.selectedUser = response.data;
-                    this.setTokens(userId);
-                });
+            getUser(userId).then(response => {
+                this.selectedUser = response.data;
+                this.setTokens(userId);
+            });
         }
 
         if (!users.length) {
-            getUsers()
-                .then(response => {
-                    this.sortedUsers = response.data;
-                    this.setUsers(response.data);
-                });
+            getUsers().then(response => {
+                this.sortedUsers = response.data;
+                this.setUsers(response.data);
+            });
         } else {
             this.sortedUsers = users;
         }
