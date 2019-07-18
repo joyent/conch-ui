@@ -12,7 +12,7 @@ const gitRevisionPlugin = new GitRevisionWebpackPlugin({
 module.exports = {
 	entry: {
 		// Main Javascript file
-		app: "./src/index.js",
+		app: "./src/main.js",
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),

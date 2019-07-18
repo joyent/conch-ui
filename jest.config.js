@@ -76,6 +76,7 @@ module.exports = {
   moduleFileExtensions: [
     "js",
     "json",
+    "jsx",
     "vue"
   ],
 
@@ -83,6 +84,7 @@ module.exports = {
   moduleNameMapper: {
     '^@src/(.*)$': '<rootDir>/src/$1',
     '^@api/(.*)$': '<rootDir>/src/api/$1',
+    '^@fixtures/(.*)$': '<rootDir>/src/__fixtures__/$1',
     '^@views/(.*)$': '<rootDir>/src/views/$1',
   },
 
@@ -149,8 +151,8 @@ module.exports = {
 
   // The glob patterns Jest uses to detect test files
   // testMatch: [
-  //   "**/__tests__/**/*.js?(x)",
-  //   "**/?(*.)+(spec|test).js?(x)"
+  //   "**/__tests__/**/*.(js|jsx|ts|tsx)",
+  //   "**/?(*.)+(spec|test).(js|jsx|ts|tsx)"
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
@@ -168,21 +170,23 @@ module.exports = {
   // testRunner: "jasmine2",
 
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
-  testURL:  config.conchApi,
+  testURL: config.conchApi,
 
   // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.js$': './node_modules/babel-jest',
-    '.*\\.(vue)$': './node_modules/vue-jest',
+    '^.+\\.js$': 'babel-jest',
+    '^.+\\.vue$': 'vue-jest',
+    '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
+    '^.+\\.jsx?$': 'babel-jest'
   },
 
-  // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  //An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
+  transformIgnorePatterns: [
+    "/node_modules/"
+  ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
@@ -192,6 +196,15 @@ module.exports = {
 
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
   // watchPathIgnorePatterns: [],
+
+  // An array of RegExp patterns that are matched against all source file paths before re-running tests in watch mode.
+  // If the file path matches any of the patterns, when it is updated, it will not trigger a re-run of tests.
+  // These patterns match against the full path. Use the <rootDir> string token to include the path to your project's root directory
+  // to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: ["<rootDir>/node_modules/"].
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname'
+  ],
 
   // Whether to use watchman for file crawling
   // watchman: true,
