@@ -15,6 +15,10 @@
                             <p class="heading is-size-6">End Date</p>
                             <p>{{ getDate(build.endDate) }}</p>
                         </div>
+                        <div class="time-remaining">
+                            <p class="heading is-size-6">Time Remaining</p>
+                            <p>25 days</p>
+                        </div>
                     </div>
                 </div>
             </div>
