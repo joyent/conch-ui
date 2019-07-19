@@ -1,7 +1,9 @@
+.build,
 .builds {
 	input {
 		background-color: $grey-darker;
 		border-color: $grey;
+		border-radius: 4px;
 		color: $grey-lighter;
 		margin-bottom: 15px;
 
@@ -61,6 +63,7 @@
 		}
 	}
 
+	.build-page,
 	.selected-build {
 		.tabs {
 			margin: 20px 0 25px;
@@ -92,6 +95,7 @@
 			}
 		}
 
+		.build-header,
 		.selected-build-header {
 			display: flex;
 			align-items: center;
@@ -230,9 +234,66 @@
 		}
 	}
 
+	.devices-tab,
 	.users-tab {
 		.box {
 			padding: 20px;
 		}
 	}
+
+	.devices-table,
+	.members-table {
+		transition: box-shadow 0.2s ease-in-out;
+
+		&:hover {
+			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+			transition: box-shadow 0.2s ease-in-out;
+		}
+
+		td,
+		th {
+			padding: 15px 20px;
+		}
+
+		.datatable-header {
+			align-items: center;
+			background-color: $grey-dark;
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+			display: flex;
+			font-weight: bold;
+			padding: 20px;
+
+			.control {
+				margin: 0 20px;
+				flex-grow: 1;
+
+				input {
+					margin-bottom: 0;
+				}
+			}
+
+			i.material-icons {
+				cursor: pointer;
+				font-size: 36px;
+				margin-left: 20px;
+			}
+		}
+
+		.remove-item i {
+			cursor: pointer;
+
+			&:hover {
+				color: $red;
+			}
+		}
+	}
+
+	select {
+		background-color: $grey-darker;
+		border-color: $grey;
+		border-radius: 4px;
+		color: $grey-lighter;
+	}
+
 }
