@@ -14,7 +14,7 @@
                     </div>
                     <div class="columns">
                         <div class="column">
-                            <div class="datatable-simple">
+                            <div class="datatable-simple" style="overflow-x: visible;">
                                 <table class="table is-fullwidth is-marginless">
                                     <tbody>
                                         <tr class="row-simple header" v-if="action === 'add'">
@@ -35,28 +35,27 @@
                                                         </span>
                                                     </td>
                                                 </a>
-                                                <div class="dropdown-menu">
+                                                <div class="dropdown-menu" style="z-index: 100;">
                                                     <div class="dropdown-content">
-                                                        <div class="dropdown-item">
-                                                            <label class="label heading" style="white-space: nowrap;">
+                                                        <div
+                                                            class="dropdown-item"
+                                                            style="display: flex; padding: 0 10px;"
+                                                        >
+                                                            <input
+                                                                class="is-checkradio is-success"
+                                                                id="showAllWorkspaces"
+                                                                type="checkbox"
+                                                                name="showAllWorkspaces"
+                                                                :checked="showAllWorkspaces"
+                                                                v-model="showAllWorkspaces"
+                                                            >
+                                                            <label
+                                                                for="showAllWorkspaces"
+                                                                style="white-space: nowrap;"
+                                                                class="heading is-size-7"
+                                                            >
                                                                 Show All Workspaces
                                                             </label>
-                                                        </div>
-                                                        <div class="dropdown-item" style="text-align: center;">
-                                                            <label class="switch">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    :checked="showAllWorkspaces"
-                                                                    v-model="showAllWorkspaces"
-                                                                    :true-value="true"
-                                                                    :false-value="false"
-                                                                >
-                                                                <span class="slider round is-success"></span>
-                                                            </label>
-                                                            <span style="margin-left: 8px;">
-                                                                <strong v-if="showAllWorkspaces">Yes</strong>
-                                                                <strong v-else>No</strong>
-                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -268,10 +267,14 @@ export default {
                     };
 
                     if (this.workspaceMemberships.indexOf(workspace) !== -1) {
-                        workspaceItem.membership = true;
-                    }
+                        if (this.showAllWorkspaces) {
+                            workspaceItem.membership = true;
 
-                    acc.push(workspaceItem)
+                            acc.push(workspaceItem)
+                        }
+                    } else {
+                        acc.push(workspaceItem)
+                    }
 
                     return acc;
                 }, []);
