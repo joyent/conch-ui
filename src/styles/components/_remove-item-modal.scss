@@ -1,0 +1,40 @@
+.remove-item-modal {
+    display: flex;
+    flex-direction: column;
+
+    .notification {
+        border-radius: 4px;
+        max-width: 450px;
+        min-width: 450px;
+        padding: 20px 30px;
+    }
+
+    i.close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    .name {
+        color: $white;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .button-group {
+        margin-top: 20px;
+        text-align: center;
+
+        .button {
+            height: 42px;
+            width: 145px;
+            color: white;
+            font-weight: bold;
+
+            &:first-of-type {
+                margin-right: 10px;
+            }
+        }
+    }
+}

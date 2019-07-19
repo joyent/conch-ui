@@ -107,33 +107,42 @@
                         ></component>
                     </div>
                 </div>
+                <div class="column is-8" v-else>
+                    <div class="builds-overview">
+                        <div class="columns">
+                            <div class="column is-6">
+                                <div class="box">
+                                    <p class="subtitle is-4" style="margin-bottom: 0.75rem">Builds</p>
+                                    <div
+                                        class="stats"
+                                        style="display: flex; justify-content: space-between"
+                                    >
+                                        <div class="builds-total">
+                                            <h2 class="is-6">Total</h2>
+                                            <span class="is-size-3 has-text-info">
+                                                {{ builds.length }}
+                                            </span>
+                                        </div>
+                                        <div class="builds-active">
+                                            <h2 class="is-6">Active</h2>
+                                            <span class="is-size-3 has-text-info">
+                                                {{ buildsActive }}
+                                            </span>
+                                        </div>
+                                        <div class="builds-complete">
+                                            <h2 class="is-6">Complete</h2>
+                                            <span class="is-size-3 has-text-info">
+                                                {{ buildsComplete }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </transition>
         </div>
-        <transition name="fade">
-            <BaseModal v-if="addDevice">
-                <template v-slot:icon>
-                    <i class="material-icons">add_circle_outline</i>
-                </template>
-                <template v-slot:title>
-                    <h1 class="title">Add a Device</h1>
-                </template>
-                <template v-slot:body>
-                    <table class="table">
-                        <tbody>
-                            <tr></tr>
-                        </tbody>
-                    </table>
-                </template>
-                <template v-slot:footer>
-                    <a
-                        class="button confirm is-success is-fullwidth"
-                    >
-                        Add Device
-                        <i class="fas fa-lg fa-long-arrow-alt-right"></i>
-                    </a>
-                </template>
-            </BaseModal>
-        </transition>
     </div>
 </template>
 
@@ -166,6 +175,126 @@ export default {
                     progress: 10,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-ABCD23",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -216,6 +345,126 @@ export default {
                     progress: 30,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -267,6 +516,126 @@ export default {
                     progress: 50,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -317,6 +686,126 @@ export default {
                     progress: 70,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -367,6 +856,126 @@ export default {
                     progress: 40,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -417,6 +1026,126 @@ export default {
                     progress: 20,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -467,6 +1196,126 @@ export default {
                     progress: 100,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -517,6 +1366,126 @@ export default {
                     progress: 60,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -567,6 +1536,126 @@ export default {
                     progress: 100,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -617,6 +1706,126 @@ export default {
                     progress: 90,
                     startDate: '2018-05-16T10:35:16.933374-07:00',
                     endDate: '2019-05-16T10:35:16.933374-07:00',
+                    devices: [
+                        {
+                            name: 'Android-1',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Super Computer',
+                            graduated: true,
+                            phase: 'installation',
+                            validated: false,
+                        },
+                        {
+                            name: 'Cloud Rack',
+                            graduated: true,
+                            phase: 'diagnostics',
+                            validated: true,
+                        },
+                        {
+                            name: 'Very Cool Machine',
+                            graduated: false,
+                            phase: 'integration',
+                            validated: false,
+                        },
+                        {
+                            name: 'Device-1szv33a',
+                            graduated: true,
+                            phase: 'decommissioned',
+                            validated: false,
+                        },
+                        {
+                            name: 'Android-2',
+                            graduated: false,
+                            phase: 'production',
+                            validated: true,
+                        },
+                    ],
+                    racks: [
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543b",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.276789-07:00",
+                                        graduated: "2018-01-10T17:38:17.000181-08:00",
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI83",
+                                        validated: null,
+                                    },
+                                    vendor: "IBM",
+                                },
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543c",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.249873-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI84",
+                                        validated: "2018-01-10T17:36:39.659718-08:00",
+                                    },
+                                    vendor: "Microsoft",
+                                },
+                            ],
+                        },
+                        {
+                            datacenter: "eu-southwest-1f",
+                            id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                            name: "DS-23C-232168",
+                            phase: "integration",
+                            role: "CERES",
+                            slots: [
+                                {
+                                    alias: "CERES Type 1",
+                                    id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                    name: "dell-2u-compute-v1-256g-10-12tb",
+                                    occupant: {
+                                        asset_tag: null,
+                                        created: "2017-08-14T23:37:37.182853-07:00",
+                                        graduated: null,
+                                        hardware_product: "e3e7c2c0-7b4d-4q9a-b865-2y678976543h",
+                                        health: "pass",
+                                        id: "ACEGI82",
+                                        rack_id: "e3e7c2c0-7b4d-4q9a-b865-2y678976543a",
+                                        validated: "2018-01-10T17:36:24.965412-08:00",
+                                    },
+                                    vendor: "Dell",
+                                },
+                            ],
+                        },
+                    ],
                     users: [
                         {
                             name: 'Tatooine',
@@ -723,6 +1932,16 @@ export default {
         },
     },
     computed: {
+        buildsActive() {
+            return this.builds.filter(
+                build => build.status === 'active'
+            ).length;
+        },
+        buildsComplete() {
+            return this.builds.filter(
+                build => build.status === 'complete'
+            ).length;
+        },
         filteredBuilds() {
             const searchText = this.searchText.toLowerCase();
             let builds = this.builds;
