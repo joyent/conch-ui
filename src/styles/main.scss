@@ -1,10 +1,12 @@
 // Rack Status Graph
 @import 'vendor/d3.relationshipgraph.min.css';
 
+
 // Bulmaswatch Theme (includes Bulma CSS)
 @import 'bulmaswatch/superhero/bulmaswatch.scss';
 
-// Bulma Extension
+// Bulma Extensions
+@import "bulma-checkradio/dist/css/bulma-checkradio.sass";
 @import 'bulma-tooltip/dist/css/bulma-tooltip.sass';
 
 // Config
