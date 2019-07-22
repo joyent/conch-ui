@@ -28,23 +28,6 @@ module.exports = {
             // Keeps original un-compressed files in output
             config.plugins.push(new CompressionPlugin());
         } else {
-            config.devServer = {
-                contentBase: './dist',
-                hot: true,
-                open: true,
-                overlay: {
-                    warnings: true,
-                    errors: true,
-                },
-                proxy: {
-                    '/': {
-                        target: 'http://localhost:5001',
-                        secure: false,
-                        ws: false,
-                    },
-                },
-            };
-
             config.optimization = {
                 // use actual path names in debugging in browser
                 namedModules: true,
@@ -83,5 +66,20 @@ module.exports = {
                 },
             })
         );
+    },
+    devServer: {
+        contentBase: './dist',
+        hot: true,
+        open: true,
+        overlay: {
+            warnings: true,
+            errors: true,
+        },
+        proxy: {
+            '/': {
+                target: 'http://localhost:5001',
+                ws: false,
+            },
+        },
     },
 };
