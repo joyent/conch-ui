@@ -36,7 +36,9 @@
             <div class="column is-4">
                 <div class="datatable-simple">
                     <div class="datatable-header">
-                        <p class="datatable-header-title is-size-5 has-text-white">
+                        <p
+                            class="datatable-header-title is-size-5 has-text-white"
+                        >
                             Workspace Memberships
                         </p>
                         <div
@@ -45,7 +47,9 @@
                         >
                             <a
                                 class="datatable-header-icon dropdown-trigger"
-                                @click="showWorkspacesDropdown = !showWorkspacesDropdown"
+                                @click="
+                                    showWorkspacesDropdown = !showWorkspacesDropdown
+                                "
                             >
                                 <span class="icon">
                                     <i class="fas fa-ellipsis-v"></i>
@@ -58,7 +62,10 @@
                                         @click="openWorkspaceModal('add')"
                                         style="display: flex;"
                                     >
-                                        <i class="material-icons" style="margin-right: 10px; min-width: 24px;">
+                                        <i
+                                            class="material-icons"
+                                            style="margin-right: 10px; min-width: 24px;"
+                                        >
                                             add_circle_outline
                                         </i>
                                         <p>Add Workspaces</p>
@@ -68,21 +75,34 @@
                                         @click="openWorkspaceModal('remove')"
                                         style="display: flex; align-items: center"
                                     >
-                                        <i class="fas fa-trash-alt" style="margin-right: 10px; min-width: 24px; text-align: center;"></i>
+                                        <i
+                                            class="fas fa-trash-alt"
+                                            style="margin-right: 10px; min-width: 24px; text-align: center;"
+                                        ></i>
                                         <p>Remove Workspaces</p>
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <table class="table is-fullwidth is-hoverable is-marginless">
+                    <table
+                        class="table is-fullwidth is-hoverable is-marginless"
+                    >
                         <tbody>
                             <tr class="row-simple" v-for="i in 6" :key="i">
                                 <td class="table-data">
                                     {{ org.workspaces[i] }}
                                 </td>
                                 <td class="row-action-button">
-                                    <a class="button-delete">
+                                    <a
+                                        class="button-delete"
+                                        @click="
+                                            removeItem(
+                                                org.workspaces[i],
+                                                'workspace'
+                                            )
+                                        "
+                                    >
                                         <span class="icon">
                                             <i class="fas fa-trash-alt"></i>
                                         </span>
@@ -92,9 +112,14 @@
                         </tbody>
                     </table>
                     <div class="datatable-footer add">
-                        <a class="datatable-footer-item">
+                        <a
+                            class="datatable-footer-item"
+                            @click="openWorkspaceModal('add')"
+                        >
                             <i class="material-icons">add</i>
-                            <span>Add a Workspace</span>
+                            <span class="heading is-size-6 is-marginless">
+                                Add a Workspace
+                            </span>
                         </a>
                     </div>
                 </div>
@@ -102,7 +127,9 @@
             <div class="column is-8">
                 <div class="datatable-simple">
                     <div class="datatable-header">
-                        <p class="datatable-header-title is-size-5 has-text-white">
+                        <p
+                            class="datatable-header-title is-size-5 has-text-white"
+                        >
                             Builds
                         </p>
                         <div
@@ -111,7 +138,9 @@
                         >
                             <a
                                 class="datatable-header-icon dropdown-trigger"
-                                @click="showBuildsDropdown = !showBuildsDropdown"
+                                @click="
+                                    showBuildsDropdown = !showBuildsDropdown
+                                "
                             >
                                 <span class="icon">
                                     <i class="fas fa-ellipsis-v"></i>
@@ -119,21 +148,35 @@
                             </a>
                             <div class="dropdown-menu">
                                 <div class="dropdown-content">
-                                    <a class="dropdown-item add" style="display: flex;">
-                                        <i class="material-icons" style="margin-right: 10px; min-width: 24px;">
+                                    <a
+                                        class="dropdown-item add"
+                                        style="display: flex;"
+                                    >
+                                        <i
+                                            class="material-icons"
+                                            style="margin-right: 10px; min-width: 24px;"
+                                        >
                                             add_circle_outline
                                         </i>
                                         <p>Add Build</p>
                                     </a>
-                                    <a class="dropdown-item remove" style="display: flex; align-items: center">
-                                        <i class="fas fa-trash-alt" style="margin-right: 10px; min-width: 24px; text-align: center;"></i>
+                                    <a
+                                        class="dropdown-item remove"
+                                        style="display: flex; align-items: center"
+                                    >
+                                        <i
+                                            class="fas fa-trash-alt"
+                                            style="margin-right: 10px; min-width: 24px; text-align: center;"
+                                        ></i>
                                         <p>Remove Build</p>
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <table class="table is-fullwidth is-hoverable is-marginless">
+                    <table
+                        class="table is-fullwidth is-hoverable is-marginless"
+                    >
                         <thead>
                             <th>Name</th>
                             <th>Progress</th>
@@ -150,13 +193,27 @@
                             >
                                 <td>{{ build.name }}</td>
                                 <td colspan="2">
-                                    <div style="display: flex; align-items: center">
+                                    <div
+                                        style="display: flex; align-items: center"
+                                    >
                                         <progress
                                             class="progress"
                                             :class="[
-                                                { 'is-success': build.status === 'complete' },
-                                                { 'is-info': build.status === 'active' },
-                                                { 'is-warning': build.status === 'on-hold' },
+                                                {
+                                                    'is-success':
+                                                        build.status ===
+                                                        'complete',
+                                                },
+                                                {
+                                                    'is-info':
+                                                        build.status ===
+                                                        'active',
+                                                },
+                                                {
+                                                    'is-warning':
+                                                        build.status ===
+                                                        'on-hold',
+                                                },
                                             ]"
                                             :value="build.progress"
                                             max="100"
@@ -181,7 +238,9 @@
                     <div class="datatable-footer add">
                         <a class="datatable-footer-item">
                             <i class="material-icons">add</i>
-                            <span>Add a Build</span>
+                            <span class="heading is-size-6 is-marginless">
+                                Add a Build
+                            </span>
                         </a>
                     </div>
                 </div>
@@ -191,7 +250,9 @@
             <div class="column">
                 <div class="datatable-simple">
                     <div class="datatable-header">
-                        <p class="datatable-header-title is-size-5 has-text-white">
+                        <p
+                            class="datatable-header-title is-size-5 has-text-white"
+                        >
                             Organization Members
                         </p>
                         <div
@@ -200,7 +261,9 @@
                         >
                             <a
                                 class="datatable-header-icon dropdown-trigger"
-                                @click="showMembersDropdown = !showMembersDropdown"
+                                @click="
+                                    showMembersDropdown = !showMembersDropdown
+                                "
                             >
                                 <span class="icon">
                                     <i class="fas fa-ellipsis-v"></i>
@@ -208,21 +271,35 @@
                             </a>
                             <div class="dropdown-menu">
                                 <div class="dropdown-content">
-                                    <a class="dropdown-item add" style="display: flex;">
-                                        <i class="material-icons" style="margin-right: 10px; min-width: 24px;">
+                                    <a
+                                        class="dropdown-item add"
+                                        style="display: flex;"
+                                    >
+                                        <i
+                                            class="material-icons"
+                                            style="margin-right: 10px; min-width: 24px;"
+                                        >
                                             add_circle_outline
                                         </i>
                                         <p>Add Member</p>
                                     </a>
-                                    <a class="dropdown-item remove" style="display: flex; align-items: center">
-                                        <i class="fas fa-trash-alt" style="margin-right: 10px; min-width: 24px; text-align: center;"></i>
+                                    <a
+                                        class="dropdown-item remove"
+                                        style="display: flex; align-items: center"
+                                    >
+                                        <i
+                                            class="fas fa-trash-alt"
+                                            style="margin-right: 10px; min-width: 24px; text-align: center;"
+                                        ></i>
                                         <p>Remove Member</p>
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <table class="table is-fullwidth is-hoverable is-marginless">
+                    <table
+                        class="table is-fullwidth is-hoverable is-marginless"
+                    >
                         <thead>
                             <th>Name</th>
                             <th>Role</th>
@@ -254,7 +331,9 @@
                     </table>
                     <div class="datatable-footer">
                         <a class="datatable-footer-item">
-                            See All Members
+                            <span class="heading is-size-6 is-marginless">
+                                See All Members
+                            </span>
                             <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                         </a>
                     </div>
@@ -268,17 +347,20 @@
                 :workspaces="workspaces"
                 :workspace-memberships="org.workspaces"
             />
+            <RemoveItemModal v-if="showRemoveItemModal" :item="item" />
         </transition>
     </div>
 </template>
 
 <script>
 import moment from 'moment';
+import RemoveItemModal from './RemoveItemModal.vue';
 import WorkspaceModal from './WorkspaceModal.vue';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
     components: {
+        RemoveItemModal,
         WorkspaceModal,
     },
     data() {
@@ -293,7 +375,7 @@ export default {
                 'ceres-12345',
                 'The Lord of the Rings',
                 'Star Wars',
-                'one-last-build-kthx-bye'
+                'one-last-build-kthx-bye',
             ],
             users: [
                 'Aragorn',
@@ -340,8 +422,8 @@ export default {
                 'Mordor',
                 'Sauron',
             ],
-
             isActive: false,
+            item: {},
             org: {
                 builds: [
                     {
@@ -381,7 +463,8 @@ export default {
                     },
                 ],
                 name: 'Star Wars Build Team',
-                description: 'Build team in charge of doing important things for the Empire and the Rebellion. May the force be with you.',
+                description:
+                    'Build team in charge of doing important things for the Empire and the Rebellion. May the force be with you.',
                 members: [
                     {
                         name: 'Anakin Skywalker',
@@ -430,6 +513,7 @@ export default {
                     'Droids-C-3PO-R2-D2',
                 ],
             },
+            showRemoveItemModal: false,
             showWorkspaceModal: false,
             showWorkspacesDropdown: false,
             showBuildsDropdown: false,
@@ -438,8 +522,9 @@ export default {
     },
     methods: {
         closeModal() {
-            this.showBuildsModal = false,
-            this.showMembersModal = false,
+            this.showBuildsModal = false;
+            this.showMembersModal = false;
+            this.showRemoveItemModal = false;
             this.showWorkspaceModal = false;
         },
         getDate(date) {
@@ -450,20 +535,35 @@ export default {
             this.action = action;
             this.showWorkspaceModal = true;
         },
+        removeItem(itemName, type) {
+            this.item = {
+                name: itemName,
+                type,
+            };
+
+            this.showRemoveItemModal = true;
+        },
     },
     computed: {
         admins() {
-            return this.org.members.filter(member => member.role === 'admin').length;
+            return this.org.members.filter(member => member.role === 'admin')
+                .length;
         },
         buildsActive() {
-            return this.org.builds.filter(build => build.status === 'active').length;
+            return this.org.builds.filter(build => build.status === 'active')
+                .length;
         },
         buildsComplete() {
-            return this.org.builds.filter(build => build.status === 'complete').length;
+            return this.org.builds.filter(build => build.status === 'complete')
+                .length;
         },
     },
     mounted() {
         EventBus.$on('close-modal:action-modal', () => {
+            this.closeModal();
+        });
+
+        EventBus.$on('closeModal:baseModal', () => {
             this.closeModal();
         });
     },
