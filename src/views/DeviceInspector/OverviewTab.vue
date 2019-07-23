@@ -73,7 +73,7 @@
                 <div class="tile is-parent">
                     <article class="tile is-child box">
                         <p class="subtitle">Time for Burn-in</p>
-                        <TimeToBurnin/>
+                        <TimeToBurnin />
                     </article>
                 </div>
             </div>
@@ -81,7 +81,7 @@
         <transition name="fade">
             <PhaseUpdateModal
                 :item="'device'"
-                :itemData="activeDeviceDetails"
+                :item-data="activeDeviceDetails"
                 v-if="updatingPhase"
             />
         </transition>
@@ -115,12 +115,9 @@ export default {
             this.updatingPhase = false;
         },
         showDeviceInRack() {
-            const {
-                datacenter_room,
-                rack
-            } = this.activeDeviceDetails.location;
+            const { datacenter_room, rack } = this.activeDeviceDetails.location;
             const route = this.$route.path;
-            const workspaceRoute = route.substring(0, route.indexOf("/", 1));
+            const workspaceRoute = route.substring(0, route.indexOf('/', 1));
             const datacenterRoomName = datacenter_room.az;
 
             this.setHighlightDeviceId(this.activeDeviceId);
@@ -131,13 +128,13 @@ export default {
 
             this.setShowDeviceInRack(true);
 
-            this.$router.push({ path: `${workspaceRoute}/datacenter/${datacenterRoomName}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}` });
+            this.$router.push({
+                path: `${workspaceRoute}/datacenter/${datacenterRoomName}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}`,
+            });
         },
     },
     computed: {
-        ...mapGetters([
-            'activeDeviceId',
-        ]),
+        ...mapGetters(['activeDeviceId']),
         ...mapState([
             'activeDeviceDetails',
             'activeDeviceSettings',
@@ -156,17 +153,17 @@ export default {
                 if (health === 'fail') {
                     tags.push({
                         style: 'is-danger health-fail',
-                        title: 'Failing Validation'
+                        title: 'Failing Validation',
                     });
                 } else if (health === 'pass') {
                     tags.push({
                         style: 'is-info health-pass',
-                        title: 'Passing Validation'
+                        title: 'Passing Validation',
                     });
                 } else if (health === 'unknown') {
                     tags.push({
                         style: 'is-warning health-unknown',
-                        title: 'No Report'
+                        title: 'No Report',
                     });
                 }
             }
@@ -174,36 +171,38 @@ export default {
             if (this.activeDeviceSettings.firmware === 'updating') {
                 tags.push({
                     style: 'is-warning firmware-updating',
-                    title: 'Firmware Updating'
+                    title: 'Firmware Updating',
                 });
             }
 
             if (this.activeDeviceDetails.validated) {
                 tags.push({
                     style: 'is-success validated',
-                    title: 'Validated'
+                    title: 'Validated',
                 });
             }
 
             if (this.activeDeviceDetails.graduated) {
                 tags.push({
                     style: 'is-success graduated',
-                    title: 'Graduated'
+                    title: 'Graduated',
                 });
             }
 
             if (this.activeDeviceDetails.triton_setup) {
                 tags.push({
                     style: 'is-success triton-setup',
-                    title: 'Triton Setup'
+                    title: 'Triton Setup',
                 });
             }
 
             return tags;
         },
         hasBiosVersion() {
-            return this.activeDeviceDetails.latest_report &&
-                   this.activeDeviceDetails.latest_report.bios_version;
+            return (
+                this.activeDeviceDetails.latest_report &&
+                this.activeDeviceDetails.latest_report.bios_version
+            );
         },
         lastSeen() {
             return moment(this.activeDeviceDetails.last_seen).fromNow();
@@ -212,7 +211,10 @@ export default {
             return moment(this.activeDeviceDetails.uptime_since).fromNow(true);
         },
         userHasPermissions() {
-            return this.currentWorkspace.role === 'admin' || this.currentWorkspace.role === 'rw';
+            return (
+                this.currentWorkspace.role === 'admin' ||
+                this.currentWorkspace.role === 'rw'
+            );
         },
     },
     mounted() {

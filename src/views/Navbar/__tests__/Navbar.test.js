@@ -24,7 +24,9 @@ describe('Navbar.vue', () => {
         // how to handle getters that take arguments. It seems to identify such
         // calls as method calls and looks for a corresponding item in the
         // 'methods' object of the Vue component.
-        Object.defineProperty(wrapper.vm, 'loadCurrentWorkspace', { value: jest.fn() });
+        Object.defineProperty(wrapper.vm, 'loadCurrentWorkspace', {
+            value: jest.fn(),
+        });
 
         navbarItem.trigger('click');
         expect(spy).toHaveBeenCalledWith(workspaces[0].id);

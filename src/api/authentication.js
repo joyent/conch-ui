@@ -3,19 +3,18 @@ import {
     getToken,
     setToken,
     request,
-    requestWithToken
+    requestWithToken,
 } from './request.js';
 import store from '@src/store/store.js';
 
 export const isLoggedIn = () => !!getToken();
 
-export const login = (data) => {
+export const login = data => {
     return request({
         method: 'POST',
         url: '/login',
-        data
-    })
-    .then(response => {
+        data,
+    }).then(response => {
         const data = response.data;
 
         if (data && data.jwt_token) {
@@ -32,9 +31,8 @@ export const login = (data) => {
 export const logout = () => {
     return requestWithToken({
         method: 'POST',
-        url: '/logout'
-    })
-    .then(clearToken());
+        url: '/logout',
+    }).then(clearToken());
 };
 
 export default {

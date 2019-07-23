@@ -36,7 +36,7 @@ describe('OverviewTab.vue', () => {
             setHighlightDeviceId: jest.fn(),
             setShowDeviceInRack: jest.fn(),
         };
-        getters = { activeDeviceId: state => (state.activeDeviceDetails.id) };
+        getters = { activeDeviceId: state => state.activeDeviceDetails.id };
         state = {
             activeDeviceDetails: deviceDetails,
             activeDeviceSettings: deviceSettings,
@@ -75,7 +75,9 @@ describe('OverviewTab.vue', () => {
             });
 
             wrapper.vm.$on('closeModal:deviceModal', () => {
-                expect(wrapper.emitted()).toHaveProperty('closeModal:deviceModal');
+                expect(wrapper.emitted()).toHaveProperty(
+                    'closeModal:deviceModal'
+                );
             });
 
             clickButton();
@@ -114,7 +116,9 @@ describe('OverviewTab.vue', () => {
         test('should not display "Show Device in Rack" button if device does not have a location', () => {
             state.activeDeviceDetails.location = null;
 
-            expect(wrapper.find('button.show-device-in-rack').exists()).toBeFalsy();
+            expect(
+                wrapper.find('button.show-device-in-rack').exists()
+            ).toBeFalsy();
         });
     });
 
@@ -159,7 +163,8 @@ describe('OverviewTab.vue', () => {
         });
 
         test('should display a green "Triton Setup" tag when device has completed Triton Setup', () => {
-            state.activeDeviceDetails.triton_setup = "2018-05-16T10:34:45.356014-07:00";
+            state.activeDeviceDetails.triton_setup =
+                '2018-05-16T10:34:45.356014-07:00';
             const tag = wrapper.find('.tag.is-success.triton-setup');
 
             expect(tag.html()).toContain('Triton Setup');
@@ -168,11 +173,13 @@ describe('OverviewTab.vue', () => {
 
     describe('Last Reported section', () => {
         test('should display last_seen value in the "Last Reported" section', () => {
-            expect(wrapper.find('.last-seen').html()).toContain(wrapper.vm.lastSeen);
+            expect(wrapper.find('.last-seen').html()).toContain(
+                wrapper.vm.lastSeen
+            );
         });
 
         test('should display "Never" in the "Last Reported" section when last_seen has no data', () => {
-            state.activeDeviceDetails.last_seen = "";
+            state.activeDeviceDetails.last_seen = '';
 
             expect(wrapper.vm.lastSeen).toEqual('Invalid date');
             expect(wrapper.find('.last-seen').html()).toContain('Never');
@@ -187,7 +194,7 @@ describe('OverviewTab.vue', () => {
         });
 
         test('should display "Unknown" in the "Uptime" section when uptime_since has no data', () => {
-            state.activeDeviceDetails.uptime_since = "";
+            state.activeDeviceDetails.uptime_since = '';
 
             expect(wrapper.vm.uptimeSince).toEqual('Invalid date');
             expect(wrapper.find('.uptime-since').html()).toContain('Unknown');
@@ -196,13 +203,14 @@ describe('OverviewTab.vue', () => {
 
     describe('BIOS Version section', () => {
         test('should display bios_version in the "BIOS Version" section', () => {
-            const biosVersion = state.activeDeviceDetails.latest_report.bios_version;
+            const biosVersion =
+                state.activeDeviceDetails.latest_report.bios_version;
 
             expect(wrapper.find('.bios-version').html()).toContain(biosVersion);
         });
 
         test('should display "Unknown" in the "BIOS Version" section when bios_version has no data', () => {
-            state.activeDeviceDetails.latest_report.bios_version = "";
+            state.activeDeviceDetails.latest_report.bios_version = '';
 
             expect(wrapper.find('.bios-version').html()).toContain('Unknown');
         });
@@ -225,7 +233,9 @@ describe('OverviewTab.vue', () => {
         });
 
         test('should display the current phase of the device', () => {
-            expect(wrapper.find('.device-phase').text()).toContain(state.activeDeviceDetails.phase);
+            expect(wrapper.find('.device-phase').text()).toContain(
+                state.activeDeviceDetails.phase
+            );
         });
     });
 });

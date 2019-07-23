@@ -7,10 +7,7 @@
         <table class="table is-narrow is-fullwidth" v-else>
             <thead>
                 <tr>
-                    <th
-                        v-for="(header, index) in headers"
-                        :key="index"
-                    >
+                    <th v-for="(header, index) in headers" :key="index">
                         {{ header }}
                     </th>
                 </tr>
@@ -95,13 +92,7 @@ export default {
     },
     data() {
         return {
-            headers: [
-                '',
-                'State',
-                'Interface',
-                'IP Address',
-                'MAC',
-            ],
+            headers: ['', 'State', 'Interface', 'IP Address', 'MAC'],
             ifaceDetailsRows: [],
         };
     },
@@ -115,15 +106,14 @@ export default {
                 this.ifaceDetailsRows.push(index);
             } else {
                 this.ifaceDetailsRows.splice(
-                    this.ifaceDetailsRows.indexOf(index), 1
+                    this.ifaceDetailsRows.indexOf(index),
+                    1
                 );
             }
         },
     },
     computed: {
-        ...mapState([
-            'activeDeviceDetails',
-        ]),
+        ...mapState(['activeDeviceDetails']),
         ifaces() {
             return Object.entries(this.nics)
                 .sort()
@@ -133,8 +123,11 @@ export default {
                 });
         },
         nics() {
-            return this.activeDeviceDetails.latest_report &&
-                   this.activeDeviceDetails.latest_report.interfaces || {};
+            return (
+                (this.activeDeviceDetails.latest_report &&
+                    this.activeDeviceDetails.latest_report.interfaces) ||
+                {}
+            );
         },
     },
 };

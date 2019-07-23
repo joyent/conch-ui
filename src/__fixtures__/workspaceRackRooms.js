@@ -1,94 +1,94 @@
 const workspaceRackRooms = [
     {
-        "name": "ap-northeast-1a",
-        "progress": "not started",
-        "racks": [
+        name: 'ap-northeast-1a',
+        progress: 'not started',
+        racks: [
             {
-                "device_progress": {
-                    "UNKNOWN": 12
+                device_progress: {
+                    UNKNOWN: 12,
                 },
-                "id": "05956df8-39d9-43ac-b4db-9424331ebbce",
-                "name": "D.08",
-                "role": "TRITON",
-                "size": 45
-            }
-        ]
+                id: '05956df8-39d9-43ac-b4db-9424331ebbce',
+                name: 'D.08',
+                role: 'TRITON',
+                size: 45,
+            },
+        ],
     },
     {
-        "name": "ap-northeast-1b",
-        "progress": "not started",
-        "racks": [
+        name: 'ap-northeast-1b',
+        progress: 'not started',
+        racks: [
             {
-                "device_progress": {
-                    "UNKNOWN": 12
+                device_progress: {
+                    UNKNOWN: 12,
                 },
-                "id": "05956df8-39d9-43ac-b4db-9424331ebbce",
-                "name": "D.08",
-                "role": "TRITON",
-                "size": 45
-            }
-        ]
+                id: '05956df8-39d9-43ac-b4db-9424331ebbce',
+                name: 'D.08',
+                role: 'TRITON',
+                size: 45,
+            },
+        ],
     },
     {
-        "name": "ap-southeast-1a",
-        "progress": "not started",
-        "racks": [
+        name: 'ap-southeast-1a',
+        progress: 'not started',
+        racks: [
             {
-                "device_progress": {
-                    "UNKNOWN": 12
+                device_progress: {
+                    UNKNOWN: 12,
                 },
-                "id": "05956df8-39d9-43ac-b4db-9424331ebbce",
-                "name": "D.08",
-                "role": "TRITON",
-                "size": 45
-            }
-        ]
+                id: '05956df8-39d9-43ac-b4db-9424331ebbce',
+                name: 'D.08',
+                role: 'TRITON',
+                size: 45,
+            },
+        ],
     },
     {
-        "name": "us-east-1a",
-        "progress": "validated",
-        "racks": [
+        name: 'us-east-1a',
+        progress: 'validated',
+        racks: [
             {
-                "device_progress": {
-                    "VALID": 18
+                device_progress: {
+                    VALID: 18,
                 },
-                "id": "7e445e27-9382-49ec-af7e-1e1bc67b23ee",
-                "name": "D.04",
-                "role": "MANTA",
-                "size": 45
-            }
-        ]
+                id: '7e445e27-9382-49ec-af7e-1e1bc67b23ee',
+                name: 'D.04',
+                role: 'MANTA',
+                size: 45,
+            },
+        ],
     },
     {
-        "name": "us-east-1b",
-        "progress": "validated",
-        "racks": [
+        name: 'us-east-1b',
+        progress: 'validated',
+        racks: [
             {
-                "device_progress": {
-                    "VALID": 13
+                device_progress: {
+                    VALID: 13,
                 },
-                "id": "05767f38-b7b8-4f57-b330-25933e05cc16",
-                "name": "0106",
-                "role": "MANTA",
-                "size": 45
-            }
-        ]
+                id: '05767f38-b7b8-4f57-b330-25933e05cc16',
+                name: '0106',
+                role: 'MANTA',
+                size: 45,
+            },
+        ],
     },
     {
-        "name": "us-east-1c",
-        "progress": "not started",
-        "racks": [
+        name: 'us-east-1c',
+        progress: 'not started',
+        racks: [
             {
-                "device_progress": {
-                    "UNKNOWN": 12
+                device_progress: {
+                    UNKNOWN: 12,
                 },
-                "id": "05956df8-39d9-43ac-b4db-9424331ebbce",
-                "name": "D.08",
-                "role": "TRITON",
-                "size": 45
-            }
-        ]
-    }
+                id: '05956df8-39d9-43ac-b4db-9424331ebbce',
+                name: 'D.08',
+                role: 'TRITON',
+                size: 45,
+            },
+        ],
+    },
 ];
 
 export default workspaceRackRooms;

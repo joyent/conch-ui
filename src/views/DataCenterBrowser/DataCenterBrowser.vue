@@ -1,21 +1,54 @@
 <template>
     <div class="data-center-browser">
-        <PageHeader :title="`${currentWorkspaceName} workspace datacenters`" :subtitle="'Browse datacenter rooms, racks and devices'" />
+        <PageHeader
+            :title="`${currentWorkspaceName} workspace datacenters`"
+            :subtitle="'Browse datacenter rooms, racks and devices'"
+        />
         <section class="info-tiles">
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
-                    <article class="tile is-child box" style="padding: 0.75rem;">
-                        <div class="dropdown is-right" :class="{ 'is-active': searchText }">
+                    <article
+                        class="tile is-child box"
+                        style="padding: 0.75rem;"
+                    >
+                        <div
+                            class="dropdown is-right"
+                            :class="{ 'is-active': searchText }"
+                        >
                             <div class="dropdown-trigger">
-                                <div class="control" :class="{ 'is-loading': !this.workspaceDevices && searchText }">
-                                    <input class="input search" placeholder="Search for Device" v-model="searchText" @focus="hideDropdown = false">
+                                <div
+                                    class="control"
+                                    :class="{
+                                        'is-loading':
+                                            !this.workspaceDevices &&
+                                            searchText,
+                                    }"
+                                >
+                                    <input
+                                        class="input search"
+                                        placeholder="Search for Device"
+                                        v-model="searchText"
+                                        @focus="hideDropdown = false"
+                                    />
                                 </div>
                             </div>
                             <div class="dropdown-menu is-paddingless">
-                                <div class="dropdown-content" v-if="foundDevices.length && !hideDropdown">
-                                    <a class="dropdown-item" v-for="(device, index) in foundDevices" :key="index" @click="setSearchedDevice(device)">
+                                <div
+                                    class="dropdown-content"
+                                    v-if="foundDevices.length && !hideDropdown"
+                                >
+                                    <a
+                                        class="dropdown-item"
+                                        v-for="(device, index) in foundDevices"
+                                        :key="index"
+                                        @click="setSearchedDevice(device)"
+                                    >
                                         {{ device.id }}
-                                        <span class="has-text-grey-light" v-if="device.asset_tag">{{ device.asset_tag }}</span>
+                                        <span
+                                            class="has-text-grey-light"
+                                            v-if="device.asset_tag"
+                                            >{{ device.asset_tag }}</span
+                                        >
                                     </a>
                                 </div>
                             </div>
@@ -26,16 +59,19 @@
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
                     <article class="tile is-child">
-                        <DeviceModal/>
+                        <DeviceModal />
                         <section class="section" v-if="!hasRackRooms">
-                            <Spinner/>
+                            <Spinner />
                         </section>
                         <div class="columns is-gapless" v-else>
                             <div class="column is-3">
                                 <RoomPanel :rack-rooms="rackRooms" />
                             </div>
                             <div class="column is-3">
-                                <RackPanel v-if="activeRacks" :active-racks="activeRacks" />
+                                <RackPanel
+                                    v-if="activeRacks"
+                                    :active-racks="activeRacks"
+                                />
                             </div>
                             <div class="column is-6">
                                 <LayoutPanel :rack-loading="rackLoading" />
@@ -49,7 +85,6 @@
 </template>
 
 <script>
-import isEmpty from 'lodash/isEmpty';
 import search from 'fuzzysearch';
 import DeviceModal from '@views/components/DeviceModal.vue';
 import LayoutPanel from './LayoutPanel.vue';
@@ -61,7 +96,11 @@ import { EventBus } from '@src/eventBus.js';
 import { getRackById } from '@api/workspaces.js';
 import { getLocation } from '@api/device.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getRackRooms, getWorkspaceRacks, getWorkspaceDevices } from '@views/shared/utils.js';
+import {
+    getRackRooms,
+    getWorkspaceRacks,
+    getWorkspaceDevices,
+} from '@views/shared/utils.js';
 
 export default {
     components: {
@@ -100,16 +139,14 @@ export default {
             this.clearRackLayout();
         },
         setWorkspaceDevices() {
-            getWorkspaceDevices(this.currentWorkspaceId)
-                .then(response => {
-                    this.workspaceDevices = response;
-                });
+            getWorkspaceDevices(this.currentWorkspaceId).then(response => {
+                this.workspaceDevices = response;
+            });
         },
         setWorkspaceRacks() {
-            getWorkspaceRacks(this.currentWorkspaceId)
-                .then(response => {
-                    this.rackRooms = getRackRooms(response);
-                });
+            getWorkspaceRacks(this.currentWorkspaceId).then(response => {
+                this.rackRooms = getRackRooms(response);
+            });
         },
         setFoundDevices(searchText) {
             const devices = this.workspaceDevices;
@@ -121,9 +158,14 @@ export default {
                 }
 
                 const deviceId = device.id.toLowerCase();
-                const assetTag = device.asset_tag ? device.asset_tag.toLowerCase() : false;
+                const assetTag = device.asset_tag
+                    ? device.asset_tag.toLowerCase()
+                    : false;
 
-                if (search(text, deviceId) || (assetTag && search(text, assetTag))) {
+                if (
+                    search(text, deviceId) ||
+                    (assetTag && search(text, assetTag))
+                ) {
                     acc.push(device);
                 }
 
@@ -134,36 +176,35 @@ export default {
             this.hideDropdown = true;
             this.setHighlightDeviceId(device.id);
 
-            getLocation(device.id)
-                .then(response => {
-                    const location = response.data;
+            getLocation(device.id).then(response => {
+                const location = response.data;
 
-                    if (location) {
-                        if (location.datacenter_room && location.datacenter_room.az) {
-                            this.setActiveRoomName(location.datacenter_room.az);
-                        }
-
-                        if (location.rack && location.rack.id) {
-                            this.rackLoading = true;
-
-                            getRackById(this.currentWorkspaceId, location.rack.id)
-                                .then(response => {
-                                    this.setRackLayout(response);
-                                    this.rackLoading = false;
-                                });
-                        }
+                if (location) {
+                    if (
+                        location.datacenter_room &&
+                        location.datacenter_room.az
+                    ) {
+                        this.setActiveRoomName(location.datacenter_room.az);
                     }
-                });
+
+                    if (location.rack && location.rack.id) {
+                        this.rackLoading = true;
+
+                        getRackById(
+                            this.currentWorkspaceId,
+                            location.rack.id
+                        ).then(response => {
+                            this.setRackLayout(response);
+                            this.rackLoading = false;
+                        });
+                    }
+                }
+            });
         },
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspaceId',
-            'currentWorkspaceName',
-        ]),
-        ...mapState([
-            'activeRoomName',
-        ]),
+        ...mapGetters(['currentWorkspaceId', 'currentWorkspaceName']),
+        ...mapState(['activeRoomName']),
         activeRacks() {
             if (this.rackRooms.length) {
                 let racks;
@@ -171,15 +212,17 @@ export default {
                 this.rackRooms.map(rackRoom => {
                     if (rackRoom.name === this.activeRoomName) {
                         racks = rackRoom.racks.sort((a, b) => {
-                            a.name > b.name ? 1 : -1
+                            a.name > b.name ? 1 : -1;
                         });
 
-                        return;
+                        return racks;
                     }
                 });
 
                 return racks;
             }
+
+            return [];
         },
         hasRackRooms() {
             return this.rackRooms.length > 0;
@@ -205,10 +248,12 @@ export default {
             }
 
             if (routeParams.currentWorkspace && routeParams.rackId) {
-                getRackById(routeParams.currentWorkspace, routeParams.rackId)
-                    .then(response => {
-                        this.setRackLayout(response);
-                    });
+                getRackById(
+                    routeParams.currentWorkspace,
+                    routeParams.rackId
+                ).then(response => {
+                    this.setRackLayout(response);
+                });
             }
         }
 

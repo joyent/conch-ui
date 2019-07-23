@@ -15,7 +15,7 @@ describe('NetworkingTab.vue', () => {
     let wrapper;
 
     beforeEach(() => {
-        state = { activeDeviceDetails : deviceDetails };
+        state = { activeDeviceDetails: deviceDetails };
         store = new Vuex.Store({ state });
         wrapper = shallowMount(NetworkingTab, { localVue, store });
         row = wrapper.findAll('.row').at(0);

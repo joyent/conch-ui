@@ -4,7 +4,7 @@ import * as workspace from '@api/workspaces.js';
 
 // Fixtures
 import devices from '@src/__fixtures__/devices.js';
-import {rack, rackLayout} from '@src/__fixtures__/rackLayout.js';
+import { rack, rackLayout } from '@src/__fixtures__/rackLayout.js';
 import workspaceRacks from '@src/__fixtures__/workspaceRacks.js';
 import workspaces from '@src/__fixtures__/workspaces.js';
 
@@ -105,13 +105,21 @@ describe('workspaces.js API', () => {
 
         test('should return a status of 200', async () => {
             expect.assertions(1);
-            response = await workspace.setRackLayout(workspaceId, rackId, rackLayout);
+            response = await workspace.setRackLayout(
+                workspaceId,
+                rackId,
+                rackLayout
+            );
             expect(response.status).toEqual(200);
         });
 
         test('should return an object containing the updated slot names', async () => {
             expect.assertions(1);
-            response = await workspace.setRackLayout(workspaceId, rackId, rackLayout);
+            response = await workspace.setRackLayout(
+                workspaceId,
+                rackId,
+                rackLayout
+            );
             expect(response.data).toMatchObject(responseData);
         });
     });

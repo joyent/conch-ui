@@ -3,10 +3,7 @@
         <div class="modal-background" @click="closeModal()"></div>
         <div class="modal-content">
             <div class="notification is-marginless">
-                <button
-                    class="delete is-medium"
-                    @click="closeModal()"
-                ></button>
+                <button class="delete is-medium" @click="closeModal()"></button>
                 <div class="modal-icon has-text-centered">
                     <slot name="icon"></slot>
                 </div>

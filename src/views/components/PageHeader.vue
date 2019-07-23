@@ -17,6 +17,7 @@ export default {
         subtitle: {
             type: String,
             required: false,
+            default: '',
         },
     },
 };

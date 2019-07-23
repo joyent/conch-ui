@@ -1,6 +1,8 @@
 <template>
     <div class="validation-tab">
-        <Spinner v-if="!activeDeviceValidations.length && !validations.length" />
+        <Spinner
+            v-if="!activeDeviceValidations.length && !validations.length"
+        />
         <table class="table is-narrow is-marginless is-fullwidth" v-else>
             <thead>
                 <tr>
@@ -13,25 +15,55 @@
                 </tr>
             </thead>
             <tbody>
-                <template v-for="(validation, index) in deviceValidations">
-                    <tr :class="{ 'is-selected': isRowSelected(index) }" class="row" @click="revealValidationDetails(index)" style="cursor: pointer;" :key="index">
+                <template
+                    v-for="(validation, validationIndex) in deviceValidations"
+                >
+                    <tr
+                        :class="{
+                            'is-selected': isRowSelected(validationIndex),
+                        }"
+                        class="row"
+                        @click="revealValidationDetails(validationIndex)"
+                        style="cursor: pointer;"
+                        :key="validationIndex"
+                    >
                         <td>
                             <div class="icon">
-                                <i class="fas fa-caret-down" v-if="isRowSelected(index)"></i>
+                                <i
+                                    class="fas fa-caret-down"
+                                    v-if="isRowSelected(validationIndex)"
+                                ></i>
                                 <i class="fas fa-caret-right" v-else></i>
                             </div>
                         </td>
                         <td class="has-text-centered">
-                            <template v-for="(result, index) in resultCount(validation.results)">
-                                <span class="tag" :class="resultCountStyle(result[0])" :key="index">{{ result[1] }}</span>
+                            <template
+                                v-for="(result, resultIndex) in resultCount(
+                                    validation.results
+                                )"
+                            >
+                                <span
+                                    class="tag"
+                                    :class="resultCountStyle(result[0])"
+                                    :key="resultIndex"
+                                >
+                                    {{ result[1] }}
+                                </span>
                             </template>
                         </td>
                         <td>{{ validation.name }}</td>
                         <td>
-                            <span v-if="validation.description" v-html="validation.description"></span>
-                            <span class="has-text-grey" v-else>No Description</span>
+                            <span
+                                v-if="validation.description"
+                                v-html="validation.description"
+                            ></span>
+                            <span class="has-text-grey" v-else>
+                                No Description
+                            </span>
                         </td>
-                        <td class="has-text-centered">{{ validation.version }}</td>
+                        <td class="has-text-centered">
+                            {{ validation.version }}
+                        </td>
                         <td>
                             <span
                                 class="icon is-medium has-text-success tooltip is-tooltip-left is-tooltip-success"
@@ -45,15 +77,22 @@
                                 v-else
                                 data-tooltip="Inactive Validation"
                             >
-                                <i class="fas fa-lg fa-exclamation-triangle"></i>
+                                <i
+                                    class="fas fa-lg fa-exclamation-triangle"
+                                ></i>
                             </span>
                         </td>
                     </tr>
-                    <tr v-if="isRowSelected(index)" :key="`${index}a`">
+                    <tr
+                        v-if="isRowSelected(validationIndex)"
+                        :key="`${validationIndex}a`"
+                    >
                         <td></td>
                         <td colspan="3">
                             <div class="content">
-                                <table class="table is-narrow is-marginless is-fullwidth">
+                                <table
+                                    class="table is-narrow is-marginless is-fullwidth"
+                                >
                                     <thead>
                                         <tr>
                                             <th>Order</th>
@@ -63,13 +102,25 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr :class="{ 'has-background-warning has-text-dark': result.status !== 'pass' }" v-for="(result, index) in validation.results" :key="index">
+                                        <tr
+                                            :class="{
+                                                'has-background-warning has-text-dark':
+                                                    result.status !== 'pass',
+                                            }"
+                                            v-for="(result,
+                                            index) in validation.results"
+                                            :key="index"
+                                        >
                                             <td>{{ result.order + 1 }}</td>
                                             <td>{{ result.status }}</td>
                                             <td>{{ result.message }}</td>
-                                            <td v-if="result.hint">{{ result.hint }}</td>
+                                            <td v-if="result.hint">{{
+                                                result.hint
+                                            }}</td>
                                             <td v-else>
-                                                <span class="has-text-grey">No Hint</span>
+                                                <span class="has-text-grey"
+                                                    >No Hint</span
+                                                >
                                             </td>
                                         </tr>
                                     </tbody>
@@ -122,7 +173,10 @@ export default {
             if (this.validationDetailsRows.indexOf(index) === -1) {
                 this.validationDetailsRows.push(index);
             } else {
-                this.validationDetailsRows.splice(this.validationDetailsRows.indexOf(index), 1);
+                this.validationDetailsRows.splice(
+                    this.validationDetailsRows.indexOf(index),
+                    1
+                );
             }
         },
         resultCount(results) {
@@ -140,16 +194,21 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            'activeDeviceValidations',
-            'validations',
-        ]),
+        ...mapState(['activeDeviceValidations', 'validations']),
         deviceValidations() {
             const validations = [];
 
             this.validationStateResultsById.map(validationResults => {
                 Object.keys(validationResults).map(validationId => {
-                    let { created, deactivated, description, id, name, updated, version } = this.getValidation(validationId);
+                    let {
+                        created,
+                        deactivated,
+                        description,
+                        id,
+                        name,
+                        updated,
+                        version,
+                    } = this.getValidation(validationId);
 
                     validations.push({
                         results: validationResults[validationId],
@@ -159,7 +218,7 @@ export default {
                         id,
                         name,
                         updated,
-                        version
+                        version,
                     });
                 });
             });

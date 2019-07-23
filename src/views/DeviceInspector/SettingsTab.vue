@@ -11,7 +11,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(value, key, index) in activeDeviceSettings" :key="index">
+                <tr
+                    v-for="(value, key, index) in activeDeviceSettings"
+                    :key="index"
+                >
                     <td class="has-text-weight-semibold">{{ key }}</td>
                     <td>{{ value }}</td>
                 </tr>
@@ -35,9 +38,7 @@ export default {
         isEmpty,
     },
     computed: {
-        ...mapState([
-            'activeDeviceSettings',
-        ]),
+        ...mapState(['activeDeviceSettings']),
     },
 };
 </script>

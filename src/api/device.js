@@ -1,37 +1,37 @@
 import { requestWithToken } from './request.js';
 
-export const getDeviceDetails = (id) => {
+export const getDeviceDetails = id => {
     return requestWithToken({
         method: 'GET',
-        url: `/device/${id}`
+        url: `/device/${id}`,
     });
 };
 
-export const getDevicePhase = (id) => {
+export const getDevicePhase = id => {
     return requestWithToken({
         method: 'GET',
         url: `/device/${id}/phase`,
     });
 };
 
-export const getDeviceSettings = (id) => {
+export const getDeviceSettings = id => {
     return requestWithToken({
         method: 'GET',
-        url: `/device/${id}/settings`
+        url: `/device/${id}/settings`,
     });
 };
 
-export const getDeviceValidations = (id) => {
+export const getDeviceValidations = id => {
     return requestWithToken({
         method: 'GET',
-        url: `/device/${id}/validation_state`
+        url: `/device/${id}/validation_state`,
     });
 };
 
-export const getLocation = (id) => {
+export const getLocation = id => {
     return requestWithToken({
         method: 'GET',
-        url: `/device/${id}/location`
+        url: `/device/${id}/location`,
     });
 };
 
@@ -40,9 +40,9 @@ export const setAssetTag = (id, assetTag) => {
         method: 'POST',
         url: `/device/${id}/asset_tag`,
         data: {
-            asset_tag: assetTag
+            asset_tag: assetTag,
         },
-        background: true
+        background: true,
     });
 };
 
@@ -50,7 +50,7 @@ export const setDevicePhase = (id, data) => {
     return requestWithToken({
         method: 'POST',
         url: `/device/${id}/phase`,
-        data
+        data,
     });
 };
 

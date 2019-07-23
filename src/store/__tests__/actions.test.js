@@ -69,7 +69,10 @@ describe('actions', () => {
     describe('setActiveDeviceValidations', () => {
         test('it sets the active device validations', () => {
             actions.setActiveDeviceValidations({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setActiveDeviceValidations', {});
+            expect(commit).toHaveBeenCalledWith(
+                'setActiveDeviceValidations',
+                {}
+            );
         });
     });
 

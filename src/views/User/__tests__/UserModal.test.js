@@ -50,7 +50,7 @@ describe('UserModal.vue', () => {
                 password: 'abcdefg',
             };
             propsData.action = 'edit';
-            wrapper = mount(UserModal, { propsData })
+            wrapper = mount(UserModal, { propsData });
             wrapper.setData(data);
             wrapper.find('a.edit').trigger('click');
 
@@ -87,9 +87,24 @@ describe('UserModal.vue', () => {
         test('should display error messages for each text input field if they are submitted empty', () => {
             clickCreateUser();
 
-            expect(wrapper.find('.field.name').find('.error').exists()).toBeTruthy();
-            expect(wrapper.find('.field.email').find('.error').exists()).toBeTruthy();
-            expect(wrapper.find('.field.password').find('.error').exists()).toBeTruthy();
+            expect(
+                wrapper
+                    .find('.field.name')
+                    .find('.error')
+                    .exists()
+            ).toBeTruthy();
+            expect(
+                wrapper
+                    .find('.field.email')
+                    .find('.error')
+                    .exists()
+            ).toBeTruthy();
+            expect(
+                wrapper
+                    .find('.field.password')
+                    .find('.error')
+                    .exists()
+            ).toBeTruthy();
         });
 
         test('should remove the error message for the name input if name is submitted', () => {

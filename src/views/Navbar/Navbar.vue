@@ -1,56 +1,73 @@
 <template>
-<div class="navbar" role="navigation">
-    <div class="navbar-menu">
-        <div class="navbar-end">
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">
-                    {{ this.currentWorkspaceName }}
-                </a>
-                <div class="navbar-dropdown is-right">
-                    <ul v-if="sortedWorkspaceRoots.length">
-                        <li
-                            v-for="(workspace, index) in sortedWorkspaceRoots"
-                            :key="index"
-                        >
-                            <a
-                                class="navbar-item"
-                                @click="changeWorkspace(workspace.id)"
+    <div class="navbar" role="navigation">
+        <div class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        {{ this.currentWorkspaceName }}
+                    </a>
+                    <div class="navbar-dropdown is-right">
+                        <ul v-if="sortedWorkspaceRoots.length">
+                            <li
+                                v-for="(workspace,
+                                index) in sortedWorkspaceRoots"
+                                :key="index"
                             >
-                                {{ workspace.name }}
-                            </a>
-                            <ul v-if="sortedWorkspaceGraph(workspace.id)">
-                                <li
-                                    v-for="(sortedWorkspace, index) in sortedWorkspaceGraph(workspace.id)"
-                                    :key="index"
+                                <a
+                                    class="navbar-item"
+                                    @click="changeWorkspace(workspace.id)"
                                 >
-                                    <a
-                                        class="navbar-item"
-                                        @click="changeWorkspace(sortedWorkspace.id)"
+                                    {{ workspace.name }}
+                                </a>
+                                <ul v-if="sortedWorkspaceGraph(workspace.id)">
+                                    <li
+                                        v-for="(sortedWorkspace,
+                                        sortedWorkspaceIndex) in sortedWorkspaceGraph(
+                                            workspace.id
+                                        )"
+                                        :key="sortedWorkspaceIndex"
                                     >
-                                        {{ sortedWorkspace.name }}
-                                    </a>
-                                    <ul>
-                                        <li
-                                            v-for="(sortedSubWorkspace, index) in sortedWorkspaceGraph(sortedWorkspace.id)"
-                                            :key="index"
+                                        <a
+                                            class="navbar-item"
+                                            @click="
+                                                changeWorkspace(
+                                                    sortedWorkspace.id
+                                                )
+                                            "
                                         >
-                                            <a
-                                                class="navbar-item"
-                                                @click="changeWorkspace(sortedSubWorkspace.id)"
+                                            {{ sortedWorkspace.name }}
+                                        </a>
+                                        <ul>
+                                            <li
+                                                v-for="(sortedSubWorkspace,
+                                                sortedSubWorkspaceIndex) in sortedWorkspaceGraph(
+                                                    sortedWorkspace.id
+                                                )"
+                                                :key="sortedSubWorkspaceIndex"
                                             >
-                                                {{ sortedSubWorkspace.name }}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                                                <a
+                                                    class="navbar-item"
+                                                    @click="
+                                                        changeWorkspace(
+                                                            sortedSubWorkspace.id
+                                                        )
+                                                    "
+                                                >
+                                                    {{
+                                                        sortedSubWorkspace.name
+                                                    }}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </template>
 
 <script>
@@ -61,9 +78,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
     methods: {
-        ...mapActions([
-            'setCurrentWorkspace',
-        ]),
+        ...mapActions(['setCurrentWorkspace']),
         changeWorkspace(workspaceId) {
             this.setCurrentWorkspace(this.loadCurrentWorkspace(workspaceId));
             sessionStorage.setItem('currentWorkspace', workspaceId);
@@ -82,7 +97,11 @@ export default {
 
                 EventBus.$emit('changeWorkspace:devices');
             } else {
-                if (name === 'datacenterRoom' || name === 'datacenterRack' || name === 'datacenterDevice') {
+                if (
+                    name === 'datacenterRoom' ||
+                    name === 'datacenterRack' ||
+                    name === 'datacenterDevice'
+                ) {
                     name = 'datacenter';
                 }
 
@@ -96,39 +115,37 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspaceName',
-            'loadCurrentWorkspace',
-        ]),
-        ...mapState([
-            'workspaces',
-        ]),
+        ...mapGetters(['currentWorkspaceName', 'loadCurrentWorkspace']),
+        ...mapState(['workspaces']),
         sortedWorkspaceRoots() {
-            return sortBy(this.workspaceGraph.roots, ['name'])
+            return sortBy(this.workspaceGraph.roots, ['name']);
         },
         workspaceGraph() {
-            return this.workspaces.reduce((acc, workspace) => {
-                // global workspace
-                if (!workspace.parent_id) {
-                    acc.roots.push(workspace);
+            return this.workspaces.reduce(
+                (acc, workspace) => {
+                    // global workspace
+                    if (!workspace.parent_id) {
+                        acc.roots.push(workspace);
+                        return acc;
+                    }
+
+                    if (acc.graph[workspace.parent_id]) {
+                        acc.graph[workspace.parent_id].push(workspace);
+                    } else {
+                        acc.graph[workspace.parent_id] = [workspace];
+                    }
+
+                    const workspaceIdToWorkspace = keyBy(this.workspaces, 'id');
+
+                    // if the parent isn't present, then the workspace is a root
+                    if (!workspaceIdToWorkspace[workspace.parent_id]) {
+                        acc.roots.push(workspace);
+                    }
+
                     return acc;
-                }
-
-                if (acc.graph[workspace.parent_id]) {
-                    acc.graph[workspace.parent_id].push(workspace);
-                } else {
-                    acc.graph[workspace.parent_id] = [workspace];
-                }
-
-                const workspaceIdToWorkspace = keyBy(this.workspaces, 'id');
-
-                // if the parent isn't present, then the workspace is a root
-                if (!workspaceIdToWorkspace[workspace.parent_id]) {
-                    acc.roots.push(workspace);
-                }
-
-                return acc;
-            }, { roots: [], graph: {} });
+                },
+                { roots: [], graph: {} }
+            );
         },
     },
 };

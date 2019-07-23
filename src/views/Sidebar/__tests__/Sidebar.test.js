@@ -17,7 +17,7 @@ jest.spyOn(conchApi, 'getApiVersion');
 
 describe('Sidebar.vue', () => {
     let getters;
-    let mocks
+    let mocks;
     let state;
     let store;
     let stubs;
@@ -25,7 +25,7 @@ describe('Sidebar.vue', () => {
 
     beforeEach(() => {
         getters = { currentWorkspaceId: jest.fn() };
-        mocks = { $router :[] };
+        mocks = { $router: [] };
         state = { currentUser: users[0], currentWorkspace: workspaces[0] };
         store = new Vuex.Store({ state, getters });
         stubs = ['router-link'];

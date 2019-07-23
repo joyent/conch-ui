@@ -43,20 +43,20 @@ describe('UserProfile.vue', () => {
         savePassword('abcdefg');
 
         expect(wrapper.find('.message.is-danger').exists()).toEqual(false);
-    })
+    });
 
     test('should display password mismatch warning when password does not match confirmation', () => {
         wrapper.find('input.password').setValue('abcdefg');
         wrapper.find('input.confirmation').setValue();
         wrapper.find('button.save').trigger('click');
 
-        expect(wrapper.html()).toContain('The passwords you entered do not match.');
+        expect(wrapper.html()).toContain('The passwords you entered do not');
     });
 
     test('should display password length warning when password is too short', () => {
         savePassword();
 
-        expect(wrapper.html()).toContain('Passwords must contain at least 5 characters.');
+        expect(wrapper.html()).toContain('Passwords must contain at least');
     });
 
     test('should close the warning when the close button is clicked', () => {
@@ -68,7 +68,7 @@ describe('UserProfile.vue', () => {
     });
 
     test('should remove warning after a valid password is submitted', () => {
-        savePassword()
+        savePassword();
         savePassword('abcdefg');
 
         expect(wrapper.find('.message.is-danger').exists()).toEqual(false);

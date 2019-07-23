@@ -42,9 +42,11 @@
                                         class="input is-small serial-number"
                                         placeholder="Serial Number"
                                         pattern="[a-zA-Z0-9]+"
-                                        v-on:input="serialNumberInput($event, slot.id)"
+                                        @input="
+                                            serialNumberInput($event, slot.id)
+                                        "
                                         :value="inputValue(slot, 'sn')"
-                                    >
+                                    />
                                     <span class="icon is-left">
                                         <i class="fas fa-barcode"></i>
                                     </span>
@@ -63,9 +65,9 @@
                                         placeholder="Asset Tag"
                                         pattern="[a-zA-Z0-9]+"
                                         :disabled="assignments[slot.id] == null"
-                                        v-on:input="assetTagInput($event, slot.id)"
+                                        @input="assetTagInput($event, slot.id)"
                                         :value="inputValue(slot, 'at')"
-                                    >
+                                    />
                                     <span class="icon is-left">
                                         <i class="fas fa-tag"></i>
                                     </span>
@@ -77,7 +79,9 @@
                         <tr>
                             <th>Slot</th>
                             <th>Product Name</th>
-                            <th class="has-text-right">Device Identification</th>
+                            <th class="has-text-right">
+                                Device Identification
+                            </th>
                         </tr>
                     </tfoot>
                 </table>
@@ -95,7 +99,13 @@
                         </button>
                     </p>
                     <p class="control">
-                        <button class="button cancel" @click="closeModal()" type="button">Cancel</button>
+                        <button
+                            class="button cancel"
+                            @click="closeModal()"
+                            type="button"
+                        >
+                            Cancel
+                        </button>
                     </p>
                 </div>
             </footer>
@@ -113,6 +123,7 @@ import { mapGetters, mapState } from 'vuex';
 export default {
     props: {
         deviceSlots: {
+            type: Array,
             required: true,
         },
     },
@@ -125,12 +136,8 @@ export default {
         };
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspaceId',
-        ]),
-        ...mapState([
-            'rackLayout',
-        ]),
+        ...mapGetters(['currentWorkspaceId']),
+        ...mapState(['rackLayout']),
     },
     methods: {
         assetTagInput: debounce(function(event, slotId) {
@@ -183,22 +190,28 @@ export default {
             if (Object.keys(duplicates).length === 0) {
                 this.buttonLoading = true;
 
-                setRackLayout(this.currentWorkspaceId, this.rackLayout.id, layout)
-                    .then(() => {
-                        Promise.all(
-                            Object.values(assignments).map(assignment => {
-                                if (assignment.assetTag == null) {
-                                    return Promise.resolve();
-                                }
+                setRackLayout(
+                    this.currentWorkspaceId,
+                    this.rackLayout.id,
+                    layout
+                ).then(() => {
+                    Promise.all(
+                        Object.values(assignments).map(assignment => {
+                            if (assignment.assetTag == null) {
+                                return Promise.resolve();
+                            }
 
-                                return setAssetTag(assignment.id, assignment.assetTag);
-                            })
-                        ).then(() => {
-                            this.closeModal();
-                            this.refreshRackLayout(this.rackLayout);
-                            this.buttonLoading = false;
-                        });
+                            return setAssetTag(
+                                assignment.id,
+                                assignment.assetTag
+                            );
+                        })
+                    ).then(() => {
+                        this.closeModal();
+                        this.refreshRackLayout(this.rackLayout);
+                        this.buttonLoading = false;
                     });
+                });
             }
         },
     },
@@ -208,7 +221,7 @@ export default {
             if (occupant) {
                 this.assignments[slot.id] = {
                     id: occupant.id,
-                    assetTag: occupant.asset_tag
+                    assetTag: occupant.asset_tag,
                 };
             }
         });

@@ -8,24 +8,38 @@
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
                     <article class="tile is-child">
-                        <section class="section" v-if="isEmpty(workspaceDevices) || isEmpty(hardwareProductLookup)">
-                            <Spinner/>
+                        <section
+                            class="section"
+                            v-if="
+                                isEmpty(workspaceDevices) ||
+                                    isEmpty(hardwareProductLookup)
+                            "
+                        >
+                            <Spinner />
                         </section>
                         <div class="columns" v-else>
                             <div class="column is-4">
-                                 <DevicesPanel
-                                    :hardware-product-lookup="hardwareProductLookup"
+                                <DevicesPanel
+                                    :hardware-product-lookup="
+                                        hardwareProductLookup
+                                    "
                                     :workspace-devices="workspaceDevices"
                                 />
                             </div>
-                            <div class="column is-6 container" v-if="activeDeviceId">
-                                <div class="div" style="position: -webkit-sticky; position: sticky; top: 0;">
+                            <div
+                                class="column is-6 container"
+                                v-if="activeDeviceId"
+                            >
+                                <div
+                                    class="div"
+                                    style="position: -webkit-sticky; position: sticky; top: 0;"
+                                >
                                     <div class="box has-text-left">
                                         <div class="subtitle">
                                             Device {{ activeDeviceId }}
                                         </div>
                                     </div>
-                                    <DeviceInspector/>
+                                    <DeviceInspector />
                                 </div>
                             </div>
                         </div>
@@ -87,10 +101,9 @@ export default {
             }
         },
         setWorkspaceDevices() {
-            getWorkspaceDevices(this.currentWorkspaceId)
-                .then(response => {
-                    this.workspaceDevices = response;
-                });
+            getWorkspaceDevices(this.currentWorkspaceId).then(response => {
+                this.workspaceDevices = response;
+            });
         },
     },
     computed: {
@@ -99,24 +112,28 @@ export default {
             'currentWorkspaceId',
             'currentWorkspaceName',
         ]),
-        ...mapState([
-            'hardwareProducts',
-        ]),
+        ...mapState(['hardwareProducts']),
     },
     created() {
         const route = this.$route.path;
         const routePrefix = route.substring(0, route.indexOf('/device'));
         let activeDeviceId = this.activeDeviceId;
 
-        if (!activeDeviceId && this.$route.params && this.$route.params.deviceId) {
+        if (
+            !activeDeviceId &&
+            this.$route.params &&
+            this.$route.params.deviceId
+        ) {
             activeDeviceId = this.$route.params.deviceId;
         }
 
-        let [_, queryS] = route.split('?');
+        let [queryS] = route.split('?');
         queryS ? (queryS = `?${queryS}`) : (queryS = '');
 
         if (activeDeviceId) {
-            this.$router.push({ path: `${routePrefix}/device/${activeDeviceId}${queryS}` });
+            this.$router.push({
+                path: `${routePrefix}/device/${activeDeviceId}${queryS}`,
+            });
         } else {
             this.$router.push({ path: `${routePrefix}/device` });
         }

@@ -10,20 +10,21 @@ import { select, selectAll } from 'd3-selection';
 import { mapState } from 'vuex';
 
 const statusSortOrder = {};
-statusSortOrder["Validated"] = 1;
-statusSortOrder["Failing"] = 2;
-statusSortOrder["In Progress"] = 3;
-statusSortOrder["Not Started"] = 4;
+statusSortOrder['Validated'] = 1;
+statusSortOrder['Failing'] = 2;
+statusSortOrder['In Progress'] = 3;
+statusSortOrder['Not Started'] = 4;
 
 const roleSortOrder = {};
-roleSortOrder["TRITON"] = 1;
-roleSortOrder["MANTA"] = 2;
-roleSortOrder["MANTA_TALL"] = 3;
-roleSortOrder["CERES"] = 4;
+roleSortOrder['TRITON'] = 1;
+roleSortOrder['MANTA'] = 2;
+roleSortOrder['MANTA_TALL'] = 3;
+roleSortOrder['CERES'] = 4;
 
 export default {
     props: {
         group: {
+            type: String,
             required: true,
         },
     },
@@ -36,22 +37,26 @@ export default {
         nodeParent(device_progress) {
             // If there's any failing devices, the whole rack is Failing
             if (device_progress.FAIL) {
-                return "Failing";
+                return 'Failing';
             }
 
             // If there's no passing and no validated devices (or no devices at all),
             // then the rack hasn't started validation
             if (!device_progress.PASS && !device_progress.VALID) {
-                return "Not Started";
+                return 'Not Started';
             }
 
             // If the only devices are validated, then the rack has finished validation
-            if (device_progress.VALID && !device_progress.PASS && !device_progress.UNKNOWN) {
-                return "Validated";
+            if (
+                device_progress.VALID &&
+                !device_progress.PASS &&
+                !device_progress.UNKNOWN
+            ) {
+                return 'Validated';
             }
 
             // There's a mixture of passing and unknown devices
-            return "In Progress";
+            return 'In Progress';
         },
         // Calculate a numerical value between [-1..100] based on the status of devices
         // in the rack. -1 when any device is failing, 0 when all devices are unknown
@@ -83,10 +88,10 @@ export default {
         },
         sortNodesRole(nodes) {
             const sortOrder = {
-                'TRITON': 1,
-                'MANTA': 2,
-                'MANTA_TALL': 3,
-                'CERES': 4
+                TRITON: 1,
+                MANTA: 2,
+                MANTA_TALL: 3,
+                CERES: 4,
             };
 
             nodes.sort((a, b) => {
@@ -99,10 +104,10 @@ export default {
         },
         sortNodesStatus(nodes) {
             const sortOrder = {
-                'Validated': 1,
-                'Failing': 2,
+                Validated: 1,
+                Failing: 2,
                 'In Progress': 3,
-                'Not Started': 4
+                'Not Started': 4,
             };
 
             nodes.sort((a, b) => {
@@ -120,23 +125,24 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            'rackRooms',
-        ]),
+        ...mapState(['rackRooms']),
         rackStatus() {
             return Object.keys(this.rackRooms).reduce((acc, room) => {
                 this.rackRooms[room].forEach(rack => {
                     acc.push({
                         Room: room,
-                        "Rack Name": rack.name,
-                        "Rack Role": rack.role,
-                        "Rack size": rack.size,
-                        parent: this.group === 'status' ? this.selectParentStatus(rack) : this.selectParentRole(rack),
+                        'Rack Name': rack.name,
+                        'Rack Role': rack.role,
+                        'Rack size': rack.size,
+                        parent:
+                            this.group === 'status'
+                                ? this.selectParentStatus(rack)
+                                : this.selectParentRole(rack),
                         value: this.nodeValue(rack.device_progress),
                         _private_: {
                             room_name: room,
-                            rack_id: rack.id
-                        }
+                            rack_id: rack.id,
+                        },
                     });
                 });
 
@@ -149,25 +155,28 @@ export default {
             showTooltips: true,
             maxChildCount: 10,
             showKeys: true,
-            sortFunction: this.group === 'status' ? this.sortNodesStatus : this.sortNodesRole,
+            sortFunction:
+                this.group === 'status'
+                    ? this.sortNodesStatus
+                    : this.sortNodesRole,
             thresholds: [-1, 0, 25, 50, 75, 99, 100],
             colors: [
-                "hsl(0, 80%, 60%)",
-                "hsl(225, 20%, 85%)",
-                "hsl(225, 50%, 80%)",
-                "hsl(225, 80%, 70%)",
-                "hsl(190, 60%, 60%)",
-                "hsl(160, 60%, 60%)",
-                "hsl(130, 60%, 60%)"
+                'hsl(0, 80%, 60%)',
+                'hsl(225, 20%, 85%)',
+                'hsl(225, 50%, 80%)',
+                'hsl(225, 80%, 70%)',
+                'hsl(190, 60%, 60%)',
+                'hsl(160, 60%, 60%)',
+                'hsl(130, 60%, 60%)',
             ],
             onClick: {
                 child: ({ _private_ }) => {
-                    let path = window.location.href.split("/");
+                    let path = window.location.href.split('/');
                     path.pop();
-                    path = path.join("/");
+                    path = path.join('/');
                     window.location.href = `${path}/datacenter/${_private_.room_name}/rack/${_private_.rack_id}/device`;
-                }
-            }
+                },
+            },
         }).data(this.rackStatus);
 
         // This forceUpdate fixes an issue with d3-relationshipgraph not displaying

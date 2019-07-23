@@ -16,7 +16,7 @@ describe('WorkspaceView.vue', () => {
     let wrapper;
 
     beforeEach(() => {
-        propsData = { users };
+        propsData = { filteredUsers: users };
         state = { workspaces };
         store = new Vuex.Store({ state });
         wrapper = shallowMount(WorkspaceView, { localVue, propsData, store });
@@ -40,7 +40,9 @@ describe('WorkspaceView.vue', () => {
     test('should show a row as selected when clicked', () => {
         wrapper.find('.workspace-row').trigger('click');
 
-        expect(wrapper.find('.workspace-row').classes()).toContain('is-selected');
+        expect(wrapper.find('.workspace-row').classes()).toContain(
+            'is-selected'
+        );
     });
 
     test('should display a UsersTable component when a workspace is clicked', () => {

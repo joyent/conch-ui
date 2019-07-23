@@ -76,18 +76,26 @@
                             <th>
                                 <a
                                     class="table-header-filter token-name"
-                                    :class="{ 'has-text-white': sortFilter === 'name' }"
+                                    :class="{
+                                        'has-text-white': sortFilter === 'name',
+                                    }"
                                     @click="sortBy('name')"
                                 >
                                     Token Name
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortFilter === 'name' && !reversedSort"
+                                        v-if="
+                                            sortFilter === 'name' &&
+                                                !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortFilter === 'name' && reversedSort"
+                                        v-else-if="
+                                            sortFilter === 'name' &&
+                                                reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
@@ -95,18 +103,27 @@
                             <th>
                                 <a
                                     class="table-header-filter last-used"
-                                    :class="{ 'has-text-white': sortFilter === 'last_used' }"
+                                    :class="{
+                                        'has-text-white':
+                                            sortFilter === 'last_used',
+                                    }"
                                     @click="sortBy('last_used')"
                                 >
                                     Last Used
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortFilter === 'last_used' && !reversedSort"
+                                        v-if="
+                                            sortFilter === 'last_used' &&
+                                                !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortFilter === 'last_used' && reversedSort"
+                                        v-else-if="
+                                            sortFilter === 'last_used' &&
+                                                reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
@@ -114,18 +131,27 @@
                             <th>
                                 <a
                                     class="table-header-filter created"
-                                    :class="{ 'has-text-white': sortFilter === 'created' }"
+                                    :class="{
+                                        'has-text-white':
+                                            sortFilter === 'created',
+                                    }"
                                     @click="sortBy('created')"
                                 >
                                     Created
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortFilter === 'created' && !reversedSort"
+                                        v-if="
+                                            sortFilter === 'created' &&
+                                                !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortFilter === 'created' && reversedSort"
+                                        v-else-if="
+                                            sortFilter === 'created' &&
+                                                reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
@@ -155,12 +181,14 @@
                                                 v-model="tokenName"
                                                 ref="newToken"
                                                 @keyup.enter="save()"
-                                            >
+                                            />
                                         </div>
                                         <div class="control">
                                             <a
                                                 class="button create is-success"
-                                                :class="{ 'is-loading': isLoading }"
+                                                :class="{
+                                                    'is-loading': isLoading,
+                                                }"
                                                 @click="save()"
                                             >
                                                 <span>
@@ -177,16 +205,18 @@
                                 :key="token.name"
                             >
                                 <td>
-                                    <i
-                                        class="fas fa-key has-text-success"
-                                    ></i>
+                                    <i class="fas fa-key has-text-success"></i>
                                 </td>
                                 <td class="token-name">
                                     {{ token.name }}
                                 </td>
-                                <td class="last-used" v-if="token.last_used">{{ getDate(token.last_used) }}</td>
+                                <td class="last-used" v-if="token.last_used">{{
+                                    getDate(token.last_used)
+                                }}</td>
                                 <td class="last-used" v-else>Never</td>
-                                <td class="created">{{ getDate(token.created) }}</td>
+                                <td class="created">{{
+                                    getDate(token.created)
+                                }}</td>
                                 <td>
                                     <span
                                         class="icon delete-token"
@@ -219,7 +249,9 @@
                 </template>
                 <template v-slot:body>
                     <p class="subtitle">
-                        Are you sure you want to delete <strong class="name">{{ tokenName }}</strong>?
+                        Are you sure you want to delete
+                        <strong class="name">{{ tokenName }}</strong
+                        >?
                     </p>
                 </template>
                 <template v-slot:footer>
@@ -241,7 +273,8 @@
                 </template>
                 <template v-slot:body>
                     <p class="subtitle" v-if="deleteSuccess">
-                        <strong class="has-text-white">{{ tokenName }}</strong> has been deleted.
+                        <strong class="has-text-white">{{ tokenName }}</strong>
+                        has been deleted.
                     </p>
                 </template>
                 <template v-slot:footer>
@@ -288,9 +321,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setUserAuthTokens',
-        ]),
+        ...mapActions(['setUserAuthTokens']),
         cancelNewToken() {
             this.creatingToken = false;
             this.tokenName = '';
@@ -306,20 +337,19 @@ export default {
         nameNewToken() {
             this.tokenName = '';
             this.creatingToken = true;
-            this.$nextTick(() => this.$refs.newToken.focus())
+            this.$nextTick(() => this.$refs.newToken.focus());
         },
         openModal(tokenName) {
             this.deletingToken = true;
             this.tokenName = tokenName;
         },
         removeToken(name) {
-            deleteToken(name)
-                .then(() => {
-                    this.deletingToken = false;
-                    this.deleteSuccess = true;
+            deleteToken(name).then(() => {
+                this.deletingToken = false;
+                this.deleteSuccess = true;
 
-                    this.setTokens();
-                });
+                this.setTokens();
+            });
         },
         save() {
             const tokenName = this.tokenName;
@@ -347,7 +377,11 @@ export default {
                         if (error.status === 400) {
                             const errorData = error.data;
                             if (errorData && errorData.error) {
-                                if (errorData.error.includes(`name "${tokenName}" is already in use`)) {
+                                if (
+                                    errorData.error.includes(
+                                        `name "${tokenName}" is already in use`
+                                    )
+                                ) {
                                     this.duplicateTokenNameError = true;
                                     this.isLoading = false;
                                     this.creatingToken = false;
@@ -365,28 +399,39 @@ export default {
             }
         },
         setTokens() {
-            getTokens()
-                .then(response => {
-                    const tokens = response.data;
+            getTokens().then(response => {
+                const tokens = response.data;
 
-                    if (tokens.length) {
-                        this.sortedTokens = tokens;
-                        this.setUserAuthTokens(tokens);
-                    } else {
-                        this.noTokens = true;
-                    }
-                });
+                if (tokens.length) {
+                    this.sortedTokens = tokens;
+                    this.setUserAuthTokens(tokens);
+                } else {
+                    this.noTokens = true;
+                }
+            });
         },
         sortBy(field) {
             let tokens = this.sortedTokens;
 
             if (this.sortFilter !== field) {
                 if (field === 'name') {
-                    this.sortedTokens = orderBy(tokens, [token => token.name], ['asc']);
+                    this.sortedTokens = orderBy(
+                        tokens,
+                        [token => token.name],
+                        ['asc']
+                    );
                 } else if (field === 'last_used') {
-                    this.sortedTokens = orderBy(tokens, [token => token.last_used], ['desc']);
+                    this.sortedTokens = orderBy(
+                        tokens,
+                        [token => token.last_used],
+                        ['desc']
+                    );
                 } else if (field === 'created') {
-                    this.sortedTokens = orderBy(tokens, [token => token.created], ['desc']);
+                    this.sortedTokens = orderBy(
+                        tokens,
+                        [token => token.created],
+                        ['desc']
+                    );
                 }
 
                 this.sortFilter = field;
@@ -398,9 +443,7 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            'userAuthTokens',
-        ]),
+        ...mapState(['userAuthTokens']),
     },
     mounted() {
         EventBus.$on('closeModal:baseModal', () => {

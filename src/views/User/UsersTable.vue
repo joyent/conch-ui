@@ -1,6 +1,8 @@
 <template>
     <div>
-        <table class="users-table table is-hoverable is-fullwidth is-marginless">
+        <table
+            class="users-table table is-hoverable is-fullwidth is-marginless"
+        >
             <thead>
                 <th></th>
                 <th>
@@ -36,7 +38,9 @@
                         ></i>
                         <i
                             class="fas fa-angle-up"
-                            v-else-if="sortFilter === 'is_admin' && reversedSort"
+                            v-else-if="
+                                sortFilter === 'is_admin' && reversedSort
+                            "
                             style="margin-left: 10px;"
                         ></i>
                     </a>
@@ -63,8 +67,11 @@
                 <th>
                     <a
                         class="table-header-filter last-active"
-                        :class="{ 'has-text-white': sortFilter === 'last_active' }"
-                        @click="sortBy('last_active')">
+                        :class="{
+                            'has-text-white': sortFilter === 'last_active',
+                        }"
+                        @click="sortBy('last_active')"
+                    >
                         Last Active
                         <i
                             class="fas fa-angle-down"
@@ -73,7 +80,9 @@
                         ></i>
                         <i
                             class="fas fa-angle-up"
-                            v-else-if="sortFilter === 'last_active' && reversedSort"
+                            v-else-if="
+                                sortFilter === 'last_active' && reversedSort
+                            "
                             style="margin-left: 10px;"
                         ></i>
                     </a>
@@ -104,7 +113,10 @@
                     </td>
                     <td>
                         <span
-                            v-if="user.force_password_change || user.refuse_session_auth"
+                            v-if="
+                                user.force_password_change ||
+                                    user.refuse_session_auth
+                            "
                         >
                             <span
                                 class="tag pwd-change is-danger"
@@ -187,7 +199,7 @@
                                             Promote to Admin
                                         </span>
                                     </a>
-                                    <hr class="dropdown-divider">
+                                    <hr class="dropdown-divider" />
                                     <a
                                         class="dropdown-item tokens"
                                         @click="viewTokens(user)"
@@ -196,17 +208,27 @@
                                     </a>
                                     <a
                                         class="dropdown-item delete-login-tokens"
-                                        @click="openModal('delete-login-tokens', user)"
+                                        @click="
+                                            openModal(
+                                                'delete-login-tokens',
+                                                user
+                                            )
+                                        "
                                     >
                                         Delete Login Tokens
                                     </a>
                                     <a
                                         class="dropdown-item delete-auth-tokens"
-                                        @click="openModal('delete-auth-tokens', user)"
+                                        @click="
+                                            openModal(
+                                                'delete-auth-tokens',
+                                                user
+                                            )
+                                        "
                                     >
                                         Delete Auth Tokens
                                     </a>
-                                    <hr class="dropdown-divider">
+                                    <hr class="dropdown-divider" />
                                     <a
                                         class="dropdown-item deactivate"
                                         @click="openModal('deactivate', user)"
@@ -220,7 +242,7 @@
                 </tr>
             </tbody>
         </table>
-        <TablePagination :totalResults="users.length" />
+        <TablePagination :total-results="users.length" />
     </div>
 </template>
 
@@ -269,17 +291,41 @@ export default {
 
             if (this.sortFilter !== field || sortUsers) {
                 if (field === 'name') {
-                    this.sortedUsers = orderBy(users, [user => user.name.toLowerCase()], ['asc']);
+                    this.sortedUsers = orderBy(
+                        users,
+                        [user => user.name.toLowerCase()],
+                        ['asc']
+                    );
                 } else if (field === 'is_admin') {
-                    this.sortedUsers = orderBy(users, [user => user.is_admin], ['desc']);
+                    this.sortedUsers = orderBy(
+                        users,
+                        [user => user.is_admin],
+                        ['desc']
+                    );
                 } else if (field === 'issues') {
-                    this.sortedUsers = orderBy(users, [user => user.force_password_change || user.refuse_session_auth], ['desc']);
+                    this.sortedUsers = orderBy(
+                        users,
+                        [
+                            user =>
+                                user.force_password_change ||
+                                user.refuse_session_auth,
+                        ],
+                        ['desc']
+                    );
                 } else if (field === 'last_active') {
-                    const inactiveUsers = users.filter(user => user.last_login == null);
-                    const activeUsers = users.filter(user => user.last_login != null);
+                    const inactiveUsers = users.filter(
+                        user => user.last_login == null
+                    );
+                    const activeUsers = users.filter(
+                        user => user.last_login != null
+                    );
 
-                    users = orderBy(activeUsers, [user => user.last_login], ['desc']);
-                    users = users.concat(inactiveUsers)
+                    users = orderBy(
+                        activeUsers,
+                        [user => user.last_login],
+                        ['desc']
+                    );
+                    users = users.concat(inactiveUsers);
 
                     this.sortedUsers = users;
                 }
@@ -295,7 +341,7 @@ export default {
             this.$router.push({
                 name: 'userTokens',
                 params: {
-                    userId: user.id
+                    userId: user.id,
                 },
             });
         },
@@ -314,7 +360,8 @@ export default {
                 resultSetStartIndex = this.resultsPerPage * this.currentPage;
                 resultSetEndIndex = users.length;
             } else {
-                resultSetStartIndex = (this.resultsPerPage * (this.currentPage -1 ));
+                resultSetStartIndex =
+                    this.resultsPerPage * (this.currentPage - 1);
                 resultSetEndIndex = this.resultsPerPage * this.currentPage;
             }
 
@@ -324,7 +371,7 @@ export default {
         },
     },
     watch: {
-        users: function(newVal, oldVal) {
+        users: function(newVal) {
             if (this.sortFilter) {
                 this.sortBy(this.sortFilter, newVal, true);
             } else {

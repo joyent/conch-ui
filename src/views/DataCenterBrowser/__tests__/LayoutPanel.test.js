@@ -54,25 +54,30 @@ describe('LayoutPanel.vue', () => {
     test('should update filteredSlots with accurate search results', () => {
         const id = state.rackLayout.slots['1'].occupant.id;
 
-        expect(wrapper.vm.filteredSlots.length).toEqual(3);
+        expect(wrapper.vm.filteredSlots).toHaveLength(3);
 
         wrapper.find('input').setValue(id);
 
-        expect(wrapper.vm.filteredSlots.length).toEqual(1);
+        expect(wrapper.vm.filteredSlots).toHaveLength(1);
         expect(wrapper.vm.filteredSlots[0].occupant.id).toEqual(id);
     });
 
     test('should update filteredSlots with accurate results when filter is clicked', () => {
-        expect(wrapper.vm.filteredSlots.length).toEqual(3);
+        expect(wrapper.vm.filteredSlots).toHaveLength(3);
 
         // Click 'graduated' filter
-        wrapper.findAll('.panel-tabs a').at(1).trigger('click');
+        wrapper
+            .findAll('.panel-tabs a')
+            .at(1)
+            .trigger('click');
 
-        const graduatedDevices = Object.values(state.rackLayout.slots).filter(slot => {
-            return slot.occupant.graduated;
-        });
+        const graduatedDevices = Object.values(state.rackLayout.slots).filter(
+            slot => {
+                return slot.occupant.graduated;
+            }
+        );
 
-        expect(graduatedDevices.length).toEqual(wrapper.vm.filteredSlots.length);
+        expect(graduatedDevices).toHaveLength(wrapper.vm.filteredSlots.length);
     });
 
     test('should call activateDevice method with device as parameter when a device row is clicked', () => {
@@ -106,7 +111,9 @@ describe('LayoutPanel.vue', () => {
         });
 
         test('should display the current phase of the rack', () => {
-            expect(wrapper.find('.rack-phase').text()).toContain(rackLayout.phase);
+            expect(wrapper.find('.rack-phase').text()).toContain(
+                rackLayout.phase
+            );
         });
     });
 });

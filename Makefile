@@ -13,19 +13,15 @@ watch: ## Watch web assets and re-build for development
 start: ## Start a development web server that watches and hot-reloads code
 	@yarn start
 
-.PHONY: analyze
-analyze: ## Analyze production web asset bundle sizes to find bloat
-	@yarn analyze
-
 .PHONY: format
 format: ## Format Javascript source files with prettier
-	@yarn prettier
+	@yarn lint
 
 node_modules: yarn.lock
 	@yarn install --ignore-engines
 	@touch node_modules
 
-dist/index.html: src/**/* config.js webpack.common.js webpack.prod.js
+dist/index.html: src/**/* config.js
 	@yarn build
 
 config.js:

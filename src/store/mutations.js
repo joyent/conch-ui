@@ -1,28 +1,28 @@
-export const clearActiveDevice = (state) => {
+export const clearActiveDevice = state => {
     state.activeDevice = {};
 };
 
-export const clearActiveRoomName = (state) => {
+export const clearActiveRoomName = state => {
     state.activeRoomName = '';
 };
 
-export const clearForcePasswordChange = (state) => {
+export const clearForcePasswordChange = state => {
     state.forcePasswordChange = false;
 };
 
-export const clearInvalidCredentials = (state) => {
+export const clearInvalidCredentials = state => {
     state.invalidCredentials = false;
 };
 
-export const clearRackLayout = (state) => {
+export const clearRackLayout = state => {
     state.rackLayout = {};
 };
 
-export const clearShowDeviceInRack = (state) => {
+export const clearShowDeviceInRack = state => {
     state.showDeviceInRack = false;
 };
 
-export const clearUserAuthTokens = (state) => {
+export const clearUserAuthTokens = state => {
     state.userAuthTokens = [];
 };
 
@@ -66,7 +66,7 @@ export const setDevicesByWorkspace = (state, devices) => {
     state.devicesByWorkspace.push(devices);
 };
 
-export const setForcePasswordChange = (state) => {
+export const setForcePasswordChange = state => {
     state.forcePasswordChange = true;
 };
 
@@ -78,7 +78,7 @@ export const setHighlightDeviceId = (state, highlightDeviceId) => {
     state.highlightDeviceId = highlightDeviceId;
 };
 
-export const setInvalidCredentials = (state) => {
+export const setInvalidCredentials = state => {
     state.invalidCredentials = true;
 };
 

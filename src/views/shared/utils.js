@@ -4,7 +4,7 @@ import { getAllRacks, getDevices } from '@api/workspaces.js';
 import store from '@src/store/store.js';
 
 export const deviceToProgress = device => {
-	if (device == null) {
+    if (device == null) {
         return 'unassigned';
     } else if (device.graduated) {
         return 'graduated';
@@ -16,7 +16,7 @@ export const deviceToProgress = device => {
         return 'active';
     }
 
-	return 'in progress';
+    return 'in progress';
 };
 
 export const getRackRooms = rooms => {
@@ -41,19 +41,18 @@ export const getWorkspaceRacks = workspaceId => {
     if (!isEmpty(rackRooms)) {
         return Promise.resolve(Object.values(rackRooms)[0]);
     } else {
-        return getAllRacks(workspaceId)
-            .then(response => {
-                const rooms = response.data;
-                const rackRooms = getRackRooms(rooms);
-                let workspaceRackRooms = {};
+        return getAllRacks(workspaceId).then(response => {
+            const rooms = response.data;
+            const rackRooms = getRackRooms(rooms);
+            let workspaceRackRooms = {};
 
-                workspaceRackRooms[workspaceId] = rooms;
+            workspaceRackRooms[workspaceId] = rooms;
 
-                store.dispatch('setRackRoomsByWorkspace', workspaceRackRooms);
-                store.dispatch('setAllRooms', rackRooms);
+            store.dispatch('setRackRoomsByWorkspace', workspaceRackRooms);
+            store.dispatch('setAllRooms', rackRooms);
 
-                return rooms;
-            });
+            return rooms;
+        });
     }
 };
 
@@ -63,16 +62,15 @@ export const getWorkspaceDevices = workspaceId => {
     if (!isEmpty(devices)) {
         return Promise.resolve(Object.values(devices)[0]);
     } else {
-        return getDevices(workspaceId)
-            .then(response => {
-                const devices = response.data;
-                let workspaceDevices = {};
+        return getDevices(workspaceId).then(response => {
+            const devices = response.data;
+            let workspaceDevices = {};
 
-                workspaceDevices[workspaceId] = devices;
-                store.dispatch('setDevicesByWorkspace', workspaceDevices);
+            workspaceDevices[workspaceId] = devices;
+            store.dispatch('setDevicesByWorkspace', workspaceDevices);
 
-                return devices;
-            });
+            return devices;
+        });
     }
 };
 

@@ -29,7 +29,10 @@ describe('PageNotFound.vue', () => {
 
     // Helper function
     const clickWorkspaceButton = () => {
-        wrapper.findAll('a.button').at(0).trigger('click');;
+        wrapper
+            .findAll('a.button')
+            .at(0)
+            .trigger('click');
     };
 
     test('should render correctly on initial render', () => {
@@ -50,7 +53,9 @@ describe('PageNotFound.vue', () => {
         // how to handle getters that take arguments. It seems to identify such
         // calls as method calls and looks for a corresponding item in the
         // 'methods' object of the Vue component.
-        Object.defineProperty(wrapper.vm, 'loadCurrentWorkspace', { value: jest.fn() });
+        Object.defineProperty(wrapper.vm, 'loadCurrentWorkspace', {
+            value: jest.fn(),
+        });
 
         clickWorkspaceButton();
 

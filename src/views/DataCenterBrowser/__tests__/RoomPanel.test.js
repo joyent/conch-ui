@@ -23,13 +23,21 @@ describe('RoomPanel.vue', () => {
         mocks = { $router: [] };
         propsData = { rackRooms: workspaceRackRooms };
         store = new Vuex.Store({ actions, getters });
-        wrapper = shallowMount(RoomPanel, { localVue, mocks, propsData, store });
+        wrapper = shallowMount(RoomPanel, {
+            localVue,
+            mocks,
+            propsData,
+            store,
+        });
         wrapperHtml = wrapper.html();
     });
 
     // Helper function
     const clickFilter = () => {
-        wrapper.findAll('.panel-tabs a').at(1).trigger('click');
+        wrapper
+            .findAll('.panel-tabs a')
+            .at(1)
+            .trigger('click');
     };
 
     test('should call activateRoom method with the room as parameter when a room row is clicked', () => {
@@ -74,6 +82,6 @@ describe('RoomPanel.vue', () => {
         wrapperHtml = wrapper.html();
 
         expect(wrapperHtml).toContain('southeast');
-        expect(wrapperHtml).not.toContain('northeast')
+        expect(wrapperHtml).not.toContain('northeast');
     });
 });

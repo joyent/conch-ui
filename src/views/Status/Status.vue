@@ -1,11 +1,18 @@
 <template>
     <div class="status">
-        <PageHeader :title="title" :subtitle="'Overview of workspace build progress'" />
+        <PageHeader
+            :title="title"
+            :subtitle="'Overview of workspace build progress'"
+        />
         <section class="info-tiles">
             <div class="tile is-ancestor has-text-centered">
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <progress class="progress is-info" :value="progressPercent" max="100"></progress>
+                        <progress
+                            class="progress is-info"
+                            :value="progressPercent"
+                            max="100"
+                        ></progress>
                     </article>
                 </div>
             </div>
@@ -23,7 +30,9 @@
                     <article class="tile is-child box">
                         <div class="device-count">
                             <Spinner v-if="!workspaceDevices" />
-                            <p class="title" v-else>{{ workspaceDevices.length }}</p>
+                            <p class="title" v-else>
+                                {{ workspaceDevices.length }}
+                            </p>
                             <p class="subtitle">Devices</p>
                         </div>
                     </article>
@@ -32,7 +41,10 @@
             <div class="tile is-ancestor has-text-centered">
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <div class="box" style="background-color:rgba(28%, 61%, 91%, 0.4)">
+                        <div
+                            class="box"
+                            style="background-color:rgba(28%, 61%, 91%, 0.4)"
+                        >
                             <div class="rack-rooms-status">
                                 <p class="subtitle">Rack Validation Status</p>
                                 <Spinner v-if="!hasRackRooms" />
@@ -43,9 +55,14 @@
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <div class="box" style="background-color:rgba(28%, 61%, 91%, 0.4)">
+                        <div
+                            class="box"
+                            style="background-color:rgba(28%, 61%, 91%, 0.4)"
+                        >
                             <div class="rack-rooms-role">
-                                <p class="subtitle">Validation Status by Role</p>
+                                <p class="subtitle"
+                                    >Validation Status by Role</p
+                                >
                                 <Spinner v-if="!hasRackRooms" />
                                 <RackProgress :group="'role'" v-else />
                             </div>
@@ -79,20 +96,16 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setRackRooms',
-        ]),
+        ...mapActions(['setRackRooms']),
         setWorkspaceDevices() {
-            getWorkspaceDevices(this.workspaceId)
-                .then(response => {
-                    this.workspaceDevices = response;
-                });
+            getWorkspaceDevices(this.workspaceId).then(response => {
+                this.workspaceDevices = response;
+            });
         },
         setWorkspaceRacks() {
-            getWorkspaceRacks(this.workspaceId)
-                .then(response => {
-                    this.setRackRoomsData(response);
-                });
+            getWorkspaceRacks(this.workspaceId).then(response => {
+                this.setRackRoomsData(response);
+            });
         },
         setRackRoomsData(rackRooms) {
             let rackCount = 0;
@@ -109,14 +122,8 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspaceId',
-            'currentWorkspaceName',
-        ]),
-        ...mapState([
-            'currentWorkspace',
-            'rackRooms',
-        ]),
+        ...mapGetters(['currentWorkspaceId', 'currentWorkspaceName']),
+        ...mapState(['currentWorkspace', 'rackRooms']),
         hasRackRooms() {
             return !isEmpty(this.rackRooms);
         },
@@ -137,7 +144,7 @@ export default {
         },
         progressPercent() {
             const progress = this.progress;
-            return progress.total ? progress.pass / progress.total * 100 : 0;
+            return progress.total ? (progress.pass / progress.total) * 100 : 0;
         },
         title() {
             return `${this.currentWorkspaceName} workspace status`;

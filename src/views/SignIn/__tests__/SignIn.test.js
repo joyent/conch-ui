@@ -45,11 +45,15 @@ describe('SignIn.vue', () => {
     });
 
     test('should not display warning text on initial render', () => {
-        expect(wrapper.html()).not.toContain('Invalid email address or password');
+        expect(wrapper.html()).not.toContain(
+            'Invalid email address or password'
+        );
     });
 
     test('should not display a disabled Login button on initial render', () => {
-        expect(wrapper.find('button.sign-in').attributes('disabled')).toBeFalsy();
+        expect(
+            wrapper.find('button.sign-in').attributes('disabled')
+        ).toBeFalsy();
     });
 
     test('should display warning text when bad login info is submitted', () => {
@@ -81,10 +85,12 @@ describe('SignIn.vue', () => {
         });
         wrapper.find('button').trigger('click');
 
-        await new Promise(resolve => setTimeout(() => {
-            expect(actions.setForcePasswordChange).toHaveBeenCalled();
-            resolve();
-        }, 100));
+        await new Promise(resolve =>
+            setTimeout(() => {
+                expect(actions.setForcePasswordChange).toHaveBeenCalled();
+                resolve();
+            }, 100)
+        );
     });
 
     test('should call the login method', () => {
@@ -94,12 +100,20 @@ describe('SignIn.vue', () => {
         // how to handle getters that take arguments. It seems to identify such
         // calls as method calls and looks for a corresponding item in the
         // 'methods' object of the Vue component.
-        Object.defineProperty(wrapper.vm, 'loadCurrentWorkspace', { value: jest.fn() });
+        Object.defineProperty(wrapper.vm, 'loadCurrentWorkspace', {
+            value: jest.fn(),
+        });
 
-        wrapper.setData({ emailAddress: 'validuser@joyent.com', password: 'goodPassword' });
+        wrapper.setData({
+            emailAddress: 'validuser@joyent.com',
+            password: 'goodPassword',
+        });
         wrapper.find('button').trigger('click');
 
-        expect(spy).toHaveBeenCalledWith({ user: 'validuser@joyent.com', password: 'goodPassword' });
+        expect(spy).toHaveBeenCalledWith({
+            user: 'validuser@joyent.com',
+            password: 'goodPassword',
+        });
     });
 
     describe('bad API version', () => {
@@ -107,7 +121,7 @@ describe('SignIn.vue', () => {
             jest.spyOn(conchApiVersion, 'getApiVersion').mockReturnValue(
                 Promise.resolve({
                     data: {
-                        version: '2.25.0'
+                        version: '2.25.0',
                     },
                 })
             );
@@ -116,11 +130,15 @@ describe('SignIn.vue', () => {
         });
 
         test('should display a notification if API version does not meet requirements', () => {
-            expect(wrapper.find('.api-version-notification').exists()).toBeTruthy();
+            expect(
+                wrapper.find('.api-version-notification').exists()
+            ).toBeTruthy();
         });
 
         test('should disable login button if API version does not meet requirements', () => {
-            expect(wrapper.find('button.sign-in').attributes('disabled')).toBeTruthy();
+            expect(
+                wrapper.find('button.sign-in').attributes('disabled')
+            ).toBeTruthy();
         });
     });
 });

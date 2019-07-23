@@ -43,7 +43,10 @@ describe('Devices.vue', () => {
     });
 
     test('should display the DevicesPanel component when workspaceDevices are available', () => {
-        wrapper.setData({ hardwareProductLookup, workspaceDevices: devices[0] })
+        wrapper.setData({
+            hardwareProductLookup,
+            workspaceDevices: devices[0],
+        });
 
         expect(wrapper.html()).toContain('devicespanel-stub');
     });

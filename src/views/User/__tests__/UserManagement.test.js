@@ -28,7 +28,10 @@ describe('UserManagement.vue', () => {
 
     // Helper function
     const clickDropdownTrigger = () => {
-        wrapper.findAll('.dropdown-trigger button').at(1).trigger('click');
+        wrapper
+            .findAll('.dropdown-trigger button')
+            .at(1)
+            .trigger('click');
     };
 
     test('should display loading indicator when users are not available', () => {
@@ -42,24 +45,24 @@ describe('UserManagement.vue', () => {
     test('should filter displayed users to only admins when "Admins" filter is selected', () => {
         wrapper.setData({ userFilter: 'admins' });
 
-        expect(wrapper.findAll('tr').length).toEqual(1);
-        expect(wrapper.vm.filteredUsers.length).toEqual(1);
+        expect(wrapper.findAll('tr')).toHaveLength(1);
+        expect(wrapper.vm.filteredUsers).toHaveLength(1);
         expect(wrapper.vm.filteredUsers[0].is_admin).toBeTruthy();
     });
 
     test('should filter displayed users to only regular users when "Users" filter is selected', () => {
         wrapper.setData({ userFilter: 'users' });
 
-        expect(wrapper.findAll('tr').length).toEqual(1);
-        expect(wrapper.vm.filteredUsers.length).toEqual(1);
+        expect(wrapper.findAll('tr')).toHaveLength(1);
+        expect(wrapper.vm.filteredUsers).toHaveLength(1);
         expect(wrapper.vm.filteredUsers[0].is_admin).toBeFalsy();
     });
 
     test('should filter users based on search input', () => {
         wrapper.find('input.search').setValue('Another');
 
-        expect(wrapper.findAll('tr').length).toEqual(1);
-        expect(wrapper.vm.filteredUsers.length).toEqual(1);
+        expect(wrapper.findAll('tr')).toHaveLength(1);
+        expect(wrapper.vm.filteredUsers).toHaveLength(1);
         expect(wrapper.vm.filteredUsers[0].name).toContain('Another');
     });
 
@@ -118,7 +121,10 @@ describe('UserManagement.vue', () => {
     });
 
     test('should display workspace name search input on workspaces view', () => {
-        wrapper.findAll('.tabs .tab').at(1).trigger('click');
+        wrapper
+            .findAll('.tabs .tab')
+            .at(1)
+            .trigger('click');
 
         expect(wrapper.find('.input.search.workspaces').exists()).toBeTruthy();
     });
@@ -131,7 +137,9 @@ describe('UserManagement.vue', () => {
         wrapper.find('.workspaces-tab').trigger('click');
         wrapper.find('.input.search.workspaces').setValue('staging');
 
-        expect(wrapper.find('.workspace-name').text()).toEqual(workspaces[3].name);
+        expect(wrapper.find('.workspace-name').text()).toEqual(
+            workspaces[3].name
+        );
     });
 
     describe('tabs', () => {
@@ -155,28 +163,40 @@ describe('UserManagement.vue', () => {
             wrapper.find('.filter-admin').trigger('click');
             wrapper.find('.filter-all').trigger('click');
 
-            expect(wrapper.findAll('.row .username').length).toEqual(allUsersCount);
+            expect(wrapper.findAll('.row .username')).toHaveLength(
+                allUsersCount
+            );
         });
 
         test('should filter the results to show admin users when the "Admin Users" statistic box is clicked', () => {
             const adminUsersCount = users.filter(user => user.is_admin).length;
             wrapper.find('.filter-admin').trigger('click');
 
-            expect(wrapper.findAll('.row .username').length).toEqual(adminUsersCount);
+            expect(wrapper.findAll('.row .username')).toHaveLength(
+                adminUsersCount
+            );
         });
 
         test('should filter the results to show regular users when the "Regular User" statistic box is clicked', () => {
-            const regularUsersCount = users.filter(user => user.is_admin === false).length;
+            const regularUsersCount = users.filter(
+                user => user.is_admin === false
+            ).length;
             wrapper.find('.filter-regular').trigger('click');
 
-            expect(wrapper.findAll('.row .username').length).toEqual(regularUsersCount);
+            expect(wrapper.findAll('.row .username')).toHaveLength(
+                regularUsersCount
+            );
         });
 
         test('should filter the results to show inactive users when the "Inactive Users" statistic box is clicked', () => {
-            const inactiveUsersCount = users.filter(user => user.last_login === null).length;
+            const inactiveUsersCount = users.filter(
+                user => user.last_login === null
+            ).length;
             wrapper.find('.filter-inactive').trigger('click');
 
-            expect(wrapper.findAll('.row .username').length).toEqual(inactiveUsersCount);
+            expect(wrapper.findAll('.row .username')).toHaveLength(
+                inactiveUsersCount
+            );
         });
 
         test('should filter the results to show users with auth issues when the "Authentication Issues" statistic box is clicked', () => {
@@ -187,7 +207,9 @@ describe('UserManagement.vue', () => {
             }).length;
             wrapper.find('.filter-auth-issues').trigger('click');
 
-            expect(wrapper.findAll('.row .username').length).toEqual(authIssuesUsersCount);
+            expect(wrapper.findAll('.row .username')).toHaveLength(
+                authIssuesUsersCount
+            );
         });
     });
 });
