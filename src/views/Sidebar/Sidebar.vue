@@ -9,9 +9,23 @@
                 @click="navigateHomepage()"
             />
         </div>
-        <p class="menu-label">Organizations</p>
-        <ul class="menu-list">
-            <li>
+        <p class="menu-label">Pages</p>
+        <ul
+            class="sidenav-dropdown menu-list"
+            :class="{ 'is-expanded': isOrganizationsExpanded }"
+            @click="isOrganizationsExpanded = !isOrganizationsExpanded"
+        >
+            <li class="nav-item">
+                <a>
+                    <span class="name">Organizations</span>
+                    <span class="icon">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <ul class="menu-list" v-if="isOrganizationsExpanded">
+            <li class="nav-item">
                 <router-link
                     :to="{
                         name: 'organization',
@@ -20,7 +34,19 @@
                     active-class="is-active"
                 >
                     <i class="fas fa-lg fa-hat-wizard"></i>
-                    Star Wars Build Team
+                    Cool Build Team
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link
+                    :to="{
+                        name: 'organization',
+                        params: { organizationId: 'b2wee92hhdsa99a' },
+                    }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-hat-wizard"></i>
+                    First Build Team
                 </router-link>
             </li>
         </ul>
@@ -137,6 +163,7 @@ export default {
         return {
             conchVersion: '',
             conchUIVersion: '',
+            isOrganizationsExpanded: false,
         };
     },
     methods: {
