@@ -1,0 +1,56 @@
+.workspace-modal {
+    .modal-content {
+        border-radius: 4px;
+        min-width: 460px;
+        width: auto;
+
+        .notification {
+            background-color: #18232e !important;
+
+            .datatable-simple {
+                max-height: 430px;
+                overflow-x: visible;
+                overflow-y: scroll;
+                border-radius: 4px;
+            }
+        }
+    }
+
+    table {
+        td {
+            justify-content: left;
+        }
+
+        tr.row-simple {
+            background-color: #2B3E50 !important;
+
+            td.row-action-button {
+                cursor: default;
+            }
+
+            i {
+                cursor: pointer;
+            }
+        }
+    }
+
+    .dropdown-menu {
+        z-index: 100;
+
+        .dropdown-item {
+            display: flex;
+            padding: 0 10px;
+
+            label {
+                display: flex;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    footer {
+        .icon {
+            margin-right: 10px;
+        }
+    }
+}
