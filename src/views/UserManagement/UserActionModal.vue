@@ -202,7 +202,6 @@ export default {
             clearTokens: true,
             deactivateConfirmed: false,
             hasNoTokens: false,
-            isActive: true,
             success: false,
             titleText: '',
         };
@@ -210,7 +209,6 @@ export default {
     methods: {
         ...mapActions(['clearUserAuthTokens']),
         closeModal() {
-            this.isActive = false;
             this.hasNoTokens = false;
 
             if (this.success) {
