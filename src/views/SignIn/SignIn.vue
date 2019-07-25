@@ -75,19 +75,28 @@
                                                 <input
                                                     type="text"
                                                     class="input"
+                                                    :class="{
+                                                        'has-error': badEmailAddress,
+                                                    }"
                                                     placeholder="Email Address"
                                                     v-model="emailAddress"
                                                     @keyup.enter="signIn()"
                                                 />
                                                 <span class="icon is-left">
-                                                    <div
+                                                    <i
+                                                        class="material-icons has-text-danger"
+                                                        v-if="badEmailAddress"
+                                                    >
+                                                        error
+                                                    </i>
+                                                    <i
                                                         class="material-icons has-text-grey"
+                                                        v-else
                                                     >
                                                         person
-                                                    </div>
+                                                    </i>
                                                 </span>
                                             </div>
-
                                         </div>
                                         <div class="field">
                                             <label class="label has-text-left">
@@ -97,13 +106,23 @@
                                                 <input
                                                     type="password"
                                                     class="input"
+                                                    :class="{
+                                                        'has-error': badPassword,
+                                                    }"
                                                     placeholder="Password"
                                                     v-model="password"
                                                     @keyup.enter="signIn()"
                                                 />
                                                 <span class="icon is-left">
                                                     <i
+                                                        class="material-icons has-text-danger"
+                                                        v-if="badPassword"
+                                                    >
+                                                        error
+                                                    </i>
+                                                    <i
                                                         class="material-icons has-text-grey"
+                                                        v-else
                                                     >
                                                         lock
                                                     </i>
@@ -111,7 +130,7 @@
                                             </div>
                                         </div>
                                         <a
-                                            class="button is-info is-fullwidth"
+                                            class="button button-sign-in is-info is-fullwidth"
                                             :class="{ 'is-loading': isLoading }"
                                             @click="signIn()"
                                             :disabled="incompatibleApiVersion"
@@ -154,7 +173,8 @@ export default {
     data() {
         return {
             apiVersion: '',
-            badLoginAttempt: false,
+            badEmailAddress: false,
+            badPassword: false,
             breakingApiVersion: '',
             conchReleaseUrl: '',
             currentWorkspaceId: '',
@@ -191,9 +211,9 @@ export default {
             });
         },
         signIn() {
-            this.isLoading = true;
-
             if (this.emailAddress && this.password) {
+                this.isLoading = true;
+
                 const data = {
                     user: this.emailAddress,
                     password: this.password,
@@ -236,11 +256,17 @@ export default {
                     })
                     .catch(() => {
                         this.isLoading = false;
-                        this.badLoginAttempt = true;
+                        this.badEmailAddress = true;
+                        this.badPassword = true;
                     });
             } else {
-                this.isLoading = false;
-                this.badLoginAttempt = true;
+                if (!this.emailAddress) {
+                    this.badEmailAddress = true;
+                }
+
+                if (!this.password) {
+                    this.badPassword = true;
+                }
             }
         },
     },
