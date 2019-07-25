@@ -1,5 +1,5 @@
 <template>
-    <section class="sign-in hero is-fullheight">
+    <section class="sign-in hero is-dark is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
                 <div
@@ -51,48 +51,84 @@
                         </p>
                     </div>
                 </div>
-                <div class="column is-4 is-offset-4">
-                    <div class="box">
-                        <div class="h3 title">Login to Conch</div>
-                        <p
-                            class="subtitle has-text-warning"
-                            v-if="badLoginAttempt"
-                        >
-                            Invalid email address or password
-                        </p>
-                        <form>
-                            <div class="field">
-                                <div class="control">
-                                    <input
-                                        type="email"
-                                        class="input is-info is-fullwidth is-rounded"
-                                        placeholder="Email address"
-                                        v-model="emailAddress"
-                                        @keyup.enter="signIn()"
-                                    />
+                <div class="column is-8 is-offset-2">
+                    <div class="card sign-in-card">
+                        <div class="card-content">
+                            <div class="columns">
+                                <div class="column is-5 sign-in-content">
+                                    <div class="sign-in-heading">
+                                        <p class="title has-text-left">
+                                            Welcome to Conch
+                                        </p>
+                                        <p
+                                            class="subtitle is-size-6 has-text-left"
+                                        >
+                                            Sign in to get started
+                                        </p>
+                                    </div>
+                                    <div class="sign-in-input">
+                                        <div class="field">
+                                            <label class="label has-text-left">
+                                                Email Address
+                                            </label>
+                                            <div class="control has-icons-left">
+                                                <input
+                                                    type="text"
+                                                    class="input"
+                                                    placeholder="Email Address"
+                                                    v-model="emailAddress"
+                                                    @keyup.enter="signIn()"
+                                                />
+                                                <span class="icon is-left">
+                                                    <div
+                                                        class="material-icons has-text-grey"
+                                                    >
+                                                        person
+                                                    </div>
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="field">
+                                            <label class="label has-text-left">
+                                                Password
+                                            </label>
+                                            <div class="control has-icons-left">
+                                                <input
+                                                    type="password"
+                                                    class="input"
+                                                    placeholder="Password"
+                                                    v-model="password"
+                                                    @keyup.enter="signIn()"
+                                                />
+                                                <span class="icon is-left">
+                                                    <i
+                                                        class="material-icons has-text-grey"
+                                                    >
+                                                        lock
+                                                    </i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <a
+                                            class="button is-info is-fullwidth"
+                                            :class="{ 'is-loading': isLoading }"
+                                            @click="signIn()"
+                                            :disabled="incompatibleApiVersion"
+                                        >
+                                            Sign In
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="column">
+                                    <div class="sign-in-image">
+                                        <img
+                                            src="../../assets/secure_server.svg"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div class="field">
-                                <div class="control">
-                                    <input
-                                        type="password"
-                                        class="input is-info is-fullwidth is-rounded"
-                                        placeholder="Password"
-                                        v-model="password"
-                                        @keyup.enter="signIn()"
-                                    />
-                                </div>
-                            </div>
-                            <button
-                                type="button"
-                                class="button sign-in is-primary is-fullwidth"
-                                :class="{ 'is-loading': isLoading }"
-                                @click="signIn()"
-                                :disabled="incompatibleApiVersion"
-                            >
-                                Login
-                            </button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

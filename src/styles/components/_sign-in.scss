@@ -1,4 +1,52 @@
 .sign-in {
+	.sign-in-card {
+		background-color: $grey-dark;
+		border: none;
+		border-radius: 2px;
+		box-shadow: 0px 9px 45px -19px rgba(0, 0, 0, 1);
+	}
+
+	.sign-in-content {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: 1.5rem;
+	}
+
+	.sign-in-heading {
+		margin-bottom: 40px;
+
+		.title {
+			font-family: 'Raleway', sans-serif;
+			font-weight: bold;
+		}
+	}
+
+	.sign-in-input {
+		.button {
+			border-radius: 2px;
+			font-weight: bold;
+			height: 44px;
+			margin-top: 36px;
+			text-transform: uppercase;
+		}
+	}
+
+	input {
+		background-color: #D6EAF8;
+		border: none;
+		border-radius: 2px;
+
+		&:active,
+		&:focus {
+			background-color: lighten(#D6EAF8, 4px);
+		}
+
+		&::placeholder {
+			color: $grey;
+		}
+	}
+
 	.session-notification {
 		.message-header {
 			padding: 0.6em 0.5em 0.6em 1.5em;
