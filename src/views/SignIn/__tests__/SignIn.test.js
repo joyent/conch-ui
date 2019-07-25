@@ -37,34 +37,31 @@ describe('SignIn.vue', () => {
         wrapper = shallowMount(SignIn, { localVue, mocks, store });
     });
 
-    test('should call signIn method when Login button is clicked', () => {
-        const spy = jest.spyOn(wrapper.vm, 'signIn');
-        wrapper.find('button').trigger('click');
-
-        expect(spy).toHaveBeenCalled();
+    test('should not display error icons on initial render', () => {
+        expect(
+            wrapper.find('.material-icons.has-text-danger').exists()
+        ).toBeFalsy();
     });
 
-    test('should not display warning text on initial render', () => {
-        expect(wrapper.html()).not.toContain(
-            'Invalid email address or password'
-        );
+    test('should display error icons when bad input is entered', () => {
+        wrapper.find('.button-sign-in').trigger('click');
+
+        expect(
+            wrapper.find('.material-icons.has-text-danger').exists()
+        ).toBeTruthy();
     });
 
     test('should not display a disabled Login button on initial render', () => {
         expect(
-            wrapper.find('button.sign-in').attributes('disabled')
+            wrapper.find('.button-sign-in').attributes('disabled')
         ).toBeFalsy();
     });
 
-    test('should display warning text when bad login info is submitted', () => {
-        wrapper.vm.badLoginAttempt = true;
-        expect(wrapper.html()).toContain('Invalid email address or password');
-    });
+    test('should call signIn method when Login button is clicked', () => {
+        const spy = jest.spyOn(wrapper.vm, 'signIn');
+        wrapper.find('.button-sign-in').trigger('click');
 
-    test('should display warning when empty input fields are submitted', () => {
-        wrapper.find('button').trigger('click');
-
-        expect(wrapper.html()).toContain('Invalid email address or password');
+        expect(spy).toHaveBeenCalled();
     });
 
     test('should call setForcePasswordChange method when force_password_change is true', async () => {
@@ -83,7 +80,7 @@ describe('SignIn.vue', () => {
             emailAddress: 'validuser@joyent.com',
             password: 'goodPassword',
         });
-        wrapper.find('button').trigger('click');
+        wrapper.find('.button-sign-in').trigger('click');
 
         await new Promise(resolve =>
             setTimeout(() => {
@@ -108,7 +105,7 @@ describe('SignIn.vue', () => {
             emailAddress: 'validuser@joyent.com',
             password: 'goodPassword',
         });
-        wrapper.find('button').trigger('click');
+        wrapper.find('.button-sign-in').trigger('click');
 
         expect(spy).toHaveBeenCalledWith({
             user: 'validuser@joyent.com',
@@ -137,7 +134,7 @@ describe('SignIn.vue', () => {
 
         test('should disable login button if API version does not meet requirements', () => {
             expect(
-                wrapper.find('button.sign-in').attributes('disabled')
+                wrapper.find('.button-sign-in').attributes('disabled')
             ).toBeTruthy();
         });
     });
