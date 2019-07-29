@@ -1,0 +1,118 @@
+.organizations-tab {
+	.page-heading {
+		display: flex;
+		align-items: center;
+		margin-bottom: 20px;
+
+		h1 {
+			margin: 0;
+			word-break: normal;
+		}
+
+		.control {
+			margin: 0 20px;
+		}
+
+		input {
+			background-color: $grey-darker;
+			border-color: $grey;
+			border-radius: 4px;
+			color: #bdcbdb;
+			min-width: 350px;
+
+			&::placeholder {
+				color: #bdcbdb;
+			}
+		}
+
+		.views {
+			display: flex;
+			align-items: center;
+			flex-grow: 1;
+
+			i {
+				cursor: pointer;
+				font-size: 36px;
+
+				&:not(:last-of-type) {
+					margin-right: 10px;
+				}
+			}
+		}
+
+		.add-organization {
+			color: $green;
+			cursor: pointer;
+			font-size: 48px;
+		}
+	}
+
+	.cards {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-gap: 25px;
+
+		.organization-stats {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-gap: 25px;
+			margin: 10px 0;
+
+			.box {
+				background-color: $grey-darker;
+				margin: 0;
+				padding: 15px;
+				text-align: center;
+			}
+		}
+
+		.card {
+			background-color: $grey-dark;
+			border: none;
+			border-radius: 4px;
+			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+			transition: all 0.1s ease-in-out;
+
+			.card-content {
+				display: flex;
+				flex-direction: column;
+				padding: 20px;
+
+				.more {
+					cursor: pointer;
+					text-align: right;
+				}
+
+				figure {
+					margin: 0 auto 15px;
+				}
+
+				.organization-title {
+					text-align: center;
+					font-weight: bold;
+					color: $white;
+					font-size: 20px;
+					margin-bottom: 10px;
+				}
+
+				.organization-desc {
+					text-align: center;
+				}
+			}
+
+			.button {
+				margin-top: 15px;
+				border: none;
+			}
+
+			&:hover {
+				transform: scale(1.04);
+				transition: all 0.1s ease-in-out;
+
+				.button {
+					background-color: #4A5DBD;
+				}
+			}
+		}
+	}
+}
