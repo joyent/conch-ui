@@ -1,0 +1,197 @@
+.add-organization-modal {
+    .modal-content {
+        border-radius: 4px;
+    }
+
+    .columns {
+        margin: 0;
+    }
+
+    .modal-heading {
+        display: flex;
+        align-items: center;
+
+        .modal-title {
+            flex-grow: 1;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            text-align: left;
+        }
+    }
+
+    .step-details {
+        background-color: $grey-dark;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+
+        .step-content {
+            flex-grow: 1;
+
+            p {
+                font-size: 14px;
+            }
+
+            .title {
+                word-break: normal;
+                font-weight: bold;
+                font-size: 24px;
+            }
+
+            hr {
+                background-color: $white;
+                height: 1px;
+                margin: 16px 0 12px;
+            }
+
+            .step-title {
+                word-break: normal;
+                font-weight: bold;
+                font-size: 18px;
+                margin-bottom: 5px;
+            }
+        }
+
+        .steps {
+            margin-bottom: 10px;
+            text-align: center;
+
+            .dot {
+                background-color: #ffffff;
+                border-radius: 50%;
+                cursor: pointer;
+                display: inline-block;
+                height: 8px;
+                margin: 0 7px;
+                width: 8px;
+
+                &.is-active {
+                    background-color: #209cee;
+                }
+            }
+        }
+    }
+
+    .organization-details {
+        padding: 20px;
+    }
+
+    .modal-body {
+        margin: 25px 0;
+    }
+
+    .notification {
+        background-color: lighten($grey-darker, 2%);
+        padding: 0;
+    }
+
+    i.org {
+        font-size: 28px;
+        margin-right: 10px;
+    }
+
+    i.close {
+        cursor: pointer;
+        font-size: 28px;
+        margin-left: 10px;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+
+        .button {
+            border-radius: 3px;
+            font-weight: bold;
+            height: 36px;
+            width: 100px;
+        }
+
+        &.first-step {
+            justify-content: flex-end;
+        }
+    }
+
+    input,
+    textarea {
+        background-color: $grey-darker;
+        border-color: $grey;
+        border-radius: 4px;
+        color: #bdcbdb;
+
+        &::placeholder {
+            color: #bdcbdb;
+        }
+    }
+
+    .step-body {
+        min-height: 450px;
+
+        .table-title td {
+            border: none;
+            padding: 6px;
+        }
+
+        .user {
+            display: flex;
+            align-items: stretch;
+
+            td {
+                display: flex;
+                align-items: center;
+                flex-grow: 1;
+                background-color: $grey-darker;
+                border: none;
+
+                .username {
+                    flex-grow: 1;
+                }
+
+                &:hover {
+                    background-color: $dark;
+                }
+            }
+
+            .add-user,
+            .remove-user {
+                cursor: pointer;
+                font-size: 28px;
+                transition: color 0.1s ease-in-out;
+            }
+
+            .add-user {
+                &:hover {
+                    color: lighten($green, 3%);
+                    transition: color 0.1s ease-in-out;
+                }
+            }
+
+            .remove-user {
+                &:hover {
+                    color: $red;
+                    transition: color 0.1s ease-in-out;
+                }
+            }
+        }
+
+        &.review {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+
+            .item {
+                background-color: $grey-darker;
+                display: flex;
+                align-items: center;
+                padding: 15px;
+                color: $white;
+                cursor: pointer;
+
+                .item-title {
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+}
