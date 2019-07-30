@@ -93,7 +93,7 @@
                                                         class="material-icons has-text-grey"
                                                         v-else
                                                     >
-                                                        person
+                                                        email
                                                     </i>
                                                 </span>
                                             </div>
