@@ -1,34 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`PageNotFound.vue should render correctly on initial render 1`] = `
-<div class="page-not-found">
-  <div class="container">
-    <div class="columns">
-      <div class="column is-6 content">
-        <h1 class="title">404</h1>
-        <h2 class="subtitle is-5">
-          The page you're looking for must be in another castle.
-        </h2>
-        <hr>
-        <div class="action">
-          <div class="text">
-            <p class="is-size-5">
-              Head back to the last known workspace.
-            </p>
-            <p class="is-size-5">
-              If you think something is broken, please report
-              it.
-            </p>
-          </div>
-          <p class="buttons"><a class="button is-rounded is-outlined is-info is-uppercase has-text-weight-semibold">
-              Last Known Workspace
-            </a> <a href="https://github.com/joyent/conch-ui/issues/new" target="_blank" class="button is-rounded is-outlined is-danger is-uppercase has-text-weight-semibold">
-              Report a Problem
-            </a></p>
-        </div>
-      </div>
-      <div class="column is-5 is-offset-1 image"><img src="../../assets/castle.svg" width="500"></div>
-    </div>
+<div class="page-not-found hero is-fullheight">
+  <div class="content-left">
+    <h1 class="title">404</h1>
+    <h2 class="subtitle is-5">
+      The page you're looking for is... missing.
+    </h2>
+    <hr>
+    <p class="is-size-5">
+      Head back to the last known workspace.
+    </p>
+    <p class="is-size-5">
+      If you think something is broken, please report it.
+    </p>
+    <div class="buttons"><a class="button is-outlined is-info is-uppercase has-text-weight-semibold">
+        Last Known Workspace
+      </a> <a href="https://github.com/joyent/conch-ui/issues/new" target="_blank" class="button is-outlined is-danger is-uppercase has-text-weight-semibold">
+        Report a Problem
+      </a></div>
   </div>
+  <div class="content-right"><img src="../../assets/taken.svg" width="550"></div>
 </div>
 `;
