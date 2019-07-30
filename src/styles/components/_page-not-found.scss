@@ -1,31 +1,23 @@
 .page-not-found {
-	hr {
-		max-width: 474px;
-	}
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-evenly;
 
-	.content {
-		margin-top: 260px;
+	hr {
+		margin-top: 30px;
+		max-width: 474px;
 	}
 
 	.title {
 		font-size: 6rem;
 	}
 
-	.subtitle {
-		margin-bottom: 30px;
-	}
+	.buttons {
+		margin-top: 30px;
 
-	.action {
-		.text {
-			margin: 25px 0;
-
-			p:first-child() {
-				margin-bottom: 0.25em;
-			}
+		button {
+			border-radius: 4px;
 		}
-	}
-
-	.image {
-		margin-top: 160px;
 	}
 }
