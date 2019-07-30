@@ -72,7 +72,6 @@ module.exports = {
         hot: true,
         open: true,
         overlay: {
-            warnings: true,
             errors: true,
         },
         proxy: {
