@@ -7,10 +7,14 @@
 	.page {
 		flex-grow: 1;
 		flex-shrink: 1;
-		margin-left: 200px;
 
 		.page-content {
+			margin-left: 200px;
 			padding: 20px;
+
+			&.page-not-found {
+				margin-left: 0;
+			}
 		}
 	}
 }
