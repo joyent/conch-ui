@@ -1,0 +1,68 @@
+.create-token-modal {
+    .modal-content {
+        width: 400px;
+    }
+
+    .notification {
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        padding: 30px;
+
+        &.token-copied {
+            padding: 15px;
+
+            .modal-heading {
+                margin: 0;
+            }
+        }
+    }
+
+    .modal-heading {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .modal-title {
+            color: $white;
+            flex-grow: 1;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    }
+
+    input,
+    textarea {
+        background-color: $dark;
+        border-color: $grey;
+        border-radius: 4px;
+        color: #bdcbdb;
+
+        &::placeholder {
+            color: #bdcbdb;
+        }
+    }
+
+    .modal-body {
+        p {
+            margin: 10px 0;
+        }
+
+        textarea {
+            overflow: visible;
+        }
+
+        .button {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    }
+
+    .modal-footer {
+        .button {
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+    }
+}
