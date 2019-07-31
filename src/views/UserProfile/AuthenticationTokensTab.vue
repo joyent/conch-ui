@@ -1,9 +1,7 @@
 <template>
     <div class="user-authentication-tokens">
         <Spinner v-if="!filteredTokens.length && !noTokens && !searchText" />
-        <div
-            class="header"
-        >
+        <div class="header">
             <div class="control has-icons-left">
                 <input
                     type="text"
@@ -15,10 +13,7 @@
                     <i class="fas fa-search"></i>
                 </span>
             </div>
-            <a
-                class="button is-info is-outlined"
-                @click="creatingToken = true"
-            >
+            <a class="button is-info is-outlined" @click="creatingToken = true">
                 Create New Token
             </a>
         </div>
