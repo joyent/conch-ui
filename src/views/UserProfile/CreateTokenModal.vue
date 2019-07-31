@@ -164,6 +164,6 @@ export default {
     },
     mounted() {
         this.$refs.tokenName.focus();
-    }
+    },
 };
 </script>

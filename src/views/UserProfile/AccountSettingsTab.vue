@@ -8,14 +8,16 @@
                             class="message is-danger"
                             v-if="
                                 showError &&
-                                    (errors.passwordLength || errors.passwordMismatch)
+                                    (errors.passwordLength ||
+                                        errors.passwordMismatch)
                             "
                         >
                             <div class="message-header">
                                 <p>
                                     <i class="fas fa-exclamation-circle"></i>
                                     <span v-if="errors.passwordLength">
-                                        Passwords must contain at least 5 characters.
+                                        Passwords must contain at least 5
+                                        characters.
                                     </span>
                                     <span v-else-if="errors.passwordMismatch">
                                         The passwords you entered do not match.
@@ -121,7 +123,8 @@
                                         :true-value="true"
                                         :false-value="false"
                                     />
-                                    <span class="slider round is-success"></span>
+                                    <span class="slider round is-success">
+                                    </span>
                                 </label>
                                 <span style="margin-left: 8px;">
                                     <strong v-if="clearAllTokens">
