@@ -8,70 +8,35 @@ localVue.use(Vuex);
 jest.mock('../../../api/request.js');
 
 describe('UserProfile.vue', () => {
+    let methods;
     let mocks;
     let state;
     let store;
     let wrapper;
 
     beforeEach(() => {
+        methods = { closeModal: jest.fn() };
         mocks = { $router: [] };
         state = {};
         store = new Vuex.Store({ state });
-        wrapper = shallowMount(UserProfile, { localVue, mocks, store });
+        wrapper = shallowMount(UserProfile, {
+            localVue,
+            methods,
+            mocks,
+            store,
+        });
     });
 
-    // Helper function
-    const savePassword = (pwd = '') => {
-        wrapper.find('input.password').setValue(pwd);
-        wrapper.find('input.confirmation').setValue(pwd);
-        wrapper.find('button.save').trigger('click');
-    };
-
-    test('should render correctly on inital render', () => {
-        expect(wrapper.html()).toMatchSnapshot();
+    test('should display the account settings component on initial render', () => {
+        expect(wrapper.find('accountsettingstab-stub').exists()).toBeTruthy();
     });
 
-    test('should call the savePassword method when a valid password is entered', () => {
-        const spy = jest.spyOn(wrapper.vm, 'savePassword');
+    test('should display the authentication tokens component when the tab is clicked', () => {
+        wrapper.find('.tab-tokens').trigger('click');
 
-        savePassword('abcdefg');
-
-        expect(spy).toHaveBeenCalled();
-    });
-
-    test('should not display warning when a valid password is entered', () => {
-        savePassword('abcdefg');
-
-        expect(wrapper.find('.message.is-danger').exists()).toEqual(false);
-    });
-
-    test('should display password mismatch warning when password does not match confirmation', () => {
-        wrapper.find('input.password').setValue('abcdefg');
-        wrapper.find('input.confirmation').setValue();
-        wrapper.find('button.save').trigger('click');
-
-        expect(wrapper.html()).toContain('The passwords you entered do not');
-    });
-
-    test('should display password length warning when password is too short', () => {
-        savePassword();
-
-        expect(wrapper.html()).toContain('Passwords must contain at least');
-    });
-
-    test('should close the warning when the close button is clicked', () => {
-        savePassword();
-
-        wrapper.find('button.delete').trigger('click');
-
-        expect(wrapper.find('.message.is-danger').exists()).toEqual(false);
-    });
-
-    test('should remove warning after a valid password is submitted', () => {
-        savePassword();
-        savePassword('abcdefg');
-
-        expect(wrapper.find('.message.is-danger').exists()).toEqual(false);
+        expect(
+            wrapper.find('authenticationtokenstab-stub').exists()
+        ).toBeTruthy();
     });
 
     describe('Password Reset Modal', () => {
@@ -79,9 +44,20 @@ describe('UserProfile.vue', () => {
 
         beforeEach(() => {
             actions = { clearForcePasswordChange: jest.fn() };
+            methods = {
+                closeModal: () => {
+                    wrapper.vm.$data.showModal = false;
+                },
+            };
+            mocks = { $router: [] };
             state = { forcePasswordChange: true };
             store = new Vuex.Store({ actions, state });
-            wrapper = shallowMount(UserProfile, { localVue, mocks, store });
+            wrapper = shallowMount(UserProfile, {
+                localVue,
+                methods,
+                mocks,
+                store,
+            });
         });
 
         test('should display the forcePasswordChange modal when forcePasswordChange is true', () => {
