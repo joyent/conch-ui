@@ -1,19 +1,23 @@
 .create-token-modal {
     .modal-content {
         width: 400px;
-    }
 
-    .notification {
-        border-radius: 4px;
-        display: flex;
-        flex-direction: column;
-        padding: 30px;
+        > .notification {
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 30px;
 
-        &.token-copied {
-            padding: 15px;
+            &.token-copied {
+                padding: 15px;
 
-            .modal-heading {
-                margin: 0;
+                .modal-heading {
+                    margin: 0;
+                }
+            }
+
+            .close {
+                cursor: pointer;
             }
         }
     }
@@ -25,10 +29,24 @@
 
         .modal-title {
             color: $white;
-            flex-grow: 1;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
-            text-align: center;
+            display: flex;
+            flex-grow: 1;
+            align-items: center;
+            justify-content: center;
+
+            i {
+                margin-right: 10px;
+            }
+
+            &.copied {
+                font-size: 20px;
+            }
+        }
+
+        .close {
+            cursor: pointer;
         }
     }
 
@@ -44,9 +62,15 @@
         }
     }
 
+    input {
+        &.has-error {
+            border: 1px solid $red;
+        }
+    }
+
     .modal-body {
         p {
-            margin: 10px 0;
+            margin-bottom: 20px;
         }
 
         textarea {
@@ -57,12 +81,25 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+
+        .error-message {
+            margin: 5px 0 0;
+        }
     }
 
     .modal-footer {
+        margin-top: 20px;
+
         .button {
-            margin-top: 20px;
             border-radius: 4px;
         }
+    }
+
+    .notification.success {
+        border-color: $red;
+        border-radius: 4px;
+        border-style: solid;
+        border-width: 0 4px;
+        padding: 10px;
     }
 }

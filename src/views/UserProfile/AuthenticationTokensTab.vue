@@ -1,11 +1,11 @@
 <template>
     <div class="user-authentication-tokens">
         <Spinner v-if="!filteredTokens.length && !noTokens && !searchText" />
-        <div class="header">
+        <div class="header" v-if="filteredTokens.length">
             <div class="control has-icons-left">
                 <input
                     type="text"
-                    class="input"
+                    class="input search"
                     placeholder="Search Tokens"
                     v-model="searchText"
                 />
@@ -13,7 +13,10 @@
                     <i class="fas fa-search"></i>
                 </span>
             </div>
-            <a class="button is-info is-outlined" @click="creatingToken = true">
+            <a
+                class="button create-token is-info is-outlined"
+                @click="creatingToken = true"
+            >
                 Create New Token
             </a>
         </div>
@@ -99,7 +102,11 @@
                 <th></th>
             </tfoot>
             <tbody>
-                <tr v-for="token in filteredTokens" :key="token.name">
+                <tr
+                    class="token"
+                    v-for="token in filteredTokens"
+                    :key="token.name"
+                >
                     <td>
                         <i class="fas fa-key has-text-success"></i>
                     </td>
@@ -122,7 +129,10 @@
                 </tr>
             </tbody>
         </table>
-        <div class="no-search-results" v-else>
+        <div
+            class="no-search-results"
+            v-else-if="!filteredTokens.length && searchText"
+        >
             <p class="title is-4 has-text-white has-text-centered">
                 No Results Found.
             </p>
@@ -132,7 +142,7 @@
             v-if="!filteredTokens.length && noTokens && !creatingToken"
         >
             <p class="empty-state-heading is-marginless">
-                You don't have any tokens.
+                You do not have any tokens.
             </p>
             <a
                 class="button create-token is-info"
