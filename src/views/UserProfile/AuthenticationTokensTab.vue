@@ -259,53 +259,6 @@ export default {
                 this.setTokens();
             });
         },
-        save() {
-            const tokenName = this.tokenName;
-            this.isLoading = true;
-
-            if (tokenName) {
-                createToken(tokenName)
-                    .then(response => {
-                        this.creatingToken = false;
-                        this.createSuccess = true;
-                        this.isLoading = false;
-
-                        if (this.sortedTokens.length) {
-                            this.sortedTokens.unshift(response.data);
-                        } else {
-                            this.sortedTokens.push(response.data);
-                        }
-
-                        setTimeout(() => {
-                            this.createSuccess = false;
-                            this.tokenName = '';
-                        }, 3000);
-                    })
-                    .catch(error => {
-                        if (error.status === 400) {
-                            const errorData = error.data;
-                            if (errorData && errorData.error) {
-                                if (
-                                    errorData.error.includes(
-                                        `name "${tokenName}" is already in use`
-                                    )
-                                ) {
-                                    this.duplicateTokenNameError = true;
-                                    this.isLoading = false;
-                                    this.creatingToken = false;
-
-                                    setTimeout(() => {
-                                        this.duplicateTokenNameError = false;
-                                        this.tokenName = '';
-                                    }, 3000);
-                                }
-                            }
-                        }
-                    });
-            } else {
-                this.isLoading = false;
-            }
-        },
         setTokens() {
             this.sortedTokens = [];
 
