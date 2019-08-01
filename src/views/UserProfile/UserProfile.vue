@@ -84,19 +84,6 @@ export default {
             this.clearForcePasswordChange();
             this.$refs.passwordInput.focus();
         },
-        validateConfirmPassword() {
-            this.validConfirmPassword = false;
-            const confirmPassword = this.confirmPassword;
-
-            if (!confirmPassword && !this.password) {
-                this.errors.passwordMismatch = false;
-            } else if (confirmPassword && confirmPassword === this.password) {
-                this.validConfirmPassword = true;
-                this.errors.passwordMismatch = false;
-            } else {
-                this.errors.passwordMismatch = true;
-            }
-        },
     },
     computed: {
         ...mapState(['forcePasswordChange']),

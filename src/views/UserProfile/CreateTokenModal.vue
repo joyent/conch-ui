@@ -61,7 +61,7 @@
                     </div>
                     <div class="modal-footer">
                         <a
-                            class="button is-success is-fullwidth"
+                            class="button create is-success is-fullwidth"
                             :class="{ 'is-loading': isLoading }"
                             @click="save()"
                         >
@@ -171,9 +171,9 @@ export default {
                     .then(response => {
                         const token = response.data;
 
+                        this.token = token;
                         this.success = true;
                         this.isLoading = false;
-                        this.token = token;
 
                         EventBus.$emit('create-token', token);
                     })
