@@ -9,7 +9,7 @@
                             Create Token
                         </span>
                         <i
-                            class="material-icons"
+                            class="material-icons close"
                             @click="closeModal()"
                             style="text-align: right"
                         >
@@ -18,14 +18,46 @@
                     </div>
                     <div class="modal-body">
                         <label class="label">Name</label>
-                        <input
-                            type="text"
-                            class="input"
-                            v-model="name"
-                            placeholder="Token name"
-                            @keyup.enter="save()"
-                            ref="tokenName"
-                        />
+                        <div
+                            class="control"
+                            :class="{
+                                'has-icons-left':
+                                    emptyNameError || duplicateTokenError,
+                            }"
+                        >
+                            <input
+                                type="text"
+                                class="input"
+                                :class="{
+                                    'has-error':
+                                        emptyNameError || duplicateTokenError,
+                                }"
+                                v-model="name"
+                                placeholder="Token name"
+                                @keyup.enter="save()"
+                                ref="tokenName"
+                            />
+                            <span
+                                class="icon is-left"
+                                v-if="emptyNameError || duplicateTokenError"
+                            >
+                                <i class="material-icons has-text-danger">
+                                    error
+                                </i>
+                            </span>
+                            <p
+                                class="error-message has-text-danger"
+                                v-if="emptyNameError"
+                            >
+                                A token name is required.
+                            </p>
+                            <p
+                                class="error-message has-text-danger"
+                                v-if="duplicateTokenError"
+                            >
+                                You already have a token with that name.
+                            </p>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <a
@@ -40,10 +72,13 @@
                 <div class="notification" v-if="success && !tokenCopied">
                     <div class="modal-heading">
                         <span class="modal-title">
-                            Success!
+                            <i class="material-icons has-text-success">
+                                check_circle
+                            </i>
+                            Token Created
                         </span>
                         <i
-                            class="material-icons"
+                            class="material-icons close"
                             @click="closeModal()"
                             style="text-align: right"
                         >
@@ -51,12 +86,11 @@
                         </i>
                     </div>
                     <div class="modal-body">
-                        <p>
-                            Here's your token. This is the only time you'll be
-                            able to see this token, so please store it in a safe
-                            place.
-                        </p>
-                        <p>Keep it secret. Keep it safe.</p>
+                        <article class="notification success is-dark">
+                            This is the only time you will be able to see this
+                            token&#46; Please store it where you will be able to
+                            find it later.
+                        </article>
                         <textarea
                             id="token"
                             class="textarea has-fixed-size token"
@@ -84,7 +118,7 @@
                         <i class="material-icons has-text-success">
                             check_circle
                         </i>
-                        <span class="modal-title">
+                        <span class="modal-title copied">
                             Token copied to clipboard
                         </span>
                     </div>
@@ -102,7 +136,8 @@ import { EventBus } from '@src/eventBus.js';
 export default {
     data() {
         return {
-            duplicateTokenNameError: false,
+            duplicateTokenError: false,
+            emptyNameError: false,
             isActive: true,
             isLoading: false,
             name: '',
@@ -122,7 +157,10 @@ export default {
             setTimeout(() => {
                 this.closeModal();
                 this.tokenCopied = false;
-            }, 2000);
+            }, 3000);
+        },
+        focusTokenNameInput() {
+            this.$refs.tokenName.focus();
         },
         save() {
             const name = this.name;
@@ -148,7 +186,7 @@ export default {
                                         `name "${name}" is already in use`
                                     )
                                 ) {
-                                    this.duplicateTokenNameError = true;
+                                    this.duplicateTokenError = true;
                                     this.isLoading = false;
                                 }
                             }
@@ -156,6 +194,7 @@ export default {
                     });
             } else {
                 this.isLoading = false;
+                this.emptyNameError = true;
             }
         },
     },
@@ -163,7 +202,7 @@ export default {
         new ClipboardJS('.copy-token');
     },
     mounted() {
-        this.$refs.tokenName.focus();
+        this.focusTokenNameInput();
     },
 };
 </script>

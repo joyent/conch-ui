@@ -1,8 +1,13 @@
 <template>
     <div class="user-profile">
+        <PageHeader
+            :title="'User Profile'"
+            :subtitle="'Update your password and authentication tokens'"
+        />
         <div class="tabs is-toggle">
             <ul>
                 <li
+                    class="tab-settings"
                     :class="{ 'is-active': activeTab === 'settings' }"
                     @click="activeTab = 'settings'"
                 >
@@ -11,6 +16,7 @@
                     </a>
                 </li>
                 <li
+                    class="tab-tokens"
                     :class="{ 'is-active': activeTab === 'tokens' }"
                     @click="activeTab = 'tokens'"
                 >
@@ -56,12 +62,14 @@
 <script>
 import AccountSettingsTab from './AccountSettingsTab.vue';
 import AuthenticationTokensTab from './AuthenticationTokensTab.vue';
+import PageHeader from '@src/views/components/PageHeader.vue';
 import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
         AccountSettingsTab,
         AuthenticationTokensTab,
+        PageHeader,
     },
     data() {
         return {
