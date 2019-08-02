@@ -20,6 +20,10 @@
         }
     }
 
+    .modal-body {
+        overflow: scroll;
+    }
+
     .step-details {
         background-color: $grey-dark;
         padding: 20px;
@@ -74,7 +78,10 @@
     }
 
     .organization-details {
+        // Check this with .step-body min-height
+        max-height: 450px;
         padding: 20px;
+        overflow: hidden;
     }
 
     .modal-body {
@@ -126,7 +133,8 @@
     }
 
     .step-body {
-        min-height: 450px;
+        min-height: 250px;
+        max-height: 250px;
 
         .table-title td {
             border: none;
@@ -178,20 +186,52 @@
         &.review {
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly;
 
-            .item {
-                background-color: $grey-darker;
-                display: flex;
-                align-items: center;
-                padding: 15px;
-                color: $white;
-                cursor: pointer;
+            .review-item {
+                &:not(:last-of-type) {
+                    margin-bottom: 10px;
+                }
 
-                .item-title {
-                    flex-grow: 1;
+                .review-item-title {
+                    background-color: $grey-dark;
+                    cursor: pointer;
+                    display: flex;
+                    transition: transform 0.3s ease-in-out;
+
+                    .item-title {
+                        color: $white;
+                        flex-grow: 1;
+                        font-weight: bold;
+                    }
+
+                    i.material-icons {
+                        transition: transform 0.2s ease-in-out;
+                    }
+
+                    &.is-expanded {
+                        i.material-icons {
+                            transform: rotate(90deg);
+                            transition: transform 0.2s ease-in-out;
+                        }
+                    }
+                }
+
+                .review-item-title,
+                .item-content-row {
+                    padding: 15px;
+                }
+
+                .review-item-content {
+                    background-color: $grey-darker;
+
+                    .row {
+                        &:hover {
+                            background-color: darken($grey-darker, 2%);
+                        }
+                    }
                 }
             }
+
         }
     }
 }
