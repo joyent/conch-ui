@@ -1,0 +1,105 @@
+.create-token-modal {
+    .modal-content {
+        width: 400px;
+
+        > .notification {
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 30px;
+
+            &.token-copied {
+                padding: 15px;
+
+                .modal-heading {
+                    margin: 0;
+                }
+            }
+
+            .close {
+                cursor: pointer;
+            }
+        }
+    }
+
+    .modal-heading {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .modal-title {
+            color: $white;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            flex-grow: 1;
+            align-items: center;
+            justify-content: center;
+
+            i {
+                margin-right: 10px;
+            }
+
+            &.copied {
+                font-size: 20px;
+            }
+        }
+
+        .close {
+            cursor: pointer;
+        }
+    }
+
+    input,
+    textarea {
+        background-color: $dark;
+        border-color: $grey;
+        border-radius: 4px;
+        color: #bdcbdb;
+
+        &::placeholder {
+            color: #bdcbdb;
+        }
+    }
+
+    input {
+        &.has-error {
+            border: 1px solid $red;
+        }
+    }
+
+    .modal-body {
+        p {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            overflow: visible;
+        }
+
+        .button {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .error-message {
+            margin: 5px 0 0;
+        }
+    }
+
+    .modal-footer {
+        margin-top: 20px;
+
+        .button {
+            border-radius: 4px;
+        }
+    }
+
+    .notification.success {
+        border-color: $red;
+        border-radius: 4px;
+        border-style: solid;
+        border-width: 0 4px;
+        padding: 10px;
+    }
+}

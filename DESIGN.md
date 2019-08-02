@@ -308,7 +308,7 @@ import Router from 'vue-router';
 
 // Components to be loaded by router
 import SignIn from '@src/views/SignIn/SignIn.vue';
-import UserProfile from '@src/views/User/UserProfile.vue';
+import UserProfile from '@src/views/UserProfile/UserProfile.vue';
 import Navbar from '@src/views/Navbar/Navbar.vue';
 import Sidebar from '@src/views/Sidebar/Sidebar.vue';
 import PageNotFound from '@src/views/PageNotFound/PageNotFound.vue';

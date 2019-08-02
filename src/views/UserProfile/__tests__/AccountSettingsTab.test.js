@@ -1,4 +1,4 @@
-import UserProfile from '../UserProfile.vue';
+import AccountSettingsTab from '../AccountSettingsTab.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 
@@ -7,7 +7,7 @@ localVue.use(Vuex);
 
 jest.mock('../../../api/request.js');
 
-describe('UserProfile.vue', () => {
+describe('AccountSettingsTab.vue', () => {
     let mocks;
     let state;
     let store;
@@ -17,7 +17,7 @@ describe('UserProfile.vue', () => {
         mocks = { $router: [] };
         state = {};
         store = new Vuex.Store({ state });
-        wrapper = shallowMount(UserProfile, { localVue, mocks, store });
+        wrapper = shallowMount(AccountSettingsTab, { localVue, mocks, store });
     });
 
     // Helper function
@@ -72,38 +72,5 @@ describe('UserProfile.vue', () => {
         savePassword('abcdefg');
 
         expect(wrapper.find('.message.is-danger').exists()).toEqual(false);
-    });
-
-    describe('Password Reset Modal', () => {
-        let actions;
-
-        beforeEach(() => {
-            actions = { clearForcePasswordChange: jest.fn() };
-            state = { forcePasswordChange: true };
-            store = new Vuex.Store({ actions, state });
-            wrapper = shallowMount(UserProfile, { localVue, mocks, store });
-        });
-
-        test('should display the forcePasswordChange modal when forcePasswordChange is true', () => {
-            expect(wrapper.find('.modal').exists()).toBeTruthy();
-        });
-
-        test('should close modal when modal background is clicked', () => {
-            wrapper.find('.modal-background').trigger('click');
-
-            expect(wrapper.find('.modal').exists()).toBeFalsy();
-        });
-
-        test('should close modal when close (x) button is clicked', () => {
-            wrapper.find('button.delete').trigger('click');
-
-            expect(wrapper.find('.modal').exists()).toBeFalsy();
-        });
-
-        test('should close modal when the Update Password button is clicked', () => {
-            wrapper.find('.update-password').trigger('click');
-
-            expect(wrapper.find('.modal').exists()).toBeFalsy();
-        });
     });
 });
