@@ -41,7 +41,10 @@
                                     <p>Last step!</p>
                                     <br />
                                     <p>
-                                        Review the members, workspaces and builds associated with the new organization and make any changes necessary.
+                                        Review the members, workspaces and
+                                        builds associated with the new
+                                        organization and make any changes
+                                        necessary.
                                     </p>
                                 </template>
                             </div>
@@ -97,6 +100,7 @@
                                             <input
                                                 type="text"
                                                 class="input name"
+                                                v-model="name"
                                             />
                                         </div>
                                         <div class="field">
@@ -106,6 +110,7 @@
                                             <textarea
                                                 class="textarea has-fixed-size"
                                                 name="description"
+                                                v-model="description"
                                             ></textarea>
                                         </div>
                                     </div>
@@ -140,53 +145,150 @@
                                         class="step-body review"
                                         v-else-if="activeStep === 5"
                                     >
-                                        <div class="item members">
-                                            <div class="item-title">
-                                                Members
+                                        <div class="review-item details">
+                                            <div
+                                                class="review-item-title"
+                                                :class="{
+                                                    'is-expanded': isExpandedDetails,
+                                                }"
+                                                @click="isExpandedDetails = !isExpandedDetails"
+                                            >
+                                                <p class="item-title">
+                                                    Details
+                                                </p>
+                                                <i class="material-icons">
+                                                    chevron_right
+                                                </i>
                                             </div>
-                                            <i class="fas fa-arrow-right"></i>
-                                        </div>
-                                        <div class="item workspaces">
-                                            <div class="item-title">
-                                                Workspaces
+                                            <div
+                                                class="review-item-content"
+                                                v-if="isExpandedDetails"
+                                            >
+                                                <div class="item-content-row">
+                                                    {{ name }}
+                                                </div>
+                                                <div class="item-content-row">
+                                                    {{ description }}
+                                                </div>
                                             </div>
-                                            <i class="fas fa-arrow-right"></i>
                                         </div>
-                                        <div class="item builds">
-                                            <div class="item-title">Builds</div>
-                                            <i class="fas fa-arrow-right"></i>
+                                        <div class="review-item members">
+                                            <div
+                                                class="review-item-title"
+                                                :class="{
+                                                    'is-expanded': isExpandedMembers,
+                                                }"
+                                                @click="isExpandedMembers = !isExpandedMembers"
+                                            >
+                                                <p class="item-title">
+                                                    Members
+                                                </p>
+                                                <i class="material-icons">
+                                                    chevron_right
+                                                </i>
+                                            </div>
+                                            <div
+                                                class="review-item-content"
+                                                v-if="isExpandedMembers"
+                                            >
+                                                <div
+                                                    class="item-content-row"
+                                                    v-for="user in users"
+                                                    :key="`${user}_builds`"
+                                                >
+                                                    {{ user }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="review-item workspaces">
+                                            <div
+                                                class="review-item-title"
+                                                :class="{
+                                                    'is-expanded': isExpandedWorkspaces,
+                                                }"
+                                                @click="isExpandedWorkspaces = !isExpandedWorkspaces"
+                                            >
+                                                <p class="item-title">
+                                                    Workspaces
+                                                </p>
+                                                <i class="material-icons">
+                                                    chevron_right
+                                                </i>
+                                            </div>
+                                            <div
+                                                class="review-item-content"
+                                                v-if="isExpandedWorkspaces"
+                                            >
+                                                <div
+                                                    class="item-content-row"
+                                                    v-for="user in users"
+                                                    :key="`${user}_builds`"
+                                                >
+                                                    {{ user }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="review-item builds">
+                                            <div
+                                                class="review-item-title"
+                                                :class="{
+                                                    'is-expanded': isExpandedBuilds,
+                                                }"
+                                                @click="isExpandedBuilds = !isExpandedBuilds"
+                                            >
+                                                <p class="item-title">
+                                                    Builds
+                                                </p>
+                                                <i class="material-icons">
+                                                    chevron_right
+                                                </i>
+                                            </div>
+                                            <div
+                                                class="review-item-content"
+                                                v-if="isExpandedBuilds"
+                                            >
+                                                <div
+                                                    class="item-content-row"
+                                                    v-for="user in users"
+                                                    :key="`${user}_builds`"
+                                                >
+                                                    {{ user }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </transition>
                             </div>
-                            <div
-                                class="buttons"
-                                :class="{ 'first-step': activeStep === 1 }"
-                                v-if="activeStep < 5"
-                            >
-                                <a
-                                    class="button previous is-link"
-                                    @click="activeStep--"
-                                    v-if="activeStep !== 1"
+                            <div class="modal-footer">
+                                <div
+                                    class="buttons"
+                                    :class="{ 'first-step': activeStep === 1 }"
+                                    v-if="activeStep < 5"
                                 >
-                                    Previous
-                                </a>
+                                    <a
+                                        class="button previous is-link"
+                                        @click="activeStep--"
+                                        v-if="activeStep !== 1"
+                                    >
+                                        Previous
+                                    </a>
+                                    <a
+                                        class="button next is-info"
+                                        @click="activeStep++"
+                                    >
+                                        Next
+                                    </a>
+                                </div>
                                 <a
-                                    class="button next is-info"
-                                    @click="activeStep++"
+                                    class="button is-fullwidth is-success"
+                                    :class="{ 'is-loading': isLoading }"
+                                    @click="createOrganization()"
+                                    style="border-radius: 3px; font-weight: bold;"
+                                    v-else
                                 >
-                                    Next
+                                    Create Organization
                                 </a>
                             </div>
-                            <a
-                                class="button is-fullwidth is-success"
-                                :class="{ 'is-loading': isLoading }"
-                                @click="createOrganization()"
-                                style="border-radius: 3px; font-weight: bold;"
-                                v-else
-                            >
-                                Create Organization
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -211,10 +313,16 @@ export default {
     },
     data() {
         return {
-            activeStep: 1,
+            activeStep: 5,
+            description: 'This is an import groiup of engineers in charge of the Ceres build.',
             isActive: true,
+            isExpandedBuilds: false,
+            isExpandedDetails: false,
+            isExpandedMembers: false,
+            isExpandedWorkspaces: false,
             isLoading: false,
             isSuccessful: false,
+            name: 'Ceres Build Team',
             selectedUsers: [],
             steps: [
                 {
