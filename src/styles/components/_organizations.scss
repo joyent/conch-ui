@@ -215,18 +215,8 @@
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 		grid-gap: 25px;
 
-		.organization-stats {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			grid-gap: 25px;
-			margin: 10px 0;
-
-			.box {
-				background-color: $grey-darker;
-				margin: 0;
-				padding: 15px;
-				text-align: center;
-			}
+		@media (min-width: 1500px) {
+			grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 		}
 
 		.card {
@@ -260,6 +250,7 @@
 
 				.organization-desc {
 					text-align: center;
+					flex-grow: 1;
 				}
 			}
 
