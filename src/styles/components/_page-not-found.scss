@@ -1,0 +1,31 @@
+.page-not-found {
+	hr {
+		max-width: 474px;
+	}
+
+	.content {
+		margin-top: 260px;
+	}
+
+	.title {
+		font-size: 6rem;
+	}
+
+	.subtitle {
+		margin-bottom: 30px;
+	}
+
+	.action {
+		.text {
+			margin: 25px 0;
+
+			p:first-child() {
+				margin-bottom: 0.25em;
+			}
+		}
+	}
+
+	.image {
+		margin-top: 160px;
+	}
+}

@@ -1,0 +1,13 @@
+a.button {
+	border-radius: 4px;
+
+	&.is-fullwidth {
+		border-radius: inherit;
+	}
+}
+
+button.button {
+	&:not(.delete) {
+		border-radius: 4px;
+	}
+}

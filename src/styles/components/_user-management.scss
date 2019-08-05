@@ -1,0 +1,161 @@
+.user-management {
+	select {
+		background-color: $grey-darker;
+		border-color: $grey;
+		color: #bdcbdb;
+	}
+
+	input.input.search,
+	.select select {
+		border-radius: 4px;
+	}
+
+	.card-header-title {
+		padding-bottom: 20px;
+		padding-top: 20px;
+	}
+
+	.users-stats {
+		transition: all 0.2s ease-in-out;
+
+		&:hover {
+			background-color: lighten($grey-dark, 2%);
+			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+			transition: all 0.2s ease-in-out;
+		}
+	}
+
+	.tabs {
+		margin-bottom: 0;
+
+		li {
+			a.tab {
+				color: $grey-lighter;
+			}
+
+			&.is-active {
+				margin: 0;
+
+				a {
+					border-bottom-width: 2px;
+					border-bottom-color: #209cee;
+					color: #209cee;
+					font-weight: 600;
+				}
+			}
+
+			&:not(.is-active) {
+				a {
+					border-bottom-width: 0;
+					margin-bottom: 1px;
+				}
+			}
+		}
+	}
+
+	.user-modal {
+		input {
+			background-color: $grey-darker;
+			border-color: $grey;
+			color: #bdcbdb;
+
+			&::placeholder {
+				color: #bdcbdb;
+			}
+		}
+	}
+
+	.no-results {
+		text-align: center;
+
+		p.title {
+			margin-top: 40px;
+		}
+
+		img {
+			margin-top: 20px;
+		}
+	}
+
+	.modal-content {
+		border-radius: 5px;
+	}
+
+	.dropdown {
+		.dropdown-content {
+			background-color: lighten($grey-dark, 8%);
+			border-radius: 5px;
+		}
+
+		.dropdown-item {
+			padding: 6px 16px;
+
+			&:hover {
+				color: $white;
+			}
+		}
+
+		hr.dropdown-divider {
+			background-color: $grey-light;
+		}
+	}
+
+	.workspace-view {
+		.workspaces-table {
+			th {
+				padding: 15px 20px;
+			}
+
+			.row.users-subtable {
+				background-color: lighten($grey-darker, 3%);
+
+				table {
+					border-top-left-radius: 5px;
+					border-top-right-radius: 5px;
+
+					td {
+						border-width: 0 0 1px;
+
+						&:hover {
+							cursor: default;
+						}
+					}
+				}
+
+				thead th {
+					border-top-width: 0;
+					border-bottom-width: 1px;
+				}
+			}
+		}
+
+		.workspace-row {
+			&:hover {
+				cursor: pointer;
+			}
+		}
+
+		.row {
+			td {
+				padding: 20px;
+			}
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			i.fa-chevron-right {
+				transition: transform 0.2s ease-in-out;
+			}
+
+			&.is-selected {
+				transition: background-color 0.2s ease-in-out;
+
+				i.fa-chevron-right {
+					transform: rotate(90deg);
+					transition: transform 0.2s ease-in-out;
+				}
+			}
+		}
+	}
+}

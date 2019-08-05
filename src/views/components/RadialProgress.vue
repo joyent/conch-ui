@@ -1,5 +1,11 @@
 <template>
-    <svg xmlns="http://www.w3.org/2000/svg" height="160" width="200" viewBox="0 0 200 160">
+    <svg
+        class="radial-progress"
+        xmlns="http://www.w3.org/2000/svg"
+        height="160"
+        width="200"
+        viewBox="0 0 200 160"
+    >
         <path
             stroke="#ccc"
             d="M41 149.5a77 77 0 1 1 117.93 0"
@@ -17,7 +23,15 @@
             style="will-change: auto; transition: stroke-dashoffset 850ms ease-in-out"
             ref="meter"
         ></path>
-        <text class="is-size-2 has-text-weight-bol" x="102" y="110" text-anchor="middle" fill="#dee5ed">{{ percentage }}%</text>
+        <text
+            class="is-size-2 has-text-weight-bol"
+            x="102"
+            y="110"
+            text-anchor="middle"
+            fill="#dee5ed"
+        >
+            {{ percentage }}%
+        </text>
     </svg>
 </template>
 

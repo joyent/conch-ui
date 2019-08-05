@@ -1,151 +1,151 @@
 .table-header,
 .table-filter {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
+	align-items: center;
+	display: flex;
+	flex-direction: row;
 }
 
 .table-header {
-    background-color: $grey-dark;
-    padding: 25px 20px;
+	background-color: $grey-dark;
+	padding: 25px 20px;
 
-    .title {
-        margin-bottom: 0;
-    }
+	.title {
+		margin-bottom: 0;
+	}
 }
 
 .table-filter {
-    background-color: $grey-dark;
-    flex-grow: 1;
-    justify-content: flex-end;
-    margin-left: 20px;
+	background-color: $grey-dark;
+	flex-grow: 1;
+	justify-content: flex-end;
+	margin-left: 20px;
 
-    .control {
-        margin: 0 10px;
-    }
+	.control {
+		margin: 0 10px;
+	}
 
-    input.search {
-        background-color: $grey-darker;
-        border-color: $grey;
-        color: #bdcbdb;
+	input.search {
+		background-color: $grey-darker;
+		border-color: $grey;
+		color: #bdcbdb;
 
-        &::placeholder {
-            color: #bdcbdb;
-        }
-    }
+		&::placeholder {
+			color: #bdcbdb;
+		}
+	}
 }
 
 table.table {
-    td,
-    tfoot th,
-    thead th {
-        padding-bottom: 15px;
-        padding-top: 15px;
-        vertical-align: middle;
-    }
+	td,
+	tfoot th,
+	thead th {
+		padding-bottom: 15px;
+		padding-top: 15px;
+		vertical-align: middle;
+	}
 
-    thead {
-        th {
-            border-width: 1px 0;
-            color: #bdcbdb;
+	thead {
+		th {
+			border-width: 1px 0;
+			color: #bdcbdb;
 
-            a {
-                &.table-header-filter {
-                    color: #bdcbdb;
+			a {
+				&.table-header-filter {
+					color: #bdcbdb;
 
-                    &:hover {
-                        color: $white;
-                    }
-                }
-            }
-        }
-    }
+					&:hover {
+						color: $white;
+					}
+				}
+			}
+		}
+	}
 
-    tfoot {
-        th {
-            border-width: 1px 0 0 0;
-            color: #bdcbdb;
-        }
-    }
+	tfoot {
+		th {
+			border-width: 1px 0 0 0;
+			color: #bdcbdb;
+		}
+	}
 
-    &.is-hoverable {
-        tbody {
-            tr {
-                &:not(.is-selected) {
-                    &:hover {
-                        background-color: lighten($grey-darker, 4%);
-                    }
-                }
+	&.is-hoverable {
+		tbody {
+			tr {
+				&:not(.is-selected) {
+					&:hover {
+						background-color: lighten($grey-darker, 4%);
+					}
+				}
 
-                &.is-selected {
-                    td {
-                        border-color: #4E5D6C;
-                    }
-                }
-            }
-        }
-    }
+				&.is-selected {
+					td {
+						border-color: #4E5D6C;
+					}
+				}
+			}
+		}
+	}
 }
 
 .table-pagination {
-    background-color: $grey-dark;
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+	background-color: $grey-dark;
+	display: flex;
+	align-items: center;
+	padding: 20px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 
-    .current-results {
-        flex-grow: 1;
-        margin: 0 20px;
-    }
+	.current-results {
+		flex-grow: 1;
+		margin: 0 20px;
+	}
 
-    .pagination {
-        .pagination-list {
-            li {
-                margin-bottom: 0;
-            }
+	.pagination {
+		.pagination-list {
+			li {
+				margin-bottom: 0;
+			}
 
-            a.next {
-                i {
-                    margin-left: 10px;
-                }
-            }
+			a.next {
+				i {
+					margin-left: 10px;
+				}
+			}
 
-            a.prev {
-                i {
-                    margin-right: 10px;
-                }
-            }
-        }
-    }
+			a.prev {
+				i {
+					margin-right: 10px;
+				}
+			}
+		}
+	}
 
-    .pagination-link {
-        background-color: $grey-darker;
-        border-color: $grey;
-        color: $grey-lighter;
-        border-radius: 4px;
+	.pagination-link {
+		background-color: $grey-darker;
+		border-color: $grey;
+		color: $grey-lighter;
+		border-radius: 4px;
 
-        &.is-current {
-            background-color: $grey-darker;
-            border-color: #209cee;
-            color: #209cee;
-            font-weight: bold;
-        }
+		&.is-current {
+			background-color: $grey-darker;
+			border-color: #209cee;
+			color: #209cee;
+			font-weight: bold;
+		}
 
-        &:hover {
-            border-color: $grey-light;
-            color: $white;
-        }
+		&:hover {
+			border-color: $grey-light;
+			color: $white;
+		}
 
-        &[disabled] {
-            background-color: $grey-light;
-            border-color: $grey-light;
-            color: $dark;
-        }
+		&[disabled] {
+			background-color: $grey-light;
+			border-color: $grey-light;
+			color: $dark;
+		}
 
-        &.ellipsis {
-            border: 1px solid transparent;
-        }
-    }
+		&.ellipsis {
+			border: 1px solid transparent;
+		}
+	}
 }

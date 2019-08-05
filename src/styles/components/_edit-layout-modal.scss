@@ -1,0 +1,17 @@
+#device-editor-modal {
+	input:focus:invalid + span.icon {
+		background-color: $danger;
+
+		i::before {
+			content: "\f06a";
+		}
+	}
+
+	input:focus:valid + span.icon {
+		background-color: $success;
+
+		i::before {
+			content: "\f058";
+		}
+	}
+}

@@ -120,7 +120,7 @@ describe('UserAuthTokens.vue', () => {
 
     test('should display a confirmation modal when user attempts to delete a token', () => {
         clickDeleteToken();
-        expect(wrapper.find('.modal-base').exists()).toBeTruthy();
+        expect(wrapper.find('.base-modal').exists()).toBeTruthy();
     });
 
     test('should not display any input fields on initial render', () => {

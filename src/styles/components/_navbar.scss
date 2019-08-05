@@ -1,0 +1,10 @@
+.navbar {
+	.navbar-dropdown ul > li {
+		margin-left: 1em;
+	}
+
+	// move the first ul list back over
+	.navbar-dropdown ul:first-child {
+		margin-left: -1em;
+	}
+}
