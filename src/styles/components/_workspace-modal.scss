@@ -1,56 +1,130 @@
 .workspace-modal {
-    .modal-content {
-        border-radius: 4px;
-        min-width: 460px;
-        width: auto;
+    .close {
+        cursor: pointer;
+    }
 
-        .notification {
-            background-color: #18232e !important;
+    .modal-card-head {
+        background-color: $dark;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        border: none;
 
-            .datatable-simple {
-                max-height: 430px;
-                overflow-x: visible;
-                overflow-y: scroll;
-                border-radius: 4px;
-            }
+        .modal-card-title {
+            text-align: center;
+            margin-left: 24px;
+            font-weight: bold;
+            font-size: 20px;
         }
     }
 
-    table {
-        td {
-            justify-content: left;
-        }
+    .modal-card-body {
+        background-color: lighten($grey-darker, 2%);
+        display: flex;
+        padding: 20px;
+        max-height: 560px;
+        overflow: scroll;
 
-        tr.row-simple {
-            background-color: #2B3E50 !important;
+        table {
+            margin-bottom: 0;
 
-            td.row-action-button {
-                cursor: default;
-            }
-
-            i {
-                cursor: pointer;
+            &:first-of-type {
+                margin-right: 14px;
             }
         }
-    }
 
-    .dropdown-menu {
-        z-index: 100;
-
-        .dropdown-item {
+        .row {
             display: flex;
-            padding: 0 10px;
+            align-items: stretch;
+            min-width: 293px;
+            max-width: 293px;
 
-            label {
+            td {
+                background-color: $grey-darker;
+                border: none;
                 display: flex;
-                white-space: nowrap;
+                align-items: center;
+                min-height: 58px;
+
+
+                &.workspace {
+                    flex-grow: 1;
+                    overflow: hidden;
+
+                    span {
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+
+                &:first-of-type {
+                    padding-right: 0;
+                }
+            }
+
+            &.no-changes td {
+                justify-content: center;
+
+                &:hover {
+                    background-color: $grey-darker;
+                }
+            }
+
+            &:hover {
+                background-color: $red;
+            }
+        }
+
+        .table-title td {
+            border: none;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .close {
+            cursor: pointer;
+        }
+
+        .add-workspace,
+        .remove-workspace {
+            cursor: pointer;
+            font-size: 28px;
+            transition: color 0.1s ease-in-out;
+        }
+
+        .add-workspace {
+            &:hover {
+                color: lighten($green, 3%);
+                transition: color 0.1s ease-in-out;
+            }
+        }
+
+        .remove-workspace {
+            &:hover {
+                color: $red;
+                transition: color 0.1s ease-in-out;
             }
         }
     }
 
-    footer {
-        .icon {
-            margin-right: 10px;
+    .modal-card-foot {
+        background-color: $dark;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border: none;
+        display: flex;
+        justify-content: space-evenly;
+        padding: 16px;
+
+        .button {
+            font-weight: bold;
+            height: 46px;
+            margin: 0;
+            width: 200px;
+
+            &:first-of-type {
+                margin-right: 22px;
+            }
         }
     }
 }
