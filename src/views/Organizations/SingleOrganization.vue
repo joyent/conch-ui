@@ -59,26 +59,23 @@
                                 <div class="dropdown-content">
                                     <a
                                         class="dropdown-item add"
-                                        @click="openWorkspaceModal('add')"
-                                        style="display: flex;"
+                                        @click="
+                                            openActionModal('add', 'workspace')
+                                        "
                                     >
-                                        <i
-                                            class="material-icons"
-                                            style="margin-right: 10px; min-width: 24px;"
-                                        >
-                                            add_circle_outline
-                                        </i>
+                                        <i class="material-icons">add</i>
                                         <p>Add Workspaces</p>
                                     </a>
                                     <a
                                         class="dropdown-item remove"
-                                        @click="openWorkspaceModal('remove')"
-                                        style="display: flex; align-items: center"
+                                        @click="
+                                            openActionModal(
+                                                'remove',
+                                                'workspace'
+                                            )
+                                        "
                                     >
-                                        <i
-                                            class="fas fa-trash-alt"
-                                            style="margin-right: 10px; min-width: 24px; text-align: center;"
-                                        ></i>
+                                        <i class="fas fa-trash-alt"></i>
                                         <p>Remove Workspaces</p>
                                     </a>
                                 </div>
@@ -114,7 +111,7 @@
                     <div class="datatable-footer add">
                         <a
                             class="datatable-footer-item"
-                            @click="openWorkspaceModal('add')"
+                            @click="openActionModal('add', 'workspace')"
                         >
                             <i class="material-icons">add</i>
                             <span class="heading is-size-6 is-marginless">
@@ -150,24 +147,18 @@
                                 <div class="dropdown-content">
                                     <a
                                         class="dropdown-item add"
-                                        style="display: flex;"
+                                        @click="openActionModal('add', 'build')"
                                     >
-                                        <i
-                                            class="material-icons"
-                                            style="margin-right: 10px; min-width: 24px;"
-                                        >
-                                            add_circle_outline
-                                        </i>
+                                        <i class="material-icons">add</i>
                                         <p>Add Build</p>
                                     </a>
                                     <a
                                         class="dropdown-item remove"
-                                        style="display: flex; align-items: center"
+                                        @click="
+                                            openActionModal('remove', 'build')
+                                        "
                                     >
-                                        <i
-                                            class="fas fa-trash-alt"
-                                            style="margin-right: 10px; min-width: 24px; text-align: center;"
-                                        ></i>
+                                        <i class="fas fa-trash-alt"></i>
                                         <p>Remove Build</p>
                                     </a>
                                 </div>
@@ -236,7 +227,10 @@
                         </tbody>
                     </table>
                     <div class="datatable-footer add">
-                        <a class="datatable-footer-item">
+                        <a
+                            class="datatable-footer-item"
+                            @click="openActionModal('add', 'build')"
+                        >
                             <i class="material-icons">add</i>
                             <span class="heading is-size-6 is-marginless">
                                 Add a Build
@@ -273,24 +267,20 @@
                                 <div class="dropdown-content">
                                     <a
                                         class="dropdown-item add"
-                                        style="display: flex;"
+                                        @click="
+                                            openActionModal('add', 'members')
+                                        "
                                     >
-                                        <i
-                                            class="material-icons"
-                                            style="margin-right: 10px; min-width: 24px;"
-                                        >
-                                            add_circle_outline
-                                        </i>
+                                        <i class="material-icons">add</i>
                                         <p>Add Member</p>
                                     </a>
                                     <a
                                         class="dropdown-item remove"
-                                        style="display: flex; align-items: center"
+                                        @click="
+                                            openActionModal('remove', 'members')
+                                        "
                                     >
-                                        <i
-                                            class="fas fa-trash-alt"
-                                            style="margin-right: 10px; min-width: 24px; text-align: center;"
-                                        ></i>
+                                        <i class="fas fa-trash-alt"></i>
                                         <p>Remove Member</p>
                                     </a>
                                 </div>
@@ -303,11 +293,15 @@
                         <thead>
                             <th>Name</th>
                             <th>Role</th>
+                            <th>Permissions</th>
                             <th></th>
                         </thead>
                         <tbody>
                             <tr
                                 class="row"
+                                :class="{
+                                    'is-modified': memberModified(member.name),
+                                }"
                                 v-for="member in org.members"
                                 :key="member.name"
                             >
@@ -315,39 +309,66 @@
                                     {{ member.name }}
                                 </td>
                                 <td>
-                                    <span class="is-capitalized">
-                                        {{ member.role }}
+                                    <div class="select">
+                                        <select v-model="member.role">
+                                            <option value="admin">Admin</option>
+                                            <option value="regular user">
+                                                Regular User
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div
+                                        class="select"
+                                        v-if="member.role !== 'admin'"
+                                    >
+                                        <select v-model="member.permissions">
+                                            <option value="ro">
+                                                Read Only
+                                            </option>
+                                            <option value="rw">
+                                                Read / Write
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <span v-else>
+                                        Admin
                                     </span>
                                 </td>
                                 <td class="row-action-button">
-                                    <a>
+                                    <a class="button-delete">
                                         <span class="icon">
-                                            <i class="fas fa-ellipsis-v"></i>
+                                            <i class="fas fa-trash-alt"></i>
                                         </span>
                                     </a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="datatable-footer">
-                        <a class="datatable-footer-item">
+                    <div class="datatable-footer add">
+                        <a
+                            class="datatable-footer-item"
+                            @click="openActionModal('add', 'member')"
+                        >
+                            <i class="material-icons">add</i>
                             <span class="heading is-size-6 is-marginless">
-                                See All Members
+                                Add a Member
                             </span>
-                            <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
         <transition name="fade">
-            <WorkspaceModal
-                v-if="showWorkspaceModal"
+            <ActionModal
+                v-if="showActionModal"
                 :action="action"
-                :workspaces="workspaces"
-                :workspace-memberships="org.workspaces"
+                :item-type="item"
+                :available-data="availableData"
+                :unavailable-data="unavailableData"
             />
-            <RemoveItemModal v-if="showRemoveItemModal" :item="item" />
+            <RemoveItemModal v-if="showRemoveItemModal" :item="removing" />
         </transition>
     </div>
 </template>
@@ -355,17 +376,21 @@
 <script>
 import moment from 'moment';
 import RemoveItemModal from './RemoveItemModal.vue';
-import WorkspaceModal from './WorkspaceModal.vue';
+import ActionModal from './ActionModal.vue';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
     components: {
+        ActionModal,
         RemoveItemModal,
-        WorkspaceModal,
     },
     data() {
         return {
             action: '',
+            availableData: [],
+            isActive: false,
+            item: '',
+            removing: {},
             builds: [
                 'us-west-1',
                 'us-east-1',
@@ -380,6 +405,7 @@ export default {
             users: [
                 'Aragorn',
                 'Frodo Baggins',
+                'Emperor of The Galactic Empire',
                 'Samwise Gamgee',
                 'Peregrin Took',
                 'Merriweather',
@@ -398,6 +424,7 @@ export default {
             ],
             workspaces: [
                 'Tatooine',
+                'Jedi Grand Master Luke Skywalker of the Jedi',
                 'Yavin IV',
                 'Coruscant',
                 'Dagobah',
@@ -422,8 +449,6 @@ export default {
                 'Mordor',
                 'Sauron',
             ],
-            isActive: false,
-            item: {},
             org: {
                 builds: [
                     {
@@ -473,8 +498,8 @@ export default {
                     },
                     {
                         name: 'Darth Vader',
-                        role: 'admin',
-                        permissions: 'admin',
+                        role: 'regular user',
+                        permissions: 'rw',
                     },
                     {
                         name: 'The Senate',
@@ -514,29 +539,65 @@ export default {
                 ],
             },
             showRemoveItemModal: false,
-            showWorkspaceModal: false,
+            showActionModal: false,
             showWorkspacesDropdown: false,
             showBuildsDropdown: false,
             showMembersDropdown: false,
+            showUserActionsDropdown: false,
+            unavailableData: [],
+            modifiedMembers: [],
         };
     },
     methods: {
         closeModal() {
-            this.showBuildsModal = false;
-            this.showMembersModal = false;
+            this.showActionModal = false;
             this.showRemoveItemModal = false;
-            this.showWorkspaceModal = false;
         },
         getDate(date) {
             return moment(date).format('MM/DD/YYYY');
         },
-        openWorkspaceModal(action) {
-            this.showWorkspacesDropdown = false;
+
+
+        // MEMBERS TABLE FUNCTIONS
+        modifyMember(memberName) {
+            this.modifiedMembers.push(memberName);
+        },
+        removeMemberModification(item) {
+            const index = this.modifiedMembers.indexOf(item);
+
+            this.modifiedMembers.splice(index, 1);
+        },
+        isMemberModified(memberName) {
+            return this.modifiedMembers.indexOf(memberName) === -1
+                ? true
+                : false;
+        },
+
+
+        openActionModal(action, item) {
             this.action = action;
-            this.showWorkspaceModal = true;
+            this.item = item;
+
+            if (item === 'workspace') {
+                this.showWorkspacesDropdown = false;
+                this.availableData = this.workspaces;
+                this.unavailableData = this.org.workspaces;
+            } else if (item === 'build') {
+                this.showBuildsDropdown = false;
+                this.availableData = this.builds;
+                this.unavailableData = this.org.builds.map(build => build.name);
+            } else {
+                this.showMembersDropdown = false;
+                this.availableData = this.users;
+                this.unavailableData = this.org.members.map(
+                    member => member.name
+                );
+            }
+
+            this.showActionModal = true;
         },
         removeItem(itemName, type) {
-            this.item = {
+            this.removing = {
                 name: itemName,
                 type,
             };
