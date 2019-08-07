@@ -88,6 +88,17 @@
 			border: none;
 		}
 
+		.row-action-button {
+			justify-content: flex-end;
+		}
+
+		select {
+			background-color: $grey-darker;
+			border-radius: 4px;
+			border-color: $grey;
+			color: #bdcbdb;
+		}
+
 		.datatable-footer {
 			background-color: $grey;
 			border-top: 1px solid #4E5D6C;
@@ -143,6 +154,18 @@
 	}
 
 	.dropdown-item {
+		display: flex;
+		align-items: center;
+
+		i {
+			margin-right: 10px;
+			min-width: 24px;
+
+			&.fa-trash-alt {
+				text-align: center;
+			}
+		}
+
 		&.add {
 			&:hover {
 				color: $green;
