@@ -110,34 +110,7 @@
                 <div class="column is-8" v-else>
                     <div class="builds-overview">
                         <div class="columns">
-                            <div class="column is-6">
-                                <div class="box">
-                                    <p class="subtitle is-4" style="margin-bottom: 0.75rem">Builds</p>
-                                    <div
-                                        class="stats"
-                                        style="display: flex; justify-content: space-between"
-                                    >
-                                        <div class="builds-total">
-                                            <h2 class="is-6">Total</h2>
-                                            <span class="is-size-3 has-text-info">
-                                                {{ builds.length }}
-                                            </span>
-                                        </div>
-                                        <div class="builds-active">
-                                            <h2 class="is-6">Active</h2>
-                                            <span class="is-size-3 has-text-info">
-                                                {{ buildsActive }}
-                                            </span>
-                                        </div>
-                                        <div class="builds-complete">
-                                            <h2 class="is-6">Complete</h2>
-                                            <span class="is-size-3 has-text-info">
-                                                {{ buildsComplete }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
