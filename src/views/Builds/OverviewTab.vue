@@ -2,6 +2,48 @@
     <div class="overview-tab">
         <div class="columns">
             <div class="column">
+                <div class="box" style="padding: 20px;">
+                    <div class="total-build-progress">
+                        <div class="box-header">
+                            <i class="fas fa-2x fa-circle-notch"></i>
+                            <p class="heading is-size-6">Overall Build Progress</p>
+                        </div>
+                        <div class="progress-overall">
+                            <progress
+                                class="progress is-success"
+                                :value="80"
+                                max="100"
+                            ></progress>
+                            <span class="amount is-size-5">
+                                80%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box" style="padding: 20px;">
+                    <div class="time-remaining">
+                        <div class="box-header">
+                            <i class="far fa-2x fa-clock"></i>
+                            <p class="heading is-size-6">Time Remaining in Build</p>
+                        </div>
+                        <div class="progress-time">
+                            <progress
+                                class="progress is-warning"
+                                :value="100 - 25"
+                                max="100"
+                            ></progress>
+                            <span class="amount is-size-5">
+                                25 days left
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
                 <div class="box" style="padding: 20px; display: flex;">
                     <div class="box-header" style="margin-bottom: 0;">
                         <i class="fas fa-2x fa-calendar-alt"></i>
@@ -15,10 +57,6 @@
                             <p class="heading is-size-6">End Date</p>
                             <p>{{ getDate(build.endDate) }}</p>
                         </div>
-                        <div class="time-remaining">
-                            <p class="heading is-size-6">Time Remaining</p>
-                            <p>25 days</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -27,7 +65,7 @@
                     <div class="box-header">
                         <i class="fas fa-2x fa-signature"></i>
                         <div class="sign-off-details">
-                            <p class="heading is-size-6">Sign Off</p>
+                            <p class="heading is-size-6">Sign Off Details</p>
                             <p>N/A</p>
                         </div>
                     </div>
@@ -74,7 +112,7 @@
                         <div class="box-header">
                             <i class="fas fa-2x fa-server"></i>
                             <p class="heading is-size-6">Racks Complete</p>
-                            <p class="fraction">8 / 12</p>
+                            <p class="fraction">8 / 24</p>
                         </div>
                         <div class="progress-devices">
                             <progress
@@ -107,8 +145,12 @@
 
 <script>
 import moment from 'moment';
+import RadialProgressBar from '@views/components/RadialProgressBar.vue';
 
 export default {
+    components: {
+        RadialProgressBar,
+    },
     props: {
         build: {
             type: Object,

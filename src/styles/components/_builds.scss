@@ -137,7 +137,9 @@
 		}
 
 		.progress-devices,
-		.progress-racks {
+		.progress-overall,
+		.progress-racks,
+		.progress-time {
 			display: flex;
 			align-items: center;
 
@@ -147,8 +149,10 @@
 			}
 
 			.amount {
+				flex-grow: 1;
 				line-height: 25px;
-				margin-left: 10px;
+				margin-left: 20px;
+				white-space: nowrap;
 			}
 		}
 
