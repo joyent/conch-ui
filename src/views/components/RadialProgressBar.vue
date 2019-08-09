@@ -45,6 +45,11 @@ export default {
             required: false,
             default: 6,
         },
+        unit: {
+            type: String,
+            required: false,
+            default: '%',
+        },
         value: {
             type: Number,
             required: true,
@@ -67,21 +72,22 @@ export default {
         },
     },
     mounted() {
+        const unit = this.unit;
+
         this.graph = new ProgressBar.Circle(`#progress-bar-${this.id}`, {
             color: this.color,
             duration: 1200,
             easing: this.easing,
             step: function(state, circle) {
                 const value = Math.round(circle.value() * 100);
-
                 if (value === 0) {
-                    circle.setText('0%');
+                    circle.setText(`0${unit}`);
                 } else {
-                    circle.setText(`${value}%`);
+                    circle.setText(`${value}${unit}`);
                 }
 
                 circle.text.style.color = '#fff';
-            },
+            }.bind(this),
             strokeWidth: this.strokeWidth,
             svgStyle: null,
             text: {
