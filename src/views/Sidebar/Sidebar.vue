@@ -9,61 +9,6 @@
                 @click="navigateHomepage()"
             />
         </div>
-        <p class="menu-label">Pages</p>
-        <ul
-            class="sidenav-dropdown menu-list"
-            :class="{ 'is-expanded': isOrganizationsExpanded }"
-            @click="isOrganizationsExpanded = !isOrganizationsExpanded"
-        >
-            <li class="nav-item">
-                <a>
-                    <span class="name">Organizations</span>
-                    <span class="icon">
-                        <i class="fas fa-chevron-right"></i>
-                    </span>
-                </a>
-            </li>
-        </ul>
-        <ul class="menu-list" v-if="isOrganizationsExpanded">
-            <li class="nav-item">
-                <router-link
-                    :to="{
-                        name: 'organization',
-                        params: { organizationId: 'a2dbe92ledsa99d' },
-                    }"
-                    active-class="is-active"
-                >
-                    <i class="fas fa-lg fa-hat-wizard"></i>
-                    Cool Build Team
-                </router-link>
-            </li>
-            <li class="nav-item">
-                <router-link
-                    :to="{
-                        name: 'organization',
-                        params: { organizationId: 'b2wee92hhdsa99a' },
-                    }"
-                    active-class="is-active"
-                >
-                    <i class="fas fa-lg fa-hat-wizard"></i>
-                    First Build Team
-                </router-link>
-            </li>
-        </ul>
-        <p class="menu-label">Builds</p>
-        <ul class="menu-list">
-            <li>
-                <router-link
-                    :to="{
-                        name: 'build',
-                        params: { buildId: 'a2dbe92ledsa99d' }}"
-                    active-class="is-active"
-                >
-                    <i class="fas fa-lg fa-drafting-compass"></i>
-                    UK-West-1
-                </router-link>
-            </li>
-        </ul>
         <p class="menu-label">Datacenter Builds</p>
         <ul class="menu-list">
             <li class="nav-item">
@@ -103,22 +48,97 @@
                 </router-link>
             </li>
         </ul>
+        <p class="menu-label">Pages</p>
+        <ul
+            class="sidenav-dropdown menu-list"
+            :class="{ 'is-expanded': isBuildsExpanded }"
+            @click="isBuildsExpanded = !isBuildsExpanded"
+        >
+            <li class="nav-item">
+                <a>
+                    <span class="name">Builds</span>
+                    <span class="icon">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <ul class="menu-list" v-if="isBuildsExpanded">
+            <li class="nav-item">
+                <router-link
+                    :to="{
+                        name: 'build',
+                        params: { buildId: 'a2dbe92ledsa99d' },
+                    }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-drafting-compass"></i>
+                    <span>UK-West-1</span>
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link
+                    :to="{
+                        name: 'build',
+                        params: { buildId: 'b2wee92hhdsa99a' },
+                    }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-drafting-compass"></i>
+                    <span>US-NORTHWEST-1a</span>
+                </router-link>
+            </li>
+        </ul>
+        <ul
+            class="sidenav-dropdown menu-list"
+            :class="{ 'is-expanded': isOrganizationsExpanded }"
+            @click="isOrganizationsExpanded = !isOrganizationsExpanded"
+        >
+            <li class="nav-item">
+                <a>
+                    <span class="name">Organizations</span>
+                    <span class="icon">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <ul class="menu-list" v-if="isOrganizationsExpanded">
+            <li class="nav-item">
+                <router-link
+                    :to="{
+                        name: 'organization',
+                        params: { organizationId: 'a2dbe92ledsa99d' },
+                    }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-hat-wizard"></i>
+                    <span>Cool Build Team</span>
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link
+                    :to="{
+                        name: 'organization',
+                        params: { organizationId: 'b2wee92hhdsa99a' },
+                    }"
+                    active-class="is-active"
+                >
+                    <i class="fas fa-lg fa-hat-wizard"></i>
+                    <span>First Build Team</span>
+                </router-link>
+            </li>
+        </ul>
         <p v-if="currentUser.is_admin" class="menu-label">Conch Admin</p>
         <ul class="menu-list" v-if="currentUser.is_admin">
             <li class="nav-item">
-                <router-link
-                    :to="{ name: 'builds' }"
-                    active-class="is-active"
-                >
+                <router-link :to="{ name: 'builds' }" active-class="is-active">
                     <i class="fas fa-lg fa-flask"></i>
                     Builds
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link
-                    :to="{ name: 'tokens' }"
-                    active-class="is-active"
-                >
+                <router-link :to="{ name: 'tokens' }" active-class="is-active">
                     <i class="fas fa-lg fa-key"></i>
                     <span>Tokens</span>
                 </router-link>
@@ -189,6 +209,7 @@ export default {
         return {
             conchVersion: '',
             conchUIVersion: '',
+            isBuildsExpanded: false,
             isOrganizationsExpanded: false,
         };
     },
