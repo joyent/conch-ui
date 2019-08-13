@@ -33,6 +33,7 @@
 				display: flex;
 				flex-direction: column;
 				flex-grow: 1;
+				font-weight: bold;
 				height: 100%;
 				justify-content: space-between;
 				padding: 10px 20px;
@@ -43,6 +44,10 @@
 				border-top-right-radius: 6px;
 				border-bottom-right-radius: 6px;
 				padding: 15px;
+			}
+
+			.status {
+				color: $grey-light;
 			}
 
 			&.is-selected {
@@ -58,6 +63,10 @@
 
 				.build-progress {
 					background-color: lighten($grey-darker, 5%);
+				}
+
+				.status {
+					color: $grey-lighter;
 				}
 			}
 		}
@@ -239,7 +248,7 @@
 	}
 
 	.devices-tab,
-	.users-tab {
+	.members-tab {
 		.box {
 			padding: 20px;
 		}
@@ -300,4 +309,114 @@
 		color: $grey-lighter;
 	}
 
+}
+
+.builds {
+	.page-heading {
+		display: flex;
+		align-items: center;
+		margin-bottom: 20px;
+
+		h1 {
+			margin: 0;
+			word-break: normal;
+		}
+
+		input {
+			background-color: $dark;
+			border-color: $grey;
+			border-radius: 4px;
+			color: #bdcbdb;
+			min-width: 350px;
+			margin-bottom: 0;
+
+			&::placeholder {
+				color: #bdcbdb;
+			}
+		}
+
+		.control {
+			margin: 0 20px;
+		}
+
+		.views {
+			display: flex;
+			align-items: center;
+			flex-grow: 1;
+
+			i {
+				cursor: pointer;
+				font-size: 36px;
+
+				&:not(:last-of-type) {
+					margin-right: 10px;
+				}
+			}
+		}
+
+		.add-build {
+			color: $green;
+			cursor: pointer;
+			font-size: 42px;
+
+			&:hover {
+				color: darken($green, 8%);
+			}
+		}
+	}
+
+	.cards {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-gap: 25px;
+
+		@media (min-width: 1500px) {
+			grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+		}
+
+		.card {
+			background-color: $grey-dark;
+			border: none;
+			border-radius: 4px;
+			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+			transition: all 0.1s ease-in-out;
+
+			.card-content {
+				display: flex;
+				flex-direction: column;
+				padding: 20px;
+
+				.more {
+					cursor: pointer;
+					text-align: right;
+				}
+
+				.build-progress {
+					margin: 0 auto 15px;
+				}
+
+				.build-name {
+					text-align: center;
+					font-weight: bold;
+					color: $white;
+					font-size: 20px;
+					margin-bottom: 10px;
+				}
+			}
+
+			.button {
+				margin-top: 15px;
+				border: none;
+			}
+
+			&:hover {
+				transform: scale(1.04);
+				transition: all 0.1s ease-in-out;
+
+				.button {
+					background-color: #4A5DBD;
+				}
+			}
+		}
+	}
 }
