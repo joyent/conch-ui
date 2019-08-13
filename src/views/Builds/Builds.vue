@@ -1,18 +1,61 @@
 <template>
     <div class="builds">
-        <div class="columns">
-            <div class="column is-4">
-                <div class="control has-icons-left has-icons-right">
-                    <input
-                        class="input search"
-                        type="text"
-                        placeholder="Search Builds"
-                        v-model="searchText"
-                    >
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-search"></i>
-                    </span>
+        <div class="page-heading" v-if="!creatingBuild">
+            <h1 class="title is-3 has-text-weight-bold">
+                Builds
+            </h1>
+            <div class="control has-icons-left">
+                <input
+                    type="text"
+                    class="input"
+                    placeholder="Search Builds"
+                    v-model="searchText"
+                />
+                <span class="icon is-small is-left">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <div class="views">
+                <i
+                    class="material-icons view-grid"
+                    :class="{ 'has-text-info': activeView === 'grid' }"
+                    @click="activeView = 'grid'"
+                >
+                    view_module
+                </i>
+                <i
+                    class="material-icons view-list"
+                    :class="{ 'has-text-info': activeView === 'list' }"
+                    @click="activeView = 'list'"
+                >
+                    view_headline
+                </i>
+            </div>
+            <i class="material-icons add-build" @click="creatingBuild = true">
+                add_circle
+            </i>
+        </div>
+        <div class="cards" v-if="activeView === 'grid' && !creatingBuild">
+            <div class="card" v-for="build in filteredBuilds" :key="build.name">
+                <div class="card-content">
+                    <div class="build-progress">
+                        <RadialProgressBar
+                            :color="graphColor(build.progress)"
+                            :id="build.id"
+                            :value="build.progress"
+                        />
+                    </div>
+                    <p class="build-name">
+                        {{ build.name }}
+                    </p>
+                    <a class="button" @click="viewBuild(build.id)">
+                        View Build
+                    </a>
                 </div>
+            </div>
+        </div>
+        <div class="columns" v-else-if="activeView === 'list' && !creatingBuild">
+            <div class="column is-4">
                 <ul>
                     <li
                         class="build"
@@ -22,13 +65,16 @@
                         <a @click="selectBuild(build)">
                             <div
                                 class="box is-paddingless"
-                                :class="{ 'is-selected': selectedBuild.name === build.name }"
+                                :class="{
+                                    'is-selected':
+                                        selectedBuild.name === build.name,
+                                }"
                             >
                                 <div class="build-details">
-                                    <p class="name is-size-5 has-text-weight-bold">
+                                    <p class="name is-size-5">
                                         {{ build.name }}
                                     </p>
-                                    <p class="status has-text-grey-light">
+                                    <p class="status">
                                         {{ build.status }}
                                     </p>
                                 </div>
@@ -54,8 +100,10 @@
                             <span
                                 class="tag build-status"
                                 :class="{
-                                    'is-success': selectedBuild.status === 'complete',
-                                    'is-info': selectedBuild.status === 'active'
+                                    'is-success':
+                                        selectedBuild.status === 'complete',
+                                    'is-info':
+                                        selectedBuild.status === 'active',
                                 }"
                                 style="border-radius: 4px"
                             >
@@ -67,7 +115,12 @@
                         </p>
                         <div class="tabs is-toggle">
                             <ul>
-                                <li :class="{ 'is-active': currentTab === 'OverviewTab' }">
+                                <li
+                                    :class="{
+                                        'is-active':
+                                            currentTab === 'OverviewTab',
+                                    }"
+                                >
                                     <a
                                         class="tab overview-tab is-uppercase"
                                         @click="changeTab('OverviewTab')"
@@ -75,7 +128,12 @@
                                         Overview
                                     </a>
                                 </li>
-                                <li :class="{ 'is-active': currentTab === 'DevicesTab' }">
+                                <li
+                                    :class="{
+                                        'is-active':
+                                            currentTab === 'DevicesTab',
+                                    }"
+                                >
                                     <a
                                         class="tab devices-tab is-uppercase"
                                         @click="changeTab('DevicesTab')"
@@ -83,7 +141,11 @@
                                         Devices
                                     </a>
                                 </li>
-                                <li :class="{ 'is-active': currentTab === 'RacksTab' }">
+                                <li
+                                    :class="{
+                                        'is-active': currentTab === 'RacksTab',
+                                    }"
+                                >
                                     <a
                                         class="tab racks-tab is-uppercase"
                                         @click="changeTab('RacksTab')"
@@ -91,18 +153,22 @@
                                         Racks
                                     </a>
                                 </li>
-                                <li :class="{ 'is-active': currentTab === 'UsersTab' }">
+                                <li
+                                    :class="{
+                                        'is-active': currentTab === 'MembersTab',
+                                    }"
+                                >
                                     <a
-                                        class="tab users-tab is-uppercase"
-                                        @click="changeTab('UsersTab')"
+                                        class="tab members-tab is-uppercase"
+                                        @click="changeTab('MembersTab')"
                                     >
-                                        Users
+                                        Members
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <component
-                            v-bind:is="currentTab"
+                            :is="currentTab"
                             :build="selectedBuild"
                         ></component>
                     </div>
@@ -116,29 +182,34 @@
                 </div>
             </transition>
         </div>
+        <div class="create-build" v-else>
+            <CreateBuild />
+        </div>
     </div>
 </template>
 
 <script>
 import isEmpty from 'lodash/isEmpty';
-import moment from 'moment';
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
 import RadialProgressBar from '@views/components/RadialProgressBar.vue';
+import CreateBuild from './CreateBuild.vue';
 import DevicesTab from './DevicesTab.vue';
 import OverviewTab from './OverviewTab.vue';
 import RacksTab from './RacksTab.vue';
-import UsersTab from './UsersTab.vue';
+import MembersTab from './MembersTab.vue';
 
 export default {
     components: {
+        CreateBuild,
         DevicesTab,
         OverviewTab,
         RacksTab,
         RadialProgressBar,
-        UsersTab,
+        MembersTab,
     },
     data() {
         return {
+            activeView: 'grid',
             addDevice: false,
             builds: [
                 {
@@ -1848,6 +1919,7 @@ export default {
                 green: '#5cb85c',
                 red: '#d9534f',
             },
+            creatingBuild: false,
             currentTab: 'OverviewTab',
             devices: [
                 'ANDROID1',
@@ -1865,26 +1937,15 @@ export default {
         };
     },
     methods: {
+        addBuild() {
+
+        },
         changeTab(tab) {
             this.currentTab = tab;
         },
         graphColor(progress) {
             return progress === 100 ? this.colors.green : this.colors.blue;
         },
-        // percentage() {
-        //     const statisticsCount = this.devicesStatisticCount;
-        //     const totalCount = this.devicesTotalCount;
-
-        //     if (statisticsCount && totalCount) {
-        //         let percentage = (statisticsCount / totalCount) * 100;
-
-        //         if (statisticsCount === 0 || percentage === 0) {
-        //             return 0;
-        //         }
-
-        //         return Math.round(percentage);
-        //     }
-        // },
         isEmpty,
         getUserName(index) {
             return this.selectedBuild.users[index].name;
@@ -1906,14 +1967,12 @@ export default {
     },
     computed: {
         buildsActive() {
-            return this.builds.filter(
-                build => build.status === 'active'
-            ).length;
+            return this.builds.filter(build => build.status === 'active')
+                .length;
         },
         buildsComplete() {
-            return this.builds.filter(
-                build => build.status === 'complete'
-            ).length;
+            return this.builds.filter(build => build.status === 'complete')
+                .length;
         },
         filteredBuilds() {
             const searchText = this.searchText.toLowerCase();

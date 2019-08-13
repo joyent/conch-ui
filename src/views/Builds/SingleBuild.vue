@@ -9,16 +9,14 @@
                     class="tag build-status"
                     :class="{
                         'is-success': build.status === 'complete',
-                        'is-info': build.status === 'active'
+                        'is-info': build.status === 'active',
                     }"
                     style="border-radius: 4px"
                 >
                     {{ build.status }}
                 </span>
             </div>
-            <p class="build-id has-text-grey">
-                Build ID: {{ build.id }}
-            </p>
+            <p class="build-id has-text-grey">Build ID: {{ build.id }}</p>
             <div class="tabs is-toggle">
                 <ul>
                     <li :class="{ 'is-active': currentTab === 'OverviewTab' }">
@@ -45,20 +43,17 @@
                             Racks
                         </a>
                     </li>
-                    <li :class="{ 'is-active': currentTab === 'UsersTab' }">
+                    <li :class="{ 'is-active': currentTab === 'MembersTab' }">
                         <a
                             class="tab users-tab is-uppercase"
-                            @click="changeTab('UsersTab')"
+                            @click="changeTab('MembersTab')"
                         >
-                            Users
+                            Members
                         </a>
                     </li>
                 </ul>
             </div>
-            <component
-                v-bind:is="currentTab"
-                :build="build"
-            ></component>
+            <component :is="currentTab" :build="build"></component>
         </div>
     </div>
 </template>
@@ -67,14 +62,14 @@
 import DevicesTab from './DevicesTab.vue';
 import OverviewTab from './OverviewTab.vue';
 import RacksTab from './RacksTab.vue';
-import UsersTab from './UsersTab.vue';
+import MembersTab from './MembersTab.vue';
 
 export default {
     components: {
         DevicesTab,
         OverviewTab,
         RacksTab,
-        UsersTab,
+        MembersTab,
     },
     data() {
         return {
@@ -255,6 +250,6 @@ export default {
         changeTab(tab) {
             this.currentTab = tab;
         },
-    }
+    },
 };
 </script>

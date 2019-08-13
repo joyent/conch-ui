@@ -300,7 +300,7 @@
                             <tr
                                 class="row"
                                 :class="{
-                                    'is-modified': memberModified(member.name),
+                                    'is-modified': isMemberModified(member.name),
                                 }"
                                 v-for="member in org.members"
                                 :key="member.name"

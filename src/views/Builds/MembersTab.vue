@@ -1,5 +1,5 @@
 <template>
-    <div class="users-tab">
+    <div class="members-tab">
         <div class="columns is-vcentered">
             <div class="column">
                 <a class="filter-all" @click="userFilter = 'all'">
