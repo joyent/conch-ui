@@ -1,0 +1,89 @@
+.devices-table-2,
+.racks-table,
+.users-table {
+    .box {
+        background-color: $grey-dark;
+        padding: 0;
+
+        &:hover {
+            background-color: $grey-dark;
+        }
+    }
+
+    .control {
+        padding: 10px;
+
+        input.input {
+            background-color: $grey-dark;
+            border: 1px solid $grey;
+            box-shadow: none;
+            color: $grey-lighter;
+            height: 46px;
+            margin-bottom: 0;
+            padding-left: 2.50em;
+
+            &::placeholder {
+                color: $grey-lighter;
+            }
+
+            &:focus {
+                border-color: #209cee;
+                box-shadow: none;
+            }
+        }
+
+        span.icon {
+            left: 10px;
+            margin: 5px;
+            top: 10px;
+        }
+    }
+
+    tr {
+        &:hover {
+            td {
+                background-color: lighten($dark, 5%);
+            }
+        }
+
+        &.is-selected {
+            color: $grey;
+        }
+    }
+
+    td {
+        background-color: $grey-dark;
+        // border: 1px solid $grey;
+        border: none;
+        height: 66px;
+    }
+
+    .material-icons {
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+            transform: scale(1.10);
+            transition: all 0.1s ease-in-out;
+        }
+    }
+
+    i.material-icons {
+        font-size: 30px;
+    }
+
+    .adding {
+        font-style: italic;
+    }
+}
+
+.devices-table-2 {
+    .column {
+        display: flex;
+    }
+    .device-table-filter {
+        .heading {
+            font-weight: bold;
+        }
+    }
+}
