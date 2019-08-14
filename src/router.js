@@ -15,6 +15,7 @@ import Builds from './views/Builds/Builds.vue';
 import SingleBuild from './views/Builds/SingleBuild.vue';
 import Organizations from './views/Organizations/Organizations.vue';
 import SingleOrganization from './views/Organizations/SingleOrganization.vue';
+import CreateBuild from './views/Builds/CreateBuild.vue';
 
 Vue.use(Router);
 
@@ -104,18 +105,14 @@ export default new Router({
                     // when /admin/builds/:buildId is matched
                     path: 'build/:buildId',
                     name: 'buildDetails',
-                    component: Builds,
+                    component: SingleBuild,
+                },
+                {
+                    path: 'build/create-build',
+                    name: 'createBuild',
+                    component: CreateBuild,
                 },
             ],
-        },
-        {
-            path: '/builds/:buildId',
-            name: 'build',
-            components: {
-                default: SingleBuild,
-                sidebar: Sidebar,
-                navbar: Navbar,
-            },
         },
         {
             path: '/user',
