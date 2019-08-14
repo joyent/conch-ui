@@ -1,123 +1,168 @@
 .steps {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-    i.material-icons {
-        font-size: 20px;
-    }
+	i.material-icons {
+		font-size: 20px;
+	}
 
-    .step {
-        .step-title {
-            color: $grey-light;
-            margin-top: 10px;
-        }
+	.step {
+		.step-title {
+			color: $grey-light;
+			margin-top: 10px;
+		}
 
-        .dot {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 30px;
-            height: 30px;
-            border: 3px solid $grey;
-            background-color: $grey-darker;
-            border-radius: 50%;
-            margin: 0 auto;
-        }
+		.dot {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 30px;
+			height: 30px;
+			border: 3px solid $grey;
+			background-color: $grey-darker;
+			border-radius: 50%;
+			margin: 0 auto;
+		}
 
-        &.is-current {
-            .dot {
-                background-color: #209cee;
-                border: none;
-            }
+		&.is-current {
+			.dot {
+				background-color: #209cee;
+				border: none;
+			}
 
-            .step-title {
-                color: $white;
-                font-weight: bold;
-            }
-        }
+			.step-title {
+				color: $white;
+				font-weight: bold;
+			}
+		}
 
-        &.is-complete {
-            .dot {
-                background-color: $green;
-                border: none;
-            }
-        }
-    }
+		&.is-complete {
+			.dot {
+				background-color: $green;
+				border: none;
+			}
+		}
+	}
 
-    hr {
-        background-color: transparent;
-        border-top: dashed 2px $grey;
-        margin-top: 0;
-        margin-bottom: 32px;
-        width: 140px;
-        z-index: -10;
+	hr {
+		background-color: transparent;
+		border-top: dashed 2px $grey;
+		margin-top: 0;
+		margin-bottom: 32px;
+		width: 140px;
+		z-index: -10;
 
-        &.is-current {
-            height: 2px;
-            background-color: #209cee;
-            border: none;
-        }
+		&.is-current {
+			height: 2px;
+			background-color: #209cee;
+			border: none;
+		}
 
-        &.is-complete {
-            height: 2px;
-            background-color: $green;
-            border: none;
-        }
+		&.is-complete {
+			height: 2px;
+			background-color: $green;
+			border: none;
+		}
 
-        &:first-of-type {
-            margin-right: -36px;
-            margin-left: -31px;
-        }
+		&:first-of-type {
+			margin-right: -36px;
+			margin-left: -31px;
+		}
 
-        &:nth-of-type(2) {
-            margin-right: -22px;
-            margin-left: -34px;
-        }
+		&:nth-of-type(2) {
+			margin-right: -22px;
+			margin-left: -34px;
+		}
 
-        &:nth-of-type(3) {
-            margin-right: -28px;
-            margin-left: -22px;
-        }
+		&:nth-of-type(3) {
+			margin-right: -28px;
+			margin-left: -22px;
+		}
 
-        &:last-of-type {
-            margin-right: -30px;
-            margin-left: -29px;
-        }
-    }
+		&:last-of-type {
+			margin-right: -30px;
+			margin-left: -29px;
+		}
+	}
 }
 
 .step-description {
-    padding: 25px;
-    margin: 0 auto;
-    max-width: 420px;
-    text-align: center;
+	padding: 0 25px;
+	margin: 25px auto 35px;
+	max-width: 420px;
+	text-align: center;
 }
 
 .button-group {
-    display: flex;
-    margin: 50px auto;
-    justify-content: center;
+	display: flex;
+	margin: 50px auto;
+	justify-content: center;
 
-    .button {
-        display: flex;
-        height: 46px;
-        font-weight: bold;
-        justify-content: center;
-        width: 200px;
+	.button {
+		display: flex;
+		height: 46px;
+		font-weight: bold;
+		justify-content: center;
+		width: 200px;
 
-        &:first-of-type {
-            margin-right: 50px;
+		&:first-of-type {
+			margin-right: 50px;
 
-            i {
-                margin-right: 10px;
-            }
-        }
+			i {
+				margin-right: 10px;
+			}
+		}
 
-        &:last-of-type {
-            i {
-                margin-left: 10px;
-            }
-        }
-    }
+		&:last-of-type {
+			i {
+				margin-left: 10px;
+			}
+		}
+	}
+}
+
+.step-content {
+	.step-1-content {
+		label {
+			margin-bottom: 6px;
+		}
+
+		input {
+			background-color: $grey-darker;
+			border-color: $grey;
+			border-radius: 4px;
+			color: $grey-lighter;
+
+			&::placeholder {
+				color: $grey-light;
+			}
+
+			&:focus {
+				border: 1px solid #209cee;
+				box-shadow: none;
+			}
+		}
+	}
+}
+
+.build-dates {
+	display: flex;
+	justify-content: space-between;
+
+	.start-date {
+		margin-right: 20px;
+	}
+
+	.end-date,
+	.start-date {
+		display: flex;
+		flex-direction: column;
+
+		input {
+			font-size: 1rem;
+			height: 2.25em;
+			min-width: 180px;
+		}
+	}
 }

@@ -118,6 +118,46 @@
         <p class="step-description" v-if="step === 5">
             Review the details of this new build and make any changes necessary.
         </p>
+        <div class="step-content">
+            <div class="step-1-content" v-if="step === 1">
+                <div class="columns">
+                    <div class="column is-4 is-offset-4 box">
+                        <label class="label">Build Name</label>
+                        <div class="control">
+                            <input
+                                type="text"
+                                class="input build-name"
+                                v-model="buildName"
+                                placeholder="Enter a name for your build"
+                            />
+                        </div>
+                        <div class="build-dates">
+                            <div class="start-date">
+                                <label class="label">Start Date</label>
+                                <v-date-picker
+                                    is-dark
+                                    :attributes="datePickerAttrs"
+                                    v-model="startDate"
+                                    :popover="{ visibility: 'click' }"
+                                />
+                            </div>
+                            <div class="end-date">
+                                <label class="label">End Date</label>
+                                <v-date-picker
+                                    is-dark
+                                    :attributes="datePickerAttrs"
+                                    v-model="endDate"
+                                    :popover="{ visibility: 'click' }"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <MembersTable v-if="step === 2" />
+            <RacksTable v-else-if="step === 3" />
+            <DevicesTable v-else-if="step === 4" />
+        </div>
         <div class="button-group">
             <a class="button is-info" @click="previousStep()">
                 <i class="material-icons">arrow_back</i>
@@ -132,12 +172,40 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import DevicesTable from './DevicesTable.vue';
+import MembersTable from './MembersTable.vue';
+import RacksTable from './RacksTable.vue';
+import { setupCalendar, DatePicker } from 'v-calendar';
 import { EventBus } from '@src/eventBus.js';
 
+setupCalendar(Vue);
+// Vue.component('v-calendar', Calendar);
+
 export default {
+    components: {
+        DevicesTable,
+        MembersTable,
+        RacksTable,
+        'v-date-picker': DatePicker,
+    },
     data() {
         return {
+            endDate: new Date(),
+            startDate: new Date(),
+            datePickerAttrs: [
+                {
+                    key: 'today',
+                    highlight: true,
+                    dates: new Date(),
+                    popover: {
+                        label: `Today's date`,
+                        hideIndicator: true,
+                    },
+                },
+            ],
             completeSteps: [],
+            buildName: '',
             step: 1,
         };
     },
