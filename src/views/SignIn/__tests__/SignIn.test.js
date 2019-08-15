@@ -57,30 +57,6 @@ describe('SignIn.vue', () => {
         expect(wrapper.html()).toContain('Invalid email address or password');
     });
 
-    test('should call setForcePasswordChange method when force_password_change is true', async () => {
-        jest.spyOn(users, 'getCurrentUser').mockReturnValueOnce(
-            Promise.resolve({
-                data: {
-                    name: 'Valid User',
-                    email: 'validuser@joyent.com',
-                    password: 'abcdefg',
-                    force_password_change: true,
-                },
-            })
-        );
-
-        wrapper.setData({
-            emailAddress: 'validuser@joyent.com',
-            password: 'goodPassword',
-        });
-        wrapper.find('button').trigger('click');
-
-        await new Promise(resolve => setTimeout(() => {
-            expect(actions.setForcePasswordChange).toHaveBeenCalled();
-            resolve();
-        }, 100));
-    });
-
     test('should call the login method', () => {
         const spy = jest.spyOn(authentication, 'login');
 
