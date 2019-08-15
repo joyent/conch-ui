@@ -46,6 +46,14 @@ describe('App.vue', () => {
         });
     });
 
+    describe('PasswordReset', () => {
+        test('should display the PasswordReset component when path is "/password-reset"', () => {
+            router.push({ path: '/password-reset' });
+
+            expect(wrapper.find('passwordreset-stub').exists()).toBeTruthy();
+        });
+    });
+
     describe('Main layout', () => {
         describe('path is "/user"', () => {
             beforeEach(() => {
