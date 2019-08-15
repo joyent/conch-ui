@@ -24,7 +24,7 @@ export const login = (data) => {
 
         store.dispatch('clearInvalidCredentials');
 
-        return data;
+        return response;
     });
 };
 
