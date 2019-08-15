@@ -1,6 +1,7 @@
 <template>
     <div id="app">
         <SignIn v-if="this.$route.path === '/'" />
+        <PasswordReset v-else-if="this.$route.path === '/password-reset'" />
         <div v-else>
             <router-view name="navbar"></router-view>
             <div class="section">
@@ -18,6 +19,7 @@
 </template>
 
 <script>
+import PasswordReset from './views/PasswordReset/PasswordReset.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -30,6 +32,7 @@ import { getRackRooms, roomToProgress, getWorkspaceRacks } from '@views/shared/u
 
 export default {
     components: {
+        PasswordReset,
         SignIn,
     },
     methods: {

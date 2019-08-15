@@ -241,5 +241,8 @@ export default {
             }
         },
     },
+    mounted() {
+        this.$refs.passwordInput.focus();
+    },
 };
 </script>
