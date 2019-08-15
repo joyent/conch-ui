@@ -10,6 +10,7 @@ import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTok
 import Navbar from './views/Navbar/Navbar.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
+import PasswordReset from './views/PasswordReset/PasswordReset.vue';
 
 Vue.use(Router);
 
@@ -119,6 +120,13 @@ export default new Router({
                 default: UserManagement,
                 sidebar: Sidebar,
                 navbar: Navbar,
+            },
+        },
+        {
+            path: '/password-reset',
+            name: 'passwordReset',
+            component: {
+                PasswordReset,
             },
         },
         {

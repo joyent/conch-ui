@@ -1,6 +1,7 @@
 <template>
     <div id="app">
         <SignIn v-if="this.$route.path === '/'" />
+        <PasswordReset v-else-if="this.$route.path === '/password-reset'" />
         <div class="signed-in" v-else>
             <router-view name="sidebar"></router-view>
             <div class="page">
@@ -12,6 +13,7 @@
 </template>
 
 <script>
+import PasswordReset from './views/PasswordReset/PasswordReset.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -28,6 +30,7 @@ import { getRackRooms, getWorkspaceRacks } from '@views/shared/utils.js';
 
 export default {
     components: {
+        PasswordReset,
         SignIn,
     },
     methods: {
