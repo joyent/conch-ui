@@ -165,7 +165,6 @@ import {
 } from '@src/config.js';
 import { getApiVersion } from '@api/conchApiVersion.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getCurrentUser } from '@api/users.js';
 import { login } from '@api/authentication.js';
 import { loadAllWorkspaces } from '@api/workspaces.js';
 
@@ -189,7 +188,6 @@ export default {
     },
     methods: {
         ...mapActions([
-            'setCurrentUser',
             'setCurrentWorkspace',
             'setForcePasswordChange',
             'setWorkspaces',
@@ -220,39 +218,38 @@ export default {
                 };
 
                 login(data)
-                    .then(() => {
-                        getCurrentUser().then(response => {
-                            const currentUser = response.data;
-                            this.setCurrentUser(currentUser);
-
-                            if (currentUser.force_password_change) {
-                                this.setForcePasswordChange();
-                                this.$router.push({ name: 'user' });
-                            } else {
-                                if (isEmpty(this.workspaces)) {
-                                    this.initWorkspaceData().then(() => {
-                                        this.$router.push({
-                                            name: 'status',
-                                            params: {
-                                                currentWorkspace: this
-                                                    .currentWorkspaceId,
-                                            },
-                                        });
-                                    });
-                                } else {
-                                    this.setCurrentWorkspace(
-                                        this.loadCurrentWorkspace()
-                                    );
+                    .then(response => {
+                        if (
+                            response.headers &&
+                            response.headers.location &&
+                            response.headers.location === '/user/me/password'
+                        ) {
+                            this.setForcePasswordChange();
+                            this.$router.push({ name: 'passwordReset' });
+                        } else {
+                            if (isEmpty(this.workspaces)) {
+                                this.initWorkspaceData().then(() => {
                                     this.$router.push({
                                         name: 'status',
                                         params: {
-                                            currentWorkspace: this.$store
-                                                .getters.currentWorkspaceId,
+                                            currentWorkspace: this
+                                                .currentWorkspaceId,
                                         },
                                     });
-                                }
+                                });
+                            } else {
+                                this.setCurrentWorkspace(
+                                    this.loadCurrentWorkspace()
+                                );
+                                this.$router.push({
+                                    name: 'status',
+                                    params: {
+                                        currentWorkspace: this.$store.getters
+                                            .currentWorkspaceId,
+                                    },
+                                });
                             }
-                        });
+                        }
                     })
                     .catch(() => {
                         this.isLoading = false;

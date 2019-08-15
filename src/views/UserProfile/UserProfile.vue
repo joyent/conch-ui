@@ -28,34 +28,6 @@
         </div>
         <AccountSettingsTab v-if="activeTab === 'settings'" />
         <AuthenticationTokensTab v-else-if="activeTab === 'tokens'" />
-        <div class="modal is-active" v-if="showModal">
-            <div class="modal-background" @click="closeModal()"></div>
-            <div class="modal-card">
-                <section class="modal-card-body">
-                    <article class="message is-danger is-medium">
-                        <div class="message-header">
-                            <p>Password Update Required</p>
-                            <button
-                                class="delete is-medium"
-                                aria-label="delete"
-                                @click="closeModal()"
-                            ></button>
-                        </div>
-                        <div class="message-body">
-                            <p>
-                                Your password needs to be updated immediately.
-                            </p>
-                            <a
-                                class="button is-danger update-password"
-                                @click="closeModal()"
-                            >
-                                Update Password
-                            </a>
-                        </div>
-                    </article>
-                </section>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -63,7 +35,6 @@
 import AccountSettingsTab from './AccountSettingsTab.vue';
 import AuthenticationTokensTab from './AuthenticationTokensTab.vue';
 import PageHeader from '@src/views/components/PageHeader.vue';
-import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
@@ -74,24 +45,7 @@ export default {
     data() {
         return {
             activeTab: 'settings',
-            showModal: false,
         };
-    },
-    methods: {
-        ...mapActions(['clearForcePasswordChange']),
-        closeModal() {
-            this.showModal = false;
-            this.clearForcePasswordChange();
-            this.$refs.passwordInput.focus();
-        },
-    },
-    computed: {
-        ...mapState(['forcePasswordChange']),
-    },
-    mounted() {
-        if (this.forcePasswordChange) {
-            this.showModal = true;
-        }
     },
 };
 </script>
