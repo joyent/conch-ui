@@ -1,21 +1,29 @@
-.conch-versions {
-	padding: 10px;
-
-	.tags-container {
+aside.menu {
+	&.loading {
 		display: flex;
 		flex-direction: column;
-		margin: 0 auto;
+		justify-content: center;
+	}
 
-		.tags {
-			display: inline-block;
-			margin-bottom: 0;
+	.conch-versions {
+		padding: 10px;
 
-			.tag {
+		.tags-container {
+			display: flex;
+			flex-direction: column;
+			margin: 0 auto;
+
+			.tags {
+				display: inline-block;
 				margin-bottom: 0;
-			}
 
-			&:first-of-type {
-				margin-bottom: 5px;
+				.tag {
+					margin-bottom: 0;
+				}
+
+				&:first-of-type {
+					margin-bottom: 5px;
+				}
 			}
 		}
 	}

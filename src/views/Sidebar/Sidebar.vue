@@ -1,47 +1,52 @@
 <template>
-    <Spinner v-if="!workspaceId" />
-    <aside class="menu" v-else>
-        <p class="menu-label">Datacenter Builds</p>
-        <ul class="menu-list">
-            <li>
-                <router-link :to="{ name: 'status', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Status</router-link>
-            </li>
-            <li>
-                <router-link :to="{ name: 'datacenter', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Browse</router-link>
-            </li>
-            <li>
-                <router-link :to="{ name: 'devices', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Devices</router-link>
-            </li>
-        </ul>
-        <p class="menu-label" v-if="currentUser.is_admin">Conch Admin</p>
-        <ul class="menu-list" v-if="currentUser.is_admin">
-            <li>
-                <router-link :to="{ name: 'tokens' }" active-class="is-active">Tokens</router-link>
-            </li>
-            <li>
-                <router-link :to="{ name: 'user-management' }" active-class="is-active">Users</router-link>
-            </li>
-        </ul>
-        <p class="menu-label">Conch</p>
-        <ul class="menu-list">
-            <li>
-                <router-link :to="{ name: 'user' }" active-class="is-active">Profile</router-link>
-            </li>
-            <li>
-                <a class="sign-out" @click="signOut()">Log out</a>
-            </li>
-        </ul>
-        <br />
-        <div class="box conch-versions">
-            <p class="heading">Conch Versions</p>
-            <div class="tags-container">
-                <div class="tags has-addons">
-                    <div class="tag is-primary">API</div>
-                    <div class="tag is-dark">{{ conchVersion }}</div>
-                </div>
-                <div class="tags has-addons">
-                    <div class="tag is-primary">UI</div>
-                    <div class="tag is-dark">{{ conchUIVersion }}</div>
+    <aside
+        class="menu"
+        :class="{ loading: !this.workspaceId || isEmpty(this.currentUser) }"
+    >
+        <Spinner v-if="!this.workspaceId || isEmpty(this.currentUser)" />
+        <div class="sidebar" v-else>
+            <p class="menu-label">Datacenter Builds</p>
+            <ul class="menu-list">
+                <li>
+                    <router-link :to="{ name: 'status', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Status</router-link>
+                </li>
+                <li>
+                    <router-link :to="{ name: 'datacenter', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Browse</router-link>
+                </li>
+                <li>
+                    <router-link :to="{ name: 'devices', params: { currentWorkspace: this.workspaceId }}" active-class="is-active">Devices</router-link>
+                </li>
+            </ul>
+            <p class="menu-label" v-if="currentUser.is_admin">Conch Admin</p>
+            <ul class="menu-list" v-if="currentUser.is_admin">
+                <li>
+                    <router-link :to="{ name: 'tokens' }" active-class="is-active">Tokens</router-link>
+                </li>
+                <li>
+                    <router-link :to="{ name: 'user-management' }" active-class="is-active">Users</router-link>
+                </li>
+            </ul>
+            <p class="menu-label">Conch</p>
+            <ul class="menu-list">
+                <li>
+                    <router-link :to="{ name: 'user' }" active-class="is-active">Profile</router-link>
+                </li>
+                <li>
+                    <a class="sign-out" @click="signOut()">Log out</a>
+                </li>
+            </ul>
+            <br />
+            <div class="box conch-versions">
+                <p class="heading">Conch Versions</p>
+                <div class="tags-container">
+                    <div class="tags has-addons">
+                        <div class="tag is-primary">API</div>
+                        <div class="tag is-dark">{{ conchVersion }}</div>
+                    </div>
+                    <div class="tags has-addons">
+                        <div class="tag is-primary">UI</div>
+                        <div class="tag is-dark">{{ conchUIVersion }}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,7 +58,8 @@ import isEmpty from 'lodash/isEmpty';
 import Spinner from '@src/views/components/Spinner.vue';
 import { getApiVersion } from '@api/conchApiVersion.js';
 import { logout } from '@api/authentication.js';
-import { mapGetters, mapState } from 'vuex';
+import { getCurrentUser } from '@api/users.js';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
     components: {
@@ -66,6 +72,8 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setCurrentUser']),
+        isEmpty,
         signOut() {
             logout()
                 .then(() => {
@@ -107,6 +115,12 @@ export default {
         getApiVersion().then(response => {
             this.conchVersion = response.data.version;
         });
+
+        if (isEmpty(this.currentUser)) {
+            getCurrentUser().then(response => {
+                this.setCurrentUser(response.data);
+            });
+        }
     },
 };
 </script>
