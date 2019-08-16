@@ -74,6 +74,7 @@ export default {
     },
     data() {
         return {
+            currentWorkspaceId: '',
             foundDevices: [],
             hideDropdown: true,
             maxFoundDevices: 12,
@@ -157,13 +158,8 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspaceId',
-            'currentWorkspaceName',
-        ]),
-        ...mapState([
-            'activeRoomName',
-        ]),
+        ...mapGetters(['currentWorkspaceName']),
+        ...mapState(['activeRoomName']),
         activeRacks() {
             if (this.rackRooms.length) {
                 let racks;
@@ -193,8 +189,15 @@ export default {
         },
     },
     created() {
-        this.setWorkspaceDevices();
-        this.setWorkspaceRacks();
+        if (
+            this.$route &&
+            this.$route.params &&
+            this.$route.params.currentWorkspace
+        ) {
+            this.currentWorkspaceId = this.$route.params.currentWorkspace;
+            this.setWorkspaceDevices();
+            this.setWorkspaceRacks();
+        }
     },
     mounted() {
         if (this.$route && this.$route.params) {
@@ -205,6 +208,8 @@ export default {
             }
 
             if (routeParams.currentWorkspace && routeParams.rackId) {
+                this.currentWorkspaceId = routeParams.currentWorkspace;
+
                 getRackById(routeParams.currentWorkspace, routeParams.rackId)
                     .then(response => {
                         this.setRackLayout(response);
@@ -212,10 +217,11 @@ export default {
             }
         }
 
-        EventBus.$on('changeWorkspace:datacenter', () => {
+        EventBus.$on('changeWorkspace:datacenter', workspaceId => {
+            this.currentWorkspaceId = workspaceId;
+            this.clearActiveData();
             this.setWorkspaceDevices();
             this.setWorkspaceRacks();
-            this.clearActiveData();
         });
     },
     destroyed() {

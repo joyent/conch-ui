@@ -85,7 +85,7 @@ export default {
                     name = 'datacenter';
                 }
 
-                EventBus.$emit('changeWorkspace:datacenter');
+                EventBus.$emit('changeWorkspace:datacenter', workspaceId);
             }
 
             this.$router.push({ name: name, params: params });
