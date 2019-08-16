@@ -151,11 +151,8 @@
                 </transition>
             </div>
             <transition name="fade">
-                <UserModal
-                    v-if="action === 'create' || action === 'edit'"
-                    :action="action"
-                    :user="user"
-                />
+                <CreateUserModal v-if="action === 'create'" :user="user" />
+                <EditUserModal v-else-if="action === 'edit'" :user="user" />
                 <UserActionModal
                     v-else-if="action"
                     :action="action"
@@ -167,9 +164,10 @@
 </template>
 
 <script>
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
+import CreateUserModal from './CreateUserModal.vue';
+import EditUserModal from './EditUserModal.vue';
 import UserActionModal from './UserActionModal.vue';
-import UserModal from './UserModal.vue';
 import Spinner from '@src/views/components/Spinner.vue';
 import WorkspaceView from './WorkspaceView.vue';
 import UsersTable from './UsersTable.vue';
@@ -179,9 +177,10 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
+        CreateUserModal,
+        EditUserModal,
         Spinner,
         UserActionModal,
-        UserModal,
         UsersTable,
         WorkspaceView,
     },

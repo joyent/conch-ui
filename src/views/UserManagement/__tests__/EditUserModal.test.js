@@ -1,4 +1,4 @@
-import UserModal from '../UserModal.vue';
+import EditUserModal from '../EditUserModal.vue';
 import { mount } from '@vue/test-utils';
 import * as usersApi from '@api/users.js';
 
@@ -7,7 +7,7 @@ import users from '@src/__fixtures__/users.js';
 
 jest.mock('@api/request.js');
 
-describe('UserModal.vue', () => {
+describe('EditUserModal.vue', () => {
     let propsData;
     let user;
     let wrapper;
@@ -15,30 +15,13 @@ describe('UserModal.vue', () => {
     beforeEach(() => {
         user = users[0];
         propsData = { action: 'create', user };
-        wrapper = mount(UserModal, { propsData });
+        wrapper = mount(EditUserModal, { propsData });
     });
 
     // Helper function
-    const clickCreateUser = () => {
-        wrapper.find('a.create').trigger('click');
+    const clickSaveChanges = () => {
+        wrapper.find('a.edit').trigger('click');
     };
-
-    describe('method createUser', () => {
-        test('should call createUser method when "Create User" button is clicked', () => {
-            const spy = jest.spyOn(usersApi, 'createUser');
-            const data = {
-                email: 'user@joyent.com',
-                name: 'New User',
-                isAdmin: true,
-                password: 'abcdefg',
-            };
-
-            wrapper.setData(data);
-            clickCreateUser();
-
-            expect(spy).toHaveBeenCalled();
-        });
-    });
 
     describe('method editUser', () => {
         test('should call editUser method when "Save Changes" button is clicked', () => {
@@ -50,7 +33,7 @@ describe('UserModal.vue', () => {
                 password: 'abcdefg',
             };
             propsData.action = 'edit';
-            wrapper = mount(UserModal, { propsData })
+            wrapper = mount(EditUserModal, { propsData });
             wrapper.setData(data);
             wrapper.find('a.edit').trigger('click');
 
@@ -85,22 +68,36 @@ describe('UserModal.vue', () => {
 
         // REDO with field.input_name
         test('should display error messages for each text input field if they are submitted empty', () => {
-            clickCreateUser();
+            wrapper.setData({ email: '' });
+            wrapper.setData({ name: '' });
 
-            expect(wrapper.find('.field.name').find('.error').exists()).toBeTruthy();
-            expect(wrapper.find('.field.email').find('.error').exists()).toBeTruthy();
-            expect(wrapper.find('.field.password').find('.error').exists()).toBeTruthy();
+            clickSaveChanges();
+
+            expect(
+                wrapper
+                    .find('.field.name')
+                    .find('.error')
+                    .exists()
+            ).toBeTruthy();
+            expect(
+                wrapper
+                    .find('.field.email')
+                    .find('.error')
+                    .exists()
+            ).toBeTruthy();
         });
 
         test('should remove the error message for the name input if name is submitted', () => {
             const nameField = wrapper.find('.field.name');
 
+            wrapper.setData({ name: '' });
+
             // Trigger error message
-            clickCreateUser();
+            clickSaveChanges();
 
             // Set name and resubmit
             wrapper.setData({ name: 'User Name' });
-            clickCreateUser();
+            clickSaveChanges();
 
             expect(nameField.find('.error').exists()).toBeFalsy();
         });
@@ -108,27 +105,16 @@ describe('UserModal.vue', () => {
         test('should remove the error message for the email input if a valid email', () => {
             const emailField = wrapper.find('.field.email');
 
+            wrapper.setData({ email: '' });
+
             // Trigger error message
-            clickCreateUser();
+            clickSaveChanges();
 
             // Set email and resubmit
             wrapper.setData({ email: 'user@joyent.com' });
-            clickCreateUser();
+            clickSaveChanges();
 
             expect(emailField.find('.error').exists()).toBeFalsy();
-        });
-
-        test('should remove the error message for the password input if a valid password is submitted', () => {
-            const passwordField = wrapper.find('.field.password');
-
-            // Trigger error message
-            clickCreateUser();
-
-            // Set password and resubmit
-            wrapper.setData({ password: 'abcdefg' });
-            clickCreateUser();
-
-            expect(passwordField.find('.error').exists()).toBeFalsy();
         });
     });
 });
