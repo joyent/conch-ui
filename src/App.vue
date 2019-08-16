@@ -24,7 +24,6 @@ import {
     getDeviceSettings,
     getDeviceValidations,
 } from '@api/device.js';
-import { getCurrentUser } from '@api/users.js';
 import { getValidations } from '@api/validations.js';
 import { getRackRooms, getWorkspaceRacks } from '@views/shared/utils.js';
 
@@ -41,7 +40,6 @@ export default {
             'setActiveDeviceValidations',
             'setActiveRoomName',
             'setAllRooms',
-            'setCurrentUser',
             'setCurrentWorkspace',
             'setRackLayout',
             'setValidations',
@@ -115,7 +113,7 @@ export default {
             'currentWorkspaceId',
             'loadCurrentWorkspace',
         ]),
-        ...mapState(['currentUser', 'currentWorkspace', 'workspaces']),
+        ...mapState(['currentWorkspace', 'workspaces']),
         hasWorkspace() {
             return !isEmpty(this.currentWorkspace);
         },
@@ -140,12 +138,6 @@ export default {
             } else {
                 this.setWorkspace(currentWorkspaceId);
                 this.setRoomsAndStore();
-            }
-
-            if (isEmpty(this.currentUser)) {
-                getCurrentUser().then(response => {
-                    this.setCurrentUser(response.data);
-                });
             }
         }
     },
