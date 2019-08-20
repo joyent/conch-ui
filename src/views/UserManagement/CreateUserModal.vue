@@ -1,8 +1,8 @@
 <template>
     <div class="create-user-modal">
-        <BaseModal v-if="!actionComplete">
+        <BaseModal v-if="step === 1">
             <template v-slot:icon>
-                <i class="fas fa-4x fa-address-card has-text-info"></i>
+                <i class="fas fa-4x fa-address-card"></i>
             </template>
             <template v-slot:title>
                 <h1 class="title is-3">
@@ -115,34 +115,125 @@
             <template v-slot:footer>
                 <a
                     class="button is-success create is-fullwidth"
-                    :class="{ 'is-loading': isLoading }"
-                    @click="createUser()"
+                    @click="addUserToWorkspaces()"
                 >
-                    Create User
-                    <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                    Add User to Workspaces
+                    <i class="material-icons">arrow_forward</i>
                 </a>
             </template>
         </BaseModal>
-        <BaseModal v-else>
+        <BaseModal v-if="step === 2">
             <template v-slot:icon>
-                <i
-                    class="far fa-3x fa-check-circle has-text-success"
-                    v-if="success"
-                ></i>
-                <i v-else class="fas fa-3x fa-id-badge has-text-warning"></i>
+                <i class="material-icons workspace-icon">widgets</i>
             </template>
             <template v-slot:title>
-                <span v-if="success">
-                    <h1 class="title">Success!</h1>
+                <span>
+                    <h1 class="title">Add User to Workspaces</h1>
                 </span>
             </template>
             <template v-slot:body>
-                <p class="subtitle" v-if="success">
+                <div class="workspaces-table">
+                    <table class="table is-fullwidth">
+                        <tr>
+                            <td class="search-input" colspan="3">
+                                <p class="control has-icons-left">
+                                    <input
+                                        class="input"
+                                        type="text"
+                                        placeholder="Search workspaces"
+                                        v-model="searchText"
+                                    />
+                                    <span class="icon is-left">
+                                        <i class="material-icons">search</i>
+                                    </span>
+                                </p>
+                            </td>
+                        </tr>
+                        <template v-if="filteredWorkspaces.length">
+                            <tr
+                                v-for="workspace in filteredWorkspaces"
+                                :key="workspace.id"
+                            >
+                                <td>{{ workspace.name }}</td>
+                                <td class="workspace-permissions-select">
+                                    <div
+                                        class="select"
+                                        v-if="isSelected(workspace.name)"
+                                    >
+                                        <select
+                                            @change="
+                                                updatePermissions(
+                                                    workspace.name,
+                                                    $event
+                                                )
+                                            "
+                                        >
+                                            <option value="admin">Admin</option>
+                                            <option value="rw">
+                                                Read / Write
+                                            </option>
+                                            <option value="ro" selected>
+                                                Read Only
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="workspace-checkbox">
+                                    <div
+                                        class="checkbox-circle"
+                                        :class="{
+                                            'is-selected': isSelected(
+                                                workspace.name
+                                            ),
+                                        }"
+                                        @click="selectWorkspace(workspace)"
+                                    >
+                                        <i
+                                            class="material-icons"
+                                            v-if="isSelected(workspace.name)"
+                                        >
+                                            check
+                                        </i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr v-else>
+                            <td colspan="3" class="has-text-centered">
+                                No workspaces named
+                                <span
+                                    class="has-text-weight-bold has-text-white"
+                                >
+                                    {{ searchText }}
+                                </span>
+                                found.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </template>
+            <template v-slot:footer>
+                <a
+                    class="button confirm is-success is-fullwidth"
+                    @click="createUser()"
+                    :class="{ 'is-loading': isLoading }"
+                >
+                    Create User
+                    <i class="material-icons">arrow_forward</i>
+                </a>
+            </template>
+        </BaseModal>
+        <BaseModal v-if="step === 3">
+            <template v-slot:icon>
+                <i class="far fa-4x fa-check-circle has-text-success"></i>
+            </template>
+            <template v-slot:title>
+                <h1 class="title is-3">Success!</h1>
+            </template>
+            <template v-slot:body>
+                <p class="subtitle">
                     <strong class="has-text-white">{{ name }}</strong> has been
                     successfully created.
-                </p>
-                <p class="subtitle" v-else>
-                    No information was changed.
                 </p>
             </template>
             <template v-slot:footer>
@@ -150,9 +241,8 @@
                     class="button confirm is-success is-fullwidth"
                     @click="closeModal()"
                 >
-                    <span v-if="success">Great!</span>
-                    <span v-else>Close</span>
-                    <i class="fas fa-lg fa-long-arrow-alt-right"></i>
+                    Close
+                    <i class="material-icons">arrow_forward</i>
                 </a>
             </template>
         </BaseModal>
@@ -160,9 +250,13 @@
 </template>
 
 <script>
+import search from 'fuzzysearch';
+import orderBy from 'lodash/orderBy';
 import BaseModal from '@src/views/components/BaseModal.vue';
 import * as Users from '@api/users.js';
+import { mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
+import { addUserToWorkspace } from '@api/workspaces.js';
 
 export default {
     components: {
@@ -176,7 +270,6 @@ export default {
     },
     data() {
         return {
-            actionComplete: false,
             email: '',
             emailIsValid: false,
             errors: {
@@ -190,12 +283,14 @@ export default {
             isLoading: false,
             name: '',
             password: '',
-            success: false,
+            searchText: '',
+            selectedWorkspaces: [],
+            step: 1,
+            workspacePermissions: [],
         };
     },
     methods: {
         closeModal() {
-            this.actionComplete = false;
             this.isActive = false;
             this.resetErrors();
 
@@ -207,9 +302,25 @@ export default {
                 EventBus.$emit('close-modal');
             }
         },
+        addUserToWorkspaces() {
+            if (this.validateForm()) {
+                this.step = 2;
+            }
+        },
+        async addWorkspaces() {
+            await this.workspacePermissions.forEach(workspace => {
+                addUserToWorkspace(workspace.workspaceId, {
+                    user: this.email,
+                    role: workspace.permissions,
+                });
+            });
+
+            this.step = 3;
+            this.isLoading = false;
+        },
         createUser() {
-            this.resetErrors();
             this.isLoading = true;
+            this.resetErrors();
 
             if (this.validateForm()) {
                 const user = {
@@ -222,14 +333,14 @@ export default {
                 Users.createUser(user)
                     .then(response => {
                         const userId = response.data.id;
-                        this.actionComplete = true;
-                        this.success = true;
                         this.isLoading = false;
 
                         EventBus.$emit('action-success', {
                             userId,
                             action: 'create',
                         });
+
+                        this.addWorkspaces(userId);
                     })
                     .catch(error => {
                         if (error.status === 409) {
@@ -241,6 +352,9 @@ export default {
                 this.isLoading = false;
             }
         },
+        isSelected(workspace) {
+            return this.selectedWorkspaces.indexOf(workspace) !== -1;
+        },
         resetErrors() {
             this.errors = {
                 duplicateEmail: false,
@@ -248,6 +362,29 @@ export default {
                 name: false,
                 password: false,
             };
+        },
+        selectWorkspace(workspace) {
+            const workspaceName = workspace.name;
+            const index = this.selectedWorkspaces.indexOf(workspaceName);
+
+            if (index === -1) {
+                this.selectedWorkspaces.push(workspaceName);
+                this.workspacePermissions.push({
+                    workspaceId: workspace.id,
+                    permissions: 'ro',
+                });
+            } else {
+                this.selectedWorkspaces.splice(index, 1);
+                this.workspacePermissions.splice(index, 1);
+            }
+        },
+        updatePermissions(workspace, event) {
+            const index = this.selectedWorkspaces.indexOf(workspace);
+
+            if (event && event.target && event.target.value) {
+                this.workspacePermissions[index].permissions =
+                    event.target.value;
+            }
         },
         validEmail() {
             const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -271,6 +408,34 @@ export default {
             return Object.values(this.errors).some(error => error === true)
                 ? false
                 : true;
+        },
+    },
+    computed: {
+        ...mapState(['workspaces']),
+        filteredWorkspaces() {
+            let workspaces = this.workspaces;
+            const searchText = this.searchText.toLowerCase();
+
+            if (searchText) {
+                return workspaces.reduce((acc, workspace) => {
+                    const name = workspace.name.toLowerCase();
+
+                    if (search(searchText, name)) {
+                        acc.push(workspace);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            // Sort list alphabetically by workspace name
+            workspaces = orderBy(
+                workspaces,
+                [workspace => workspace.name],
+                ['asc']
+            );
+
+            return workspaces;
         },
     },
     mounted() {

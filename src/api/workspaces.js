@@ -1,5 +1,16 @@
 import { requestWithToken } from './request.js';
 
+export const addUserToWorkspace = (id, data) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/workspace/${id}/user`,
+        data,
+        params: {
+            send_mail: 1,
+        },
+    });
+};
+
 export const getAllRacks = id => {
     return requestWithToken({
         method: 'GET',
