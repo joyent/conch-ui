@@ -1,25 +1,35 @@
 import { requestWithToken } from './request.js';
 
-export const getAllRacks = (id) => {
+export const addUserToWorkspace = (id, data) => {
     return requestWithToken({
-        method: 'GET',
-        url: `/workspace/${id}/rack`
+        method: 'POST',
+        url: `/workspace/${id}/user`,
+        data,
+        params: {
+            send_mail: 1,
+        },
     });
 };
 
-export const getDevices = (id) => {
+export const getAllRacks = id => {
     return requestWithToken({
         method: 'GET',
-        url: `/workspace/${id}/device`
+        url: `/workspace/${id}/rack`,
+    });
+};
+
+export const getDevices = id => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/workspace/${id}/device`,
     });
 };
 
 export const getRackById = (id, rackId) => {
     return requestWithToken({
         method: 'GET',
-        url: `/workspace/${id}/rack/${rackId}`
-    })
-    .then(response => {
+        url: `/workspace/${id}/rack/${rackId}`,
+    }).then(response => {
         const data = response.data;
 
         if (data.slots) {
@@ -36,7 +46,7 @@ export const getRackById = (id, rackId) => {
 export const loadAllWorkspaces = () => {
     return requestWithToken({
         method: 'GET',
-        url: '/workspace'
+        url: '/workspace',
     });
 };
 

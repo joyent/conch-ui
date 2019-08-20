@@ -1,0 +1,131 @@
+.create-user-modal {
+    .modal-content,
+    .notification {
+        overflow: scroll;
+        width: auto;
+    }
+
+    .modal-content {
+        max-width: 497;
+        min-width: 497px;
+    }
+
+    input {
+        background-color: $grey-darker;
+        border-color: $grey;
+        border-radius: 4px;
+        color: #bdcbdb;
+
+        &::placeholder {
+            color: #bdcbdb;
+        }
+    }
+
+    table {
+        tr {
+            &:hover {
+                td {
+                    background-color: lighten($dark, 3%);
+                }
+            }
+            &:first-of-type {
+                td {
+
+                    &:first-of-type {
+                        border-top-left-radius: 4px;
+
+                    }
+
+                    &:last-of-type {
+                        border-top-right-radius: 4px;
+                    }
+                }
+            }
+
+            &:last-of-type {
+                td {
+                    &:first-of-type {
+                        border-bottom-left-radius: 4px;
+                    }
+
+                    &:last-of-type {
+                        border-bottom-right-radius: 4px;
+                    }
+                }
+            }
+        }
+        td {
+            background-color: $dark;
+            border: none;
+            height: 66px;
+            white-space: nowrap;
+
+            &.workspace-permissions-select {
+                width: 195px;
+                text-align: center;
+            }
+
+            &.workspace-checkbox {
+                text-align: center;
+            }
+
+            &.search-input {
+                padding: 0;
+
+                p {
+                    &.control {
+                        input {
+                            height: 66px;
+                            border: none;
+                            background-color: $dark;
+                            padding-left: 3em;
+
+                            &:focus {
+                                box-shadow: none;
+                            }
+                        }
+
+                        span.icon {
+                            left: 7px;
+                            top: 15px;
+
+                            i.material-icons {
+                                font-size: 32px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .checkbox-circle {
+                width: 25px;
+                height: 25px;
+                border: 2px solid $green;
+                border-radius: 50%;
+                cursor: pointer;
+                margin: 0 auto;
+
+                &.is-selected {
+                    background-color: $green;
+                    border: none;
+                }
+            }
+        }
+    }
+
+    .button {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .workspace-icon {
+        font-size: 72px;
+    }
+
+    .workspaces-table {
+        border-radius: 4px;
+        min-height: 443px;
+        max-height: 443px;
+        overflow: scroll;
+    }
+}
