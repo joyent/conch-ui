@@ -1,6 +1,6 @@
 <template>
     <div class="edit-user-modal">
-        <BaseModal v-if="!actionComplete">
+        <BaseModal v-if="step === 1">
             <template v-slot:icon>
                 <i class="fas fa-4x fa-address-card has-text-info"></i>
             </template>
@@ -89,14 +89,132 @@
                 <a
                     class="button is-success edit is-fullwidth"
                     :class="{ 'is-loading': isLoading }"
-                    @click="editUser()"
+                    @click="editWorkspaces()"
                 >
-                    Save Changes
+                    Edit Workspaces
                     <i class="fas fa-lg fa-long-arrow-alt-right"></i>
                 </a>
             </template>
         </BaseModal>
-        <BaseModal v-else>
+        <BaseModal v-if="step === 2">
+            <template v-slot:icon>
+                <i class="material-icons workspace-icon">widgets</i>
+            </template>
+            <template v-slot:title>
+                <span>
+                    <h1 class="title">Edit User Workspaces</h1>
+                </span>
+            </template>
+            <template v-slot:body>
+                <div class="workspaces-table">
+                    <table class="table is-fullwidth">
+                        <tr>
+                            <td class="search-input" colspan="3">
+                                <p class="control has-icons-left">
+                                    <input
+                                        class="input"
+                                        type="text"
+                                        placeholder="Search workspaces"
+                                        v-model="searchText"
+                                    />
+                                    <span class="icon is-left">
+                                        <i class="material-icons">search</i>
+                                    </span>
+                                </p>
+                            </td>
+                        </tr>
+                        <template v-if="filteredWorkspaces.length">
+                            <tr
+                                v-for="workspace in filteredWorkspaces"
+                                :key="workspace.id"
+                            >
+                                <td>{{ workspace.name }}</td>
+                                <td class="workspace-permissions-select">
+                                    <div
+                                        class="select"
+                                        v-if="isSelected(workspace)"
+                                    >
+                                        <select
+                                            @change="
+                                                updatePermissions(
+                                                    workspace.name,
+                                                    $event
+                                                )
+                                            "
+                                        >
+                                            <option
+                                                value="admin"
+                                                :selected="
+                                                    getWorkspaceRole(workspace.name) === 'admin'
+                                                "
+                                            >
+                                                Admin
+                                            </option>
+                                            <option
+                                                value="rw"
+                                                :selected="
+                                                    getWorkspaceRole(workspace.name) === 'rw'
+                                                "
+                                            >
+                                                Read / Write
+                                            </option>
+                                            <option
+                                                value="ro"
+                                                :selected="
+                                                    getWorkspaceRole(workspace.name) === 'ro'
+                                                "
+                                            >
+                                                Read Only
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td class="workspace-checkbox">
+                                    <div
+                                        class="checkbox-circle"
+                                        :class="{
+                                            'is-selected': isSelected(
+                                                workspace
+                                            ),
+                                        }"
+                                        @click="selectWorkspace(workspace)"
+                                    >
+                                        <i
+                                            class="material-icons"
+                                            v-if="isSelected(workspace)"
+                                        >
+                                            check
+                                        </i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr v-else>
+                            <td colspan="3" class="has-text-centered">
+                                No workspaces named
+                                <span
+                                    class="has-text-weight-bold has-text-white"
+                                >
+                                    {{ searchText }}
+                                </span>
+                                found.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </template>
+            <template v-slot:footer>
+                <a
+                    class="button confirm is-success is-fullwidth"
+                    @click="saveChanges()"
+                    :class="{ 'is-loading': isLoading }"
+                >
+                    Save Changes
+                    <i class="material-icons">arrow_forward</i>
+                </a>
+            </template>
+        </BaseModal>
+        <BaseModal v-if="step === 3">
             <template v-slot:icon>
                 <i
                     class="far fa-3x fa-check-circle has-text-success"
@@ -133,15 +251,23 @@
 </template>
 
 <script>
+import search from 'fuzzysearch';
+import orderBy from 'lodash/orderBy';
 import BaseModal from '@src/views/components/BaseModal.vue';
-import * as Users from '@api/users.js';
+import { editUser } from '@api/users.js';
 import { EventBus } from '@src/eventBus.js';
+import { mapState } from 'vuex';
 
 export default {
     components: {
         BaseModal,
     },
     props: {
+        modalStep: {
+            type: Number,
+            required: false,
+            default: 1,
+        },
         user: {
             type: Object,
             required: true,
@@ -163,10 +289,19 @@ export default {
             isLoading: false,
             name: '',
             password: '',
+            searchText: '',
+            selectedWorkspaces: [],
+            step: 1,
             success: false,
+            workspacePermissions: [],
         };
     },
     methods: {
+        editWorkspaces() {
+            if (this.validateForm()) {
+                this.step = 2;
+            }
+        },
         closeModal() {
             this.actionComplete = false;
             this.isActive = false;
@@ -180,7 +315,14 @@ export default {
                 EventBus.$emit('close-modal');
             }
         },
-        editUser() {
+        getWorkspaceRole(workspaceName) {
+            let ws = this.user.workspaces.find(workspace => {
+                return workspace.name === workspaceName;
+            });
+
+            return ws.role;
+        },
+        saveChanges() {
             this.resetErrors();
             this.isLoading = true;
 
@@ -203,7 +345,7 @@ export default {
                     name: this.name,
                 };
 
-                Users.editUser(editedUser)
+                editUser(editedUser)
                     .then(() => {
                         this.actionComplete = true;
                         this.success = true;
@@ -220,6 +362,13 @@ export default {
                 this.isLoading = false;
             }
         },
+        isSelected(workspace) {
+            const selected = this.user.workspaces.some(userWorkspace => {
+                return workspace.name === userWorkspace.name;
+            });
+
+            return selected;
+        },
         resetErrors() {
             this.errors = {
                 duplicateEmail: false,
@@ -227,6 +376,29 @@ export default {
                 name: false,
                 password: false,
             };
+        },
+        selectWorkspace(workspace) {
+            const workspaceName = workspace.name;
+            const index = this.selectedWorkspaces.indexOf(workspaceName);
+
+            if (index === -1) {
+                this.selectedWorkspaces.push(workspaceName);
+                this.workspacePermissions.push({
+                    workspaceId: workspace.id,
+                    permissions: 'ro',
+                });
+            } else {
+                this.selectedWorkspaces.splice(index, 1);
+                this.workspacePermissions.splice(index, 1);
+            }
+        },
+        updatePermissions(workspace, event) {
+            const index = this.selectedWorkspaces.indexOf(workspace);
+
+            if (event && event.target && event.target.value) {
+                this.workspacePermissions[index].permissions =
+                    event.target.value;
+            }
         },
         validEmail() {
             const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -248,14 +420,56 @@ export default {
                 : true;
         },
     },
+    computed: {
+        ...mapState(['workspaces']),
+        filteredWorkspaces() {
+            let workspaces = this.workspaces;
+            const searchText = this.searchText.toLowerCase();
+
+            if (searchText) {
+                return workspaces.reduce((acc, workspace) => {
+                    const name = workspace.name.toLowerCase();
+
+                    if (search(searchText, name)) {
+                        acc.push(workspace);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            // Sort list alphabetically by workspace name
+            workspaces = orderBy(
+                workspaces,
+                [workspace => workspace.name],
+                ['asc']
+            );
+
+            return workspaces;
+        },
+    },
     mounted() {
         const user = this.user;
+
+        if (this.modalStep) {
+            this.step = this.modalStep;
+        }
 
         if (user) {
             this.email = user.email;
             this.name = user.name;
             this.password = user.password;
             this.isAdmin = user.is_admin;
+
+            if (user.workspaces) {
+                user.workspaces.forEach(workspace => {
+                    this.selectedWorkspaces.push(workspace.name);
+                    this.workspacePermissions.push({
+                        workspaceId: workspace.id,
+                        permissions: workspace.role,
+                    });
+                })
+            }
         }
 
         EventBus.$on('closeModal:baseModal', () => {
