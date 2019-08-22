@@ -152,7 +152,11 @@
             </div>
             <transition name="fade">
                 <CreateUserModal v-if="action === 'create'" :user="user" />
-                <EditUserModal v-else-if="action === 'edit'" :user="user" />
+                <EditUserModal
+                    v-else-if="action === 'edit'"
+                    :modal-step="modalStep"
+                    :user="user"
+                />
                 <UserActionModal
                     v-else-if="action"
                     :action="action"
@@ -190,6 +194,7 @@ export default {
             activeDropdown: null,
             collapsed: true,
             currentTab: 'users',
+            modalStep: null,
             searchText: '',
             searchTextWorkspaces: '',
             statisticFilter: '',
@@ -206,14 +211,18 @@ export default {
                 return user.id;
             }).indexOf(userId);
         },
-        openModal(action, user) {
-            this.action = action;
-
+        openModal(action, user, step) {
             if (user) {
                 this.user = user;
             } else {
                 this.user = {};
             }
+
+            if (step) {
+                this.modalStep = step;
+            }
+
+            this.action = action;
         },
         setUserFilters(filter) {
             if (filter === 'all_users') {
@@ -309,7 +318,7 @@ export default {
         }
 
         EventBus.$on('open-modal', data => {
-            this.openModal(data.action, data.user);
+            this.openModal(data.action, data.user, data.step);
         });
 
         EventBus.$on('close-modal', () => {

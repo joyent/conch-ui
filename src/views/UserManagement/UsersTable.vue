@@ -189,6 +189,13 @@
                                     </a>
                                     <hr class="dropdown-divider">
                                     <a
+                                        class="dropdown-item workspaces"
+                                        @click="openModal('edit', user, 2)"
+                                    >
+                                        Edit Workspaces
+                                    </a>
+                                    <hr class="dropdown-divider" />
+                                    <a
                                         class="dropdown-item tokens"
                                         @click="viewTokens(user)"
                                     >
@@ -254,8 +261,8 @@ export default {
         lastActive(date) {
             return moment(date).fromNow();
         },
-        openModal(action, user) {
-            EventBus.$emit('open-modal', { action, user });
+        openModal(action, user, step) {
+            EventBus.$emit('open-modal', { action, user, step });
         },
         setActiveDropdown(row) {
             if (this.activeDropdown === row) {
