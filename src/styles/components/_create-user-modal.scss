@@ -54,6 +54,12 @@
                     }
                 }
             }
+
+            &.is-selected {
+                border-width: 0 0 0 8px;
+                border-color: $green;
+                border-style: solid;
+            }
         }
         td {
             background-color: $dark;

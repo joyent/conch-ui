@@ -153,6 +153,9 @@
                             <tr
                                 v-for="workspace in filteredWorkspaces"
                                 :key="workspace.id"
+                                :class="{
+                                    'is-selected': isSelected(workspace.name),
+                                }"
                             >
                                 <td>{{ workspace.name }}</td>
                                 <td class="workspace-permissions-select">
