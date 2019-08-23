@@ -127,12 +127,15 @@
                             <tr
                                 v-for="workspace in filteredWorkspaces"
                                 :key="workspace.id"
+                                :class="{
+                                    'is-selected': isSelected(workspace.name),
+                                }"
                             >
                                 <td>{{ workspace.name }}</td>
                                 <td class="workspace-permissions-select">
                                     <div
                                         class="select"
-                                        v-if="isSelected(workspace)"
+                                        v-if="isSelected(workspace.name)"
                                     >
                                         <select
                                             @change="
@@ -145,7 +148,9 @@
                                             <option
                                                 value="admin"
                                                 :selected="
-                                                    getWorkspaceRole(workspace.name) === 'admin'
+                                                    getWorkspaceRole(
+                                                        workspace.name
+                                                    ) === 'admin'
                                                 "
                                             >
                                                 Admin
@@ -153,7 +158,9 @@
                                             <option
                                                 value="rw"
                                                 :selected="
-                                                    getWorkspaceRole(workspace.name) === 'rw'
+                                                    getWorkspaceRole(
+                                                        workspace.name
+                                                    ) === 'rw'
                                                 "
                                             >
                                                 Read / Write
@@ -161,7 +168,9 @@
                                             <option
                                                 value="ro"
                                                 :selected="
-                                                    getWorkspaceRole(workspace.name) === 'ro'
+                                                    getWorkspaceRole(
+                                                        workspace.name
+                                                    ) === 'ro'
                                                 "
                                             >
                                                 Read Only
@@ -174,14 +183,14 @@
                                         class="checkbox-circle"
                                         :class="{
                                             'is-selected': isSelected(
-                                                workspace
+                                                workspace.name
                                             ),
                                         }"
                                         @click="selectWorkspace(workspace)"
                                     >
                                         <i
                                             class="material-icons"
-                                            v-if="isSelected(workspace)"
+                                            v-if="isSelected(workspace.name)"
                                         >
                                             check
                                         </i>
@@ -294,6 +303,7 @@ export default {
             step: 1,
             success: false,
             workspacePermissions: [],
+            updatedWorkspaces: [],
         };
     },
     methods: {
@@ -305,6 +315,7 @@ export default {
         closeModal() {
             this.actionComplete = false;
             this.isActive = false;
+            this.step = 1;
             this.resetErrors();
 
             if (this.success) {
@@ -320,7 +331,11 @@ export default {
                 return workspace.name === workspaceName;
             });
 
-            return ws.role;
+            if (ws && ws.role) {
+                return ws.role;
+            } else {
+                return 'ro';
+            }
         },
         saveChanges() {
             this.resetErrors();
@@ -362,9 +377,9 @@ export default {
                 this.isLoading = false;
             }
         },
-        isSelected(workspace) {
-            const selected = this.user.workspaces.some(userWorkspace => {
-                return workspace.name === userWorkspace.name;
+        isSelected(workspaceName) {
+            const selected = this.selectedWorkspaces.some(userWorkspace => {
+                return workspaceName === userWorkspace;
             });
 
             return selected;
@@ -379,23 +394,52 @@ export default {
         },
         selectWorkspace(workspace) {
             const workspaceName = workspace.name;
-            const index = this.selectedWorkspaces.indexOf(workspaceName);
+            const updatedWorkspaces = this.updatedWorkspaces;
+            const selectedWorkspacesIndex = this.selectedWorkspaces.indexOf(
+                workspaceName
+            );
+            let updatedWorkspaceIndex;
 
-            if (index === -1) {
+            for (let i = 0; i < updatedWorkspaces.length; i++) {
+                if (updatedWorkspaces[i].name === workspace.name) {
+                    updatedWorkspaceIndex = i;
+                }
+            }
+
+            if (selectedWorkspacesIndex === -1) {
                 this.selectedWorkspaces.push(workspaceName);
                 this.workspacePermissions.push({
                     workspaceId: workspace.id,
                     permissions: 'ro',
                 });
             } else {
-                this.selectedWorkspaces.splice(index, 1);
-                this.workspacePermissions.splice(index, 1);
+                this.selectedWorkspaces.splice(selectedWorkspacesIndex, 1);
+                this.workspacePermissions.splice(selectedWorkspacesIndex, 1);
+            }
+
+            if (updatedWorkspaceIndex === undefined) {
+                this.updatedWorkspaces.push({
+                    workspaceId: workspace.id,
+                    permissions: 'ro',
+                });
+            } else {
+                this.updatedWorkspaces.splice(updatedWorkspaceIndex, 1);
             }
         },
         updatePermissions(workspace, event) {
             const index = this.selectedWorkspaces.indexOf(workspace);
+            const updatedWorkspaces = this.updatedWorkspaces;
+            let updatedWorkspaceIndex;
+
+            for (let i = 0; i < updatedWorkspaces.length; i++) {
+                if (updatedWorkspaces[i].name === workspace.name) {
+                    updatedWorkspaceIndex = i;
+                }
+            }
 
             if (event && event.target && event.target.value) {
+                this.updatedWorkspaces[updatedWorkspaceIndex].permissions =
+                    event.target.value;
                 this.workspacePermissions[index].permissions =
                     event.target.value;
             }
@@ -468,7 +512,7 @@ export default {
                         workspaceId: workspace.id,
                         permissions: workspace.role,
                     });
-                })
+                });
             }
         }
 
