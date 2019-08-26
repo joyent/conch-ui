@@ -1,9 +1,5 @@
 <template>
-    <div
-        class="modal"
-        :class="{ 'is-active': isActive }"
-        id="device-editor-modal"
-    >
+    <div class="modal device-editor-modal" :class="{ 'is-active': isActive }">
         <div class="modal-background" @click="closeModal()"></div>
         <div class="modal-card">
             <header class="modal-card-head">
