@@ -45,7 +45,7 @@
             </div>
             <div class="panel-block">
                 <button
-                    class="button is-primary is-outlined is-fullwidth is-small"
+                    class="button is-primary is-fullwidth"
                     @click="openModal()"
                 >
                     Edit Assignments
