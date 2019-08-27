@@ -113,22 +113,6 @@ describe('device.js API', () => {
         });
     });
 
-    describe('setAssetTag', () => {
-        const assetTag = 'random-asset-tag';
-
-        beforeEach(() => {
-            nock(conchApi)
-                .post(`/device/${id}/asset_tag`, { asset_tag: assetTag })
-                .reply(200);
-        });
-
-        test('should return a status of 200', async () => {
-            expect.assertions(1);
-            response = await device.setAssetTag(id, assetTag);
-            expect(response.status).toEqual(200);
-        });
-    });
-
     describe('setDevicePhase', () => {
         const data = { phase: 'integration' };
 
