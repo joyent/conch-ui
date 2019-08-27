@@ -92,35 +92,4 @@ describe('workspaces.js API', () => {
             expect(response.data).toMatchObject(workspaces);
         });
     });
-
-    describe('setRackLayout', () => {
-        const slotNames = rack.slots.map(slot => slot.name);
-        const responseData = { updated: slotNames };
-
-        beforeEach(() => {
-            nock(conchApi)
-                .post(`/workspace/${workspaceId}/rack/${rackId}/layout`)
-                .reply(200, responseData);
-        });
-
-        test('should return a status of 200', async () => {
-            expect.assertions(1);
-            response = await workspace.setRackLayout(
-                workspaceId,
-                rackId,
-                rackLayout
-            );
-            expect(response.status).toEqual(200);
-        });
-
-        test('should return an object containing the updated slot names', async () => {
-            expect.assertions(1);
-            response = await workspace.setRackLayout(
-                workspaceId,
-                rackId,
-                rackLayout
-            );
-            expect(response.data).toMatchObject(responseData);
-        });
-    });
 });

@@ -9,4 +9,12 @@ export const setRackPhase = (rackId, data, params) => {
     });
 };
 
-export default { setRackPhase };
+export const updateRackAssignment = (rackId, data) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/rack/${rackId}/assignment`,
+        data,
+    });
+};
+
+export default { setRackPhase, updateRackAssignment };
