@@ -68,6 +68,8 @@ export const getWorkspaceDevices = workspaceId => {
                 const devices = response.data;
                 let workspaceDevices = {};
 
+                store.dispatch('setDevices', devices);
+
                 workspaceDevices[workspaceId] = devices;
                 store.dispatch('setDevicesByWorkspace', workspaceDevices);
 

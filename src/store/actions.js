@@ -62,6 +62,10 @@ export const setCurrentWorkspace = ({ commit }, workspace) => {
     commit('setCurrentWorkspace', workspace);
 };
 
+export const setDevices = ({ commit }, devices) => {
+    commit('setDevices', devices);
+};
+
 export const setDevicesByWorkspace = ({ commit }, devices) => {
     commit('setDevicesByWorkspace', devices);
 };
@@ -131,6 +135,7 @@ export default {
     setAuthTokens,
     setCurrentUser,
     setCurrentWorkspace,
+    setDevices,
     setDevicesByWorkspace,
     setForcePasswordChange,
     setHardwareProducts,
