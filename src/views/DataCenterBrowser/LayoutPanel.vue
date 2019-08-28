@@ -109,7 +109,7 @@
                 </tfoot>
             </table>
         </nav>
-        <EditLayoutModal :device-slots="normalizedSlots" />
+        <EditLayoutModal v-if="editLayout" :device-slots="normalizedSlots" />
         <transition name="fade">
             <PhaseUpdateModal
                 :item="'rack'"
@@ -148,8 +148,8 @@ export default {
     data() {
         return {
             deviceSearchText: '',
+            editLayout: false,
             selectedProgress: 'all',
-            showModal: false,
             updatingPhase: false,
         };
     },
@@ -165,6 +165,7 @@ export default {
             EventBus.$emit('openModal:deviceModal');
         },
         closeModal() {
+            this.editLayout = false;
             this.updatingPhase = false;
         },
         deviceFilter(occupant) {
@@ -183,7 +184,7 @@ export default {
             return progressFilter && searchFilter;
         },
         openModal() {
-            EventBus.$emit('openModal:editLayoutModal');
+            this.editLayout = true;
         },
     },
     computed: {
@@ -243,6 +244,10 @@ export default {
     },
     mounted() {
         EventBus.$on('closeModal:baseModal', () => {
+            this.closeModal();
+        });
+
+        EventBus.$on('closeModal:editLayoutModal', () => {
             this.closeModal();
         });
     },

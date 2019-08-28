@@ -1,17 +1,113 @@
-.device-editor-modal {
-	input:focus:invalid + span.icon {
-		background-color: $danger;
+.edit-layout-modal {
+	.modal-card {
+		min-width: 900px;
+		max-width: 1200px;
+	}
 
-		i::before {
-			content: "\f06a";
+	.modal-card-body {
+		padding: 0;
+	}
+
+	input {
+		background-color: $grey-darker;
+		border-color: $grey;
+		border-radius: 4px;
+		color: $white;
+
+		&::placeholder {
+			color: $grey-light;
 		}
 	}
 
-	input:focus:valid + span.icon {
-		background-color: $success;
+	td {
+		border: none;
+		white-space: nowrap;
 
-		i::before {
-			content: "\f058";
+		&.asset-tag,
+		&.serial-number {
+			min-width: 222px;
+		}
+
+		&.edit {
+			align-items: center;
+			cursor: pointer;
+			display: flex;
+			justify-content: center;
+		}
+	}
+
+	table.table {
+		tfoot,
+		thead {
+			background-color: $grey-darker;
+			border-color: $grey-dark;
+			border-width: 0 1px;
+			border-style: solid;
+
+			th {
+				border-top: none;
+				color: $grey-lighter;
+			}
+		}
+	}
+
+	tr {
+		border-left: 8px solid transparent;
+
+		&.is-editing {
+			border-left: 8px solid #209cee;
+		}
+	}
+
+	.button-group {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+	}
+
+	.button.edit {
+		border-radius: 4px;
+		min-width: 117px;
+		max-width: 117px;
+	}
+
+	.message-header {
+		padding: 12px;
+	}
+
+	.message,
+	.message-header {
+		border-radius: 4px;
+		justify-content: center;
+		left: 50%;
+		margin-left: -175px;
+		position: absolute;
+		top: 32px;
+		width: 350px;
+		z-index: 100;
+
+		i {
+			left: 12px;
+			position: absolute;
+		}
+	}
+
+	.modal-card-foot {
+		// border: none;
+		padding: 0;
+
+		a.button {
+			background-color: $grey-dark;
+			border: none;
+			font-size: 20px;
+			font-weight: bold;
+			height: 60px;
+			transition: background-color 0.1s ease-in-out;
+
+			&:hover {
+				background-color: $green;
+				transition: background-color 0.1s ease-in-out;
+			}
 		}
 	}
 }
