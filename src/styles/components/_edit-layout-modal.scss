@@ -28,7 +28,7 @@
 			min-width: 222px;
 		}
 
-		&.edit {
+		&.edit-action {
 			align-items: center;
 			cursor: pointer;
 			display: flex;
@@ -55,20 +55,21 @@
 		border-left: 8px solid transparent;
 
 		&.is-editing {
-			border-left: 8px solid #209cee;
+			border-left: 8px solid $blue;
+		}
+
+		&.has-error {
+			border-left: 8px solid $red;
 		}
 	}
 
-	.button-group {
-		display: flex;
-		justify-content: space-between;
-		width: 100%;
-	}
-
-	.button.edit {
-		border-radius: 4px;
-		min-width: 117px;
-		max-width: 117px;
+	.button {
+		&.edit,
+		&.cancel {
+			border-radius: 4px;
+			min-width: 117px;
+			max-width: 117px;
+		}
 	}
 
 	.message-header {
@@ -77,36 +78,44 @@
 
 	.message,
 	.message-header {
+		align-items: normal;
 		border-radius: 4px;
-		justify-content: center;
+		flex-direction: column;
 		left: 50%;
-		margin-left: -175px;
+		margin-left: -125px;
 		position: absolute;
-		top: 32px;
-		width: 350px;
+		top: 0px;
+		width: 250px;
 		z-index: 100;
 
 		i {
-			left: 12px;
-			position: absolute;
+			margin-right: 8px;
+		}
+
+		p {
+			align-items: center;
+			display: flex;
+			white-space: nowrap;
 		}
 	}
 
 	.modal-card-foot {
-		// border: none;
 		padding: 0;
 
 		a.button {
-			background-color: $grey-dark;
 			border: none;
 			font-size: 20px;
 			font-weight: bold;
 			height: 60px;
-			transition: background-color 0.1s ease-in-out;
 
-			&:hover {
-				background-color: $green;
+			&.close-modal {
+				background-color: $grey-dark;
 				transition: background-color 0.1s ease-in-out;
+
+				&:hover {
+					background-color: darken($grey-dark, 2%);
+					transition: background-color 0.1s ease-in-out;
+				}
 			}
 		}
 	}

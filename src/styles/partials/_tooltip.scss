@@ -1,0 +1,8 @@
+.tooltip {
+    &:hover,
+    .is-tooltip-active {
+        &::before {
+            border-radius: 4px;
+        }
+    }
+}
