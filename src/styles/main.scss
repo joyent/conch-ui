@@ -4,11 +4,12 @@
 // Bulmaswatch Theme
 @import "bulmaswatch/superhero/bulmaswatch.scss";
 
-// Bulma Extension
-@import "bulma-tooltip/dist/css/bulma-tooltip.sass";
-
 // Config
+@import './config/variables';
 @import './config/overrides';
+
+// Bulma Extension
+@import 'bulma-tooltip/dist/css/bulma-tooltip.sass';
 
 // Partials
 @import './partials/buttons';
@@ -20,6 +21,7 @@
 @import './partials/spinner';
 @import './partials/table';
 @import './partials/toggle-switch';
+@import './partials/tooltip';
 @import './partials/transitions';
 
 // Components
