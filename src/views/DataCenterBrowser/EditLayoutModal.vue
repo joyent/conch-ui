@@ -7,8 +7,10 @@
                 v-if="isSuccess && !noChanges"
             >
                 <div class="message-header">
-                    <i class="material-icons">check_circle</i>
-                    <p>Update successful</p>
+                    <p>
+                        <i class="material-icons">check_circle</i>
+                        Update successful
+                    </p>
                 </div>
             </article>
             <!-- <article class="message is-info no-changes" v-if="noChanges">
@@ -381,7 +383,7 @@ export default {
                         this.isSuccess = true;
 
                         setTimeout(() => {
-                            this.isSuccess = false;
+                            // this.isSuccess = false;
                         }, 2000);
                     });
                 });
