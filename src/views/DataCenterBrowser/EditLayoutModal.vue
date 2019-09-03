@@ -299,6 +299,18 @@ export default {
             this.assignmentsEditing.splice(index, 1);
             this.modifiedAssignments.splice(index, 1);
 
+            // Resets assignment serial number and asset tag to original values
+            for (let i = 0; i < this.assignments.length; i++) {
+                if (this.assignments[i].slot === slot) {
+                    const assignment = this.assignments[i];
+
+                    this.assignments[i].id = assignment.originalSerialNumber;
+                    this.assignments[i].assetTag = assignment.originalAssetTag;
+
+                    break;
+                }
+            }
+
             if (!this.assignmentsEditing.length) {
                 this.editingAssignments = false;
             }
