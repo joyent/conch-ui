@@ -357,7 +357,6 @@ export default {
                     newRackAssignments.push({
                         device_asset_tag: assignment.assetTag,
                         device_id: assignment.id,
-                        device_serial_number: assignment.serialNumber,
                         rack_unit_start: assignment.rackUnitStart,
                     });
                 });
@@ -377,12 +376,13 @@ export default {
                         });
 
                         this.assignmentsEditing = [];
+                        this.modifiedAssignments = [];
                         this.isLoading = false;
                         this.editingAssignments = false;
                         this.isSuccess = true;
 
                         setTimeout(() => {
-                            // this.isSuccess = false;
+                            this.isSuccess = false;
                         }, 2000);
                     });
                 });
