@@ -2,10 +2,7 @@
     <div class="modal edit-layout-modal" :class="{ 'is-active': isActive }">
         <div class="modal-background" @click="closeModal()"></div>
         <div class="modal-card">
-            <article
-                class="message is-success update-success"
-                v-if="isSuccess && !noChanges"
-            >
+            <article class="message is-success update-success" v-if="isSuccess">
                 <div class="message-header">
                     <p>
                         <i class="material-icons">check_circle</i>
@@ -13,14 +10,6 @@
                     </p>
                 </div>
             </article>
-            <!-- <article class="message is-info no-changes" v-if="noChanges">
-                <div class="message-header">
-                    <i class="material-icons">info</i>
-                    <p>
-                        No changes made
-                    </p>
-                </div>
-            </article> -->
             <article
                 v-if="
                     invalidSerialNumber ||
@@ -259,7 +248,6 @@ export default {
             isLoading: false,
             isSuccess: false,
             modifiedAssignments: [],
-            noChanges: false,
             validationErrors: [],
         };
     },
@@ -321,7 +309,6 @@ export default {
             this.duplicateAssetTag = false;
             this.duplicateSerialNumber = false;
             this.invalidSerialNumber = false;
-            this.noChanges = false;
             this.validationErrors = [];
         },
         closeModal() {
