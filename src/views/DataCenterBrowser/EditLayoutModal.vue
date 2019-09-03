@@ -417,16 +417,44 @@ export default {
                         device.asset_tag === assetTag &&
                         assetTag !== assignment.originalAssetTag
                     ) {
-                        duplicateAssetTag = true;
-                        this.duplicateAssetTag = true;
+                        // Checks for edge case where an assignment is given a new asset
+                        // tag equal to an existing asset tag, but the duplicated asset
+                        // tag is also being modified. In this case, no invalid input
+                        // warning should appear.
+                        const duplicatedAssetTagModified = modifiedAssignments.some(
+                            modifiedAssignment =>
+                                assetTag ===
+                                    modifiedAssignment.originalAssetTag &&
+                                modifiedAssignment.assetTag !==
+                                    modifiedAssignment.originalAssetTag
+                        );
+
+                        if (!duplicatedAssetTagModified) {
+                            duplicateAssetTag = true;
+                            this.duplicateAssetTag = true;
+                        }
                     }
 
                     if (
                         device.id === serialNumber &&
                         serialNumber !== assignment.originalSerialNumber
                     ) {
-                        duplicateSerialNumber = true;
-                        this.duplicateSerialNumber = true;
+                        // Checks for edge case where an assignment is given a new serial
+                        // number equal to an existing serial number, but the duplicated
+                        // serial number is also being modified. In this case, no invalid
+                        // input warning should appear.
+                        const duplicatedSerialNumberModified = modifiedAssignments.some(
+                            modifiedAssignment =>
+                                serialNumber ===
+                                    modifiedAssignment.originalSerialNumber &&
+                                modifiedAssignment.serialNumber !==
+                                    modifiedAssignment.originalSerialNumber
+                        );
+
+                        if (!duplicatedSerialNumberModified) {
+                            duplicateSerialNumber = true;
+                            this.duplicateSerialNumber = true;
+                        }
                     }
 
                     if (duplicateAssetTag || duplicateSerialNumber) {
