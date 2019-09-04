@@ -114,7 +114,7 @@
             </template>
             <template v-slot:footer>
                 <a
-                    class="button is-success create is-fullwidth"
+                    class="button is-success is-fullwidth add-workspaces"
                     @click="addUserToWorkspaces()"
                 >
                     Add User to Workspaces
@@ -217,7 +217,7 @@
             </template>
             <template v-slot:footer>
                 <a
-                    class="button confirm is-success is-fullwidth"
+                    class="button is-success is-fullwidth create"
                     @click="createUser()"
                     :class="{ 'is-loading': isLoading }"
                 >
@@ -293,6 +293,27 @@ export default {
         };
     },
     methods: {
+        addUserToWorkspaces() {
+            if (this.validateForm()) {
+                this.step = 2;
+            }
+        },
+        async addWorkspaces(userId) {
+            await this.workspacePermissions.forEach(workspace => {
+                addUserToWorkspace(workspace.workspaceId, {
+                    user: this.email,
+                    role: workspace.permissions,
+                });
+            });
+
+            EventBus.$emit('action-success', {
+                userId,
+                action: 'create',
+            });
+
+            this.step = 3;
+            this.isLoading = false;
+        },
         closeModal() {
             this.isActive = false;
             this.resetErrors();
@@ -304,22 +325,6 @@ export default {
             } else {
                 EventBus.$emit('close-modal');
             }
-        },
-        addUserToWorkspaces() {
-            if (this.validateForm()) {
-                this.step = 2;
-            }
-        },
-        async addWorkspaces() {
-            await this.workspacePermissions.forEach(workspace => {
-                addUserToWorkspace(workspace.workspaceId, {
-                    user: this.email,
-                    role: workspace.permissions,
-                });
-            });
-
-            this.step = 3;
-            this.isLoading = false;
         },
         createUser() {
             this.isLoading = true;
@@ -337,11 +342,6 @@ export default {
                     .then(response => {
                         const userId = response.data.id;
                         this.isLoading = false;
-
-                        EventBus.$emit('action-success', {
-                            userId,
-                            action: 'create',
-                        });
 
                         this.addWorkspaces(userId);
                     })
