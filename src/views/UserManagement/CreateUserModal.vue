@@ -138,7 +138,7 @@
                             <td class="search-input" colspan="3">
                                 <p class="control has-icons-left">
                                     <input
-                                        class="input"
+                                        class="input search"
                                         type="text"
                                         placeholder="Search workspaces"
                                         v-model="searchText"
@@ -151,16 +151,17 @@
                         </tr>
                         <template v-if="filteredWorkspaces.length">
                             <tr
-                                v-for="workspace in filteredWorkspaces"
-                                :key="workspace.id"
+                                class="workspace"
                                 :class="{
                                     'is-selected': isSelected(workspace.name),
                                 }"
+                                v-for="workspace in filteredWorkspaces"
+                                :key="workspace.id"
                             >
                                 <td>{{ workspace.name }}</td>
                                 <td class="workspace-permissions-select">
                                     <div
-                                        class="select"
+                                        class="select permissions"
                                         v-if="isSelected(workspace.name)"
                                     >
                                         <select
@@ -183,7 +184,7 @@
                                 </td>
                                 <td class="workspace-checkbox">
                                     <div
-                                        class="checkbox-circle"
+                                        class="checkbox-round"
                                         :class="{
                                             'is-selected': isSelected(
                                                 workspace.name
@@ -341,7 +342,6 @@ export default {
                 Users.createUser(user)
                     .then(response => {
                         const userId = response.data.id;
-                        this.isLoading = false;
 
                         this.addWorkspaces(userId);
                     })

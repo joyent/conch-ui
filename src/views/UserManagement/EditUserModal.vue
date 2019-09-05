@@ -87,9 +87,8 @@
             </template>
             <template v-slot:footer>
                 <a
-                    class="button is-success edit is-fullwidth"
-                    :class="{ 'is-loading': isLoading }"
-                    @click="editWorkspaces()"
+                    class="button is-success is-fullwidth edit-workspaces"
+                    @click="editUserWorkspaces()"
                 >
                     Edit Workspaces
                     <i class="fas fa-lg fa-long-arrow-alt-right"></i>
@@ -112,7 +111,7 @@
                             <td class="search-input" colspan="3">
                                 <p class="control has-icons-left">
                                     <input
-                                        class="input"
+                                        class="input search"
                                         type="text"
                                         placeholder="Search workspaces"
                                         v-model="searchText"
@@ -125,22 +124,23 @@
                         </tr>
                         <template v-if="filteredWorkspaces.length">
                             <tr
-                                v-for="workspace in filteredWorkspaces"
-                                :key="workspace.id"
+                                class="workspace"
                                 :class="{
                                     'is-selected': isSelected(workspace.name),
                                 }"
+                                v-for="workspace in filteredWorkspaces"
+                                :key="workspace.id"
                             >
                                 <td>{{ workspace.name }}</td>
                                 <td class="workspace-permissions-select">
                                     <div
-                                        class="select"
+                                        class="select permissions"
                                         v-if="isSelected(workspace.name)"
                                     >
                                         <select
                                             @change="
                                                 updatePermissions(
-                                                    workspace.name,
+                                                    workspace,
                                                     $event
                                                 )
                                             "
@@ -180,7 +180,7 @@
                                 </td>
                                 <td class="workspace-checkbox">
                                     <div
-                                        class="checkbox-circle"
+                                        class="checkbox-round"
                                         :class="{
                                             'is-selected': isSelected(
                                                 workspace.name
@@ -214,7 +214,7 @@
             </template>
             <template v-slot:footer>
                 <a
-                    class="button confirm is-success is-fullwidth"
+                    class="button is-success is-fullwidth save-changes"
                     @click="saveChanges()"
                     :class="{ 'is-loading': isLoading }"
                 >
@@ -247,7 +247,7 @@
             </template>
             <template v-slot:footer>
                 <a
-                    class="button confirm is-success is-fullwidth"
+                    class="button is-success is-fullwidth close"
                     @click="closeModal()"
                 >
                     <span v-if="success">Great!</span>
@@ -266,6 +266,10 @@ import BaseModal from '@src/views/components/BaseModal.vue';
 import { editUser } from '@api/users.js';
 import { EventBus } from '@src/eventBus.js';
 import { mapState } from 'vuex';
+import {
+    addUserToWorkspace,
+    removeUserFromWorkspace,
+} from '@api/workspaces.js';
 
 export default {
     components: {
@@ -302,16 +306,11 @@ export default {
             selectedWorkspaces: [],
             step: 1,
             success: false,
-            workspacePermissions: [],
             updatedWorkspaces: [],
+            workspacePermissions: [],
         };
     },
     methods: {
-        editWorkspaces() {
-            if (this.validateForm()) {
-                this.step = 2;
-            }
-        },
         closeModal() {
             this.actionComplete = false;
             this.isActive = false;
@@ -326,6 +325,30 @@ export default {
                 EventBus.$emit('close-modal');
             }
         },
+        editUserWorkspaces() {
+            if (this.validateForm()) {
+                this.step = 2;
+            }
+        },
+        async editWorkspaces(userId) {
+            await this.updatedWorkspaces.forEach(workspace => {
+                if (workspace.action === 'add') {
+                    addUserToWorkspace(workspace.workspaceId, {
+                        user: this.email,
+                        role: workspace.permissions,
+                    });
+                } else if (workspace.action === 'remove') {
+                    removeUserFromWorkspace(workspace.workspaceId, userId);
+                }
+            });
+
+            this.actionComplete = true;
+            this.success = true;
+            this.step = 3;
+            this.isLoading = false;
+
+            EventBus.$emit('action-success', { userId });
+        },
         getWorkspaceRole(workspaceName) {
             let ws = this.user.workspaces.find(workspace => {
                 return workspace.name === workspaceName;
@@ -337,52 +360,10 @@ export default {
                 return 'ro';
             }
         },
-        saveChanges() {
-            this.resetErrors();
-            this.isLoading = true;
-
-            if (
-                this.name === this.user.name &&
-                this.email === this.user.email &&
-                this.isAdmin === this.user.is_admin
-            ) {
-                this.actionComplete = true;
-                this.isLoading = false;
-
-                return;
-            }
-
-            if (this.validateForm()) {
-                const editedUser = {
-                    id: this.user.id,
-                    email: this.email,
-                    is_admin: this.isAdmin,
-                    name: this.name,
-                };
-
-                editUser(editedUser)
-                    .then(() => {
-                        this.actionComplete = true;
-                        this.success = true;
-                        this.isLoading = false;
-                        EventBus.$emit('action-success', editedUser.id);
-                    })
-                    .catch(error => {
-                        if (error.status === 500) {
-                            this.errors.duplicateEmail = true;
-                            this.isLoading = false;
-                        }
-                    });
-            } else {
-                this.isLoading = false;
-            }
-        },
         isSelected(workspaceName) {
-            const selected = this.selectedWorkspaces.some(userWorkspace => {
+            return this.selectedWorkspaces.some(userWorkspace => {
                 return workspaceName === userWorkspace;
             });
-
-            return selected;
         },
         resetErrors() {
             this.errors = {
@@ -392,6 +373,54 @@ export default {
                 password: false,
             };
         },
+        saveChanges() {
+            const updatedWorkspacesLength = this.updatedWorkspaces.length;
+
+            this.resetErrors();
+            this.isLoading = true;
+
+            if (
+                this.name === this.user.name &&
+                this.email === this.user.email &&
+                this.isAdmin === this.user.is_admin &&
+                updatedWorkspacesLength === 0
+            ) {
+                this.actionComplete = true;
+                this.isLoading = false;
+
+                return;
+            } else if (
+                this.name !== this.user.name ||
+                this.email !== this.user.email ||
+                this.isAdmin !== this.user.is_admin
+            ) {
+                if (this.validateForm()) {
+                    const editedUser = {
+                        id: this.user.id,
+                        email: this.email,
+                        is_admin: this.isAdmin,
+                        name: this.name,
+                    };
+
+                    editUser(editedUser)
+                        .then(() => {
+                            if (updatedWorkspacesLength > 0) {
+                                this.editWorkspaces(editedUser.id);
+                            }
+                        })
+                        .catch(error => {
+                            if (error.status === 500) {
+                                this.errors.duplicateEmail = true;
+                                this.isLoading = false;
+                            }
+                        });
+                } else {
+                    this.isLoading = false;
+                }
+            } else if (updatedWorkspacesLength) {
+                this.editWorkspaces(this.user.id);
+            }
+        },
         selectWorkspace(workspace) {
             const workspaceName = workspace.name;
             const updatedWorkspaces = this.updatedWorkspaces;
@@ -399,12 +428,6 @@ export default {
                 workspaceName
             );
             let updatedWorkspaceIndex;
-
-            for (let i = 0; i < updatedWorkspaces.length; i++) {
-                if (updatedWorkspaces[i].name === workspace.name) {
-                    updatedWorkspaceIndex = i;
-                }
-            }
 
             if (selectedWorkspacesIndex === -1) {
                 this.selectedWorkspaces.push(workspaceName);
@@ -417,31 +440,94 @@ export default {
                 this.workspacePermissions.splice(selectedWorkspacesIndex, 1);
             }
 
-            if (updatedWorkspaceIndex === undefined) {
-                this.updatedWorkspaces.push({
-                    workspaceId: workspace.id,
-                    permissions: 'ro',
-                });
-            } else {
-                this.updatedWorkspaces.splice(updatedWorkspaceIndex, 1);
-            }
-        },
-        updatePermissions(workspace, event) {
-            const index = this.selectedWorkspaces.indexOf(workspace);
-            const updatedWorkspaces = this.updatedWorkspaces;
-            let updatedWorkspaceIndex;
-
             for (let i = 0; i < updatedWorkspaces.length; i++) {
-                if (updatedWorkspaces[i].name === workspace.name) {
+                if (updatedWorkspaces[i].workspaceId === workspace.id) {
                     updatedWorkspaceIndex = i;
                 }
             }
 
+            const updatedWorkspace = this.updatedWorkspaces[
+                updatedWorkspaceIndex
+            ];
+
+            if (
+                (updatedWorkspaceIndex === undefined ||
+                    updatedWorkspaceIndex === -1) &&
+                (selectedWorkspacesIndex === undefined ||
+                    selectedWorkspacesIndex === -1)
+            ) {
+                this.updatedWorkspaces.push({
+                    action: 'add',
+                    workspaceId: workspace.id,
+                    permissions: 'ro',
+                });
+            } else if (
+                (updatedWorkspaceIndex === undefined ||
+                    updatedWorkspaceIndex === -1) &&
+                (selectedWorkspacesIndex !== undefined &&
+                    selectedWorkspacesIndex > -1)
+            ) {
+                this.updatedWorkspaces.push({
+                    action: 'remove',
+                    workspaceId: workspace.id,
+                    permissions: workspace.role,
+                });
+            } else if (updatedWorkspace) {
+                if (
+                    updatedWorkspace.action === 'add' ||
+                    updatedWorkspace.action === 'remove'
+                ) {
+                    this.updatedWorkspaces.splice(updatedWorkspaceIndex, 1);
+                } else if (updatedWorkspace.action === 'update') {
+                    this.updatedWorkspaces[updatedWorkspaceIndex].action =
+                        'remove';
+                }
+            }
+        },
+        updatePermissions(workspace, event) {
+            let updatedWorkspaceIndex;
+
+            if (this.updatedWorkspaces.length) {
+                const updatedWorkspaces = this.updatedWorkspaces;
+
+                for (let i = 0; i < updatedWorkspaces.length; i++) {
+                    if (updatedWorkspaces[i].workspaceId === workspace.id) {
+                        updatedWorkspaceIndex = i;
+                    }
+                }
+            }
+
             if (event && event.target && event.target.value) {
-                this.updatedWorkspaces[updatedWorkspaceIndex].permissions =
-                    event.target.value;
-                this.workspacePermissions[index].permissions =
-                    event.target.value;
+                const newPermissions = event.target.value;
+                let unchanged = false;
+
+                for (let i = 0; i < this.user.workspaces.length; i++) {
+                    const userWorkspace = this.user.workspaces[i];
+
+                    if (
+                        userWorkspace.id === workspace.id &&
+                        userWorkspace.role === newPermissions
+                    ) {
+                        unchanged = true;
+                    }
+                }
+
+                if (updatedWorkspaceIndex > -1 && unchanged) {
+                    this.updatedWorkspaces.splice(updatedWorkspaceIndex, 1);
+                } else if (
+                    updatedWorkspaceIndex === undefined ||
+                    updatedWorkspaceIndex === -1
+                ) {
+                    this.updatedWorkspaces.push({
+                        action: 'update',
+                        workspaceId: workspace.id,
+                        permissions: newPermissions,
+                    });
+                } else if (updatedWorkspaceIndex > -1) {
+                    this.updatedWorkspaces[
+                        updatedWorkspaceIndex
+                    ].permissions = newPermissions;
+                }
             }
         },
         validEmail() {
@@ -493,13 +579,13 @@ export default {
         },
     },
     mounted() {
-        const user = this.user;
-
         if (this.modalStep) {
             this.step = this.modalStep;
         }
 
-        if (user) {
+        if (this.user) {
+            const user = this.user;
+
             this.email = user.email;
             this.name = user.name;
             this.password = user.password;
