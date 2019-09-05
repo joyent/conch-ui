@@ -56,10 +56,40 @@ describe('CreateUserModal.vue', () => {
             clickAddWorkspaces();
         });
 
+        // Helper function
+        const clickWorkspaceCheckbox = () => {
+            wrapper
+                .findAll('.checkbox-round')
+                .at(0)
+                .trigger('click');
+        };
+
         test('should switch to the workspace selection pane after valid user info is submitted', () => {
             expect(wrapper.find('h1.title').text()).toEqual(
                 'Add User to Workspaces'
             );
+        });
+
+        test('should not display any permissions selectors on initial render', () => {
+            expect(wrapper.find('.select.permissions').exists()).toBeFalsy();
+        });
+
+        test('should display permissions selector when a workspace is selected', () => {
+            clickWorkspaceCheckbox();
+            expect(wrapper.find('.select.permissions').exists()).toBeTruthy();
+        });
+
+        test('should not display a permissions selector when a workspace is deselected', () => {
+            clickWorkspaceCheckbox();
+            clickWorkspaceCheckbox();
+
+            expect(wrapper.find('.select.permissions').exists()).toBeFalsy();
+        });
+
+        test('should filter workspace results when search text is entered', () => {
+            wrapper.find('input.search').setValue('Conch');
+
+            expect(wrapper.findAll('tr.workspace')).toHaveLength(2);
         });
 
         test('should call the createUser method', () => {

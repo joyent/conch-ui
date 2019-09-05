@@ -163,7 +163,7 @@
                                 <div class="dropdown-content">
                                     <a
                                         class="dropdown-item edit"
-                                        @click="openModal('edit', user)"
+                                        @click="openModal('edit', user, 1)"
                                     >
                                         Edit User
                                     </a>

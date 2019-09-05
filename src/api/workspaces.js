@@ -1,9 +1,9 @@
 import { requestWithToken } from './request.js';
 
-export const addUserToWorkspace = (id, data) => {
+export const addUserToWorkspace = (workspaceId, data) => {
     return requestWithToken({
         method: 'POST',
-        url: `/workspace/${id}/user`,
+        url: `/workspace/${workspaceId}/user`,
         data,
         params: {
             send_mail: 1,
@@ -11,24 +11,24 @@ export const addUserToWorkspace = (id, data) => {
     });
 };
 
-export const getAllRacks = id => {
+export const getAllRacks = workspaceId => {
     return requestWithToken({
         method: 'GET',
-        url: `/workspace/${id}/rack`,
+        url: `/workspace/${workspaceId}/rack`,
     });
 };
 
-export const getDevices = id => {
+export const getDevices = workspaceId => {
     return requestWithToken({
         method: 'GET',
-        url: `/workspace/${id}/device`,
+        url: `/workspace/${workspaceId}/device`,
     });
 };
 
-export const getRackById = (id, rackId) => {
+export const getRackById = (workspaceId, rackId) => {
     return requestWithToken({
         method: 'GET',
-        url: `/workspace/${id}/rack/${rackId}`,
+        url: `/workspace/${workspaceId}/rack/${rackId}`,
     }).then(response => {
         const data = response.data;
 
@@ -50,9 +50,21 @@ export const loadAllWorkspaces = () => {
     });
 };
 
+export const removeUserFromWorkspace = (workspaceId, userId) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/workspace/${workspaceId}/user/${userId}`,
+        params: {
+            send_mail: 1,
+        },
+    });
+};
+
 export default {
+    addUserToWorkspace,
     getAllRacks,
     getDevices,
     getRackById,
     loadAllWorkspaces,
+    removeUserFromWorkspace,
 };
