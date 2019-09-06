@@ -239,7 +239,6 @@ export default {
     data() {
         return {
             assignments: [],
-            assignmentsEditing: [],
             duplicateAssetTag: false,
             duplicateSerialNumber: false,
             editingAssignments: false,
@@ -260,6 +259,68 @@ export default {
             return this.validationErrors.some(error => {
                 return error.slot === slot;
             });
+        },
+        cancelEditAssignment(slot) {
+            const index = this.getModifiedAssignmentIndex(slot);
+
+            if (index !== undefined) {
+                this.modifiedAssignments.splice(index, 1);
+            }
+
+            // Resets assignment serial number and asset tag to original values
+            for (let i = 0; i < this.assignments.length; i++) {
+                if (this.assignments[i].slot === slot) {
+                    const assignment = this.assignments[i];
+
+                    this.assignments[i].id = assignment.originalSerialNumber;
+                    this.assignments[i].assetTag = assignment.originalAssetTag;
+
+                    break;
+                }
+            }
+
+            if (!this.modifiedAssignments.length) {
+                this.editingAssignments = false;
+            }
+
+            this.clearErrors();
+        },
+        clearErrors() {
+            this.duplicateAssetTag = false;
+            this.duplicateSerialNumber = false;
+            this.invalidSerialNumber = false;
+            this.validationErrors = [];
+        },
+        closeModal() {
+            this.isActive = false;
+
+            EventBus.$emit('closeModal:editLayoutModal');
+        },
+        editAssignment(assignment) {
+            const slot = assignment.slot;
+
+            if (this.getModifiedAssignmentIndex(slot) === -1) {
+                this.modifiedAssignments.push(assignment);
+            }
+
+            if (!this.editingAssignments) {
+                this.editingAssignments = true;
+            }
+        },
+        getModifiedAssignmentIndex(slot) {
+            const modifiedAssignments = this.modifiedAssignments;
+            let index;
+
+            for (let i = 0; i < modifiedAssignments.length; i++) {
+                const assigment = modifiedAssignments[i];
+
+                if (assigment.slot === slot) {
+                    index = i;
+                    break;
+                }
+            }
+
+            return index === undefined ? -1 : index;
         },
         getTooltip(slot) {
             const validationErrors = this.validationErrors;
@@ -293,55 +354,10 @@ export default {
                 return error.slot === slot && error.invalidSerialNumber;
             });
         },
-        cancelEditAssignment(slot) {
-            const index = this.assignmentsEditing.indexOf(slot);
-
-            this.assignmentsEditing.splice(index, 1);
-            this.modifiedAssignments.splice(index, 1);
-
-            // Resets assignment serial number and asset tag to original values
-            for (let i = 0; i < this.assignments.length; i++) {
-                if (this.assignments[i].slot === slot) {
-                    const assignment = this.assignments[i];
-
-                    this.assignments[i].id = assignment.originalSerialNumber;
-                    this.assignments[i].assetTag = assignment.originalAssetTag;
-
-                    break;
-                }
-            }
-
-            if (!this.assignmentsEditing.length) {
-                this.editingAssignments = false;
-            }
-
-            this.clearErrors();
-        },
-        clearErrors() {
-            this.duplicateAssetTag = false;
-            this.duplicateSerialNumber = false;
-            this.invalidSerialNumber = false;
-            this.validationErrors = [];
-        },
-        closeModal() {
-            this.isActive = false;
-
-            EventBus.$emit('closeModal:editLayoutModal');
-        },
-        editAssignment(assignment) {
-            const slot = assignment.slot;
-
-            if (this.assignmentsEditing.indexOf(slot) === -1) {
-                this.assignmentsEditing.push(slot);
-                this.modifiedAssignments.push(assignment);
-            }
-
-            if (!this.editingAssignments) {
-                this.editingAssignments = true;
-            }
-        },
         isEditingAssignment(slot) {
-            return this.assignmentsEditing.indexOf(slot) !== -1;
+            return this.modifiedAssignments.some(assignment => {
+                return assignment.slot === slot;
+            });
         },
         async saveModifiedAssignments() {
             this.isLoading = true;
@@ -375,7 +391,6 @@ export default {
                             this.setDevices(response.data);
                         });
 
-                        this.assignmentsEditing = [];
                         this.modifiedAssignments = [];
                         this.isLoading = false;
                         this.editingAssignments = false;
