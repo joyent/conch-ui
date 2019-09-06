@@ -166,9 +166,10 @@
                 </transition>
             </div>
             <transition name="fade">
-                <UserModal
-                    v-if="action === 'create' || action === 'edit'"
-                    :action="action"
+                <CreateUserModal v-if="action === 'create'" :user="user" />
+                <EditUserModal
+                    v-else-if="action === 'edit'"
+                    :modal-step="modalStep"
                     :user="user"
                 />
                 <UserActionModal
@@ -183,8 +184,9 @@
 
 <script>
 import search from 'fuzzysearch';
+import CreateUserModal from './CreateUserModal.vue';
+import EditUserModal from './EditUserModal.vue';
 import UserActionModal from './UserActionModal.vue';
-import UserModal from './UserModal.vue';
 import Spinner from '@src/views/components/Spinner.vue';
 import WorkspaceView from './WorkspaceView.vue';
 import UsersTable from './UsersTable.vue';
@@ -194,9 +196,10 @@ import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
+        CreateUserModal,
+        EditUserModal,
         Spinner,
         UserActionModal,
-        UserModal,
         UsersTable,
         WorkspaceView,
     },
@@ -206,6 +209,7 @@ export default {
             activeDropdown: null,
             collapsed: true,
             currentTab: 'users',
+            modalStep: null,
             searchText: '',
             searchTextWorkspaces: '',
             statisticFilter: '',
@@ -222,14 +226,18 @@ export default {
                 })
                 .indexOf(userId);
         },
-        openModal(action, user) {
-            this.action = action;
-
+        openModal(action, user, step) {
             if (user) {
                 this.user = user;
             } else {
                 this.user = {};
             }
+
+            if (step) {
+                this.modalStep = step;
+            }
+
+            this.action = action;
         },
         setUserFilters(filter) {
             if (filter === 'all_users') {
@@ -316,7 +324,7 @@ export default {
         }
 
         EventBus.$on('open-modal', data => {
-            this.openModal(data.action, data.user);
+            this.openModal(data.action, data.user, data.step);
         });
 
         EventBus.$on('close-modal', () => {

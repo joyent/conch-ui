@@ -30,6 +30,14 @@ const workspaces = [
         role: 'admin',
         role_via: '434a98d1-5317-7h64-3b60-12fe533456m5',
     },
+    {
+        description: 'Test Workspace',
+        id: 'b835a48d-928s-2j2f-9978-2323e23298x9',
+        name: 'test-workspace',
+        parent_id: '434a98d1-5317-7h64-3b60-12fe533456m5',
+        role: 'admin',
+        role_via: '434a98d1-5317-7h64-3b60-12fe533456m5',
+    },
 ];
 
 export default workspaces;

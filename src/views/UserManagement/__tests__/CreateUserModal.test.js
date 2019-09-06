@@ -1,58 +1,101 @@
-import UserModal from '../UserModal.vue';
-import { mount } from '@vue/test-utils';
+import CreateUserModal from '../CreateUserModal.vue';
+import Vuex from 'vuex';
+import { createLocalVue, mount } from '@vue/test-utils';
 import * as usersApi from '@api/users.js';
 
 // Fixture
 import users from '@src/__fixtures__/users.js';
+import workspaces from '@src/__fixtures__/workspaces.js';
+
+const localVue = createLocalVue();
+localVue.use(Vuex);
 
 jest.mock('@api/request.js');
 
-describe('UserModal.vue', () => {
+describe('CreateUserModal.vue', () => {
     let propsData;
+    let state;
+    let store;
     let user;
     let wrapper;
 
     beforeEach(() => {
+        state = { workspaces };
         user = users[0];
-        propsData = { action: 'create', user };
-        wrapper = mount(UserModal, { propsData });
+        propsData = { user };
+        store = new Vuex.Store({ state });
+        wrapper = mount(CreateUserModal, { localVue, propsData, store });
     });
 
-    // Helper function
     const clickCreateUser = () => {
         wrapper.find('a.create').trigger('click');
     };
 
-    describe('method createUser', () => {
-        test('should call createUser method when "Create User" button is clicked', () => {
-            const spy = jest.spyOn(usersApi, 'createUser');
-            const data = {
-                email: 'user@joyent.com',
-                name: 'New User',
-                isAdmin: true,
-                password: 'abcdefg',
-            };
+    const clickAddWorkspaces = () => {
+        wrapper.find('a.add-workspaces').trigger('click');
+    };
 
-            wrapper.setData(data);
-            clickCreateUser();
-
-            expect(spy).toHaveBeenCalled();
+    describe('initial render', () => {
+        test('should not display workspace selection on initial render', () => {
+            expect(wrapper.find('h1.title').text()).not.toEqual(
+                'Add User to Workspaces'
+            );
         });
     });
 
-    describe('method editUser', () => {
-        test('should call editUser method when "Save Changes" button is clicked', () => {
-            const spy = jest.spyOn(usersApi, 'editUser');
+    describe('workspace selection', () => {
+        beforeEach(() => {
             const data = {
                 email: 'user@joyent.com',
                 name: 'New User',
                 isAdmin: true,
                 password: 'abcdefg',
             };
-            propsData.action = 'edit';
-            wrapper = mount(UserModal, { propsData });
+
             wrapper.setData(data);
-            wrapper.find('a.edit').trigger('click');
+            clickAddWorkspaces();
+        });
+
+        // Helper function
+        const clickWorkspaceCheckbox = () => {
+            wrapper
+                .findAll('.checkbox-round')
+                .at(0)
+                .trigger('click');
+        };
+
+        test('should switch to the workspace selection pane after valid user info is submitted', () => {
+            expect(wrapper.find('h1.title').text()).toEqual(
+                'Add User to Workspaces'
+            );
+        });
+
+        test('should not display any permissions selectors on initial render', () => {
+            expect(wrapper.find('.select.permissions').exists()).toBeFalsy();
+        });
+
+        test('should display permissions selector when a workspace is selected', () => {
+            clickWorkspaceCheckbox();
+            expect(wrapper.find('.select.permissions').exists()).toBeTruthy();
+        });
+
+        test('should not display a permissions selector when a workspace is deselected', () => {
+            clickWorkspaceCheckbox();
+            clickWorkspaceCheckbox();
+
+            expect(wrapper.find('.select.permissions').exists()).toBeFalsy();
+        });
+
+        test('should filter workspace results when search text is entered', () => {
+            wrapper.find('input.search').setValue('Conch');
+
+            expect(wrapper.findAll('tr.workspace')).toHaveLength(2);
+        });
+
+        test('should call the createUser method', () => {
+            const spy = jest.spyOn(usersApi, 'createUser');
+
+            clickCreateUser();
 
             expect(spy).toHaveBeenCalled();
         });
@@ -85,7 +128,7 @@ describe('UserModal.vue', () => {
 
         // REDO with field.input_name
         test('should display error messages for each text input field if they are submitted empty', () => {
-            clickCreateUser();
+            clickAddWorkspaces();
 
             expect(
                 wrapper
@@ -111,11 +154,11 @@ describe('UserModal.vue', () => {
             const nameField = wrapper.find('.field.name');
 
             // Trigger error message
-            clickCreateUser();
+            clickAddWorkspaces();
 
             // Set name and resubmit
             wrapper.setData({ name: 'User Name' });
-            clickCreateUser();
+            clickAddWorkspaces();
 
             expect(nameField.find('.error').exists()).toBeFalsy();
         });
@@ -124,11 +167,11 @@ describe('UserModal.vue', () => {
             const emailField = wrapper.find('.field.email');
 
             // Trigger error message
-            clickCreateUser();
+            clickAddWorkspaces();
 
             // Set email and resubmit
             wrapper.setData({ email: 'user@joyent.com' });
-            clickCreateUser();
+            clickAddWorkspaces();
 
             expect(emailField.find('.error').exists()).toBeFalsy();
         });
@@ -137,11 +180,11 @@ describe('UserModal.vue', () => {
             const passwordField = wrapper.find('.field.password');
 
             // Trigger error message
-            clickCreateUser();
+            clickAddWorkspaces();
 
             // Set password and resubmit
             wrapper.setData({ password: 'abcdefg' });
-            clickCreateUser();
+            clickAddWorkspaces();
 
             expect(passwordField.find('.error').exists()).toBeFalsy();
         });
