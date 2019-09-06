@@ -1,238 +1,513 @@
 <template>
-    <div
-        class="modal"
-        :class="{ 'is-active': isActive }"
-        id="device-editor-modal"
-    >
+    <div class="modal edit-layout-modal" :class="{ 'is-active': isActive }">
         <div class="modal-background" @click="closeModal()"></div>
         <div class="modal-card">
+            <article class="message is-success update-success" v-if="isSuccess">
+                <div class="message-header">
+                    <p>
+                        <i class="material-icons">check_circle</i>
+                        Update successful
+                    </p>
+                </div>
+            </article>
+            <article
+                v-if="
+                    invalidSerialNumber ||
+                        duplicateSerialNumber ||
+                        duplicateAssetTag
+                "
+                class="message is-danger"
+            >
+                <div class="message-header">
+                    <p v-if="duplicateAssetTag">
+                        <i class="material-icons">error</i>
+                        Duplicate asset tag
+                    </p>
+                    <p v-if="duplicateSerialNumber">
+                        <i class="material-icons">error</i>
+                        Duplicate serial number
+                    </p>
+                    <p v-if="invalidSerialNumber">
+                        <i class="material-icons">error</i>
+                        Invalid serial number
+                    </p>
+                </div>
+            </article>
             <header class="modal-card-head">
-                <p class="modal-card-title has-text-centered">
+                <div class="modal-card-title has-text-centered">
                     Assign Rack {{ rackLayout.name }}
-                </p>
-                <button
-                    class="delete"
-                    aria-label="close"
-                    @click="closeModal()"
-                    type="button"
-                ></button>
+                </div>
+                <button class="delete" @click="closeModal()" type="button">
+                </button>
             </header>
             <section class="modal-card-body">
-                <table
-                    class="table is-fullwidth is-marginless"
-                    id="edit-layout-table"
-                >
+                <table class="table is-fullwidth is-hoverable is-marginless">
                     <thead>
-                        <tr>
-                            <th>Slot</th>
-                            <th>Product Name</th>
-                            <th class="has-text-right">
-                                Device Identification
-                            </th>
-                        </tr>
+                        <th>Slot</th>
+                        <th>Product Name</th>
+                        <th>Serial Number</th>
+                        <th>Asset Tag</th>
+                        <th></th>
                     </thead>
+                    <tfoot v-if="deviceSlots.length > 10">
+                        <th>Slot</th>
+                        <th>Product Name</th>
+                        <th>Serial Number</th>
+                        <th>Asset Tag</th>
+                        <th></th>
+                    </tfoot>
                     <tbody>
-                        <tr v-for="(slot, index) in deviceSlots" :key="index">
-                            <th>{{ slot.id }}</th>
-                            <td>{{ slot.name }}</td>
-                            <td class="has-text-right">
-                                <div class="control has-icons-left">
-                                    <input
-                                        type="text"
-                                        class="input is-small serial-number"
-                                        placeholder="Serial Number"
-                                        pattern="[a-zA-Z0-9]+"
-                                        @input="
-                                            serialNumberInput($event, slot.id)
-                                        "
-                                        :value="inputValue(slot, 'sn')"
-                                    />
-                                    <span class="icon is-left">
-                                        <i class="fas fa-barcode"></i>
-                                    </span>
+                        <tr
+                            v-for="assignment in assignments"
+                            :key="assignment.slot"
+                            :class="{
+                                'is-editing': isEditingAssignment(
+                                    assignment.slot
+                                ),
+                                'has-error': assignmentHasError(
+                                    assignment.slot
+                                ),
+                            }"
+                        >
+                            <td>{{ assignment.slot }}</td>
+                            <td>{{ assignment.name }}</td>
+                            <template
+                                v-if="isEditingAssignment(assignment.slot)"
+                            >
+                                <td class="serial-number">
                                     <div
-                                        class="notification help is-danger is-paddingless has-text-centered"
-                                        v-if="duplicateSerials[slot.id]"
-                                        style="font-size: 0.75rem; margin: 0 0 4px;"
+                                        class="control has-icons-right"
+                                        :class="{
+                                            'tooltip is-tooltip-danger':
+                                                hasDuplicateSerialNumber(
+                                                    assignment.slot
+                                                ) ||
+                                                hasInvalidSerialNumber(
+                                                    assignment.slot
+                                                ),
+                                        }"
+                                        :data-tooltip="
+                                            getTooltip(assignment.slot)
+                                        "
                                     >
-                                        Device serial is duplicated
+                                        <input
+                                            type="text"
+                                            class="input serial-number"
+                                            :class="{
+                                                'is-danger':
+                                                    hasDuplicateSerialNumber(
+                                                        assignment.slot
+                                                    ) ||
+                                                    hasInvalidSerialNumber(
+                                                        assignment.slot
+                                                    ),
+                                            }"
+                                            v-model.trim="assignment.id"
+                                            placeholder="Serial Number"
+                                        />
+                                        <span
+                                            class="icon is-small is-right"
+                                            v-if="
+                                                hasDuplicateSerialNumber(
+                                                    assignment.slot
+                                                ) ||
+                                                    hasInvalidSerialNumber(
+                                                        assignment.slot
+                                                    )
+                                            "
+                                        >
+                                            <i
+                                                class="material-icons has-text-danger"
+                                            >
+                                                error
+                                            </i>
+                                        </span>
                                     </div>
-                                </div>
-                                <div class="control has-icons-left">
-                                    <input
-                                        type="text"
-                                        class="input is-small asset-tag"
-                                        placeholder="Asset Tag"
-                                        pattern="[a-zA-Z0-9]+"
-                                        :disabled="assignments[slot.id] == null"
-                                        @input="assetTagInput($event, slot.id)"
-                                        :value="inputValue(slot, 'at')"
-                                    />
-                                    <span class="icon is-left">
-                                        <i class="fas fa-tag"></i>
-                                    </span>
-                                </div>
+                                </td>
+                                <td class="asset-tag">
+                                    <div
+                                        class="control has-icons-right"
+                                        :class="{
+                                            'tooltip is-tooltip-danger': hasDuplicateAssetTag(
+                                                assignment.slot
+                                            ),
+                                        }"
+                                        data-tooltip="Duplicate asset tag"
+                                    >
+                                        <input
+                                            type="text"
+                                            class="input asset-tag"
+                                            :class="{
+                                                'is-danger': hasDuplicateAssetTag(
+                                                    assignment.slot
+                                                ),
+                                            }"
+                                            v-model.trim="assignment.assetTag"
+                                            placeholder="Asset Tag"
+                                        />
+                                        <span
+                                            class="icon is-small is-right"
+                                            v-if="
+                                                hasDuplicateAssetTag(
+                                                    assignment.slot
+                                                )
+                                            "
+                                        >
+                                            <i
+                                                class="material-icons has-text-danger"
+                                            >
+                                                error
+                                            </i>
+                                        </span>
+                                    </div>
+                                </td>
+                            </template>
+                            <template v-else>
+                                <td class="serial-number" v-if="assignment.id">
+                                    {{ assignment.id }}
+                                </td>
+                                <td class="serial-number" v-else>
+                                    None
+                                </td>
+                                <td
+                                    class="asset-tag"
+                                    v-if="assignment.assetTag"
+                                >
+                                    {{ assignment.assetTag }}
+                                </td>
+                                <td class="asset-tag" v-else>
+                                    None
+                                </td>
+                            </template>
+                            <td class="edit-action">
+                                <a
+                                    v-if="isEditingAssignment(assignment.slot)"
+                                    class="button is-fullwidth is-danger cancel"
+                                    @click="
+                                        cancelEditAssignment(assignment.slot)
+                                    "
+                                >
+                                    <span>Cancel</span>
+                                </a>
+                                <a
+                                    class="button is-info is-fullwidth edit"
+                                    @click="editAssignment(assignment)"
+                                    v-else
+                                >
+                                    Edit
+                                </a>
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Slot</th>
-                            <th>Product Name</th>
-                            <th class="has-text-right">
-                                Device Identification
-                            </th>
-                        </tr>
-                    </tfoot>
                 </table>
             </section>
             <footer class="modal-card-foot">
-                <div class="field is-grouped">
-                    <p class="control">
-                        <button
-                            class="button save is-primary"
-                            :class="{ 'is-loading': buttonLoading }"
-                            @click="save()"
-                            type="button"
-                        >
-                            Save
-                        </button>
-                    </p>
-                    <p class="control">
-                        <button
-                            class="button cancel"
-                            @click="closeModal()"
-                            type="button"
-                        >
-                            Cancel
-                        </button>
-                    </p>
-                </div>
+                <a
+                    v-if="editingAssignments"
+                    class="button is-fullwidth is-success save-changes"
+                    :class="{ 'is-loading': isLoading }"
+                    @click="saveModifiedAssignments()"
+                >
+                    Save Changes
+                </a>
+                <a
+                    class="button is-fullwidth close-modal"
+                    @click="closeModal()"
+                    v-else
+                >
+                    Close
+                </a>
             </footer>
         </div>
     </div>
 </template>
 
 <script>
-import debounce from 'lodash/debounce';
-import { setAssetTag } from '@api/device.js';
-import { setRackLayout } from '@api/workspaces.js';
+import isEmpty from 'lodash/isEmpty';
+import { mapActions, mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
-import { mapGetters, mapState } from 'vuex';
+import { updateRackAssignment } from '@api/rack.js';
+import { getDevices, getRackById } from '@api/workspaces';
 
 export default {
     props: {
         deviceSlots: {
-            type: Array,
             required: true,
+            type: Array,
         },
     },
     data() {
         return {
-            assignments: {},
-            buttonLoading: false,
-            duplicateSerials: [],
-            isActive: false,
+            assignments: [],
+            duplicateAssetTag: false,
+            duplicateSerialNumber: false,
+            editingAssignments: false,
+            invalidSerialNumber: false,
+            isActive: true,
+            isLoading: false,
+            isSuccess: false,
+            modifiedAssignments: [],
+            validationErrors: [],
         };
     },
     computed: {
-        ...mapGetters(['currentWorkspaceId']),
-        ...mapState(['rackLayout']),
+        ...mapState(['currentWorkspace', 'devices', 'rackLayout']),
     },
     methods: {
-        assetTagInput: debounce(function(event, slotId) {
-            if (this.assignments[slotId]) {
-                this.assignments[slotId].assetTag = event.target.value;
+        ...mapActions(['setDevices', 'setRackLayout']),
+        assignmentHasError(slot) {
+            return this.validationErrors.some(error => {
+                return error.slot === slot;
+            });
+        },
+        cancelEditAssignment(slot) {
+            const index = this.getModifiedAssignmentIndex(slot);
+
+            if (index !== undefined) {
+                this.modifiedAssignments.splice(index, 1);
             }
-        }, 750),
+
+            // Resets assignment serial number and asset tag to original values
+            for (let i = 0; i < this.assignments.length; i++) {
+                if (this.assignments[i].slot === slot) {
+                    const assignment = this.assignments[i];
+
+                    this.assignments[i].id = assignment.originalSerialNumber;
+                    this.assignments[i].assetTag = assignment.originalAssetTag;
+
+                    break;
+                }
+            }
+
+            if (!this.modifiedAssignments.length) {
+                this.editingAssignments = false;
+            }
+
+            this.clearErrors();
+        },
+        clearErrors() {
+            this.duplicateAssetTag = false;
+            this.duplicateSerialNumber = false;
+            this.invalidSerialNumber = false;
+            this.validationErrors = [];
+        },
         closeModal() {
+            this.isActive = false;
+
             EventBus.$emit('closeModal:editLayoutModal');
         },
-        inputValue(slot, type) {
-            const assignment = this.assignments[slot.id];
+        editAssignment(assignment) {
+            const slot = assignment.slot;
 
-            if (assignment) {
-                if (type === 'sn' && assignment.id) {
-                    return assignment.id;
-                } else if (type === 'at' && assignment.assetTag) {
-                    return assignment.assetTag;
-                }
+            if (this.getModifiedAssignmentIndex(slot) === -1) {
+                this.modifiedAssignments.push(assignment);
+            }
 
-                return '';
-            } else {
-                return '';
+            if (!this.editingAssignments) {
+                this.editingAssignments = true;
             }
         },
-        refreshRackLayout(rackLayout) {
-            EventBus.$emit('refreshRackLayout', rackLayout);
-        },
-        serialNumberInput: debounce(function(event, slotId) {
-            if (this.assignments[slotId]) {
-                this.assignments[slotId].id = event.target.value;
-            }
-        }, 750),
-        save() {
-            const layout = {};
-            const duplicates = [];
-            const assignments = this.assignments;
+        getModifiedAssignmentIndex(slot) {
+            const modifiedAssignments = this.modifiedAssignments;
+            let index;
 
-            Object.keys(assignments).forEach(slot => {
-                if (layout[assignments[slot].id]) {
-                    duplicates[slot] = true;
-                    duplicates[layout[assignments[slot].id]] = true;
+            for (let i = 0; i < modifiedAssignments.length; i++) {
+                const assigment = modifiedAssignments[i];
+
+                if (assigment.slot === slot) {
+                    index = i;
+                    break;
                 }
+            }
 
-                layout[assignments[slot].id] = slot;
+            return index === undefined ? -1 : index;
+        },
+        getTooltip(slot) {
+            const validationErrors = this.validationErrors;
+
+            if (validationErrors.length) {
+                const error = validationErrors.find(error => {
+                    return error.slot === slot;
+                });
+
+                if (error) {
+                    if (error.invalidSerialNumber) {
+                        return 'Invalid serial number';
+                    } else if (error.duplicateSerialNumber) {
+                        return 'Duplicate serial number';
+                    }
+                }
+            }
+        },
+        hasDuplicateAssetTag(slot) {
+            return this.validationErrors.some(error => {
+                return error.slot === slot && error.duplicateAssetTag;
             });
+        },
+        hasDuplicateSerialNumber(slot) {
+            return this.validationErrors.some(error => {
+                return error.slot === slot && error.duplicateSerialNumber;
+            });
+        },
+        hasInvalidSerialNumber(slot) {
+            return this.validationErrors.some(error => {
+                return error.slot === slot && error.invalidSerialNumber;
+            });
+        },
+        isEditingAssignment(slot) {
+            return this.modifiedAssignments.some(assignment => {
+                return assignment.slot === slot;
+            });
+        },
+        async saveModifiedAssignments() {
+            this.isLoading = true;
+            this.clearErrors();
 
-            this.duplicateSerials = duplicates;
+            await this.validateInput();
 
-            if (Object.keys(duplicates).length === 0) {
-                this.buttonLoading = true;
+            if (!this.validationErrors.length) {
+                const modifiedAssignments = this.modifiedAssignments;
+                let newRackAssignments = [];
 
-                setRackLayout(
-                    this.currentWorkspaceId,
-                    this.rackLayout.id,
-                    layout
-                ).then(() => {
-                    Promise.all(
-                        Object.values(assignments).map(assignment => {
-                            if (assignment.assetTag == null) {
-                                return Promise.resolve();
-                            }
-
-                            return setAssetTag(
-                                assignment.id,
-                                assignment.assetTag
-                            );
-                        })
-                    ).then(() => {
-                        this.closeModal();
-                        this.refreshRackLayout(this.rackLayout);
-                        this.buttonLoading = false;
+                await modifiedAssignments.map(assignment => {
+                    newRackAssignments.push({
+                        device_asset_tag: assignment.assetTag,
+                        device_id: assignment.id,
+                        rack_unit_start: assignment.rackUnitStart,
                     });
                 });
+
+                updateRackAssignment(
+                    this.rackLayout.id,
+                    newRackAssignments
+                ).then(() => {
+                    getRackById(
+                        this.currentWorkspace.id,
+                        this.rackLayout.id
+                    ).then(response => {
+                        this.setRackLayout(response);
+
+                        getDevices(this.currentWorkspace.id).then(response => {
+                            this.setDevices(response.data);
+                        });
+
+                        this.modifiedAssignments = [];
+                        this.isLoading = false;
+                        this.editingAssignments = false;
+                        this.isSuccess = true;
+
+                        setTimeout(() => {
+                            this.isSuccess = false;
+                        }, 2000);
+                    });
+                });
+            } else {
+                this.isLoading = false;
+            }
+        },
+        validateInput() {
+            const modifiedAssignments = this.modifiedAssignments;
+
+            for (let i = 0; i < modifiedAssignments.length; i++) {
+                const assignment = modifiedAssignments[i];
+                const assetTag = assignment.assetTag;
+                const serialNumber = assignment.id;
+                let invalidSerialNumber = false;
+                let duplicateAssetTag = false;
+                let duplicateSerialNumber = false;
+
+                if (
+                    !serialNumber ||
+                    serialNumber.indexOf('/') !== -1 ||
+                    serialNumber.indexOf('.') !== -1 ||
+                    serialNumber.indexOf(' ') !== -1
+                ) {
+                    invalidSerialNumber = true;
+                    this.invalidSerialNumber = true;
+                }
+
+                for (let i = 0; i < this.devices.length; i++) {
+                    const device = this.devices[i];
+
+                    if (
+                        device.asset_tag === assetTag &&
+                        assetTag !== assignment.originalAssetTag
+                    ) {
+                        // Checks for edge case where an assignment is given a new asset
+                        // tag equal to an existing asset tag, but the duplicated asset
+                        // tag is also being modified. In this case, no invalid input
+                        // warning should appear.
+                        const duplicatedAssetTagModified = modifiedAssignments.some(
+                            modifiedAssignment =>
+                                assetTag ===
+                                    modifiedAssignment.originalAssetTag &&
+                                modifiedAssignment.assetTag !==
+                                    modifiedAssignment.originalAssetTag
+                        );
+
+                        if (!duplicatedAssetTagModified) {
+                            duplicateAssetTag = true;
+                            this.duplicateAssetTag = true;
+                        }
+                    }
+
+                    if (
+                        device.id === serialNumber &&
+                        serialNumber !== assignment.originalSerialNumber
+                    ) {
+                        // Checks for edge case where an assignment is given a new serial
+                        // number equal to an existing serial number, but the duplicated
+                        // serial number is also being modified. In this case, no invalid
+                        // input warning should appear.
+                        const duplicatedSerialNumberModified = modifiedAssignments.some(
+                            modifiedAssignment =>
+                                serialNumber ===
+                                    modifiedAssignment.originalSerialNumber &&
+                                modifiedAssignment.serialNumber !==
+                                    modifiedAssignment.originalSerialNumber
+                        );
+
+                        if (!duplicatedSerialNumberModified) {
+                            duplicateSerialNumber = true;
+                            this.duplicateSerialNumber = true;
+                        }
+                    }
+
+                    if (duplicateAssetTag || duplicateSerialNumber) {
+                        break;
+                    }
+                }
+
+                if (
+                    duplicateAssetTag ||
+                    duplicateSerialNumber ||
+                    invalidSerialNumber
+                ) {
+                    this.validationErrors.push({
+                        slot: assignment.slot,
+                        duplicateAssetTag,
+                        duplicateSerialNumber,
+                        invalidSerialNumber,
+                    });
+                }
             }
         },
     },
     created() {
         this.deviceSlots.map(slot => {
             const occupant = slot.occupant;
-            if (occupant) {
-                this.assignments[slot.id] = {
-                    id: occupant.id,
-                    assetTag: occupant.asset_tag,
-                };
-            }
-        });
-    },
-    mounted() {
-        EventBus.$on('closeModal:editLayoutModal', () => {
-            this.isActive = false;
-        });
 
-        EventBus.$on('openModal:editLayoutModal', () => {
-            this.isActive = true;
+            if (!isEmpty(occupant)) {
+                this.assignments.push({
+                    assetTag: occupant.asset_tag,
+                    id: occupant.id || '',
+                    name: slot.name,
+                    originalAssetTag: occupant.asset_tag,
+                    originalSerialNumber: occupant.id,
+                    rackUnitStart: occupant.rack_unit_start,
+                    slot: slot.id,
+                });
+            }
         });
     },
 };

@@ -1,17 +1,128 @@
-#device-editor-modal {
-	input:focus:invalid + span.icon {
-		background-color: $danger;
+.edit-layout-modal {
+	.modal-card {
+		min-width: 900px;
+		max-width: 1200px;
+	}
 
-		i::before {
-			content: "\f06a";
+	.modal-card-body {
+		padding: 0;
+	}
+
+	input {
+		background-color: $grey-darker;
+		border-color: $grey;
+		border-radius: 4px;
+		color: $white;
+
+		&::placeholder {
+			color: $grey-light;
 		}
 	}
 
-	input:focus:valid + span.icon {
-		background-color: $success;
+	td {
+		border: none;
+		white-space: nowrap;
 
-		i::before {
-			content: "\f058";
+		&.asset-tag,
+		&.serial-number {
+			min-width: 222px;
+		}
+
+		&.edit-action {
+			align-items: center;
+			cursor: pointer;
+			display: flex;
+			justify-content: center;
+		}
+	}
+
+	table.table {
+		tfoot,
+		thead {
+			background-color: $grey-darker;
+			border-color: $grey-dark;
+			border-width: 0 1px;
+			border-style: solid;
+
+			th {
+				border-top: none;
+				color: $grey-lighter;
+			}
+		}
+	}
+
+	tr {
+		border-left: 8px solid transparent;
+
+		&.is-editing {
+			border-left: 8px solid $blue;
+		}
+
+		&.has-error {
+			border-left: 8px solid $red;
+		}
+	}
+
+	.button {
+		&.edit,
+		&.cancel {
+			border-radius: 4px;
+			min-width: 117px;
+			max-width: 117px;
+		}
+	}
+
+	.message-header {
+		padding: 12px;
+	}
+
+	.message,
+	.message-header {
+		align-items: normal;
+		border-radius: 4px;
+		flex-direction: column;
+		left: 50%;
+		margin-left: -125px;
+		position: absolute;
+		top: 0px;
+		width: 250px;
+		z-index: 100;
+
+		i {
+			margin-right: 8px;
+		}
+
+		p {
+			align-items: center;
+			display: flex;
+			white-space: nowrap;
+		}
+	}
+
+	.update-success {
+		i.material-icons {
+			margin-right: 25px;
+		}
+	}
+
+	.modal-card-foot {
+		padding: 0;
+
+		a.button {
+			border: none;
+			font-size: 20px;
+			font-weight: bold;
+			height: 60px;
+
+			&.close-modal {
+				background-color: $grey-dark;
+				transition: background-color 0.1s ease-in-out;
+
+				&:hover {
+					background-color: darken($grey-dark, 2%);
+					transition: background-color 0.1s ease-in-out;
+				}
+			}
 		}
 	}
 }

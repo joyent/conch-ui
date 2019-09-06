@@ -62,6 +62,10 @@ export const setCurrentWorkspace = (state, workspace) => {
     state.currentWorkspace = workspace;
 };
 
+export const setDevices = (state, devices) => {
+    state.devices = devices;
+};
+
 export const setDevicesByWorkspace = (state, devices) => {
     state.devicesByWorkspace.push(devices);
 };
@@ -131,6 +135,7 @@ export default {
     setAuthTokens,
     setCurrentUser,
     setCurrentWorkspace,
+    setDevices,
     setDevicesByWorkspace,
     setForcePasswordChange,
     setHardwareProducts,

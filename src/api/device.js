@@ -35,17 +35,6 @@ export const getLocation = id => {
     });
 };
 
-export const setAssetTag = (id, assetTag) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/device/${id}/asset_tag`,
-        data: {
-            asset_tag: assetTag,
-        },
-        background: true,
-    });
-};
-
 export const setDevicePhase = (id, data) => {
     return requestWithToken({
         method: 'POST',
@@ -60,6 +49,5 @@ export default {
     getDeviceSettings,
     getDeviceValidations,
     getLocation,
-    setAssetTag,
     setDevicePhase,
 };

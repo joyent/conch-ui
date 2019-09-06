@@ -8,6 +8,7 @@ export const state = {
     authTokens: [],
     currentUser: {},
     currentWorkspace: {},
+    devices: [],
     devicesByWorkspace: [],
     forcePasswordChange: false,
     hardwareProducts: [],

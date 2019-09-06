@@ -39,18 +39,9 @@ export const loadAllWorkspaces = () => {
     });
 };
 
-export const setRackLayout = (id, rackId, layout) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/workspace/${id}/rack/${rackId}/layout`,
-        data: layout,
-    });
-};
-
 export default {
     getAllRacks,
     getDevices,
     getRackById,
     loadAllWorkspaces,
-    setRackLayout,
 };
