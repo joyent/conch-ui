@@ -1,11 +1,16 @@
 <template>
     <div class="user-management">
-        <Spinner v-if="users.length < 1"/>
+        <Spinner v-if="users.length < 1" />
         <div class="users" v-else>
             <div class="columns is-vcentered">
                 <div class="column">
-                    <a class="filter-all" @click="setUserFilters('all_users')">
-                        <div class="box users-stats">
+                    <a class="filter-all" @click="setFilters('all')">
+                        <div
+                            class="box users-stats"
+                            :class="{
+                                'is-selected': statisticFilter === 'all',
+                            }"
+                        >
                             <h2 class="is-6">All Users</h2>
                             <span class="is-size-3 has-text-info">
                                 {{ users.length }}
@@ -14,8 +19,13 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a class="filter-admin" @click="setUserFilters('admin_users')">
-                        <div class="box users-stats">
+                    <a class="filter-admin" @click="setFilters('admins')">
+                        <div
+                            class="box users-stats"
+                            :class="{
+                                'is-selected': statisticFilter === 'admins',
+                            }"
+                        >
                             <h2 class="is-6">Admin Users</h2>
                             <span class="is-size-3 has-text-info">
                                 {{ adminUsersCount }}
@@ -24,8 +34,13 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a class="filter-regular" @click="setUserFilters('regular_users')">
-                        <div class="box users-stats">
+                    <a class="filter-regular" @click="setFilters('regular')">
+                        <div
+                            class="box users-stats"
+                            :class="{
+                                'is-selected': statisticFilter === 'regular',
+                            }"
+                        >
                             <h2 class="is-6">Regular Users</h2>
                             <span class="is-size-3 has-text-info">
                                 {{ regularUsersCount }}
@@ -34,8 +49,13 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a class="filter-inactive" @click="statisticFilter = 'inactive'">
-                        <div class="box users-stats">
+                    <a class="filter-inactive" @click="setFilters('inactive')">
+                        <div
+                            class="box users-stats"
+                            :class="{
+                                'is-selected': statisticFilter === 'inactive',
+                            }"
+                        >
                             <h2 class="is-6">Inactive Users</h2>
                             <span class="is-size-3 has-text-info">
                                 {{ inactiveUsersCount }}
@@ -44,8 +64,17 @@
                     </a>
                 </div>
                 <div class="column">
-                    <a class="filter-auth-issues" @click="statisticFilter = 'authentication_issues'">
-                        <div class="box users-stats">
+                    <a
+                        class="filter-auth-issues"
+                        @click="setFilters('auth_issues')"
+                    >
+                        <div
+                            class="box users-stats"
+                            :class="{
+                                'is-selected':
+                                    statisticFilter === 'auth_issues',
+                            }"
+                        >
                             <h2 class="is-6">Authentication Issues</h2>
                             <span class="is-size-3 has-text-info">
                                 {{ authenticationIssuesCount }}
@@ -87,7 +116,7 @@
                                     <option value="admins">
                                         Admin Users
                                     </option>
-                                    <option value="users">
+                                    <option value="regular">
                                         Regular Users
                                     </option>
                                 </select>
@@ -197,7 +226,7 @@ export default {
             modalStep: null,
             searchText: '',
             searchTextWorkspaces: '',
-            statisticFilter: '',
+            statisticFilter: 'all',
             user: {},
             userFilter: 'all',
         };
@@ -224,16 +253,24 @@ export default {
 
             this.action = action;
         },
-        setUserFilters(filter) {
-            if (filter === 'all_users') {
-                this.statisticFilter = 'all_users';
+        setFilters(filter) {
+            if (filter === this.statisticFilter) {
+                this.statisticFilter = 'all';
+            } else {
+                this.statisticFilter = filter;
+            }
+
+            if (
+                filter === this.userFilter ||
+                filter === 'all' ||
+                filter === 'inactive' ||
+                filter === 'auth_issues'
+            ) {
                 this.userFilter = 'all';
-            } else if (filter === 'admin_users') {
-                this.statisticFilter = 'admins';
+            } else if (filter === 'admins') {
                 this.userFilter = 'admins';
-            } else if (filter === 'regular_users') {
-                this.statisticFilter = 'regular_users';
-                this.userFilter = 'users';
+            } else if (filter === 'regular') {
+                this.userFilter = 'regular';
             }
         },
     },
@@ -257,7 +294,7 @@ export default {
 
             if (this.userFilter === 'admins') {
                 users = users.filter(user => user.is_admin === true);
-            } else if (this.userFilter === 'users') {
+            } else if (this.userFilter === 'regular') {
                 users = users.filter(user => user.is_admin === false);
             }
 
@@ -284,11 +321,11 @@ export default {
                     users = users;
                 } else if (statisticFilter === 'admins') {
                     users = users.filter(user => user.is_admin === true);
-                } else if (statisticFilter === 'regular_users') {
+                } else if (statisticFilter === 'regular') {
                     users = users.filter(user => user.is_admin === false);
                 } else if (statisticFilter === 'inactive') {
                     users = users.filter(user => user.last_login == null);
-                } else if (statisticFilter === 'authentication_issues') {
+                } else if (statisticFilter === 'auth_issues') {
                     users = users.filter(user => {
                         if (
                             user.force_password_change === true ||

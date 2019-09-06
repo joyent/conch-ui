@@ -48,7 +48,7 @@ describe('UserManagement.vue', () => {
     });
 
     test('should filter displayed users to only regular users when "Users" filter is selected', () => {
-        wrapper.setData({ userFilter: 'users' });
+        wrapper.setData({ userFilter: 'regular' });
 
         expect(wrapper.findAll('tr').length).toEqual(1);
         expect(wrapper.vm.filteredUsers.length).toEqual(1);
