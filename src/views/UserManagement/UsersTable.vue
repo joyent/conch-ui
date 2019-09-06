@@ -95,7 +95,7 @@
                     :key="user.id"
                 >
                     <td class="has-text-centered">
-                        <span>{{ index + 1 }}</span>
+                        <span>{{ userIndex(user) }}</span>
                     </td>
                     <td class="username">{{ user.name }}</td>
                     <td>
@@ -296,6 +296,21 @@ export default {
                 users.reverse();
                 this.reversedSort = !this.reversedSort;
                 this.sortedUsers = users;
+            }
+        },
+        userIndex(user) {
+            const users = this.sortedUsers;
+            let index;
+
+            if (users.length) {
+                for (let i = 0; i < users.length; i++) {
+                    if (user.id === users[i].id) {
+                        index = i + 1;
+                        break;
+                    }
+                }
+
+                return index;
             }
         },
         viewTokens(user) {
