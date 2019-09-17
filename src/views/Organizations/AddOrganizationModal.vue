@@ -151,7 +151,9 @@
                                                 :class="{
                                                     'is-expanded': isExpandedDetails,
                                                 }"
-                                                @click="isExpandedDetails = !isExpandedDetails"
+                                                @click="
+                                                    isExpandedDetails = !isExpandedDetails
+                                                "
                                             >
                                                 <p class="item-title">
                                                     Details
@@ -178,7 +180,9 @@
                                                 :class="{
                                                     'is-expanded': isExpandedMembers,
                                                 }"
-                                                @click="isExpandedMembers = !isExpandedMembers"
+                                                @click="
+                                                    isExpandedMembers = !isExpandedMembers
+                                                "
                                             >
                                                 <p class="item-title">
                                                     Members
@@ -194,9 +198,9 @@
                                                 <div
                                                     class="item-content-row"
                                                     v-for="user in users"
-                                                    :key="`${user}_builds`"
+                                                    :key="user.id"
                                                 >
-                                                    {{ user }}
+                                                    {{ user.email }}
                                                 </div>
                                             </div>
                                         </div>
@@ -206,7 +210,9 @@
                                                 :class="{
                                                     'is-expanded': isExpandedWorkspaces,
                                                 }"
-                                                @click="isExpandedWorkspaces = !isExpandedWorkspaces"
+                                                @click="
+                                                    isExpandedWorkspaces = !isExpandedWorkspaces
+                                                "
                                             >
                                                 <p class="item-title">
                                                     Workspaces
@@ -222,9 +228,9 @@
                                                 <div
                                                     class="item-content-row"
                                                     v-for="user in users"
-                                                    :key="`${user}_builds`"
+                                                    :key="user.id"
                                                 >
-                                                    {{ user }}
+                                                    {{ user.email }}
                                                 </div>
                                             </div>
                                         </div>
@@ -234,7 +240,9 @@
                                                 :class="{
                                                     'is-expanded': isExpandedBuilds,
                                                 }"
-                                                @click="isExpandedBuilds = !isExpandedBuilds"
+                                                @click="
+                                                    isExpandedBuilds = !isExpandedBuilds
+                                                "
                                             >
                                                 <p class="item-title">
                                                     Builds
@@ -250,9 +258,9 @@
                                                 <div
                                                     class="item-content-row"
                                                     v-for="user in users"
-                                                    :key="`${user}_builds`"
+                                                    :key="user.id"
                                                 >
-                                                    {{ user }}
+                                                    {{ user.email }}
                                                 </div>
                                             </div>
                                         </div>
@@ -305,6 +313,9 @@
 import ItemTable from './ItemTable.vue';
 import SuccessModal from './SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
+import { mapActions, mapState } from 'vuex';
+import { getUsers } from '@api/users.js';
+import { addOrganization } from '@api/organizations.js';
 
 export default {
     components: {
@@ -313,8 +324,8 @@ export default {
     },
     data() {
         return {
-            activeStep: 5,
-            description: 'This is an import groiup of engineers in charge of the Ceres build.',
+            activeStep: 1,
+            description: '',
             isActive: true,
             isExpandedBuilds: false,
             isExpandedDetails: false,
@@ -322,7 +333,7 @@ export default {
             isExpandedWorkspaces: false,
             isLoading: false,
             isSuccessful: false,
-            name: 'Ceres Build Team',
+            name: '',
             selectedUsers: [],
             steps: [
                 {
@@ -341,34 +352,46 @@ export default {
                     title: 'Final Review',
                 },
             ],
-            users: [
-                'Anakin Skywalker',
-                'Darth Vader',
-                'Leia Organa Solo',
-                // 'Lando Calrissian',
-                // 'Han Solo',
-                // 'Chewbacca',
-                // 'Jaina Solo',
-                // 'Darth Sideous',
-                // 'Jyn Erso',
-                // 'Emporer Palpatine',
-                // 'Jar Jar Binks',
-            ],
+            // users: [
+            //     'Anakin Skywalker',
+            //     'Darth Vader',
+            //     'Leia Organa Solo',
+            //     'Lando Calrissian',
+            //     'Han Solo',
+            //     'Chewbacca',
+            //     'Jaina Solo',
+            //     'Darth Sideous',
+            //     'Jyn Erso',
+            //     'Emporer Palpatine',
+            //     'Jar Jar Binks',
+            // ],
         };
     },
     methods: {
+        ...mapActions(['setUsers']),
         closeModal() {
             this.isActive = false;
 
             EventBus.$emit('close-modal:add-organization');
         },
-        createOrganization() {
+        async createOrganization() {
             this.isLoading = true;
+            const data = {
+                name: this.name,
+                description: this.description,
+                admins: [
+                    {
+                        user_id: '4fc5c040-71bd-4400-9b9c-217465c4ec30',
+                    },
+                ],
+            };
 
-            setTimeout(() => {
-                this.isLoading = false;
-                this.isSuccessful = true;
-            }, 2000);
+            await addOrganization(data);
+
+            EventBus.$emit('organization-created');
+
+            this.isLoading = false;
+            this.isSuccessful = true;
         },
         deselectUser(user) {
             const index = this.selectedUsers.indexOf(user);
@@ -381,6 +404,16 @@ export default {
         selectUser(user) {
             this.selectedUsers.push(user);
         },
+    },
+    computed: {
+        ...mapState(['users']),
+    },
+    created() {
+        if (!this.users.length) {
+            getUsers().then(response => {
+                this.setUsers(response.data);
+            });
+        }
     },
 };
 </script>

@@ -6,7 +6,8 @@
             <router-view name="sidebar"></router-view>
             <div class="page">
                 <router-view name="navbar"></router-view>
-                <router-view class="page-content"></router-view>
+                <router-view class="page-content" :key="$route.fullPath">
+                </router-view>
             </div>
         </div>
     </div>
