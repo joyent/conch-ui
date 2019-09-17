@@ -86,6 +86,10 @@ export const setInvalidCredentials = state => {
     state.invalidCredentials = true;
 };
 
+export const setOrganizations = (state, organizations) => {
+    state.organizations = organizations;
+};
+
 export const setRackLayout = (state, rackLayout) => {
     state.rackLayout = rackLayout;
 };
@@ -141,6 +145,7 @@ export default {
     setHardwareProducts,
     setHighlightDeviceId,
     setInvalidCredentials,
+    setOrganizations,
     setRackLayout,
     setRackRooms,
     setRackRoomsByWorkspace,
