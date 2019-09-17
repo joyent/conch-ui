@@ -6,7 +6,7 @@
             </template>
             <template v-slot:title>
                 <h1 class="title">
-                    Remove <span class="is-capitalized">{{ item.type }}</span>?
+                    Remove <span class="is-capitalized">{{ type }}</span>?
                 </h1>
             </template>
             <template v-slot:body>
@@ -31,11 +31,20 @@
 <script>
 import BaseModal from '@src/views/components/BaseModal.vue';
 import { EventBus } from '@src/eventBus.js';
+import { removeMemberFromOrganization } from '@api/organizations.js';
 
 export default {
     props: {
         item: {
             type: Object,
+            required: true,
+        },
+        organizationId: {
+            type: String,
+            required: true,
+        },
+        type: {
+            type: String,
             required: true,
         },
     },
@@ -47,7 +56,9 @@ export default {
 
         },
         removeItem() {
-
+            if (this.type === 'member') {
+                removeMemberFromOrganization(this.organizationId, this.item.id);
+            }
         },
     },
     // NEEDED?

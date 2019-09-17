@@ -1,11 +1,11 @@
 <template>
-    <div class="workspace-modal">
+    <div class="action-modal">
         <div class="modal" :class="{ 'is-active': isActive }">
             <div class="modal-background" @click="closeModal()"></div>
             <div class="modal-card">
                 <div class="modal-card-head">
                     <p class="modal-card-title is-uppercase">
-                        {{ action }} {{ itemType }}s
+                        {{ action }} {{ itemType }}
                     </p>
                     <i class="material-icons close" @click="closeModal()">
                         close
@@ -14,90 +14,104 @@
                 <div class="modal-card-body">
                     <table class="table is-fullwidth">
                         <tbody>
-                            <tr class="table-title">
-                                <td>Available Workspaces</td>
+                            <tr>
+                                <td class="search-input" colspan="3">
+                                    <p class="control has-icons-left">
+                                        <input
+                                            class="input search"
+                                            type="text"
+                                            :placeholder="`Search ${itemType}s`"
+                                            v-model="searchText"
+                                        />
+                                        <span class="icon">
+                                            <i class="material-icons">search</i>
+                                        </span>
+                                    </p>
+                                </td>
                             </tr>
                             <tr
                                 class="row"
                                 :class="{
-                                    'is-selected': isSelected(item),
+                                    'is-selected': isSelected(item.name),
                                 }"
                                 v-for="item in itemList"
-                                :key="item"
+                                :key="item.id"
                             >
-                                <template v-if="isSelected(item)">
-                                    <td class="workspace">
-                                        <span
-                                            class="name has-text-grey is-italic"
-                                        >
-                                            {{ item }}
+                                <template v-if="isSelected(item.name)">
+                                    <td class="item-name">
+                                        <span class="name has-text-grey-light">
+                                            {{ item.name }}
                                         </span>
                                     </td>
-                                    <td>
-                                        <span
-                                            class="has-text-success is-italic"
-                                            v-if="action === 'add'"
+                                    <td class="organization-permissions-select">
+                                        <div
+                                            class="select permissions"
+                                            v-if="isSelected(item.name)"
                                         >
-                                            adding
-                                        </span>
-                                        <span
-                                            class="has-text-danger is-italic"
+                                            <select
+                                                @change="
+                                                    updatePermissions(
+                                                        item.name,
+                                                        $event
+                                                    )
+                                                "
+                                            >
+                                                <option value="admin">
+                                                    Admin
+                                                </option>
+                                                <option value="rw">
+                                                    Read / Write
+                                                </option>
+                                                <option value="ro" selected>
+                                                    Read Only
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td class="action">
+                                        <i
+                                            class="material-icons has-text-success add-item"
+                                            v-if="
+                                                showRemoveIcon !== item.name &&
+                                                    action === 'add'
+                                            "
+                                            @mouseover="
+                                                showRemoveIcon = item.name
+                                            "
+                                        >
+                                            check
+                                        </i>
+                                        <i
+                                            class="material-icons has-text-danger remove-item"
+                                            v-if="showRemoveIcon === item.name"
+                                            @click="removeItem(item.name)"
+                                            @mouseleave="showRemoveIcon = ''"
+                                        >
+                                            close
+                                        </i>
+                                        <i
+                                            class="material-icons has-text-danger remove-item"
                                             v-if="action === 'remove'"
                                         >
-                                            removing
-                                        </span>
+                                            close
+                                        </i>
                                     </td>
                                 </template>
                                 <template v-else>
-                                    <td class="workspace">
+                                    <td class="item-name">
                                         <span class="name">
-                                            {{ item }}
+                                            {{ item.name }}
                                         </span>
                                     </td>
                                     <td>
                                         <i
-                                            class="material-icons add-workspace"
+                                            class="material-icons add-item"
                                             @click="addItem(item)"
                                         >
                                             add
                                         </i>
                                     </td>
                                 </template>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table is-fullwidth">
-                        <tbody>
-                            <tr class="table-title">
-                                <td>Pending Changes</td>
-                            </tr>
-                            <template v-if="changesExist">
-                                <tr
-                                    class="row"
-                                    v-for="item in modifiedData"
-                                    :key="`${item}_changing`"
-                                >
-                                    <td class="workspace">
-                                        <span class="name">
-                                            {{ item }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <i
-                                            class="material-icons remove-workspace"
-                                            @click="removeItem(item)"
-                                        >
-                                            close
-                                        </i>
-                                    </td>
-                                </tr>
-                            </template>
-                            <tr class="row no-changes" v-else>
-                                <td class="workspace">
-                                    <span class="name has-text-grey-light">
-                                        No Changes Pending
-                                    </span>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -112,12 +126,16 @@
                             Cancel
                         </a>
                         <a
-                            class="button is-info is-capitalized"
-                            :class="{ 'is-loading': isLoading }"
+                            class="button is-capitalized"
+                            :class="{
+                                'is-loading': isLoading,
+                                'is-danger': action === 'remove',
+                                'is-success': action === 'add',
+                            }"
                             @click="saveChanges()"
                             :disabled="modifiedData.length === 0"
                         >
-                            {{ action }} {{ itemType }}s
+                            {{ action }} {{ itemType }}
                         </a>
                     </div>
                 </footer>
@@ -127,6 +145,12 @@
 </template>
 
 <script>
+import orderBy from 'lodash';
+import search from 'fuzzysearch';
+import {
+    addUserToOrganization,
+    removeUserFromOrganization,
+} from '@api/organizations';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
@@ -143,6 +167,10 @@ export default {
             type: String,
             required: true,
         },
+        organizationId: {
+            type: String,
+            required: true,
+        },
         unavailableData: {
             type: Array,
             required: true,
@@ -154,6 +182,8 @@ export default {
             isActive: true,
             isLoading: false,
             modifiedData: [],
+            searchText: '',
+            showRemoveIcon: '',
         };
     },
     methods: {
@@ -164,11 +194,18 @@ export default {
         closeModal() {
             EventBus.$emit('close-modal:action-modal');
         },
-        isSelected(item) {
-            return this.modifiedData.indexOf(item) !== -1 ? true : false;
+        getModifiedDataIndex(itemName) {
+            return this.modifiedData
+                .map(modifiedItem => modifiedItem.name)
+                .indexOf(itemName);
         },
-        removeItem(item) {
-            const index = this.modifiedData.indexOf(item);
+        isSelected(itemName) {
+            return this.modifiedData.some(modifiedItem => {
+                return modifiedItem.name === itemName;
+            });
+        },
+        removeItem(itemName) {
+            const index = this.getModifiedDataIndex(itemName);
 
             this.modifiedData.splice(index, 1);
 
@@ -180,36 +217,83 @@ export default {
             this.isLoading = true;
             const data = this.modifiedData;
 
+            // NEED TO GET ROLE VIA SELECT
             if (this.action === 'add') {
                 data.forEach(item => {
-                    // addItem(workspace);
+                    if (this.itemType === 'member') {
+                        addUserToOrganization(
+                            this.organizationId,
+                            'admin',
+                            item.id
+                        );
+                    }
                 });
             } else {
                 data.forEach(item => {
-                    // removeItem(workspace);
+                    if (this.itemType === 'member') {
+                        removeUserFromOrganization(
+                            this.organizationId,
+                            item.id
+                        );
+                    }
                 });
             }
 
             this.isLoading = false;
         },
+        updatePermissions(item, event) {
+            const index = this.modifiedData.indexOf(item);
+            if (event && event.target && event.target.value) {
+                this.workspacePermissions[index].permissions =
+                    event.target.value;
+            }
+        },
     },
     computed: {
         itemList() {
+            const searchText = this.searchText.toLowerCase();
+            let data;
+
             if (this.action === 'add') {
-                let data = this.availableData;
-                data = data.sort();
+                data = orderBy(
+                    this.availableData,
+                    [item => item.name.toLowerCase()],
+                    ['desc']
+                );
 
                 return data.reduce((acc, item) => {
-                    if (this.unavailableData.indexOf(item) === -1) {
-                        acc.push(item);
+                    const index = this.unavailableData
+                        .map(unavailableItem => unavailableItem.name)
+                        .indexOf(item.name);
+
+                    if (searchText) {
+                        const name = item.name.toLowerCase();
+
+                        if (search(searchText, name) && index === -1) {
+                            acc.push(item);
+                        }
+                    } else {
+                        if (index === -1) {
+                            acc.push(item);
+                        }
                     }
 
                     return acc;
                 }, []);
             } else {
-                let data = this.unavailableData;
+                return this.unavailableData.reduce((acc, item) => {
+                    if (searchText) {
+                        const name = item.name.toLowerCase();
 
-                return data.sort();
+                        if (search(searchText, name)) {
+                            acc.push(item);
+                        }
+                    } else {
+                        acc.push(item);
+                    }
+
+                    return acc;
+                }, []);
             }
         },
     },

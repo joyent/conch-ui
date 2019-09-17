@@ -11,11 +11,11 @@
                     class="user"
                     :class="{ 'is-selected': isItemSelected(item) }"
                     v-for="item in data"
-                    :key="item"
+                    :key="item.id"
                 >
                     <td v-if="isItemSelected(item)">
                         <span class="username is-italic has-text-grey">
-                            {{ item }}
+                            {{ item.email }}
                         </span>
                         <span class="has-text-info is-italic">
                             adding
@@ -23,7 +23,7 @@
                     </td>
                     <td v-else>
                         <span class="username">
-                            {{ item }}
+                            {{ item.email }}
                         </span>
                         <i
                             class="material-icons add-user"

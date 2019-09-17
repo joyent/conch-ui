@@ -26,6 +26,7 @@
 @import './partials/transitions';
 
 // Components
+@import './components/action-modal';
 @import './components/addOrganizationModal';
 @import './components/app';
 @import './components/authentication-tokens';
@@ -52,4 +53,3 @@
 @import './components/user-management';
 @import './components/user-profile';
 @import './components/users-table';
-@import './components/workspace-modal';

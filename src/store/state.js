@@ -14,6 +14,7 @@ export const state = {
     hardwareProducts: [],
     highlightDeviceId: '',
     invalidCredentials: false,
+    organizations: [],
     rackLayout: {},
     rackRooms: {},
     rackRoomsByWorkspace: [],
