@@ -247,11 +247,13 @@
 			border: none;
 			border-radius: 4px;
 			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
+			max-height: 225px;
 			transition: all 0.1s ease-in-out;
 
 			.card-content {
 				display: flex;
 				flex-direction: column;
+				height: 100%;
 				padding: 20px;
 
 				.more {
@@ -259,8 +261,9 @@
 					text-align: right;
 				}
 
-				figure {
-					margin: 0 auto 15px;
+				i.material-icons {
+					margin: 0 auto 10px;
+					font-size: 60px;
 				}
 
 				.organization-title {
@@ -273,7 +276,10 @@
 
 				.organization-desc {
 					text-align: center;
-					flex-grow: 1;
+					max-width: 241px;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
 				}
 			}
 

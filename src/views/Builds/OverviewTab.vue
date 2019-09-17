@@ -6,7 +6,9 @@
                     <div class="total-build-progress">
                         <div class="box-header">
                             <i class="fas fa-2x fa-circle-notch"></i>
-                            <p class="heading is-size-6">Overall Build Progress</p>
+                            <p class="heading is-size-6">
+                                Overall Build Progress
+                            </p>
                         </div>
                         <div class="progress-overall">
                             <progress
@@ -26,7 +28,9 @@
                     <div class="time-remaining">
                         <div class="box-header">
                             <i class="far fa-2x fa-clock"></i>
-                            <p class="heading is-size-6">Time Remaining in Build</p>
+                            <p class="heading is-size-6">
+                                Time Remaining in Build
+                            </p>
                         </div>
                         <div class="progress-time">
                             <progress
@@ -93,16 +97,15 @@
                         </div>
                     </div>
                     <a
-                        class="button is-fullwidth all"
+                        class="button is-fullwidth is-medium all"
                         @click="changeTab('DevicesTab')"
                     >
-                        <span class="heading is-marginless is-size-7">
+                        <span class="heading is-marginless is-size-6">
                             All Devices
                         </span>
-                        <i
-                            class="fas fa-lg fa-long-arrow-alt-right"
-                            style="margin-left: 10px"
-                        ></i>
+                        <i class="material-icons" style="margin-left: 10px;">
+                            arrow_forward
+                        </i>
                     </a>
                 </div>
             </div>
@@ -126,16 +129,15 @@
                         </div>
                     </div>
                     <a
-                        class="button is-fullwidth all"
+                        class="button is-fullwidth is-medium all"
                         @click="changeTab('RacksTab')"
                     >
-                        <span class="heading is-marginless is-size-7">
+                        <span class="heading is-marginless is-size-6">
                             All racks
                         </span>
-                        <i
-                            class="fas fa-lg fa-long-arrow-alt-right"
-                            style="margin-left: 10px"
-                        ></i>
+                        <i class="material-icons" style="margin-left: 10px;">
+                            arrow_forward
+                        </i>
                     </a>
                 </div>
             </div>
@@ -145,12 +147,8 @@
 
 <script>
 import moment from 'moment';
-import RadialProgressBar from '@views/components/RadialProgressBar.vue';
 
 export default {
-    components: {
-        RadialProgressBar,
-    },
     props: {
         build: {
             type: Object,

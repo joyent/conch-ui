@@ -2,16 +2,18 @@
     <div class="organization">
         <div class="columns">
             <div class="column is-6">
-                <h1 class="title is-2 organization-name">{{ org.name }}</h1>
+                <h1 class="title is-2 organization-name">
+                    {{ organization.name }}
+                </h1>
                 <p class="is-size-6 organization-description">
-                    {{ org.description }}
+                    {{ organization.description }}
                 </p>
             </div>
             <div class="column">
                 <div class="box stats">
                     <h2 class="is-6">Members</h2>
                     <span class="is-size-3 has-text-info">
-                        {{ org.members.length }}
+                        {{ organizationUsers.length }}
                     </span>
                 </div>
             </div>
@@ -217,7 +219,10 @@
                                 <td>{{ getDate(build.startDate) }}</td>
                                 <td>{{ getDate(build.endDate) }}</td>
                                 <td class="row-action-button">
-                                    <a class="button-delete">
+                                    <a
+                                        class="button-delete"
+                                        @click="removeItem(build, 'build')"
+                                    >
                                         <span class="icon">
                                             <i class="fas fa-trash-alt"></i>
                                         </span>
@@ -268,20 +273,20 @@
                                     <a
                                         class="dropdown-item add"
                                         @click="
-                                            openActionModal('add', 'members')
+                                            openActionModal('add', 'member')
                                         "
                                     >
                                         <i class="material-icons">add</i>
-                                        <p>Add Member</p>
+                                        <p>Add Members</p>
                                     </a>
                                     <a
                                         class="dropdown-item remove"
                                         @click="
-                                            openActionModal('remove', 'members')
+                                            openActionModal('remove', 'member')
                                         "
                                     >
                                         <i class="fas fa-trash-alt"></i>
-                                        <p>Remove Member</p>
+                                        <p>Remove Members</p>
                                     </a>
                                 </div>
                             </div>
@@ -300,9 +305,11 @@
                             <tr
                                 class="row"
                                 :class="{
-                                    'is-modified': isMemberModified(member.name),
+                                    'is-modified': isMemberModified(
+                                        member.name
+                                    ),
                                 }"
-                                v-for="member in org.members"
+                                v-for="member in organizationUsers"
                                 :key="member.name"
                             >
                                 <td>
@@ -337,7 +344,12 @@
                                     </span>
                                 </td>
                                 <td class="row-action-button">
-                                    <a class="button-delete">
+                                    <a
+                                        class="button-delete"
+                                        @click="
+                                            removeItem(member, 'member')
+                                        "
+                                    >
                                         <span class="icon">
                                             <i class="fas fa-trash-alt"></i>
                                         </span>
@@ -364,11 +376,17 @@
             <ActionModal
                 v-if="showActionModal"
                 :action="action"
-                :item-type="item"
                 :available-data="availableData"
+                :item-type="item"
+                :organization-id="organization.id"
                 :unavailable-data="unavailableData"
             />
-            <RemoveItemModal v-if="showRemoveItemModal" :item="removing" />
+            <RemoveItemModal
+                v-if="showRemoveItemModal"
+                :item="removingItem"
+                :type="removingType"
+                :organization-id="organization.id"
+            />
         </transition>
     </div>
 </template>
@@ -378,6 +396,9 @@ import moment from 'moment';
 import RemoveItemModal from './RemoveItemModal.vue';
 import ActionModal from './ActionModal.vue';
 import { EventBus } from '@src/eventBus.js';
+import { mapActions, mapState } from 'vuex';
+import { getUsers } from '@api/users.js';
+import { getOrganizations, getOrganizationUsers } from '@api/organizations.js';
 
 export default {
     components: {
@@ -390,7 +411,10 @@ export default {
             availableData: [],
             isActive: false,
             item: '',
-            removing: {},
+            removingItem: {},
+            removingType: '',
+            organization: {},
+            organizationUsers: [],
             builds: [
                 'us-west-1',
                 'us-east-1',
@@ -402,26 +426,26 @@ export default {
                 'Star Wars',
                 'one-last-build-kthx-bye',
             ],
-            users: [
-                'Aragorn',
-                'Frodo Baggins',
-                'Emperor of The Galactic Empire',
-                'Samwise Gamgee',
-                'Peregrin Took',
-                'Merriweather',
-                'Boromir',
-                'Minas Tirith',
-                'Gondor',
-                'Isengard',
-                'Mordor',
-                'Sauron',
-                'Yoda',
-                'Chewbacca',
-                'Droids-C-3PO-R2-D2',
-                'Han Solo',
-                'Darth Vader',
-                'Luke Skywalker',
-            ],
+            // users: [
+            //     'Aragorn',
+            //     'Frodo Baggins',
+            //     'Emperor of The Galactic Empire',
+            //     'Samwise Gamgee',
+            //     'Peregrin Took',
+            //     'Merriweather',
+            //     'Boromir',
+            //     'Minas Tirith',
+            //     'Gondor',
+            //     'Isengard',
+            //     'Mordor',
+            //     'Sauron',
+            //     'Yoda',
+            //     'Chewbacca',
+            //     'Droids-C-3PO-R2-D2',
+            //     'Han Solo',
+            //     'Darth Vader',
+            //     'Luke Skywalker',
+            // ],
             workspaces: [
                 'Tatooine',
                 'Jedi Grand Master Luke Skywalker of the Jedi',
@@ -549,6 +573,7 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setOrganizations', 'setUsers']),
         closeModal() {
             this.showActionModal = false;
             this.showRemoveItemModal = false;
@@ -556,7 +581,6 @@ export default {
         getDate(date) {
             return moment(date).format('MM/DD/YYYY');
         },
-
 
         // MEMBERS TABLE FUNCTIONS
         modifyMember(memberName) {
@@ -573,7 +597,6 @@ export default {
                 : false;
         },
 
-
         openActionModal(action, item) {
             this.action = action;
             this.item = item;
@@ -586,30 +609,36 @@ export default {
                 this.showBuildsDropdown = false;
                 this.availableData = this.builds;
                 this.unavailableData = this.org.builds.map(build => build.name);
-            } else {
+            } else if (item === 'member') {
                 this.showMembersDropdown = false;
                 this.availableData = this.users;
-                this.unavailableData = this.org.members.map(
-                    member => member.name
-                );
+                this.unavailableData = this.organizationUsers;
             }
 
             this.showActionModal = true;
         },
-        removeItem(itemName, type) {
-            this.removing = {
-                name: itemName,
-                type,
-            };
+        removeItem(item, type) {
+            this.removingItem = item;
+            this.removingType = type;
 
             this.showRemoveItemModal = true;
         },
+        async setOrganizationData(currentOrganizationId, organizations = null) {
+            if (organizations) {
+                await this.setOrganizations(organizations);
+            }
+
+            this.organization = this.organizations.find(
+                organization => organization.id === currentOrganizationId
+            );
+
+            getOrganizationUsers(currentOrganizationId).then(response => {
+                this.organizationUsers = response.data;
+            });
+        },
     },
     computed: {
-        admins() {
-            return this.org.members.filter(member => member.role === 'admin')
-                .length;
-        },
+        ...mapState(['organizations', 'users']),
         buildsActive() {
             return this.org.builds.filter(build => build.status === 'active')
                 .length;
@@ -618,6 +647,24 @@ export default {
             return this.org.builds.filter(build => build.status === 'complete')
                 .length;
         },
+    },
+    created() {
+        const currentOrganizationId = this.$route.params.organizationId;
+
+        if (this.organizations.length) {
+            this.setOrganizationData(currentOrganizationId);
+        } else {
+            getOrganizations().then(response => {
+                const organizations = response.data;
+                this.setOrganizationData(currentOrganizationId, organizations);
+            });
+        }
+
+        if (!this.users.length) {
+            getUsers().then(response => {
+                this.setUsers(response.data);
+            });
+        }
     },
     mounted() {
         EventBus.$on('close-modal:action-modal', () => {

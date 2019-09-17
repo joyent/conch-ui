@@ -108,7 +108,7 @@ export default new Router({
                     component: SingleBuild,
                 },
                 {
-                    path: 'build/create-build',
+                    path: '/admin/builds/create-build',
                     name: 'createBuild',
                     component: CreateBuild,
                 },
@@ -170,6 +170,15 @@ export default new Router({
             name: 'organization',
             components: {
                 default: SingleOrganization,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
+        },
+        {
+            path: '/build/:buildId',
+            name: 'build',
+            components: {
+                default: SingleBuild,
                 sidebar: Sidebar,
                 navbar: Navbar,
             },

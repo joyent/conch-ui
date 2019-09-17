@@ -3,14 +3,12 @@
         <div class="modal" :class="{ 'is-active': isActive }">
             <div class="modal-background" @click="closeModal()"></div>
             <div class="modal-content notification">
-                <i
-                    class="material-icons close"
-                    @click="closeModal()"
-                >
+                <i class="material-icons close" @click="closeModal()">
                     close
                 </i>
                 <p class="has-text-centered is-size-5">
-                    Are you sure you want to remove <span class="name">{{ item.name }}</span>?
+                    Are you sure you want to remove
+                    <span class="name">{{ item.name }}</span>?
                 </p>
                 <div class="button-group">
                     <a class="button" @click="closeModal()">Cancel</a>

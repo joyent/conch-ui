@@ -56,6 +56,7 @@
         >
             <li class="nav-item">
                 <a>
+                    <i class="fas fa-lg fa-drafting-compass"></i>
                     <span class="name">Builds</span>
                     <span class="icon">
                         <i class="fas fa-chevron-right"></i>
@@ -72,7 +73,6 @@
                     }"
                     active-class="is-active"
                 >
-                    <i class="fas fa-lg fa-drafting-compass"></i>
                     <span>UK-West-1</span>
                 </router-link>
             </li>
@@ -84,7 +84,6 @@
                     }"
                     active-class="is-active"
                 >
-                    <i class="fas fa-lg fa-drafting-compass"></i>
                     <span>US-NORTHWEST-1a</span>
                 </router-link>
             </li>
@@ -96,6 +95,7 @@
         >
             <li class="nav-item">
                 <a>
+                    <i class="fas fa-lg fa-city"></i>
                     <span class="name">Organizations</span>
                     <span class="icon">
                         <i class="fas fa-chevron-right"></i>
@@ -104,28 +104,20 @@
             </li>
         </ul>
         <ul class="menu-list" v-if="isOrganizationsExpanded">
-            <li class="nav-item">
+            <li
+                class="nav-item"
+                v-for="organization in currentUser.organizations"
+                :key="organization.id"
+            >
                 <router-link
                     :to="{
                         name: 'organization',
-                        params: { organizationId: 'a2dbe92ledsa99d' },
+                        params: { organizationId: organization.id },
                     }"
                     active-class="is-active"
+                    :key="`$route.path_${organization.id}`"
                 >
-                    <i class="fas fa-lg fa-hat-wizard"></i>
-                    <span>Cool Build Team</span>
-                </router-link>
-            </li>
-            <li class="nav-item">
-                <router-link
-                    :to="{
-                        name: 'organization',
-                        params: { organizationId: 'b2wee92hhdsa99a' },
-                    }"
-                    active-class="is-active"
-                >
-                    <i class="fas fa-lg fa-hat-wizard"></i>
-                    <span>First Build Team</span>
+                    <span>{{ organization.name }}</span>
                 </router-link>
             </li>
         </ul>
@@ -199,7 +191,8 @@ import isEmpty from 'lodash/isEmpty';
 import Spinner from '@src/views/components/Spinner.vue';
 import { getApiVersion } from '@api/conchApiVersion.js';
 import { logout } from '@api/authentication.js';
-import { mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import { getCurrentUser } from '@api/users.js';
 
 export default {
     components: {
@@ -214,6 +207,7 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setCurrentUser']),
         navigateHomepage() {
             this.$router.push({
                 name: 'status',
@@ -256,6 +250,12 @@ export default {
         getApiVersion().then(response => {
             this.conchVersion = response.data.version;
         });
+
+        if (isEmpty(this.currentUser)) {
+            getCurrentUser().then(response => {
+                this.setCurrentUser(response.data);
+            });
+        }
     },
 };
 </script>

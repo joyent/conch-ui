@@ -31,7 +31,7 @@
                     view_headline
                 </i>
             </div>
-            <i class="material-icons add-build" @click="creatingBuild = true">
+            <i class="material-icons add-build" @click="createBuild()">
                 add_circle
             </i>
         </div>
@@ -54,7 +54,10 @@
                 </div>
             </div>
         </div>
-        <div class="columns" v-else-if="activeView === 'list' && !creatingBuild">
+        <div
+            class="columns"
+            v-else-if="activeView === 'list' && !creatingBuild"
+        >
             <div class="column is-4">
                 <ul>
                     <li
@@ -74,7 +77,15 @@
                                     <p class="name is-size-5">
                                         {{ build.name }}
                                     </p>
-                                    <p class="status">
+                                    <p
+                                        class="status"
+                                        :class="{
+                                            'has-text-info':
+                                                build.status === 'active',
+                                            'has-text-success':
+                                                build.status === 'complete',
+                                        }"
+                                    >
                                         {{ build.status }}
                                     </p>
                                 </div>
@@ -155,7 +166,8 @@
                                 </li>
                                 <li
                                     :class="{
-                                        'is-active': currentTab === 'MembersTab',
+                                        'is-active':
+                                            currentTab === 'MembersTab',
                                     }"
                                 >
                                     <a
@@ -1943,6 +1955,9 @@ export default {
         changeTab(tab) {
             this.currentTab = tab;
         },
+        createBuild() {
+            this.$router.push({ name: 'createBuild' });
+        },
         graphColor(progress) {
             return progress === 100 ? this.colors.green : this.colors.blue;
         },
@@ -1953,6 +1968,8 @@ export default {
         selectBuild(build) {
             if (this.selectedBuild.name === build.name) {
                 this.selectedBuild = {};
+
+                this.$router.push({ name: 'builds' });
             } else {
                 this.selectedBuild = build;
 
@@ -1963,6 +1980,9 @@ export default {
                     },
                 });
             }
+        },
+        viewBuild(buildId) {
+            this.$router.push({ name: 'build', params: { buildId } });
         },
     },
     computed: {

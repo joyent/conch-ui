@@ -89,6 +89,10 @@ export const setInvalidCredentials = ({ commit }) => {
     commit('setInvalidCredentials');
 };
 
+export const setOrganizations = ({ commit }, organizations) => {
+    commit('setOrganizations', organizations);
+};
+
 export const setRackLayout = ({ commit }, rackLayout) => {
     commit('setRackLayout', rackLayout);
 };
@@ -144,6 +148,7 @@ export default {
     setHardwareProducts,
     setHighlightDeviceId,
     setInvalidCredentials,
+    setOrganizations,
     setRackLayout,
     setRackRooms,
     setRackRoomsByWorkspace,
