@@ -5,8 +5,8 @@ const conchApi = "http://localhost:5001";
 const conchReleaseUrl = "https://github.com/joyent/conch/releases";
 
 // Conch API Version Requirements
-const breakingApiVersion = "3.0.0";
-const minimumApiVersion = "2.27.0";
+const breakingApiVersion = '4.0.0';
+const minimumApiVersion = '3.0.0';
 
 export {
     breakingApiVersion,
