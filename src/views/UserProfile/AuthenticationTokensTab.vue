@@ -211,7 +211,7 @@ import Spinner from '@src/views/components/Spinner.vue';
 import BaseModal from '@src/views/components/BaseModal.vue';
 import CreateTokenModal from './CreateTokenModal.vue';
 import { EventBus } from '@src/eventBus.js';
-import { createToken, deleteToken, getTokens } from '@api/users.js';
+import { deleteToken, getTokens } from '@api/users.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
