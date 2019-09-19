@@ -212,12 +212,7 @@ export default {
             if (this.emailAddress && this.password) {
                 this.isLoading = true;
 
-                const data = {
-                    user: this.emailAddress,
-                    password: this.password,
-                };
-
-                login(data)
+                login(this.emailAddress, this.password)
                     .then(response => {
                         if (
                             response.headers &&
