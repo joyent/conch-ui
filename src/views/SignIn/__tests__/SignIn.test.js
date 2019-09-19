@@ -81,10 +81,10 @@ describe('SignIn.vue', () => {
         });
         wrapper.find('.button-sign-in').trigger('click');
 
-        expect(spy).toHaveBeenCalledWith({
-            user: 'validuser@joyent.com',
-            password: 'goodPassword',
-        });
+        expect(spy).toHaveBeenCalledWith(
+            'validuser@joyent.com',
+            'goodPassword'
+        );
     });
 
     describe('bad API version', () => {
