@@ -9,11 +9,18 @@ import store from '@src/store/store.js';
 
 export const isLoggedIn = () => !!getToken();
 
-export const login = data => {
+/**
+ * Login to Conch
+ *
+ * @param {String} email                    This is the user's email address
+ * @param {String} password                 This is the user's password
+ * @return {Response Object}
+ */
+export const login = (email, password) => {
     return request({
         method: 'POST',
         url: '/login',
-        data,
+        data: { email, password },
     }).then(response => {
         const data = response.data;
 
