@@ -1,7 +1,7 @@
 import * as utils from '../utils.js';
 import * as workspaces from '@api/workspaces.js';
 import nock from 'nock';
-import { conchApi } from '../../../config.js';
+import { conchApi } from '@src/config.js';
 
 // Fixtures
 import rackRooms from '@src/__fixtures__/rackRooms.js';

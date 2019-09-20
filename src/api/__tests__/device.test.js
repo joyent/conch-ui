@@ -1,6 +1,6 @@
 import nock from 'nock';
-import { conchApi } from '../../../config.js';
-import * as device from '../../api/device.js';
+import { conchApi } from '@src/config.js';
+import * as device from '@api/device.js';
 
 // Fixtures
 import deviceDetails from '@src/__fixtures__/deviceDetails.js';
