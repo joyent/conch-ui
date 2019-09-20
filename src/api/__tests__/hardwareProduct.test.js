@@ -1,5 +1,5 @@
-import { conchApi } from '../../../config.js';
-import { getHardwareProduct } from '../../api/hardwareProduct.js';
+import { conchApi } from '@src/config.js';
+import { getHardwareProduct } from '@api/hardwareProduct.js';
 import nock from 'nock';
 
 // Fixture

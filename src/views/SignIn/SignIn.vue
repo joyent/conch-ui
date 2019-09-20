@@ -162,7 +162,7 @@ import {
     breakingApiVersion,
     conchReleaseUrl,
     minimumApiVersion,
-} from '../../config.js';
+} from '@src/config.js';
 import { getApiVersion } from '@api/conchApiVersion.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { login } from '@api/authentication.js';

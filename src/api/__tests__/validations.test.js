@@ -1,5 +1,5 @@
 import nock from 'nock';
-import { conchApi } from '../../../config';
+import { conchApi } from '@src/config';
 import { getValidations } from '../validations';
 
 // Fixture
