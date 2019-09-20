@@ -25,8 +25,7 @@ dist/index.html: src/**/* config.js
 	@yarn build
 
 config.js:
-	@node_modules/.bin/babel config.js.dist  > src/config.js
-	@ln -s src/config.js config.js
+	@node_modules/.bin/babel src/config.js > config.js
 
 .PHONY: docker_test
 docker_test: ## Run the test suite inside docker
