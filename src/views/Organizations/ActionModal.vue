@@ -20,7 +20,7 @@
                                         <input
                                             class="input search"
                                             type="text"
-                                            :placeholder="`Search ${itemType}s`"
+                                            :placeholder="`Search ${itemType}`"
                                             v-model="searchText"
                                         />
                                         <span class="icon">
@@ -32,25 +32,33 @@
                             <tr
                                 class="row"
                                 :class="{
-                                    'is-selected': isSelected(item.name),
+                                    'is-adding':
+                                        action === 'add' &&
+                                        isModified(item.name),
+                                    'is-removing':
+                                        action === 'remove' &&
+                                        isModified(item.name),
                                 }"
                                 v-for="item in itemList"
                                 :key="item.id"
                             >
-                                <template v-if="isSelected(item.name)">
+                                <template v-if="isModified(item.name)">
                                     <td class="item-name">
                                         <span class="name has-text-grey-light">
                                             {{ item.name }}
                                         </span>
                                     </td>
-                                    <td class="organization-permissions-select">
+                                    <td class="organization-role-select">
                                         <div
-                                            class="select permissions"
-                                            v-if="isSelected(item.name)"
+                                            class="select role"
+                                            v-if="
+                                                action === 'add' &&
+                                                    isModified(item.name)
+                                            "
                                         >
                                             <select
                                                 @change="
-                                                    updatePermissions(
+                                                    updateRole(
                                                         item.name,
                                                         $event
                                                     )
@@ -83,7 +91,10 @@
                                         </i>
                                         <i
                                             class="material-icons has-text-danger remove-item"
-                                            v-if="showRemoveIcon === item.name"
+                                            v-if="
+                                                showRemoveIcon === item.name &&
+                                                    action === 'add'
+                                            "
                                             @click="removeItem(item.name)"
                                             @mouseleave="showRemoveIcon = ''"
                                         >
@@ -91,9 +102,24 @@
                                         </i>
                                         <i
                                             class="material-icons has-text-danger remove-item"
-                                            v-if="action === 'remove'"
+                                            v-if="
+                                                showAddIcon !== item.name &&
+                                                    action === 'remove'
+                                            "
+                                            @mouseover="showAddIcon = item.name"
                                         >
-                                            close
+                                            check
+                                        </i>
+                                        <i
+                                            class="material-icons has-text-success add-item"
+                                            v-if="
+                                                showAddIcon === item.name &&
+                                                    action === 'remove'
+                                            "
+                                            @click="removeItem(item.name)"
+                                            @mouseleave="showAddIcon = ''"
+                                        >
+                                            add
                                         </i>
                                     </td>
                                 </template>
@@ -106,9 +132,17 @@
                                     <td>
                                         <i
                                             class="material-icons add-item"
-                                            @click="addItem(item)"
+                                            v-if="action === 'add'"
+                                            @click="modifyItem(item)"
                                         >
                                             add
+                                        </i>
+                                        <i
+                                            class="material-icons remove-item"
+                                            v-if="action === 'remove'"
+                                            @click="modifyItem(item)"
+                                        >
+                                            close
                                         </i>
                                     </td>
                                 </template>
@@ -183,15 +217,21 @@ export default {
             isLoading: false,
             modifiedData: [],
             searchText: '',
+            showAddIcon: '',
             showRemoveIcon: '',
         };
     },
     methods: {
-        addItem(item) {
+        modifyItem(item) {
             this.changesExist = true;
-            this.modifiedData.push(item);
+            this.modifiedData.push({
+                name: item.name,
+                id: item.id,
+                role: 'ro',
+            });
         },
         closeModal() {
+            this.isActive = false;
             EventBus.$emit('close-modal:action-modal');
         },
         getModifiedDataIndex(itemName) {
@@ -199,7 +239,7 @@ export default {
                 .map(modifiedItem => modifiedItem.name)
                 .indexOf(itemName);
         },
-        isSelected(itemName) {
+        isModified(itemName) {
             return this.modifiedData.some(modifiedItem => {
                 return modifiedItem.name === itemName;
             });
@@ -213,39 +253,47 @@ export default {
                 this.changesExist = false;
             }
         },
-        saveChanges() {
+        addMembers(data) {
+            data.forEach(item => {
+                addUserToOrganization(this.organizationId, item.role, item.id);
+            });
+        },
+        removeMembers(data) {
+            data.forEach(item => {
+                removeUserFromOrganization(this.organizationId, item.id);
+            });
+        },
+        async saveChanges() {
             this.isLoading = true;
             const data = this.modifiedData;
 
-            // NEED TO GET ROLE VIA SELECT
             if (this.action === 'add') {
-                data.forEach(item => {
-                    if (this.itemType === 'member') {
-                        addUserToOrganization(
-                            this.organizationId,
-                            'admin',
-                            item.id
-                        );
-                    }
-                });
+                if (this.itemType === 'members') {
+                    await this.addMembers(data);
+                    this.closeModal();
+                    this.isLoading = false;
+                }
             } else {
-                data.forEach(item => {
-                    if (this.itemType === 'member') {
-                        removeUserFromOrganization(
-                            this.organizationId,
-                            item.id
-                        );
-                    }
-                });
+                if (this.itemType === 'members') {
+                    await this.removeMembers(data);
+                    this.closeModal();
+                    this.isLoading = false;
+                }
             }
-
-            this.isLoading = false;
         },
-        updatePermissions(item, event) {
-            const index = this.modifiedData.indexOf(item);
+        updateRole(itemName, event) {
             if (event && event.target && event.target.value) {
-                this.workspacePermissions[index].permissions =
-                    event.target.value;
+                const modifiedData = this.modifiedData;
+
+                for (let i = 0; i < modifiedData.length; i++) {
+                    const modifiedItem = modifiedData[i];
+
+                    if (modifiedItem.name === itemName) {
+                        this.modifiedData[i].role = event.target.value;
+
+                        break;
+                    }
+                }
             }
         },
     },
