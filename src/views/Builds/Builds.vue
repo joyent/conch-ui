@@ -37,21 +37,23 @@
         </div>
         <div class="cards" v-if="activeView === 'grid' && !creatingBuild">
             <div class="card" v-for="build in filteredBuilds" :key="build.name">
-                <div class="card-content">
-                    <div class="build-progress">
-                        <RadialProgressBar
-                            :color="graphColor(build.progress)"
-                            :id="build.id"
-                            :value="build.progress"
-                        />
+                <a @click="viewBuild(build.id)">
+                    <div class="card-content">
+                        <div class="build-progress">
+                            <RadialProgressBar
+                                :color="graphColor(build.progress)"
+                                :id="build.id"
+                                :value="build.progress"
+                            />
+                        </div>
+                        <p class="build-name">
+                            {{ build.name }}
+                        </p>
+                        <a class="button">
+                            View Build
+                        </a>
                     </div>
-                    <p class="build-name">
-                        {{ build.name }}
-                    </p>
-                    <a class="button" @click="viewBuild(build.id)">
-                        View Build
-                    </a>
-                </div>
+                </a>
             </div>
         </div>
         <div
