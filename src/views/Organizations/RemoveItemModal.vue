@@ -31,7 +31,7 @@
 <script>
 import BaseModal from '@src/views/components/BaseModal.vue';
 import { EventBus } from '@src/eventBus.js';
-import { removeMemberFromOrganization } from '@api/organizations.js';
+import { removeUserFromOrganization } from '@api/organizations.js';
 
 export default {
     props: {
@@ -57,7 +57,7 @@ export default {
         },
         removeItem() {
             if (this.type === 'member') {
-                removeMemberFromOrganization(this.organizationId, this.item.id);
+                removeUserFromOrganization(this.organizationId, this.item.id);
             }
         },
     },
