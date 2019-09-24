@@ -111,6 +111,7 @@
                                                 class="textarea has-fixed-size"
                                                 name="description"
                                                 v-model="description"
+                                                maxlength="165"
                                             ></textarea>
                                         </div>
                                     </div>
