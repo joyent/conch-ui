@@ -44,21 +44,20 @@
                 v-for="organization in filteredOrganizations"
                 :key="organization.created"
             >
-                <div class="card-content">
-                    <i class="material-icons">recent_actors</i>
-                    <p class="organization-title">
-                        {{ organization.name }}
-                    </p>
-                    <p class="organization-desc">
-                        {{ organization.description }}
-                    </p>
-                    <a
-                        class="button"
-                        @click="viewOrganization(organization.id)"
-                    >
-                        View Organization
-                    </a>
-                </div>
+                <a @click="viewOrganization(organization.id)">
+                    <div class="card-content">
+                        <i class="material-icons">recent_actors</i>
+                        <p class="organization-name">
+                            {{ organization.name }}
+                        </p>
+                        <p class="organization-desc">
+                            {{ organization.description }}
+                        </p>
+                        <a class="button">
+                            View Organization
+                        </a>
+                    </div>
+                </a>
             </div>
         </div>
         <OrganizationsTable

@@ -1,7 +1,7 @@
 <template>
     <div class="organization">
         <div class="columns">
-            <div class="column is-6">
+            <div class="column is-6" v-if="!isEmpty(organization)">
                 <h1 class="title is-2 organization-name">
                     {{ organization.name }}
                 </h1>
@@ -9,12 +9,22 @@
                     {{ organization.description }}
                 </p>
             </div>
+            <div
+                class="column is-6"
+                style="display: flex; align-items: center; justify-content: center;"
+                v-else
+            >
+                <Spinner />
+            </div>
             <div class="column">
-                <div class="box stats">
+                <div class="box stats" v-if="organizationHasUsers">
                     <h2 class="is-6">Members</h2>
                     <span class="is-size-3 has-text-info">
                         {{ organizationUsers.length }}
                     </span>
+                </div>
+                <div class="box stats" v-else>
+                    <Spinner />
                 </div>
             </div>
             <div class="column">
@@ -35,95 +45,7 @@
             </div>
         </div>
         <div class="columns">
-            <div class="column is-4">
-                <div class="datatable-simple">
-                    <div class="datatable-header">
-                        <p
-                            class="datatable-header-title is-size-5 has-text-white"
-                        >
-                            Workspace Memberships
-                        </p>
-                        <div
-                            class="dropdown dropdown-workspace is-right"
-                            :class="{ 'is-active': showWorkspacesDropdown }"
-                        >
-                            <a
-                                class="datatable-header-icon dropdown-trigger"
-                                @click="
-                                    showWorkspacesDropdown = !showWorkspacesDropdown
-                                "
-                            >
-                                <span class="icon">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-content">
-                                    <a
-                                        class="dropdown-item add"
-                                        @click="
-                                            openActionModal('add', 'workspace')
-                                        "
-                                    >
-                                        <i class="material-icons">add</i>
-                                        <p>Add Workspaces</p>
-                                    </a>
-                                    <a
-                                        class="dropdown-item remove"
-                                        @click="
-                                            openActionModal(
-                                                'remove',
-                                                'workspace'
-                                            )
-                                        "
-                                    >
-                                        <i class="fas fa-trash-alt"></i>
-                                        <p>Remove Workspaces</p>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <table
-                        class="table is-fullwidth is-hoverable is-marginless"
-                    >
-                        <tbody>
-                            <tr class="row-simple" v-for="i in 6" :key="i">
-                                <td class="table-data">
-                                    {{ org.workspaces[i] }}
-                                </td>
-                                <td class="row-action-button">
-                                    <a
-                                        class="button-delete"
-                                        @click="
-                                            removeItem(
-                                                org.workspaces[i],
-                                                'workspace'
-                                            )
-                                        "
-                                    >
-                                        <span class="icon">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </span>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="datatable-footer add">
-                        <a
-                            class="datatable-footer-item"
-                            @click="openActionModal('add', 'workspace')"
-                        >
-                            <i class="material-icons">add</i>
-                            <span class="heading is-size-6 is-marginless">
-                                Add a Workspace
-                            </span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="column is-8">
+            <div class="column">
                 <div class="datatable-simple">
                     <div class="datatable-header">
                         <p
@@ -149,19 +71,21 @@
                                 <div class="dropdown-content">
                                     <a
                                         class="dropdown-item add"
-                                        @click="openActionModal('add', 'build')"
+                                        @click="
+                                            openActionModal('add', 'builds')
+                                        "
                                     >
                                         <i class="material-icons">add</i>
-                                        <p>Add Build</p>
+                                        <p>Add Builds</p>
                                     </a>
                                     <a
                                         class="dropdown-item remove"
                                         @click="
-                                            openActionModal('remove', 'build')
+                                            openActionModal('remove', 'builds')
                                         "
                                     >
                                         <i class="fas fa-trash-alt"></i>
-                                        <p>Remove Build</p>
+                                        <p>Remove Builds</p>
                                     </a>
                                 </div>
                             </div>
@@ -174,8 +98,8 @@
                             <th>Name</th>
                             <th>Progress</th>
                             <th></th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
+                            <th class="has-text-centered">Start Date</th>
+                            <th class="has-text-centered">End Date</th>
                             <th></th>
                         </thead>
                         <tbody>
@@ -216,12 +140,16 @@
                                         <span>{{ build.progress }}%</span>
                                     </div>
                                 </td>
-                                <td>{{ getDate(build.startDate) }}</td>
-                                <td>{{ getDate(build.endDate) }}</td>
+                                <td class="has-text-centered">
+                                    {{ getDate(build.startDate) }}
+                                </td>
+                                <td class="has-text-centered">
+                                    {{ getDate(build.endDate) }}
+                                </td>
                                 <td class="row-action-button">
                                     <a
                                         class="button-delete"
-                                        @click="removeItem(build, 'build')"
+                                        @click="removeItem(build, 'builds')"
                                     >
                                         <span class="icon">
                                             <i class="fas fa-trash-alt"></i>
@@ -234,11 +162,11 @@
                     <div class="datatable-footer add">
                         <a
                             class="datatable-footer-item"
-                            @click="openActionModal('add', 'build')"
+                            @click="openActionModal('add', 'builds')"
                         >
                             <i class="material-icons">add</i>
                             <span class="heading is-size-6 is-marginless">
-                                Add a Build
+                                Add Builds
                             </span>
                         </a>
                     </div>
@@ -257,6 +185,7 @@
                         <div
                             class="dropdown dropdown-members is-right"
                             :class="{ 'is-active': showMembersDropdown }"
+                            v-if="organizationHasUsers"
                         >
                             <a
                                 class="datatable-header-icon dropdown-trigger"
@@ -272,17 +201,27 @@
                                 <div class="dropdown-content">
                                     <a
                                         class="dropdown-item add"
+                                        v-if="!editMembers"
                                         @click="
-                                            openActionModal('add', 'member')
+                                            openActionModal('add', 'members')
                                         "
                                     >
                                         <i class="material-icons">add</i>
                                         <p>Add Members</p>
                                     </a>
                                     <a
+                                        class="dropdown-item edit"
+                                        @click="toggleEditMembers()"
+                                    >
+                                        <i class="material-icons">edit</i>
+                                        <p v-if="!editMembers">Edit Members</p>
+                                        <p v-else>Cancel Editing</p>
+                                    </a>
+                                    <a
                                         class="dropdown-item remove"
+                                        v-if="!editMembers"
                                         @click="
-                                            openActionModal('remove', 'member')
+                                            openActionModal('remove', 'members')
                                         "
                                     >
                                         <i class="fas fa-trash-alt"></i>
@@ -294,6 +233,7 @@
                     </div>
                     <table
                         class="table is-fullwidth is-hoverable is-marginless"
+                        v-if="organizationHasUsers"
                     >
                         <thead>
                             <th>Name</th>
@@ -315,40 +255,84 @@
                                 <td>
                                     {{ member.name }}
                                 </td>
-                                <td>
-                                    <div class="select">
-                                        <select v-model="member.role">
-                                            <option value="admin">Admin</option>
-                                            <option value="regular user">
-                                                Regular User
-                                            </option>
-                                        </select>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div
-                                        class="select"
-                                        v-if="member.role !== 'admin'"
-                                    >
-                                        <select v-model="member.permissions">
-                                            <option value="ro">
-                                                Read Only
-                                            </option>
-                                            <option value="rw">
-                                                Read / Write
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <span v-else>
-                                        Admin
-                                    </span>
-                                </td>
+                                <template v-if="editMembers">
+                                    <td>
+                                        <div class="select">
+                                            <select
+                                                @change="
+                                                    updateRole(member, $event)
+                                                "
+                                            >
+                                                <option
+                                                    :selected="
+                                                        member.role === 'admin'
+                                                    "
+                                                    value="admin"
+                                                >
+                                                    Admin
+                                                </option>
+                                                <option
+                                                    :selected="
+                                                        member.role === 'ro' ||
+                                                            member.role === 'rw'
+                                                    "
+                                                    value="regular_user"
+                                                >
+                                                    Regular User
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div
+                                            class="select"
+                                            v-if="member.role !== 'admin'"
+                                        >
+                                            <select
+                                                v-model="member.role"
+                                                @change="
+                                                    updateRegularUserPermissions(
+                                                        member,
+                                                        $event
+                                                    )
+                                                "
+                                            >
+                                                <option value="ro">
+                                                    Read Only
+                                                </option>
+                                                <option value="rw">
+                                                    Read / Write
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <span v-else>
+                                            Admin
+                                        </span>
+                                    </td>
+                                </template>
+                                <template v-else>
+                                    <td>
+                                        <p v-if="member.role === 'admin'">
+                                            Admin
+                                        </p>
+                                        <p v-else>Regular User</p>
+                                    </td>
+                                    <td>
+                                        <p v-if="member.role === 'admin'">
+                                            Admin
+                                        </p>
+                                        <p v-else-if="member.role === 'rw'">
+                                            Read / Write
+                                        </p>
+                                        <p v-else>
+                                            Read Only
+                                        </p>
+                                    </td>
+                                </template>
                                 <td class="row-action-button">
                                     <a
                                         class="button-delete"
-                                        @click="
-                                            removeItem(member, 'member')
-                                        "
+                                        @click="removeItem(member, 'members')"
                                     >
                                         <span class="icon">
                                             <i class="fas fa-trash-alt"></i>
@@ -358,14 +342,44 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="datatable-footer add">
+                    <table
+                        class="table is-fullwidth is-hoverable is-marginless"
+                        v-else
+                    >
+                        <tbody>
+                            <tr class="row">
+                                <td>
+                                    <Spinner />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div
+                        class="datatable-footer"
+                        v-if="!editMembers && organizationHasUsers"
+                    >
                         <a
-                            class="datatable-footer-item"
-                            @click="openActionModal('add', 'member')"
+                            class="datatable-footer-item add"
+                            @click="openActionModal('add', 'members')"
                         >
                             <i class="material-icons">add</i>
                             <span class="heading is-size-6 is-marginless">
-                                Add a Member
+                                Add Members
+                            </span>
+                        </a>
+                    </div>
+                    <div
+                        class="datatable-footer "
+                        v-else-if="editMembers && organizationHasUsers"
+                    >
+                        <a
+                            class="datatable-footer-item save"
+                            @click="saveChanges()"
+                            :disabled="modifiedMembers.length === 0"
+                        >
+                            <i class="material-icons">save</i>
+                            <span class="heading is-size-6 is-marginless">
+                                Save Changes
                             </span>
                         </a>
                     </div>
@@ -395,6 +409,8 @@
 import moment from 'moment';
 import RemoveItemModal from './RemoveItemModal.vue';
 import ActionModal from './ActionModal.vue';
+import Spinner from '@src/views/components/Spinner.vue';
+import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getUsers } from '@api/users.js';
@@ -404,17 +420,21 @@ export default {
     components: {
         ActionModal,
         RemoveItemModal,
+        Spinner,
     },
     data() {
         return {
             action: '',
             availableData: [],
+            editMembers: false,
             isActive: false,
             item: '',
             removingItem: {},
             removingType: '',
             organization: {},
             organizationUsers: [],
+            modifiedMembers: [],
+            noMembersExist: false,
             builds: [
                 'us-west-1',
                 'us-east-1',
@@ -425,53 +445,6 @@ export default {
                 'The Lord of the Rings',
                 'Star Wars',
                 'one-last-build-kthx-bye',
-            ],
-            // users: [
-            //     'Aragorn',
-            //     'Frodo Baggins',
-            //     'Emperor of The Galactic Empire',
-            //     'Samwise Gamgee',
-            //     'Peregrin Took',
-            //     'Merriweather',
-            //     'Boromir',
-            //     'Minas Tirith',
-            //     'Gondor',
-            //     'Isengard',
-            //     'Mordor',
-            //     'Sauron',
-            //     'Yoda',
-            //     'Chewbacca',
-            //     'Droids-C-3PO-R2-D2',
-            //     'Han Solo',
-            //     'Darth Vader',
-            //     'Luke Skywalker',
-            // ],
-            workspaces: [
-                'Tatooine',
-                'Jedi Grand Master Luke Skywalker of the Jedi',
-                'Yavin IV',
-                'Coruscant',
-                'Dagobah',
-                'Hoth',
-                'Korriban',
-                'Alderran',
-                'Mustaffar',
-                'Endor',
-                'Death Star',
-                'Yoda',
-                'Chewbacca',
-                'Droids-C-3PO-R2-D2',
-                'Aragorn',
-                'Frodo Baggins',
-                'Samwise Gamgee',
-                'Peregrin Took',
-                'Merriweather',
-                'Boromir',
-                'Minas Tirith',
-                'Gondor',
-                'Isengard',
-                'Mordor',
-                'Sauron',
             ],
             org: {
                 builds: [
@@ -511,65 +484,13 @@ export default {
                         endDate: '2019-05-16T10:35:16.933374-07:00',
                     },
                 ],
-                name: 'Star Wars Build Team',
-                description:
-                    'Build team in charge of doing important things for the Empire and the Rebellion. May the force be with you.',
-                members: [
-                    {
-                        name: 'Anakin Skywalker',
-                        role: 'admin',
-                        permissions: 'admin',
-                    },
-                    {
-                        name: 'Darth Vader',
-                        role: 'regular user',
-                        permissions: 'rw',
-                    },
-                    {
-                        name: 'The Senate',
-                        role: 'admin',
-                        permissions: 'admin',
-                    },
-                    {
-                        name: 'Jar Jar Binks',
-                        role: 'regular user',
-                        permissions: 'ro',
-                    },
-                    {
-                        name: 'C3P0',
-                        role: 'regular user',
-                        permissions: 'ro',
-                    },
-                    {
-                        name: 'R2D2',
-                        role: 'regular user',
-                        permissions: 'rw',
-                    },
-                ],
-                workspaces: [
-                    'Tatooine',
-                    'Yavin IV',
-                    'Coruscant',
-                    'Dagobah',
-                    'Hoth',
-                    'Korriban',
-                    'Alderran',
-                    'Mustaffar',
-                    'Endor',
-                    'Death Star',
-                    'Yoda',
-                    'Chewbacca',
-                    'Droids-C-3PO-R2-D2',
-                ],
             },
             showRemoveItemModal: false,
             showActionModal: false,
-            showWorkspacesDropdown: false,
             showBuildsDropdown: false,
             showMembersDropdown: false,
             showUserActionsDropdown: false,
             unavailableData: [],
-            modifiedMembers: [],
         };
     },
     methods: {
@@ -583,33 +504,35 @@ export default {
         },
 
         // MEMBERS TABLE FUNCTIONS
-        modifyMember(memberName) {
-            this.modifiedMembers.push(memberName);
-        },
         removeMemberModification(item) {
             const index = this.modifiedMembers.indexOf(item);
 
             this.modifiedMembers.splice(index, 1);
         },
         isMemberModified(memberName) {
-            return this.modifiedMembers.indexOf(memberName) === -1
-                ? true
-                : false;
+            return this.modifiedMembers
+                .map(member => member.name)
+                .some(name => name === memberName);
         },
+        getModifiedMemberIndex(memberName) {
+            for (let i = 0; i < this.modifiedMembers.length; i++) {
+                if (this.modifiedMembers[i].name === memberName) {
+                    return i;
+                }
+            }
 
+            return -1;
+        },
+        isEmpty,
         openActionModal(action, item) {
             this.action = action;
             this.item = item;
 
-            if (item === 'workspace') {
-                this.showWorkspacesDropdown = false;
-                this.availableData = this.workspaces;
-                this.unavailableData = this.org.workspaces;
-            } else if (item === 'build') {
+            if (item === 'builds') {
                 this.showBuildsDropdown = false;
                 this.availableData = this.builds;
                 this.unavailableData = this.org.builds.map(build => build.name);
-            } else if (item === 'member') {
+            } else if (item === 'members') {
                 this.showMembersDropdown = false;
                 this.availableData = this.users;
                 this.unavailableData = this.organizationUsers;
@@ -633,8 +556,61 @@ export default {
             );
 
             getOrganizationUsers(currentOrganizationId).then(response => {
-                this.organizationUsers = response.data;
+                const users = response.data;
+                this.organizationUsers = users;
+
+                if (!users.length) {
+                    this.noMembersExist = true;
+                }
             });
+        },
+        toggleEditMembers() {
+            this.editMembers = !this.editMembers;
+            this.showMembersDropdown = false;
+        },
+        updateRegularUserPermissions(member, event) {
+            const index = this.getModifiedMemberIndex(memberName);
+            const memberName = member.name;
+            const newPermissions =
+                event && event.target && event.target.value
+                    ? event.target.value
+                    : 'ro';
+
+            if (index !== -1) {
+                this.modifiedMembers[index].role = newPermissions;
+            } else {
+                this.modifiedMembers.push({
+                    name: member.name,
+                    id: member.id,
+                    role: newPermissions,
+                    original_role: member.role,
+                });
+            }
+        },
+        updateRole(member, event) {
+            const memberName = member.name;
+            const index = this.getModifiedMemberIndex(memberName);
+            const newRole =
+                event && event.target && event.target.value
+                    ? event.target.value
+                    : 'regular_user';
+
+            if (index !== -1) {
+                if (newRole === member.original_role) {
+                    this.modifiedMembers.splice(index, 1);
+                } else if (newRole === 'admin') {
+                    this.modifiedMembers[index].role = 'admin';
+                } else {
+                    this.modifiedMembers[index].role = 'ro';
+                }
+            } else {
+                this.modifiedMembers.push({
+                    name: member.name,
+                    id: member.id,
+                    role: newRole,
+                    original_role: member.role,
+                });
+            }
         },
     },
     computed: {
@@ -646,6 +622,9 @@ export default {
         buildsComplete() {
             return this.org.builds.filter(build => build.status === 'complete')
                 .length;
+        },
+        organizationHasUsers() {
+            return this.organizations.length > 0 && !this.noMembersExist;
         },
     },
     created() {
