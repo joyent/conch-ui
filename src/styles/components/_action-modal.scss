@@ -111,9 +111,19 @@
                 }
             }
 
-            &.is-selected {
+            &.is-adding {
                 border-width: 0 0 0 6px;
                 border-color: $green;
+                border-style: solid;
+
+                td {
+                    background-color: darken($grey-darker, 1%);
+                }
+            }
+
+            &.is-removing {
+                border-width: 0 0 0 6px;
+                border-color: $red;
                 border-style: solid;
 
                 td {
