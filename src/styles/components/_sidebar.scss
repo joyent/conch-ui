@@ -8,6 +8,12 @@ aside.menu {
 	z-index: 1;
 	width: 200px;
 
+	&.loading {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
 	a {
 		margin: 0 auto;
 		border-left-width: 3px;
