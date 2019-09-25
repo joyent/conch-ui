@@ -32,6 +32,15 @@ describe('Sidebar.vue', () => {
         wrapper = shallowMount(Sidebar, { localVue, mocks, store, stubs });
     });
 
+    test('should render correctly on initial render', () => {
+        wrapper.setData({
+            conchVersion: 'v2.21.2-10-gabc90b5f',
+            conchUIVersion: 'v2.22.1-31-gece90b5f',
+        });
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     test('should call signOut method when "Log out" link is clicked', () => {
         const spy = jest.spyOn(wrapper.vm, 'signOut');
 
