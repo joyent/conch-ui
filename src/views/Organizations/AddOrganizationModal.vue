@@ -25,9 +25,9 @@
                                     <p>Add some members to the</p>
                                     <p>organization.</p>
                                     <br />
-                                    <p>NOTE: Every organization </p>
-                                    <p>must have at least one</p>
-                                    <p>user with admin privileges.</p>
+                                    <p>Every organization must</p>
+                                    <p>have at least one user</p>
+                                    <p>with admin privileges.</p>
                                 </template>
                                 <template v-else-if="activeStep === 3">
                                     <p>Give the organization access</p>
@@ -50,31 +50,43 @@
                             </div>
                             <div class="steps">
                                 <p class="step-text">Step {{ activeStep }}</p>
-                                <span
-                                    class="dot"
-                                    :class="{ 'is-active': activeStep === 1 }"
-                                    @click="activeStep = 1"
-                                ></span>
-                                <span
-                                    class="dot"
-                                    :class="{ 'is-active': activeStep === 2 }"
-                                    @click="activeStep = 2"
-                                ></span>
-                                <span
-                                    class="dot"
-                                    :class="{ 'is-active': activeStep === 3 }"
-                                    @click="activeStep = 3"
-                                ></span>
-                                <span
-                                    class="dot"
-                                    :class="{ 'is-active': activeStep === 4 }"
-                                    @click="activeStep = 4"
-                                ></span>
-                                <span
-                                    class="dot"
-                                    :class="{ 'is-active': activeStep === 5 }"
-                                    @click="activeStep = 5"
-                                ></span>
+                                <div class="dots">
+                                    <span
+                                        class="dot"
+                                        :class="{
+                                            'is-active': activeStep === 1,
+                                        }"
+                                        @click="activeStep = 1"
+                                    ></span>
+                                    <span
+                                        class="dot"
+                                        :class="{
+                                            'is-active': activeStep === 2,
+                                        }"
+                                        @click="activeStep = 2"
+                                    ></span>
+                                    <span
+                                        class="dot"
+                                        :class="{
+                                            'is-active': activeStep === 3,
+                                        }"
+                                        @click="activeStep = 3"
+                                    ></span>
+                                    <span
+                                        class="dot"
+                                        :class="{
+                                            'is-active': activeStep === 4,
+                                        }"
+                                        @click="activeStep = 4"
+                                    ></span>
+                                    <span
+                                        class="dot"
+                                        :class="{
+                                            'is-active': activeStep === 5,
+                                        }"
+                                        @click="activeStep = 5"
+                                    ></span>
+                                </div>
                             </div>
                         </div>
                         <div class="column organization-details">
