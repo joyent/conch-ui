@@ -58,8 +58,16 @@
         }
 
         .steps {
-            margin-bottom: 10px;
-            text-align: center;
+            .step-text {
+                margin-bottom: 12px;
+                text-align: center;
+            }
+
+            .dots {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
             .dot {
                 background-color: #ffffff;
