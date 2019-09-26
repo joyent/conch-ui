@@ -182,20 +182,6 @@
                     </a>
                 </li>
             </ul>
-            <!-- <br />
-            <div class="box conch-versions">
-                <p class="heading">Conch Versions</p>
-                <div class="tags-container">
-                    <div class="tags has-addons">
-                        <div class="tag is-primary">API</div>
-                        <div class="tag is-dark">{{ conchVersion }}</div>
-                    </div>
-                    <div class="tags has-addons">
-                        <div class="tag is-primary">UI</div>
-                        <div class="tag is-dark">{{ conchUIVersion }}</div>
-                    </div>
-                </div>
-            </div> -->
         </div>
     </aside>
 </template>
@@ -203,7 +189,6 @@
 <script>
 import isEmpty from 'lodash/isEmpty';
 import Spinner from '@src/views/components/Spinner.vue';
-import { getApiVersion } from '@api/conchApiVersion.js';
 import { logout } from '@api/authentication.js';
 import { getCurrentUser } from '@api/users.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -259,13 +244,6 @@ export default {
         },
     },
     created() {
-        /* eslint-disable */
-        this.conchUIVersion = CONCH.GLOBALS.conchUIVersion;
-
-        getApiVersion().then(response => {
-            this.conchVersion = response.data.version;
-        });
-
         if (isEmpty(this.currentUser)) {
             getCurrentUser().then(response => {
                 this.setCurrentUser(response.data);
