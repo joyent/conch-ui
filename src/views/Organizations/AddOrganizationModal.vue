@@ -56,35 +56,35 @@
                                         :class="{
                                             'is-active': activeStep === 1,
                                         }"
-                                        @click="activeStep = 1"
+                                        @click="activateStep(1)"
                                     ></span>
                                     <span
                                         class="dot"
                                         :class="{
                                             'is-active': activeStep === 2,
                                         }"
-                                        @click="activeStep = 2"
+                                        @click="activateStep(2)"
                                     ></span>
                                     <span
                                         class="dot"
                                         :class="{
                                             'is-active': activeStep === 3,
                                         }"
-                                        @click="activeStep = 3"
+                                        @click="activateStep(3)"
                                     ></span>
                                     <span
                                         class="dot"
                                         :class="{
                                             'is-active': activeStep === 4,
                                         }"
-                                        @click="activeStep = 4"
+                                        @click="activateStep(4)"
                                     ></span>
                                     <span
                                         class="dot"
                                         :class="{
                                             'is-active': activeStep === 5,
                                         }"
-                                        @click="activeStep = 5"
+                                        @click="activateStep(5)"
                                     ></span>
                                 </div>
                             </div>
@@ -109,11 +109,35 @@
                                     >
                                         <div class="field">
                                             <label class="label">Name</label>
-                                            <input
-                                                type="text"
-                                                class="input name"
-                                                v-model="name"
-                                            />
+                                            <div
+                                                class="control has-icons-right"
+                                            >
+                                                <input
+                                                    class="input name"
+                                                    :class="{
+                                                        'is-danger':
+                                                            errors.name,
+                                                    }"
+                                                    v-model="name"
+                                                    type="text"
+                                                    placeholder="Give your organization a name"
+                                                />
+                                                <span
+                                                    class="icon is-small is-right has-text-danger"
+                                                    v-if="errors.name"
+                                                >
+                                                    <i class="material-icons">
+                                                        error
+                                                    </i>
+                                                </span>
+                                            </div>
+                                            <p
+                                                class="error has-text-danger is-size-6"
+                                                v-if="errors.name"
+                                                style="padding-top: 5px;"
+                                            >
+                                                This field is required.
+                                            </p>
                                         </div>
                                         <div class="field">
                                             <label class="label">
@@ -124,6 +148,7 @@
                                                 name="description"
                                                 v-model="description"
                                                 maxlength="165"
+                                                placeholder="Add a helpful description of your organization"
                                             ></textarea>
                                         </div>
                                     </div>
@@ -182,7 +207,10 @@
                                                 <div class="item-content-row">
                                                     {{ name }}
                                                 </div>
-                                                <div class="item-content-row">
+                                                <div
+                                                    class="item-content-row"
+                                                    v-if="description"
+                                                >
                                                     {{ description }}
                                                 </div>
                                             </div>
@@ -295,7 +323,7 @@
                                     </a>
                                     <a
                                         class="button next is-info"
-                                        @click="activeStep++"
+                                        @click="nextStep()"
                                     >
                                         Next
                                     </a>
@@ -339,6 +367,9 @@ export default {
         return {
             activeStep: 1,
             description: '',
+            errors: {
+                name: false,
+            },
             isActive: true,
             isExpandedBuilds: false,
             isExpandedDetails: false,
@@ -365,23 +396,25 @@ export default {
                     title: 'Final Review',
                 },
             ],
-            // users: [
-            //     'Anakin Skywalker',
-            //     'Darth Vader',
-            //     'Leia Organa Solo',
-            //     'Lando Calrissian',
-            //     'Han Solo',
-            //     'Chewbacca',
-            //     'Jaina Solo',
-            //     'Darth Sideous',
-            //     'Jyn Erso',
-            //     'Emporer Palpatine',
-            //     'Jar Jar Binks',
-            // ],
         };
     },
     methods: {
         ...mapActions(['setUsers']),
+        activateStep(step) {
+            const activeStep = this.activeStep;
+
+            if (activeStep === 1) {
+                if (this.name) {
+                    this.resetErrors();
+                    this.activeStep = step;
+                } else {
+                    this.errors.name = true;
+                }
+            } else {
+                this.resetErrors();
+                this.activeStep = step;
+            }
+        },
         closeModal() {
             this.isActive = false;
 
@@ -413,6 +446,26 @@ export default {
         },
         isUserSelected(user) {
             return this.selectedUsers.indexOf(user) !== -1 ? true : false;
+        },
+        nextStep() {
+            const activeStep = this.activeStep;
+
+            if (activeStep === 1) {
+                if (this.name) {
+                    this.resetErrors();
+                    this.activeStep++;
+                } else {
+                    this.errors.name = true;
+                }
+            } else {
+                this.resetErrors();
+                this.activeStep++;
+            }
+        },
+        resetErrors() {
+            this.errors = {
+                name: false,
+            };
         },
         selectUser(user) {
             this.selectedUsers.push(user);
