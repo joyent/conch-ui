@@ -23,7 +23,7 @@
                         }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-satellite-dish"></i>
+                        <i class="material-icons">signal_cellular_alt</i>
                         <span>Status</span>
                     </router-link>
                 </li>
@@ -35,7 +35,7 @@
                         }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-search"></i>
+                        <i class="material-icons">search</i>
                         <span>Browse</span>
                     </router-link>
                 </li>
@@ -47,7 +47,7 @@
                         }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-server"></i>
+                        <i class="material-icons">dns</i>
                         <span>Devices</span>
                     </router-link>
                 </li>
@@ -60,7 +60,7 @@
             >
                 <li class="nav-item">
                     <a>
-                        <i class="fas fa-lg fa-drafting-compass"></i>
+                        <i class="material-icons">layers</i>
                         <span class="name">Builds</span>
                         <span class="icon">
                             <i class="fas fa-chevron-right"></i>
@@ -99,7 +99,7 @@
             >
                 <li class="nav-item">
                     <a>
-                        <i class="fas fa-lg fa-city"></i>
+                        <i class="material-icons">business</i>
                         <span class="name">Organizations</span>
                         <span class="icon">
                             <i class="fas fa-chevron-right"></i>
@@ -132,8 +132,17 @@
                         :to="{ name: 'builds' }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-flask"></i>
-                        Builds
+                        <i class="material-icons">layers</i>
+                        <span>Builds</span>
+                    </router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link
+                        :to="{ name: 'organizations' }"
+                        active-class="is-active"
+                    >
+                        <i class="material-icons">business</i>
+                        <span>Organizations</span>
                     </router-link>
                 </li>
                 <li class="nav-item">
@@ -141,7 +150,7 @@
                         :to="{ name: 'tokens' }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-key"></i>
+                        <i class="material-icons">vpn_key</i>
                         <span>Tokens</span>
                     </router-link>
                 </li>
@@ -150,17 +159,8 @@
                         :to="{ name: 'user-management' }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-users"></i>
+                        <i class="material-icons">people_alt</i>
                         <span>Users</span>
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link
-                        :to="{ name: 'organizations' }"
-                        active-class="is-active"
-                    >
-                        <i class="fas fa-lg fa-city"></i>
-                        Organizations
                     </router-link>
                 </li>
             </ul>
@@ -171,13 +171,13 @@
                         :to="{ name: 'user' }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-user"></i>
+                        <i class="material-icons">account_circle</i>
                         <span>Profile</span>
                     </router-link>
                 </li>
                 <li class="nav-item">
                     <a class="sign-out" @click="signOut()">
-                        <i class="fas fa-lg fa-sign-out-alt"></i>
+                        <i class="material-icons">exit_to_app</i>
                         <span>Sign Out</span>
                     </a>
                 </li>

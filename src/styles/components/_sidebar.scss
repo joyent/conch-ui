@@ -16,7 +16,7 @@ aside.menu {
 
 	a {
 		margin: 0 auto;
-		border-left-width: 3px;
+		border-left-width: 4px;
 		border-left-style: solid;
 		border-left-color: transparent;
 
@@ -27,7 +27,7 @@ aside.menu {
 
 		&.is-active {
 			background-color: darken($grey-darker, 2%);
-			border-left-width: 3px;
+			border-left-width: 4px;
 			border-left-style: solid;
 			border-left-color: #209cee;
 		}
@@ -51,6 +51,8 @@ aside.menu {
 		}
 
 		.nav-item a {
+			align-items: center;
+			display: flex;
 			padding: 0.8em 0.75em;
 		}
 	}
