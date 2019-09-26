@@ -14,7 +14,7 @@ import PasswordReset from './views/PasswordReset/PasswordReset.vue';
 import Builds from './views/Builds/Builds.vue';
 import SingleBuild from './views/Builds/SingleBuild.vue';
 import Organizations from './views/Organizations/Organizations.vue';
-import SingleOrganization from './views/Organizations/SingleOrganization.vue';
+import Organization from './views/Organizations/Organization.vue';
 import CreateBuild from './views/Builds/CreateBuild.vue';
 
 Vue.use(Router);
@@ -169,7 +169,7 @@ export default new Router({
             path: '/organization/:organizationId',
             name: 'organization',
             components: {
-                default: SingleOrganization,
+                default: Organization,
                 sidebar: Sidebar,
                 navbar: Navbar,
             },
