@@ -57,6 +57,10 @@ export const setAuthTokens = ({ commit }, authTokens) => {
     commit('setAuthTokens', authTokens);
 };
 
+export const setBuilds = ({ commit }, builds) => {
+    commit('setBuilds', builds);
+};
+
 export const setCurrentUser = ({ commit }, currentUser) => {
     commit('setCurrentUser', currentUser);
 };
@@ -140,6 +144,7 @@ export default {
     setActiveRoomName,
     setAllRooms,
     setAuthTokens,
+    setBuilds,
     setCurrentUser,
     setCurrentWorkspace,
     setDevices,

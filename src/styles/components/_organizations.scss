@@ -301,7 +301,7 @@
 				}
 
 				.organization-desc {
-					text-align: center;
+					margin: 0 auto;
 					max-width: 241px;
 					overflow: hidden;
 					text-overflow: ellipsis;
@@ -340,6 +340,10 @@
 		}
 
 		tr {
+			&.view-organization {
+				cursor: pointer;
+			}
+
 			&:hover {
 				.button {
 					background-color: #4A5DBD;
