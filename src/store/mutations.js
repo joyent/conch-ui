@@ -54,6 +54,10 @@ export const setAuthTokens = (state, authTokens) => {
     state.authTokens = authTokens;
 };
 
+export const setBuilds = (state, builds) => {
+    state.builds = builds;
+};
+
 export const setCurrentUser = (state, currentUser) => {
     state.currentUser = currentUser;
 };
@@ -137,6 +141,7 @@ export default {
     setActiveRoomName,
     setAllRooms,
     setAuthTokens,
+    setBuilds,
     setCurrentUser,
     setCurrentWorkspace,
     setDevices,
