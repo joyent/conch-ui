@@ -14,7 +14,12 @@
                 <div class="modal-card-body">
                     <table class="table is-fullwidth">
                         <tbody>
-                            <tr>
+                            <tr
+                                v-if="
+                                    itemList.length ||
+                                        (itemList.length === 0 && searchText)
+                                "
+                            >
                                 <td class="search-input" colspan="3">
                                     <p class="control has-icons-left">
                                         <input
@@ -29,124 +34,145 @@
                                     </p>
                                 </td>
                             </tr>
-                            <tr
-                                class="row"
-                                :class="{
-                                    'is-adding':
-                                        action === 'add' &&
-                                        isModified(item.name),
-                                    'is-removing':
-                                        action === 'remove' &&
-                                        isModified(item.name),
-                                }"
-                                v-for="item in itemList"
-                                :key="item.id"
-                            >
-                                <template v-if="isModified(item.name)">
-                                    <td class="item-name">
-                                        <span class="name has-text-grey-light">
-                                            {{ item.name }}
-                                        </span>
-                                    </td>
-                                    <td class="organization-role-select">
-                                        <div
-                                            class="select role"
-                                            v-if="
-                                                action === 'add' &&
-                                                    isModified(item.name)
-                                            "
-                                        >
-                                            <select
-                                                @change="
-                                                    updateRole(
-                                                        item.name,
-                                                        $event
-                                                    )
+                            <template v-if="itemList.length">
+                                <tr
+                                    class="row"
+                                    :class="{
+                                        'is-adding':
+                                            action === 'add' &&
+                                            isModified(item.name),
+                                        'is-removing':
+                                            action === 'remove' &&
+                                            isModified(item.name),
+                                    }"
+                                    v-for="item in itemList"
+                                    :key="item.id"
+                                >
+                                    <template v-if="isModified(item.name)">
+                                        <td class="item-name">
+                                            <span
+                                                class="name has-text-grey-light"
+                                            >
+                                                {{ item.name }}
+                                            </span>
+                                        </td>
+                                        <td class="organization-role-select">
+                                            <div
+                                                class="select role"
+                                                v-if="action === 'add'"
+                                            >
+                                                <select
+                                                    @change="
+                                                        updateRole(
+                                                            item.name,
+                                                            $event
+                                                        )
+                                                    "
+                                                >
+                                                    <option value="admin">
+                                                        Admin
+                                                    </option>
+                                                    <option value="rw">
+                                                        Read / Write
+                                                    </option>
+                                                    <option value="ro" selected>
+                                                        Read Only
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td class="action">
+                                            <i
+                                                class="material-icons has-text-success add-item"
+                                                v-if="
+                                                    showRemoveIcon !==
+                                                        item.name &&
+                                                        action === 'add'
+                                                "
+                                                @mouseover="
+                                                    showRemoveIcon = item.name
                                                 "
                                             >
-                                                <option value="admin">
-                                                    Admin
-                                                </option>
-                                                <option value="rw">
-                                                    Read / Write
-                                                </option>
-                                                <option value="ro" selected>
-                                                    Read Only
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td class="action">
-                                        <i
-                                            class="material-icons has-text-success add-item"
-                                            v-if="
-                                                showRemoveIcon !== item.name &&
-                                                    action === 'add'
-                                            "
-                                            @mouseover="
-                                                showRemoveIcon = item.name
-                                            "
-                                        >
-                                            check
-                                        </i>
-                                        <i
-                                            class="material-icons has-text-danger remove-item"
-                                            v-if="
-                                                showRemoveIcon === item.name &&
-                                                    action === 'add'
-                                            "
-                                            @click="removeItem(item.name)"
-                                            @mouseleave="showRemoveIcon = ''"
-                                        >
-                                            close
-                                        </i>
-                                        <i
-                                            class="material-icons has-text-danger remove-item"
-                                            v-if="
-                                                showAddIcon !== item.name &&
-                                                    action === 'remove'
-                                            "
-                                            @mouseover="showAddIcon = item.name"
-                                        >
-                                            check
-                                        </i>
-                                        <i
-                                            class="material-icons has-text-success add-item"
-                                            v-if="
-                                                showAddIcon === item.name &&
-                                                    action === 'remove'
-                                            "
-                                            @click="removeItem(item.name)"
-                                            @mouseleave="showAddIcon = ''"
-                                        >
-                                            add
-                                        </i>
-                                    </td>
-                                </template>
-                                <template v-else>
-                                    <td class="item-name">
-                                        <span class="name">
-                                            {{ item.name }}
-                                        </span>
-                                    </td>
+                                                check
+                                            </i>
+                                            <i
+                                                class="material-icons has-text-danger remove-item"
+                                                v-if="
+                                                    showRemoveIcon ===
+                                                        item.name &&
+                                                        action === 'add'
+                                                "
+                                                @click="removeItem(item.name)"
+                                                @mouseleave="
+                                                    showRemoveIcon = ''
+                                                "
+                                            >
+                                                close
+                                            </i>
+                                            <i
+                                                class="material-icons has-text-danger remove-item"
+                                                v-if="
+                                                    showAddIcon !== item.name &&
+                                                        action === 'remove'
+                                                "
+                                                @mouseover="
+                                                    showAddIcon = item.name
+                                                "
+                                            >
+                                                check
+                                            </i>
+                                            <i
+                                                class="material-icons has-text-success add-item"
+                                                v-if="
+                                                    showAddIcon === item.name &&
+                                                        action === 'remove'
+                                                "
+                                                @click="removeItem(item.name)"
+                                                @mouseleave="showAddIcon = ''"
+                                            >
+                                                add
+                                            </i>
+                                        </td>
+                                    </template>
+                                    <template v-else>
+                                        <td class="item-name">
+                                            <span class="name">
+                                                {{ item.name }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <i
+                                                class="material-icons add-item"
+                                                v-if="action === 'add'"
+                                                @click="modifyItem(item)"
+                                            >
+                                                add
+                                            </i>
+                                            <i
+                                                class="material-icons remove-item"
+                                                v-if="action === 'remove'"
+                                                @click="modifyItem(item)"
+                                            >
+                                                close
+                                            </i>
+                                        </td>
+                                    </template>
+                                </tr>
+                            </template>
+                            <template
+                                v-else-if="!itemList.length && !searchText"
+                            >
+                                <tr class="row no-data">
+                                    <td>No {{ itemType }} available</td>
+                                </tr>
+                            </template>
+                            <template v-else>
+                                <tr class="row no-data">
                                     <td>
-                                        <i
-                                            class="material-icons add-item"
-                                            v-if="action === 'add'"
-                                            @click="modifyItem(item)"
-                                        >
-                                            add
-                                        </i>
-                                        <i
-                                            class="material-icons remove-item"
-                                            v-if="action === 'remove'"
-                                            @click="modifyItem(item)"
-                                        >
-                                            close
-                                        </i>
+                                        No search results found
                                     </td>
-                                </template>
-                            </tr>
+                                </tr>
+                            </template>
                         </tbody>
                     </table>
                 </div>
