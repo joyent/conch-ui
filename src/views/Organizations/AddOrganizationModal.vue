@@ -12,28 +12,33 @@
                         <div class="column is-4 step-details">
                             <div class="step-content">
                                 <p class="title is-marginless">
-                                    {{ steps[activeStep - 1].title }}
+                                    {{ currentStepTitle }}
                                 </p>
                                 <hr />
                                 <template v-if="activeStep === 1">
                                     <p>Let’s get started!</p>
                                     <br />
-                                    <p>Give the new organization a</p>
-                                    <p>name and description.</p>
+                                    <p>
+                                        Give the new organization a name and
+                                        description.
+                                    </p>
                                 </template>
                                 <template v-else-if="activeStep === 2">
                                     <p>Add some members to the</p>
                                     <p>organization.</p>
                                     <br />
-                                    <p>Every organization must</p>
-                                    <p>have at least one user</p>
-                                    <p>with admin privileges.</p>
+                                    <p
+                                        :class="{
+                                            'has-text-danger has-text-weight-bold':
+                                                errors.adminUserCount,
+                                        }"
+                                    >
+                                        Every organization must have at least
+                                        one user with admin privileges.
+                                    </p>
+                                    <br />
                                 </template>
                                 <template v-else-if="activeStep === 3">
-                                    <p>Give the organization access</p>
-                                    <p>to a workspace.</p>
-                                </template>
-                                <template v-else-if="activeStep === 4">
                                     <p>Give the organization access</p>
                                     <p>to a build.</p>
                                 </template>
@@ -41,11 +46,11 @@
                                     <p>Last step!</p>
                                     <br />
                                     <p>
-                                        Review the members, workspaces and
-                                        builds associated with the new
+                                        Review the details of the new
                                         organization and make any changes
                                         necessary.
                                     </p>
+                                    <br />
                                 </template>
                             </div>
                             <div class="steps">
@@ -78,13 +83,6 @@
                                             'is-active': activeStep === 4,
                                         }"
                                         @click="activateStep(4)"
-                                    ></span>
-                                    <span
-                                        class="dot"
-                                        :class="{
-                                            'is-active': activeStep === 5,
-                                        }"
-                                        @click="activateStep(5)"
                                     ></span>
                                 </div>
                             </div>
@@ -156,32 +154,348 @@
                                         class="step-body"
                                         v-else-if="activeStep === 2"
                                     >
-                                        <ItemTable
-                                            :title="'Available Members'"
-                                            :data="users"
-                                        />
+                                        <div class="item-table">
+                                            <table class="table is-fullwidth">
+                                                <tbody>
+                                                    <tr class="row search">
+                                                        <td colspan="3">
+                                                            <p
+                                                                class="control has-icons-left"
+                                                            >
+                                                                <input
+                                                                    class="input search"
+                                                                    v-model="
+                                                                        searchText
+                                                                    "
+                                                                    placeholder="Search users"
+                                                                    type="text"
+                                                                />
+                                                                <span
+                                                                    class="icon is-left"
+                                                                >
+                                                                    <i
+                                                                        class="material-icons"
+                                                                    >
+                                                                        search
+                                                                    </i>
+                                                                </span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <template
+                                                        v-if="
+                                                            filteredItems(
+                                                                'members'
+                                                            ).length > 0
+                                                        "
+                                                    >
+                                                        <tr
+                                                            class="row item"
+                                                            :class="{
+                                                                'is-selected': isItemSelected(
+                                                                    user.name,
+                                                                    'members'
+                                                                ),
+                                                            }"
+                                                            v-for="user in filteredItems(
+                                                                'members'
+                                                            )"
+                                                            :key="user.id"
+                                                        >
+                                                            <template
+                                                                v-if="
+                                                                    isItemSelected(
+                                                                        user.name,
+                                                                        'members'
+                                                                    )
+                                                                "
+                                                            >
+                                                                <td
+                                                                    class="item-name"
+                                                                >
+                                                                    <span
+                                                                        class="name has-text-grey-light"
+                                                                    >
+                                                                        {{
+                                                                            user.name
+                                                                        }}
+                                                                    </span>
+                                                                </td>
+                                                                <td
+                                                                    class="role-select"
+                                                                >
+                                                                    <div
+                                                                        class="select role"
+                                                                    >
+                                                                        <select
+                                                                            @change="
+                                                                                updateRole(
+                                                                                    user.name,
+                                                                                    $event
+                                                                                )
+                                                                            "
+                                                                        >
+                                                                            <option
+                                                                                value="admin"
+                                                                            >
+                                                                                Admin
+                                                                            </option>
+                                                                            <option
+                                                                                value="rw"
+                                                                            >
+                                                                                Read / Write
+                                                                            </option>
+                                                                            <option
+                                                                                value="ro"
+                                                                                selected
+                                                                            >
+                                                                                Read Only
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                                <td
+                                                                    class="action"
+                                                                >
+                                                                    <i
+                                                                        class="material-icons has-text-success add-item"
+                                                                        v-if="
+                                                                            showRemoveIcon !==
+                                                                                user.name
+                                                                        "
+                                                                        @mouseover="
+                                                                            showRemoveIcon =
+                                                                                user.name
+                                                                        "
+                                                                    >
+                                                                        check
+                                                                    </i>
+                                                                    <i
+                                                                        class="material-icons has-text-danger remove-item"
+                                                                        v-if="
+                                                                            showRemoveIcon ===
+                                                                                user.name
+                                                                        "
+                                                                        @click="
+                                                                            removeItem(
+                                                                                user.name,
+                                                                                'members'
+                                                                            )
+                                                                        "
+                                                                        @mouseleave="
+                                                                            showRemoveIcon =
+                                                                                ''
+                                                                        "
+                                                                    >
+                                                                        close
+                                                                    </i>
+                                                                </td>
+                                                            </template>
+                                                            <template v-else>
+                                                                <td
+                                                                    class="item-name"
+                                                                >
+                                                                    <span>
+                                                                        {{
+                                                                            user.name
+                                                                        }}
+                                                                    </span>
+                                                                </td>
+                                                                <td
+                                                                    class="action"
+                                                                >
+                                                                    <i
+                                                                        class="material-icons has-text-success add-item"
+                                                                        @click="
+                                                                            addItem(
+                                                                                user,
+                                                                                'members'
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                        add
+                                                                    </i>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                    </template>
+                                                    <tr
+                                                        class="row item"
+                                                        v-else-if="
+                                                            filteredItems(
+                                                                'members'
+                                                            ).length === 0 &&
+                                                                searchText
+                                                        "
+                                                    >
+                                                        <td
+                                                            class="has-text-centered no-results"
+                                                        >
+                                                            No search results
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <div
                                         class="step-body"
                                         v-else-if="activeStep === 3"
                                     >
-                                        <ItemTable
-                                            :title="'Available Workspaces'"
-                                            :data="users"
-                                        />
-                                    </div>
-                                    <div
-                                        class="step-body"
-                                        v-else-if="activeStep === 4"
-                                    >
-                                        <ItemTable
-                                            :title="'Available Builds'"
-                                            :data="users"
-                                        />
+                                        <div class="item-table">
+                                            <table class="table is-fullwidth">
+                                                <tbody>
+                                                    <tr class="row search">
+                                                        <td colspan="3">
+                                                            <p
+                                                                class="control has-icons-left"
+                                                            >
+                                                                <input
+                                                                    class="input search"
+                                                                    v-model="
+                                                                        searchText
+                                                                    "
+                                                                    placeholder="Search builds"
+                                                                    type="text"
+                                                                />
+                                                                <span
+                                                                    class="icon is-left"
+                                                                >
+                                                                    <i
+                                                                        class="material-icons"
+                                                                    >
+                                                                        search
+                                                                    </i>
+                                                                </span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <template
+                                                        v-if="
+                                                            filteredItems(
+                                                                'builds'
+                                                            ).length > 0
+                                                        "
+                                                    >
+                                                        <tr
+                                                            class="row item"
+                                                            :class="{
+                                                                'is-selected': isItemSelected(
+                                                                    build.name,
+                                                                    'builds'
+                                                                ),
+                                                            }"
+                                                            v-for="build in filteredItems(
+                                                                'builds'
+                                                            )"
+                                                            :key="build.id"
+                                                        >
+                                                            <template
+                                                                v-if="
+                                                                    isItemSelected(
+                                                                        build.name,
+                                                                        'builds'
+                                                                    )
+                                                                "
+                                                            >
+                                                                <td
+                                                                    class="item-name"
+                                                                >
+                                                                    <span
+                                                                        class="name has-text-grey-light"
+                                                                    >
+                                                                        {{
+                                                                            build.name
+                                                                        }}
+                                                                    </span>
+                                                                </td>
+                                                                <td
+                                                                    class="action"
+                                                                >
+                                                                    <i
+                                                                        class="material-icons has-text-success add-item"
+                                                                        v-if="
+                                                                            showRemoveIcon !==
+                                                                                build.name
+                                                                        "
+                                                                        @mouseover="
+                                                                            showRemoveIcon =
+                                                                                build.name
+                                                                        "
+                                                                    >
+                                                                        check
+                                                                    </i>
+                                                                    <i
+                                                                        class="material-icons has-text-danger remove-item"
+                                                                        v-if="
+                                                                            showRemoveIcon ===
+                                                                                build.name
+                                                                        "
+                                                                        @click="
+                                                                            removeItem(
+                                                                                build.name,
+                                                                                'builds'
+                                                                            )
+                                                                        "
+                                                                        @mouseleave="
+                                                                            showRemoveIcon =
+                                                                                ''
+                                                                        "
+                                                                    >
+                                                                        close
+                                                                    </i>
+                                                                </td>
+                                                            </template>
+                                                            <template v-else>
+                                                                <td
+                                                                    class="item-name"
+                                                                >
+                                                                    <span>
+                                                                        {{
+                                                                            build.name
+                                                                        }}
+                                                                    </span>
+                                                                </td>
+                                                                <td
+                                                                    class="action"
+                                                                >
+                                                                    <i
+                                                                        class="material-icons has-text-success add-item"
+                                                                        @click="
+                                                                            addItem(
+                                                                                build,
+                                                                                'builds'
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                        add
+                                                                    </i>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                    </template>
+                                                    <tr
+                                                        class="row item"
+                                                        v-else-if="
+                                                            filteredItems(
+                                                                'builds'
+                                                            ).length === 0 &&
+                                                                searchText
+                                                        "
+                                                    >
+                                                        <td
+                                                            class="has-text-centered no-results"
+                                                        >
+                                                            No search results
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <div
                                         class="step-body review"
-                                        v-else-if="activeStep === 5"
+                                        v-else-if="activeStep === 4"
                                     >
                                         <div class="review-item details">
                                             <div
@@ -193,10 +507,17 @@
                                                     isExpandedDetails = !isExpandedDetails
                                                 "
                                             >
+                                                <i
+                                                    class="material-icons details"
+                                                >
+                                                    notes
+                                                </i>
                                                 <p class="item-title">
                                                     Details
                                                 </p>
-                                                <i class="material-icons">
+                                                <i
+                                                    class="material-icons chevron"
+                                                >
                                                     chevron_right
                                                 </i>
                                             </div>
@@ -225,53 +546,46 @@
                                                     isExpandedMembers = !isExpandedMembers
                                                 "
                                             >
+                                                <i
+                                                    class="material-icons members"
+                                                >
+                                                    people_alt
+                                                </i>
                                                 <p class="item-title">
                                                     Members
                                                 </p>
-                                                <i class="material-icons">
+                                                <i
+                                                    class="material-icons chevron"
+                                                >
                                                     chevron_right
                                                 </i>
                                             </div>
                                             <div
                                                 class="review-item-content"
-                                                v-if="isExpandedMembers"
+                                                v-if="
+                                                    isExpandedMembers &&
+                                                        selectedMembers.length
+                                                "
                                             >
                                                 <div
                                                     class="item-content-row"
-                                                    v-for="user in users"
+                                                    v-for="user in selectedMembers"
                                                     :key="user.id"
                                                 >
                                                     {{ user.email }}
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="review-item workspaces">
-                                            <div
-                                                class="review-item-title"
-                                                :class="{
-                                                    'is-expanded': isExpandedWorkspaces,
-                                                }"
-                                                @click="
-                                                    isExpandedWorkspaces = !isExpandedWorkspaces
-                                                "
-                                            >
-                                                <p class="item-title">
-                                                    Workspaces
-                                                </p>
-                                                <i class="material-icons">
-                                                    chevron_right
-                                                </i>
-                                            </div>
                                             <div
                                                 class="review-item-content"
-                                                v-if="isExpandedWorkspaces"
+                                                v-else-if="
+                                                    isExpandedMembers &&
+                                                        !selectedMembers.length
+                                                "
                                             >
                                                 <div
-                                                    class="item-content-row"
-                                                    v-for="user in users"
-                                                    :key="user.id"
+                                                    class="item-content-row empty"
                                                 >
-                                                    {{ user.email }}
+                                                    No members selected
                                                 </div>
                                             </div>
                                         </div>
@@ -285,23 +599,46 @@
                                                     isExpandedBuilds = !isExpandedBuilds
                                                 "
                                             >
+                                                <i
+                                                    class="material-icons builds"
+                                                >
+                                                    layers
+                                                </i>
                                                 <p class="item-title">
                                                     Builds
                                                 </p>
-                                                <i class="material-icons">
+                                                <i
+                                                    class="material-icons chevron"
+                                                >
                                                     chevron_right
                                                 </i>
                                             </div>
                                             <div
                                                 class="review-item-content"
-                                                v-if="isExpandedBuilds"
+                                                v-if="
+                                                    isExpandedBuilds &&
+                                                        selectedBuilds.length
+                                                "
                                             >
                                                 <div
                                                     class="item-content-row"
-                                                    v-for="user in users"
-                                                    :key="user.id"
+                                                    v-for="build in selectedBuilds"
+                                                    :key="build.id"
                                                 >
-                                                    {{ user.email }}
+                                                    {{ build.name }}
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="review-item-content"
+                                                v-else-if="
+                                                    isExpandedBuilds &&
+                                                        !selectedBuilds.length
+                                                "
+                                            >
+                                                <div
+                                                    class="item-content-row empty"
+                                                >
+                                                    No builds selected
                                                 </div>
                                             </div>
                                         </div>
@@ -312,7 +649,7 @@
                                 <div
                                     class="buttons"
                                     :class="{ 'first-step': activeStep === 1 }"
-                                    v-if="activeStep < 5"
+                                    v-if="activeStep < 4"
                                 >
                                     <a
                                         class="button previous is-link"
@@ -333,6 +670,7 @@
                                     :class="{ 'is-loading': isLoading }"
                                     @click="createOrganization()"
                                     style="border-radius: 3px; font-weight: bold;"
+                                    :disabled="getAdminUserCount() === 0"
                                     v-else
                                 >
                                     Create Organization
@@ -343,64 +681,83 @@
                 </div>
             </div>
         </div>
-        <SuccessModal
-            :organization-name="'Super Cool Organization Title'"
-            v-if="isSuccessful"
-        />
+        <SuccessModal :organization-name="name" v-if="isSuccessful" />
     </div>
 </template>
 
 <script>
-import ItemTable from './ItemTable.vue';
+import search from 'fuzzysearch';
 import SuccessModal from './SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getUsers } from '@api/users.js';
 import { addOrganization } from '@api/organizations.js';
+import { addOrganizationToBuild } from '@api/builds.js';
 
 export default {
     components: {
-        ItemTable,
         SuccessModal,
     },
     data() {
         return {
             activeStep: 1,
+            builds: [
+                {
+                    name: 'Builds-1',
+                    id: 'abcd-1',
+                },
+                {
+                    name: 'Builds-2',
+                    id: 'abcd-2',
+                },
+                {
+                    name: 'Builds-3',
+                    id: 'abcd-3',
+                },
+                {
+                    name: 'Builds-4',
+                    id: 'abcd-4',
+                },
+                {
+                    name: 'Builds-5',
+                    id: 'abcd-5',
+                },
+                {
+                    name: 'Builds-6',
+                    id: 'abcd-6',
+                },
+                {
+                    name: 'Builds-7',
+                    id: 'abcd-7',
+                },
+                {
+                    name: 'Builds-8',
+                    id: 'abcd-8',
+                },
+            ],
             description: '',
             errors: {
+                adminUserCount: false,
                 name: false,
             },
             isActive: true,
-            isExpandedBuilds: false,
-            isExpandedDetails: false,
-            isExpandedMembers: false,
-            isExpandedWorkspaces: false,
+            isExpandedBuilds: true,
+            isExpandedDetails: true,
+            isExpandedMembers: true,
             isLoading: false,
             isSuccessful: false,
             name: '',
-            selectedUsers: [],
-            steps: [
-                {
-                    title: 'Add Details',
-                },
-                {
-                    title: 'Add Members',
-                },
-                {
-                    title: 'Add Workspaces',
-                },
-                {
-                    title: 'Add Builds',
-                },
-                {
-                    title: 'Final Review',
-                },
-            ],
+            organizationId: '',
+            searchText: '',
+            selectedBuilds: [],
+            selectedMembers: [],
+            showRemoveIcon: false,
         };
     },
     methods: {
         ...mapActions(['setUsers']),
         activateStep(step) {
+            this.searchText = '';
             const activeStep = this.activeStep;
 
             if (activeStep === 1) {
@@ -410,9 +767,24 @@ export default {
                 } else {
                     this.errors.name = true;
                 }
+            } else if (activeStep === 2) {
+                if (this.getAdminUserCount() === 0) {
+                    this.errors.adminUserCount = true;
+                }
             } else {
                 this.resetErrors();
                 this.activeStep = step;
+            }
+        },
+        addItem(item, itemType) {
+            const role = { role: 'ro' };
+
+            if (itemType === 'members') {
+                const member = Object.assign(item, role);
+                this.selectedMembers.push(member);
+            } else if (itemType === 'builds') {
+                const build = Object.assign(item, role);
+                this.selectedBuilds.push(build);
             }
         },
         closeModal() {
@@ -420,34 +792,87 @@ export default {
 
             EventBus.$emit('close-modal:add-organization');
         },
+        addOrganizationToBuilds() {
+            const organizationId = this.organizationId;
+
+            this.selectedBuilds.forEach(build => {
+                addOrganizationToBuild(build.id, organizationId, build.role);
+            });
+        },
         async createOrganization() {
             this.isLoading = true;
+
+            const admins = this.selectedMembers
+                .filter(member => member.role === 'admin')
+                .map(user => user.id);
             const data = {
                 name: this.name,
                 description: this.description,
-                admins: [
-                    {
-                        user_id: '4fc5c040-71bd-4400-9b9c-217465c4ec30',
-                    },
-                ],
+                admins,
             };
 
-            await addOrganization(data);
+            await addOrganization(data).then(response => {
+                this.organizationId = response.data.id;
+            });
 
             EventBus.$emit('organization-created');
+
+            await this.addOrganizationToBuilds();
 
             this.isLoading = false;
             this.isSuccessful = true;
         },
-        deselectUser(user) {
-            const index = this.selectedUsers.indexOf(user);
+        filteredItems(itemType) {
+            const searchText = this.searchText.toLowerCase();
+            let items;
 
-            this.selectedUsers.splice(index, 1);
+            if (itemType === 'members') {
+                items = this.users;
+            } else if (itemType === 'builds') {
+                items = this.builds;
+            }
+
+            if (searchText) {
+                return items.reduce((acc, item) => {
+                    const name = item.name.toLowerCase();
+
+                    if (search(searchText, name)) {
+                        acc.push(item);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            return items;
         },
-        isUserSelected(user) {
-            return this.selectedUsers.indexOf(user) !== -1 ? true : false;
+        getAdminUserCount() {
+            return this.selectedMembers.filter(
+                member => member.role === 'admin'
+            ).length;
+        },
+        isItemSelected(itemName, itemType) {
+            const selectedBuilds = this.selectedBuilds;
+            const selectedMembers = this.selectedMembers;
+
+            if (itemType === 'members' && selectedMembers.length) {
+                return selectedMembers
+                    .map(user => user.name)
+                    .indexOf(itemName) !== -1
+                    ? true
+                    : false;
+            } else if (itemType === 'builds' && selectedBuilds.length) {
+                return selectedBuilds
+                    .map(build => build.name)
+                    .indexOf(itemName) !== -1
+                    ? true
+                    : false;
+            }
+
+            return false;
         },
         nextStep() {
+            this.searchText = '';
             const activeStep = this.activeStep;
 
             if (activeStep === 1) {
@@ -457,22 +882,72 @@ export default {
                 } else {
                     this.errors.name = true;
                 }
+            } else if (activeStep === 2) {
+                if (this.getAdminUserCount() === 0) {
+                    this.errors.adminUserCount = true;
+                } else {
+                    this.resetErrors();
+                    this.activeStep++;
+                }
             } else {
                 this.resetErrors();
                 this.activeStep++;
             }
         },
+        removeItem(itemName, itemType) {
+            let index;
+
+            if (itemType === 'members') {
+                index = this.selectedMembers
+                    .map(member => member.name)
+                    .indexOf(itemName);
+
+                this.selectedMembers.splice(index, 1);
+            } else if (itemType === 'builds') {
+                index = this.selectedBuilds
+                    .map(build => build.name)
+                    .indexOf(itemName);
+
+                this.selectedBuilds.splice(index, 1);
+            }
+        },
         resetErrors() {
             this.errors = {
+                adminUserCount: false,
                 name: false,
             };
         },
-        selectUser(user) {
-            this.selectedUsers.push(user);
+        updateRole(itemName, event) {
+            if (event && event.target && event.target.value) {
+                const selectedMembers = this.selectedMembers;
+
+                for (let i = 0; i < selectedMembers.length; i++) {
+                    const modifiedUser = selectedMembers[i];
+
+                    if (modifiedUser.name === itemName) {
+                        this.selectedMembers[i].role = event.target.value;
+
+                        break;
+                    }
+                }
+            }
         },
     },
     computed: {
         ...mapState(['users']),
+        currentStepTitle() {
+            const activeStep = this.activeStep;
+
+            if (activeStep === 1) {
+                return 'Add Details';
+            } else if (activeStep === 2) {
+                return 'Add Members';
+            } else if (activeStep === 3) {
+                return 'Add Builds';
+            }
+
+            return 'Final Review';
+        },
     },
     created() {
         if (!this.users.length) {

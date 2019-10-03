@@ -20,8 +20,8 @@ export const addOrganization = data => {
  *
  * @type   {POST}
  * @param  {int} organizationId             This is the organizationId
- * @param  {role} string                    This is the user's role in the organization
- * @param  {userId} string                  This is the userId
+ * @param  {String} role                    This is the user's role in the organization
+ * @param  {int} userId                     This is the userId
  * @return {Response Object}
  */
 export const addUserToOrganization = (organizationId, role, userId) => {

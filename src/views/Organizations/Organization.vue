@@ -93,6 +93,7 @@
                     </div>
                     <table
                         class="table is-fullwidth is-hoverable is-marginless"
+                        v-if="noBuildsExist"
                     >
                         <thead>
                             <th>Name</th>
@@ -105,7 +106,7 @@
                         <tbody>
                             <tr
                                 class="row"
-                                v-for="build in org.builds"
+                                v-for="build in organizationBuilds"
                                 :key="build.name"
                             >
                                 <td>{{ build.name }}</td>
@@ -155,6 +156,22 @@
                                             <i class="fas fa-trash-alt"></i>
                                         </span>
                                     </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table is-fullwidth is-marginless" v-else>
+                        <tbody>
+                            <tr class="row">
+                                <td colspan="6" class="has-text-centered">
+                                    <span
+                                        class="has-text-white has-text-weight-bold"
+                                    >
+                                        {{ organization.name }}
+                                    </span>
+                                    <span>
+                                        has no builds.
+                                    </span>
                                 </td>
                             </tr>
                         </tbody>
@@ -413,6 +430,7 @@ import Spinner from '@src/views/components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
+import { getBuilds } from '@api/builds.js';
 import { getUsers } from '@api/users.js';
 import { getOrganizations, getOrganizationUsers } from '@api/organizations.js';
 
@@ -432,59 +450,47 @@ export default {
             removingItem: {},
             removingType: '',
             organization: {},
+            organizationBuilds: [
+                // {
+                //     name: 'us-west-1',
+                //     status: 'complete',
+                //     progress: 100,
+                //     startDate: '2018-05-16T10:35:16.933374-07:00',
+                //     endDate: '2019-05-16T10:35:16.933374-07:00',
+                // },
+                // {
+                //     name: 'us-southwest-1',
+                //     status: 'active',
+                //     progress: 70,
+                //     startDate: '2018-08-16T10:35:16.933374-07:00',
+                //     endDate: '2019-05-16T10:35:16.933374-07:00',
+                // },
+                // {
+                //     name: 'us-east-1',
+                //     status: 'active',
+                //     progress: 50,
+                //     startDate: '2018-12-16T10:35:16.933374-07:00',
+                //     endDate: '2019-05-16T10:35:16.933374-07:00',
+                // },
+                // {
+                //     name: 'us-southeast-1',
+                //     status: 'active',
+                //     progress: 25,
+                //     startDate: '2018-05-16T10:35:16.933374-07:00',
+                //     endDate: '2019-05-16T10:35:16.933374-07:00',
+                // },
+                // {
+                //     name: 'us-northwest-1',
+                //     status: 'active',
+                //     progress: 10,
+                //     startDate: '2018-01-16T10:35:16.933374-07:00',
+                //     endDate: '2019-05-16T10:35:16.933374-07:00',
+                // },
+            ],
             organizationUsers: [],
             modifiedMembers: [],
+            noBuildsExist: false,
             noMembersExist: false,
-            builds: [
-                'us-west-1',
-                'us-east-1',
-                'us-southeast-1',
-                'us-southwest-1',
-                'us-northwest-1',
-                'ceres-12345',
-                'The Lord of the Rings',
-                'Star Wars',
-                'one-last-build-kthx-bye',
-            ],
-            org: {
-                builds: [
-                    {
-                        name: 'us-west-1',
-                        status: 'complete',
-                        progress: 100,
-                        startDate: '2018-05-16T10:35:16.933374-07:00',
-                        endDate: '2019-05-16T10:35:16.933374-07:00',
-                    },
-                    {
-                        name: 'us-southwest-1',
-                        status: 'active',
-                        progress: 70,
-                        startDate: '2018-08-16T10:35:16.933374-07:00',
-                        endDate: '2019-05-16T10:35:16.933374-07:00',
-                    },
-                    {
-                        name: 'us-east-1',
-                        status: 'active',
-                        progress: 50,
-                        startDate: '2018-12-16T10:35:16.933374-07:00',
-                        endDate: '2019-05-16T10:35:16.933374-07:00',
-                    },
-                    {
-                        name: 'us-southeast-1',
-                        status: 'active',
-                        progress: 25,
-                        startDate: '2018-05-16T10:35:16.933374-07:00',
-                        endDate: '2019-05-16T10:35:16.933374-07:00',
-                    },
-                    {
-                        name: 'us-northwest-1',
-                        status: 'active',
-                        progress: 10,
-                        startDate: '2018-01-16T10:35:16.933374-07:00',
-                        endDate: '2019-05-16T10:35:16.933374-07:00',
-                    },
-                ],
-            },
             showRemoveItemModal: false,
             showActionModal: false,
             showBuildsDropdown: false,
@@ -494,7 +500,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setOrganizations', 'setUsers']),
+        ...mapActions(['setBuilds', 'setOrganizations', 'setUsers']),
         closeModal() {
             this.showActionModal = false;
             this.showRemoveItemModal = false;
@@ -531,7 +537,9 @@ export default {
             if (item === 'builds') {
                 this.showBuildsDropdown = false;
                 this.availableData = this.builds;
-                this.unavailableData = this.org.builds.map(build => build.name);
+                this.unavailableData = this.organizationBuilds.map(
+                    build => build.name
+                );
             } else if (item === 'members') {
                 this.showMembersDropdown = false;
                 this.availableData = this.users;
@@ -554,6 +562,12 @@ export default {
             this.organization = this.organizations.find(
                 organization => organization.id === currentOrganizationId
             );
+
+            if (this.organization.builds) {
+                this.organizationBuilds = this.organization.builds;
+            } else {
+                // this.noBuildsExist = true;
+            }
 
             getOrganizationUsers(currentOrganizationId).then(response => {
                 const users = response.data;
@@ -614,14 +628,19 @@ export default {
         },
     },
     computed: {
-        ...mapState(['organizations', 'users']),
+        ...mapState(['builds', 'organizations', 'users']),
         buildsActive() {
-            return this.org.builds.filter(build => build.status === 'active')
-                .length;
+            return this.organizationBuilds.filter(
+                build => build.status === 'active'
+            ).length;
         },
         buildsComplete() {
-            return this.org.builds.filter(build => build.status === 'complete')
-                .length;
+            return this.organizationBuilds.filter(
+                build => build.status === 'complete'
+            ).length;
+        },
+        organizationHasBuilds() {
+            return this.organizationBuilds.length > 0 && !this.noBuildsExist;
         },
         organizationHasUsers() {
             return this.organizations.length > 0 && !this.noMembersExist;
@@ -636,6 +655,12 @@ export default {
             getOrganizations().then(response => {
                 const organizations = response.data;
                 this.setOrganizationData(currentOrganizationId, organizations);
+            });
+        }
+
+        if (!this.builds.length) {
+            getBuilds().then(response => {
+                this.setBuilds(response.data);
             });
         }
 
