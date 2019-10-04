@@ -50,20 +50,6 @@ export const getOrganization = organizationId => {
 };
 
 /**
- *  Get the users of an organization
- *
- * @type   {GET}
- * @param  {int} organizationId             This is the organizationId
- * @return {Response Object}
- */
-export const getOrganizationUsers = organizationId => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/organization/${organizationId}/user`,
-    });
-};
-
-/**
  * Get all organizations
  *
  * @type   {GET}
@@ -98,7 +84,6 @@ export default {
     addOrganization,
     addUserToOrganization,
     getOrganization,
-    getOrganizationUsers,
     getOrganizations,
     removeUserFromOrganization,
 };
