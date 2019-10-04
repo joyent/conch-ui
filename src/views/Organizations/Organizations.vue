@@ -62,6 +62,7 @@
         </div>
         <OrganizationsTable
             :organizations="filteredOrganizations"
+            :has-search-text="searchText.length > 0"
             v-else-if="activeView === 'list'"
         />
         <transition name="fade">
