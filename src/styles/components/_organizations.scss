@@ -226,7 +226,14 @@
 			border-color: $grey;
 			border-radius: 4px;
 			color: #bdcbdb;
+			height: 42px;
+			margin-bottom: 0;
 			min-width: 350px;
+
+			.icon {
+				left: 2px;
+				top: 3px;
+			}
 
 			&::placeholder {
 				color: #bdcbdb;
@@ -236,7 +243,7 @@
 		.views {
 			display: flex;
 			align-items: center;
-			flex-grow: 1;
+			// flex-grow: 1;
 
 			i {
 				cursor: pointer;
@@ -246,12 +253,32 @@
 					margin-right: 10px;
 				}
 			}
+
+			.button {
+				border: 1px solid $grey;
+				color: $grey-lighter;
+				display: flex;
+				height: 42px;
+				text-decoration: none;
+				width: 150px;
+
+				span {
+					flex-grow: 1;
+				}
+
+				&:hover {
+					background-color: $blue;
+					border-color: $blue;
+					color: $white;
+				}
+			}
 		}
 
 		.add-organization {
 			color: $green;
 			cursor: pointer;
 			font-size: 42px;
+			margin: 0 20px;
 
 			&:hover {
 				color: darken($green, 8%);

@@ -8,28 +8,28 @@
                 <input
                     type="text"
                     class="input"
-                    placeholder="Search Organizations"
+                    placeholder="Search organizations"
                     v-model="searchText"
                 />
                 <span class="icon is-small is-left">
-                    <i class="fas fa-search"></i>
+                    <i class="material-icons">search</i>
                 </span>
             </div>
             <div class="views">
-                <i
-                    class="material-icons view-grid"
-                    :class="{ 'has-text-info': activeView === 'grid' }"
-                    @click="activeView = 'grid'"
-                >
-                    view_module
-                </i>
-                <i
-                    class="material-icons view-list"
-                    :class="{ 'has-text-info': activeView === 'list' }"
-                    @click="activeView = 'list'"
-                >
-                    view_headline
-                </i>
+                <a class="button is-text" @click="toggleView()">
+                    <template v-if="activeView === 'grid'">
+                        <i class="material-icons view-list">
+                            list_alt
+                        </i>
+                        <span>Table View</span>
+                    </template>
+                    <template v-else-if="activeView === 'list'">
+                        <i class="material-icons view-grid">
+                            apps
+                        </i>
+                        <span>Grid View</span>
+                    </template>
+                </a>
             </div>
             <i
                 class="material-icons add-organization"
@@ -251,6 +251,13 @@ export default {
         },
         closeModal() {
             this.addingOrganization = false;
+        },
+        toggleView() {
+            if (this.activeView === 'list') {
+                this.activeView = 'grid';
+            } else {
+                this.activeView = 'list';
+            }
         },
         viewOrganization(organizationId) {
             this.$router.push({
