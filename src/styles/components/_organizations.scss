@@ -230,14 +230,14 @@
 			margin-bottom: 0;
 			min-width: 350px;
 
-			.icon {
-				left: 2px;
-				top: 3px;
-			}
-
 			&::placeholder {
 				color: #bdcbdb;
 			}
+		}
+
+		.icon {
+			left: 2px;
+			top: 3px;
 		}
 
 		.views {
