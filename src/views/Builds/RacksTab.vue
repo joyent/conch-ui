@@ -12,7 +12,7 @@
                                 type="text"
                                 class="input search"
                                 v-model="searchText"
-                                placeholder="Search Members"
+                                placeholder="Search racks"
                             >
                             <span class="icon is-small is-left">
                                 <i class="fas fa-search"></i>
