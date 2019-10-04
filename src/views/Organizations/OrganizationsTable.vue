@@ -2,7 +2,7 @@
     <div class="organizations-table">
         <table
             class="table is-hoverable is-fullwidth"
-            v-if="this.organizations.length"
+            v-if="organizations.length"
         >
             <thead>
                 <th>Name</th>
@@ -48,7 +48,10 @@
                 </tr>
             </tbody>
         </table>
-        <table class="table is-hoverable is-fullwidth" v-else>
+        <table
+            class="table is-hoverable is-fullwidth"
+            v-else-if="!organizations.length && !hasSearchText"
+        >
             <tbody>
                 <tr class="row">
                     <td colspan="5">
@@ -67,6 +70,10 @@ export default {
     props: {
         organizations: {
             type: Array,
+            required: true,
+        },
+        hasSearchText: {
+            type: Boolean,
             required: true,
         },
     },
@@ -102,8 +109,14 @@ export default {
             });
         },
     },
+    // TEMP FIX
     created() {
-        this.initializeData();
+        this.organizations.map(organization => {
+            organization.builds = [];
+            organization.users = [];
+
+            return organization;
+        });
     },
 };
 </script>
