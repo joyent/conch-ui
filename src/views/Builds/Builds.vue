@@ -8,28 +8,28 @@
                 <input
                     type="text"
                     class="input"
-                    placeholder="Search Builds"
+                    placeholder="Search builds"
                     v-model="searchText"
                 />
                 <span class="icon is-small is-left">
-                    <i class="fas fa-search"></i>
+                    <i class="material-icons">search</i>
                 </span>
             </div>
             <div class="views">
-                <i
-                    class="material-icons view-grid"
-                    :class="{ 'has-text-info': activeView === 'grid' }"
-                    @click="activeView = 'grid'"
-                >
-                    view_module
-                </i>
-                <i
-                    class="material-icons view-list"
-                    :class="{ 'has-text-info': activeView === 'list' }"
-                    @click="activeView = 'list'"
-                >
-                    view_headline
-                </i>
+                <a class="button is-text" @click="toggleView()">
+                    <template v-if="activeView === 'grid'">
+                        <i class="material-icons view-list">
+                            vertical_split
+                        </i>
+                        <span>List View</span>
+                    </template>
+                    <template v-else-if="activeView === 'list'">
+                        <i class="material-icons view-grid">
+                            apps
+                        </i>
+                        <span>Grid View</span>
+                    </template>
+                </a>
             </div>
             <i class="material-icons add-build" @click="createBuild()">
                 add_circle
@@ -1981,6 +1981,13 @@ export default {
                         buildId: build.id,
                     },
                 });
+            }
+        },
+        toggleView() {
+            if (this.activeView === 'list') {
+                this.activeView = 'grid';
+            } else {
+                this.activeView = 'list';
             }
         },
         viewBuild(buildId) {
