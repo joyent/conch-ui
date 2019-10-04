@@ -1,18 +1,23 @@
 <template>
     <div class="organizations-table">
-        <table class="table is-hoverable is-fullwidth" v-if="this.users.length">
+        <table
+            class="table is-hoverable is-fullwidth"
+            v-if="this.organizations.length"
+        >
             <thead>
                 <th>Name</th>
                 <th class="has-text-centered">Admin Users</th>
                 <th class="has-text-centered">Regular Users</th>
-                <th class="has-text-centered">Builds</th>
+                <th class="has-text-centered">Builds Completed</th>
+                <th class="has-text-centered">Builds In Progress</th>
                 <th></th>
             </thead>
             <tfoot v-if="organizations.length >= 10">
                 <th>Name</th>
                 <th class="has-text-centered">Admin Users</th>
                 <th class="has-text-centered">Regular Users</th>
-                <th class="has-text-centered">Builds</th>
+                <th class="has-text-centered">Builds Completed</th>
+                <th class="has-text-centered">Builds In Progress</th>
                 <th></th>
             </tfoot>
             <tbody>
@@ -20,17 +25,20 @@
                     class="row view-organization"
                     v-for="organization in organizations"
                     :key="organization.name"
-                    @click="viewOrganization(organization.id)"
+                    @click="viewOrganizationPage(organization.id)"
                 >
                     <td>{{ organization.name }}</td>
                     <td class="has-text-centered">
-                        {{ getAdminUsersCount(organization.id) }}
+                        {{ getAdminUserCount(organization) }}
                     </td>
                     <td class="has-text-centered">
-                        {{ getRegularUsersCount(organization.id) }}
+                        {{ getRegularUserCount(organization) }}
                     </td>
                     <td class="has-text-centered">
-                        {{ organization.builds.length }}
+                        {{ getCompletedBuildsCount(organization.builds) }}
+                    </td>
+                    <td class="has-text-centered">
+                        {{ getInProgressBuildsCount(organization.builds) }}
                     </td>
                     <td class="has-text-right">
                         <a class="button">
@@ -54,7 +62,6 @@
 
 <script>
 import Spinner from '@src/views/components/Spinner.vue';
-import { getOrganizationUsers } from '@api/organizations.js';
 
 export default {
     props: {
@@ -72,43 +79,21 @@ export default {
         };
     },
     methods: {
-        async initializeData() {
-            await this.getUsers();
+        getAdminUserCount(organization) {
+            return organization.users.filter(user => user.role === 'admin')
+                .length;
         },
-        getUsers() {
-            this.organizations.forEach(organization => {
-                const organizationId = organization.id;
-                getOrganizationUsers(organizationId).then(response => {
-                    this.users.push({
-                        id: organizationId,
-                        users: response.data,
-                    });
-                });
-            });
+        getCompletedBuildsCount(builds) {
+            return builds.filter(build => build.completed !== null).length;
         },
-        getAdminUsersCount(organizationId) {
-            if (this.users.length) {
-                const organization = this.users.find(
-                    org => org.id === organizationId
-                );
-
-                return organization.users.filter(
-                    user => user.role === 'admin'
-                ).length;
-            }
+        getInProgressBuildsCount(builds) {
+            return builds.filter(build => build.compelted === null).length;
         },
-        getRegularUsersCount(organizationId) {
-            if (this.users.length) {
-                const organization = this.users.find(
-                    organization => organization.id === organizationId
-                );
-
-                return organization.users.filter(
-                    user => user.role !== 'admin'
-                ).length;
-            }
+        getRegularUserCount(organization) {
+            return organization.users.filter(user => user.role !== 'admin')
+                .length;
         },
-        viewOrganization(organizationId) {
+        viewOrganizationPage(organizationId) {
             this.$router.push({
                 name: 'organization',
                 params: {
