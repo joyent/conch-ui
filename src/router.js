@@ -104,15 +104,19 @@ export default new Router({
                 {
                     // when /admin/builds/:buildId is matched
                     path: 'build/:buildId',
-                    name: 'buildDetails',
+                    name: 'adminBuildDetails',
                     component: SingleBuild,
                 },
-                {
-                    path: '/admin/builds/create-build',
-                    name: 'createBuild',
-                    component: CreateBuild,
-                },
             ],
+        },
+        {
+            path: '/admins/create-build',
+            name: 'createBuild',
+            components: {
+                default: CreateBuild,
+                sidebar: Sidebar,
+                navbar: Navbar,
+            },
         },
         {
             path: '/user',

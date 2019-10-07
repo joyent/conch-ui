@@ -1,21 +1,6 @@
 import { requestWithToken } from './request.js';
 
 /**
- * Add an organization
- *
- * @type   {POST}
- * @param  {JSON Object} data               JSON Object containing organization name, description and admin user list
- * @return {Response Object}
- */
-export const addOrganization = data => {
-    return requestWithToken({
-        method: 'POST',
-        url: '/organization',
-        data,
-    });
-};
-
-/**
  * Add a user to an organization
  *
  * @type   {POST}
@@ -32,6 +17,27 @@ export const addUserToOrganization = (organizationId, role, userId) => {
             send_mail: 1,
         },
         data: { role, user_id: userId },
+    });
+};
+
+/**
+ * Create a new organization
+ *
+ * @type   {POST}
+ * @param  {String} name                    The name of the new organization
+ * @param  {String} description             The description of the new organization
+ * @param  {Array} admins                   An array of admin users for the organization
+ * @return {Response Object}
+ */
+export const createOrganization = (name, description, admins) => {
+    return requestWithToken({
+        method: 'POST',
+        url: '/organization',
+        data: {
+            name,
+            description,
+            admins,
+        },
     });
 };
 
@@ -81,8 +87,8 @@ export const removeUserFromOrganization = (organizationId, userId) => {
 };
 
 export default {
-    addOrganization,
     addUserToOrganization,
+    createOrganization,
     getOrganization,
     getOrganizations,
     removeUserFromOrganization,

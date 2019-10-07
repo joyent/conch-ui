@@ -212,39 +212,6 @@
 		.build-devices {
 			padding: 20px;
 		}
-
-		.users-table {
-			table {
-				border-radius: 4px;
-			}
-
-			tr {
-				td {
-					border: none;
-				}
-			}
-
-			.users-table-header {
-				border-bottom: 1px solid $grey;
-				font-weight: bold;
-
-				td {
-					border-top-left-radius: 5px;
-				}
-
-				&:hover {
-					background-color: $grey-dark;
-				}
-			}
-
-			.users-table-footer {
-				td {
-					padding: 0;
-					border-bottom-left-radius: 4px;
-					border-bottom-right-radius: 4px;
-				}
-			}
-		}
 	}
 
 	.devices-tab,
