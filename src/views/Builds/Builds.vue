@@ -1,9 +1,6 @@
 <template>
     <div class="builds">
-        <div class="create-build" v-if="creatingBuild">
-            <CreateBuild />
-        </div>
-        <template v-else>
+        <template>
             <div class="page-heading">
                 <h1 class="title is-3 has-text-weight-bold">
                     Builds
@@ -196,6 +193,9 @@
                 </transition>
             </div>
         </template>
+        <transition name="fade">
+            <CreateBuildModal v-if="creatingBuild" />
+        </transition>
     </div>
 </template>
 
@@ -204,14 +204,17 @@ import isEmpty from 'lodash/isEmpty';
 import search from 'fuzzysearch';
 import RadialProgressBar from '@views/components/RadialProgressBar.vue';
 import CreateBuild from './CreateBuild.vue';
+import CreateBuildModal from './CreateBuildModal.vue';
 import DevicesTab from './DevicesTab.vue';
 import OverviewTab from './OverviewTab.vue';
 import RacksTab from './RacksTab.vue';
 import MembersTab from './MembersTab.vue';
+import { EventBus } from '@src/eventBus.js';
 
 export default {
     components: {
         CreateBuild,
+        CreateBuildModal,
         DevicesTab,
         OverviewTab,
         RacksTab,
@@ -1948,14 +1951,14 @@ export default {
         };
     },
     methods: {
-        addBuild() {
-
-        },
         changeTab(tab) {
             this.currentTab = tab;
         },
+        closeModal() {
+            this.creatingBuild = false;
+        },
         createBuild() {
-            this.$router.push({ name: 'createBuild' });
+            this.creatingBuild = true;
         },
         graphColor(progress) {
             return progress === 100 ? this.colors.green : this.colors.blue;
@@ -1972,7 +1975,7 @@ export default {
 
                 if (this.activeView === 'grid') {
                     this.$router.push({
-                        name: 'buildDetails',
+                        name: 'adminBuildDetails',
                         params: {
                             buildId: build.id,
                         },
@@ -2018,6 +2021,17 @@ export default {
 
             return builds;
         },
+    },
+    mounted() {
+        EventBus.$on('close-modal:create-build', () => {
+            this.closeModal();
+        });
+
+        EventBus.$on('build-created', () => {
+            getOrganizations().then(response => {
+                this.setOrganizations(response.data);
+            });
+        });
     },
 };
 </script>

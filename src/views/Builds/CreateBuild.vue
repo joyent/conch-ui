@@ -1,5 +1,6 @@
 <template>
     <div class="create-build">
+        <h1 class="title is-2 has-text-centered">Create a New Build</h1>
         <div class="steps">
             <div
                 class="step"
@@ -101,65 +102,86 @@
                 <p class="step-title">Final Review</p>
             </div>
         </div>
-        <p class="step-description" v-if="step === 1">
-            These fields are all required.
-        </p>
-        <p class="step-description" v-if="step === 2">
-            You must add at least one user with admin permissions.
-        </p>
-        <p class="step-description" v-if="step === 3">
-            Any devices which are part of a rack are also considered part of the
-            build.
-        </p>
-        <p class="step-description" v-if="step === 4">
-            Any devices that are part of a rack that has been added to the build
-            will already be a part of the build.
-        </p>
-        <p class="step-description" v-if="step === 5">
-            Review the details of this new build and make any changes necessary.
-        </p>
+        <div class="step-description">
+            <p
+                v-if="step === 1"
+                :class="{ 'has-text-danger has-text-weight-bold': errors.name }"
+            >
+                Build name, Start Date and End Date are required fields.
+            </p>
+            <p v-if="step === 2">
+                You must add at least one user with admin permissions.
+            </p>
+            <p v-if="step === 3">
+                Any devices which are part of a rack are also considered part of
+                the build.
+            </p>
+            <p v-if="step === 4">
+                Any devices that are part of a rack that has been added to the
+                build will already be a part of the build.
+            </p>
+            <p v-if="step === 5">
+                Review the details of this new build and make any changes
+                necessary.
+            </p>
+        </div>
         <div class="step-content">
             <div class="step-1-content" v-if="step === 1">
-                <div class="columns">
-                    <div class="column is-4 is-offset-4 box">
+                <div class="box">
+                    <div class="field">
                         <label class="label">Build Name</label>
                         <div class="control">
                             <input
                                 type="text"
                                 class="input build-name"
-                                v-model="buildName"
+                                :class="{ 'is-danger': errors.name }"
+                                v-model="name"
                                 placeholder="Enter a name for your build"
                             />
                         </div>
-                        <div class="build-dates">
-                            <div class="start-date">
-                                <label class="label">Start Date</label>
-                                <v-date-picker
-                                    is-dark
-                                    :attributes="datePickerAttrs"
-                                    v-model="startDate"
-                                    :popover="{ visibility: 'click' }"
-                                />
-                            </div>
-                            <div class="end-date">
-                                <label class="label">End Date</label>
-                                <v-date-picker
-                                    is-dark
-                                    :attributes="datePickerAttrs"
-                                    v-model="endDate"
-                                    :popover="{ visibility: 'click' }"
-                                />
-                            </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Description</label>
+                        <textarea
+                            class="textarea has-fixed-size"
+                            name="description"
+                            v-model="description"
+                            maxlength="165"
+                            placeholder="Add a helpful description for the build"
+                        ></textarea>
+                    </div>
+                    <div class="build-dates">
+                        <div class="start-date">
+                            <label class="label">Start Date</label>
+                            <v-date-picker
+                                is-dark
+                                :attributes="datePickerAttrs"
+                                v-model="startDate"
+                                :popover="{ visibility: 'click' }"
+                            />
+                        </div>
+                        <div class="end-date">
+                            <label class="label">End Date</label>
+                            <v-date-picker
+                                is-dark
+                                :attributes="datePickerAttrs"
+                                v-model="endDate"
+                                :popover="{ visibility: 'click' }"
+                            />
                         </div>
                     </div>
                 </div>
             </div>
-            <MembersTable v-if="step === 2" />
+            <MembersTable v-else-if="step === 2" />
             <RacksTable v-else-if="step === 3" />
             <DevicesTable v-else-if="step === 4" />
         </div>
         <div class="button-group">
-            <a class="button is-info" @click="previousStep()">
+            <a
+                class="button is-info"
+                :disabled="step === 1"
+                @click="previousStep()"
+            >
                 <i class="material-icons">arrow_back</i>
                 Previous Step
             </a>
@@ -191,8 +213,15 @@ export default {
     },
     data() {
         return {
+            completeSteps: [],
+            description: '',
             endDate: new Date(),
-            startDate: new Date(),
+            errors: {
+                endDate: false,
+                name: false,
+                hasAdminUser: false,
+                startDate: false,
+            },
             datePickerAttrs: [
                 {
                     key: 'today',
@@ -204,8 +233,8 @@ export default {
                     },
                 },
             ],
-            completeSteps: [],
-            buildName: '',
+            name: '',
+            startDate: new Date(),
             step: 1,
         };
     },
@@ -214,12 +243,35 @@ export default {
             return this.completeSteps.indexOf(step) !== -1;
         },
         nextStep() {
-            this.completeSteps.push(this.step);
-            this.step++;
+            const step = this.step;
+            let advance = true;
+
+            this.resetErrors();
+
+            if (step === 1) {
+                // Add potential errors for start and end dates
+                if (!this.name) {
+                    this.errors.name = true;
+                    advance = false;
+                }
+            }
+
+            if (advance) {
+                this.completeSteps.push(this.step);
+                this.step++;
+            }
         },
         previousStep() {
             this.completeSteps.pop();
             this.step--;
+        },
+        resetErrors() {
+            this.errors = {
+                endDate: false,
+                hasAdminUser: false,
+                name: false,
+                startDate: false,
+            };
         },
     },
     mounted() {
