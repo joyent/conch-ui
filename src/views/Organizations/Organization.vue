@@ -17,14 +17,11 @@
                 <Spinner />
             </div>
             <div class="column">
-                <div class="box stats" v-if="organizationHasUsers">
+                <div class="box stats">
                     <h2 class="is-6">Members</h2>
                     <span class="is-size-3 has-text-info">
                         {{ organizationUsers.length }}
                     </span>
-                </div>
-                <div class="box stats" v-else>
-                    <Spinner />
                 </div>
             </div>
             <div class="column">
@@ -189,8 +186,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="columns">
             <div class="column">
                 <div class="datatable-simple">
                     <div class="datatable-header">
@@ -202,7 +197,7 @@
                         <div
                             class="dropdown dropdown-members is-right"
                             :class="{ 'is-active': showMembersDropdown }"
-                            v-if="organizationHasUsers"
+                            v-if="organizationHasMembers"
                         >
                             <a
                                 class="datatable-header-icon dropdown-trigger"
@@ -250,7 +245,7 @@
                     </div>
                     <table
                         class="table is-fullwidth is-hoverable is-marginless"
-                        v-if="organizationHasUsers"
+                        v-if="organizationHasMembers"
                     >
                         <thead>
                             <th>Name</th>
@@ -359,22 +354,23 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table
-                        class="table is-fullwidth is-hoverable is-marginless"
-                        v-else
-                    >
+                    <table class="table is-fullwidth is-marginless" v-else>
                         <tbody>
                             <tr class="row">
-                                <td>
-                                    <Spinner />
+                                <td colspan="6" class="has-text-centered">
+                                    <span
+                                        class="has-text-white has-text-weight-bold"
+                                    >
+                                        {{ organization.name }}
+                                    </span>
+                                    <span>
+                                        has no members.
+                                    </span>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div
-                        class="datatable-footer"
-                        v-if="!editMembers && organizationHasUsers"
-                    >
+                    <div class="datatable-footer" v-if="!editMembers">
                         <a
                             class="datatable-footer-item add"
                             @click="openActionModal('add', 'members')"
@@ -387,7 +383,7 @@
                     </div>
                     <div
                         class="datatable-footer "
-                        v-else-if="editMembers && organizationHasUsers"
+                        v-else-if="editMembers && organizationHasMembers"
                     >
                         <a
                             class="datatable-footer-item save"
@@ -432,7 +428,7 @@ import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getBuilds } from '@api/builds.js';
 import { getUsers } from '@api/users.js';
-import { getOrganizations, getOrganizationUsers } from '@api/organizations.js';
+import { getOrganizations } from '@api/organizations.js';
 
 export default {
     components: {
@@ -450,43 +446,7 @@ export default {
             removingItem: {},
             removingType: '',
             organization: {},
-            organizationBuilds: [
-                // {
-                //     name: 'us-west-1',
-                //     status: 'complete',
-                //     progress: 100,
-                //     startDate: '2018-05-16T10:35:16.933374-07:00',
-                //     endDate: '2019-05-16T10:35:16.933374-07:00',
-                // },
-                // {
-                //     name: 'us-southwest-1',
-                //     status: 'active',
-                //     progress: 70,
-                //     startDate: '2018-08-16T10:35:16.933374-07:00',
-                //     endDate: '2019-05-16T10:35:16.933374-07:00',
-                // },
-                // {
-                //     name: 'us-east-1',
-                //     status: 'active',
-                //     progress: 50,
-                //     startDate: '2018-12-16T10:35:16.933374-07:00',
-                //     endDate: '2019-05-16T10:35:16.933374-07:00',
-                // },
-                // {
-                //     name: 'us-southeast-1',
-                //     status: 'active',
-                //     progress: 25,
-                //     startDate: '2018-05-16T10:35:16.933374-07:00',
-                //     endDate: '2019-05-16T10:35:16.933374-07:00',
-                // },
-                // {
-                //     name: 'us-northwest-1',
-                //     status: 'active',
-                //     progress: 10,
-                //     startDate: '2018-01-16T10:35:16.933374-07:00',
-                //     endDate: '2019-05-16T10:35:16.933374-07:00',
-                // },
-            ],
+            organizationBuilds: [],
             organizationUsers: [],
             modifiedMembers: [],
             noBuildsExist: false,
@@ -569,14 +529,20 @@ export default {
                 // this.noBuildsExist = true;
             }
 
-            getOrganizationUsers(currentOrganizationId).then(response => {
-                const users = response.data;
-                this.organizationUsers = users;
+            if (this.organization.users && this.organization.users.length > 0) {
+                this.organizationUsers = this.organization.users;
+            } else {
+                this.noMembersExist = true;
+            }
 
-                if (!users.length) {
-                    this.noMembersExist = true;
-                }
-            });
+            // getOrganizationUsers(currentOrganizationId).then(response => {
+            //     const users = response.data;
+            //     this.organizationUsers = users;
+
+            //     if (!users.length) {
+            //         this.noMembersExist = true;
+            //     }
+            // });
         },
         toggleEditMembers() {
             this.editMembers = !this.editMembers;
@@ -642,7 +608,7 @@ export default {
         organizationHasBuilds() {
             return this.organizationBuilds.length > 0 && !this.noBuildsExist;
         },
-        organizationHasUsers() {
+        organizationHasMembers() {
             return this.organizations.length > 0 && !this.noMembersExist;
         },
     },
@@ -658,11 +624,11 @@ export default {
             });
         }
 
-        if (!this.builds.length) {
-            getBuilds().then(response => {
-                this.setBuilds(response.data);
-            });
-        }
+        // if (!this.builds.length) {
+        //     getBuilds().then(response => {
+        //         this.setBuilds(response.data);
+        //     });
+        // }
 
         if (!this.users.length) {
             getUsers().then(response => {
