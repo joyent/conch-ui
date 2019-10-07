@@ -691,7 +691,7 @@ import SuccessModal from './SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getUsers } from '@api/users.js';
-import { addOrganization } from '@api/organizations.js';
+import * as Organizations from '@api/organizations.js';
 import { addOrganizationToBuild } from '@api/builds.js';
 
 export default {
@@ -804,14 +804,15 @@ export default {
 
             const admins = this.selectedMembers
                 .filter(member => member.role === 'admin')
-                .map(user => user.id);
-            const data = {
-                name: this.name,
-                description: this.description,
-                admins,
-            };
+                .map(user => {
+                    return { user_id: user.id };
+                });
 
-            await addOrganization(data).then(response => {
+            await Organizations.createOrganization(
+                this.name,
+                this.description,
+                admins
+            ).then(response => {
                 this.organizationId = response.data.id;
             });
 
