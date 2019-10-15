@@ -62,13 +62,13 @@
                     <a>
                         <i class="material-icons">layers</i>
                         <span class="name">Builds</span>
-                        <span class="icon">
+                        <span class="icon chevron">
                             <i class="fas fa-chevron-right"></i>
                         </span>
                     </a>
                 </li>
             </ul>
-            <ul class="menu-list" v-if="isBuildsExpanded">
+            <ul class="menu-list child-pages" v-if="isBuildsExpanded">
                 <li class="nav-item">
                     <router-link
                         :to="{
@@ -99,15 +99,15 @@
             >
                 <li class="nav-item">
                     <a>
-                        <i class="material-icons">business</i>
+                        <i class="material-icons">recent_actors</i>
                         <span class="name">Organizations</span>
-                        <span class="icon">
+                        <span class="icon chevron">
                             <i class="fas fa-chevron-right"></i>
                         </span>
                     </a>
                 </li>
             </ul>
-            <ul class="menu-list" v-if="isOrganizationsExpanded">
+            <ul class="menu-list child-pages" v-if="isOrganizationsExpanded">
                 <li
                     class="nav-item"
                     v-for="organization in currentUser.organizations"
@@ -141,7 +141,7 @@
                         :to="{ name: 'organizations' }"
                         active-class="is-active"
                     >
-                        <i class="material-icons">business</i>
+                        <i class="material-icons">recent_actors</i>
                         <span>Organizations</span>
                     </router-link>
                 </li>
