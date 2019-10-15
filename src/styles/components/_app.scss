@@ -1,15 +1,32 @@
+html {
+	height: 100%;
+}
+
+body {
+	box-sizing: border-box;
+	display: flex;
+	height: 100%;
+	margin: 0px;
+	overflow: hidden;
+}
+
 #app {
+	flex-shrink: 0;
+	width: 100%;
+
 	.signed-in {
 		display: flex;
 		height: 100%;
 	}
 
 	.page {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
 		flex-grow: 1;
-		flex-shrink: 1;
+		overflow-y: auto;
 
 		.page-content {
-			margin-left: 200px;
 			padding: 20px;
 
 			&.page-not-found {
