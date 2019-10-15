@@ -1,12 +1,10 @@
 aside.menu {
 	background-color: lighten($grey-darker, 2%);
-	position: fixed;
+	display: flex;
+	flex-direction: column;
 	height: 100%;
-	top: 0;
-	left: 0;
-	overflow-x: hidden;
+	overflow-y: auto;
 	z-index: 1;
-	width: 200px;
 
 	&.loading {
 		display: flex;
@@ -54,6 +52,7 @@ aside.menu {
 			align-items: center;
 			display: flex;
 			padding: 0.8em 0.75em;
+			white-space: nowrap;
 		}
 	}
 
@@ -71,6 +70,17 @@ aside.menu {
 			ul {
 				border-left: none;
 				padding-left: 0.35em;
+			}
+
+			.icon.chevron {
+				margin-left: 12px;
+			}
+		}
+
+		&.child-pages {
+			a {
+				padding-left: 50px;
+				padding-right: 30px;
 			}
 		}
 	}
