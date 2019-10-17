@@ -13,10 +13,10 @@ export const addUserToOrganization = (organizationId, role, userId) => {
     return requestWithToken({
         method: 'POST',
         url: `/organization/${organizationId}/user`,
+        data: { role, user_id: userId },
         params: {
             send_mail: 1,
         },
-        data: { role, user_id: userId },
     });
 };
 
@@ -26,18 +26,28 @@ export const addUserToOrganization = (organizationId, role, userId) => {
  * @type   {POST}
  * @param  {String} name                    The name of the new organization
  * @param  {String} description             The description of the new organization
- * @param  {Array} admins                   An array of admin users for the organization
+ * @param  {Array} admins                   An array of admin users for the new organization
  * @return {Response Object}
  */
 export const createOrganization = (name, description, admins) => {
     return requestWithToken({
         method: 'POST',
         url: '/organization',
-        data: {
-            name,
-            description,
-            admins,
-        },
+        data: { name, description, admins },
+    });
+};
+
+/**
+ * Delete an organization
+ *
+ * @type {DELETE}
+ * @param {String} organizationId           The ID of the organization being deleted
+ * @return {Response Object}
+ */
+export const deleteOrganization = organizationId => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/organization/${organizationId}`,
     });
 };
 
@@ -89,6 +99,7 @@ export const removeUserFromOrganization = (organizationId, userId) => {
 export default {
     addUserToOrganization,
     createOrganization,
+    deleteOrganization,
     getOrganization,
     getOrganizations,
     removeUserFromOrganization,
