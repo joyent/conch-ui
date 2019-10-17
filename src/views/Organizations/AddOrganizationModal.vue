@@ -804,9 +804,7 @@ export default {
 
             const admins = this.selectedMembers
                 .filter(member => member.role === 'admin')
-                .map(user => {
-                    return { user_id: user.id };
-                });
+                .map(user => ({ user_id: user.id }));
 
             await Organizations.createOrganization(
                 this.name,
