@@ -451,6 +451,7 @@ import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getUsers } from '@api/users.js';
 import { getDevices } from '@api/workspaces.js';
+import * as Builds from '@api/builds.js';
 
 export default {
     components: {
@@ -459,6 +460,7 @@ export default {
     data() {
         return {
             activeStep: 1,
+            buildId: '',
             description: '',
             errors: {
                 adminUsersCount: false,
@@ -466,6 +468,7 @@ export default {
             },
             isActive: true,
             isLoading: false,
+            isSuccessful: false,
             name: '',
             racks: [
                 {
@@ -509,6 +512,24 @@ export default {
             this.isActive = false;
 
             EventBus.$emit('close-modal:add-organization');
+        },
+        async createBuild() {
+            this.isLoading = true;
+
+            const admins = this.selectedMembers
+                .filter(member => member.role === 'admin')
+                .map(user => ({ user_id: user.id }));
+
+            await Builds.createBuild(this.name, this.description, admins).then(
+                response => {
+                    this.buildId = response.data.id;
+                }
+            );
+
+            EventBus.$emit('build-created');
+
+            this.isLoading = false;
+            this.isSuccessful = true;
         },
         filteredItems(itemType) {
             const searchText = this.searchText.toLowerCase();
