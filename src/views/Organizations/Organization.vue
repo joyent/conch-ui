@@ -80,6 +80,7 @@
                                         @click="
                                             openActionModal('remove', 'builds')
                                         "
+                                        v-if="organizationBuilds.length > 0"
                                     >
                                         <i class="fas fa-trash-alt"></i>
                                         <p>Remove Builds</p>
@@ -197,7 +198,6 @@
                         <div
                             class="dropdown dropdown-members is-right"
                             :class="{ 'is-active': showMembersDropdown }"
-                            v-if="organizationHasMembers"
                         >
                             <a
                                 class="datatable-header-icon dropdown-trigger"
@@ -224,6 +224,7 @@
                                     <a
                                         class="dropdown-item edit"
                                         @click="toggleEditMembers()"
+                                        v-if="organizationHasMembers"
                                     >
                                         <i class="material-icons">edit</i>
                                         <p v-if="!editMembers">Edit Members</p>
@@ -231,7 +232,10 @@
                                     </a>
                                     <a
                                         class="dropdown-item remove"
-                                        v-if="!editMembers"
+                                        v-if="
+                                            !editMembers &&
+                                                organizationHasMembers
+                                        "
                                         @click="
                                             openActionModal('remove', 'members')
                                         "
