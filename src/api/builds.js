@@ -1,18 +1,33 @@
 import { requestWithToken } from './request.js';
 
 /**
+ * Add a device to a build
+ *
+ * @type   {POST}
+ * @param  {String} buildId                 The ID of the build being updated
+ * @param  {String} deviceId                The ID of the device being added
+ * @return {Response Object}
+ */
+export const addDeviceToBuild = (buildId, deviceId) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/build/${buildId}/device/${deviceId}`,
+    });
+};
+
+/**
  * Add an organization to a build
  *
  * @type   {POST}
- * @param  {int} buildId                    This is the buildId
- * @param  {int} organizationId             This is the organizationId
+ * @param  {String} buildId                 The ID of the build being updated
+ * @param  {String} organizationId          The ID of the organization being added
  * @param  {String} role                    This is the role of the organization
  * @return {Response Object}
  */
 export const addOrganizationToBuild = (buildId, organizationId, role) => {
     return requestWithToken({
         method: 'POST',
-        url: `/build/${buildId}/organization'`,
+        url: `/build/${buildId}/organization`,
         data: {
             organization_id: organizationId,
             role,
@@ -20,6 +35,61 @@ export const addOrganizationToBuild = (buildId, organizationId, role) => {
         params: {
             send_mail: 1,
         },
+    });
+};
+
+/**
+ * Add a rack to a build
+ *
+ * @type   {POST}
+ * @param  {String} buildId                 The ID of the build being updated
+ * @param  {String} deviceId                The ID of the rack being added
+ * @return {Response Object}
+ */
+export const addRackToBuild = (buildId, rackId) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/build/${buildId}/rack/${rackId}`,
+    });
+};
+
+/**
+ * Add a user to an existing build
+ *
+ * @type {POST}
+ * @param {String} buildId                  The ID of the build being updated
+ * @param {String} userId                   The ID of the user being added
+ * @param {String} role                     The role of the user for the build
+ * @return {Response Object}
+ */
+export const addUserToBuild = (buildId, userId, role) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/build/${buildId}/user`,
+        data: {
+            user_id: userId,
+            role: role,
+        },
+        params: {
+            send_mail: 1,
+        },
+    });
+};
+
+/**
+ * Create a new build
+ *
+ * @type  {POST}
+ * @param {String} name                     The name of the build
+ * @param {String} description              The description of the build
+ * @param {Array} admins                    An array of admin users for the build
+ * @return {Response Object}
+ */
+export const createBuild = (name, description, admins) => {
+    return requestWithToken({
+        method: 'POST',
+        url: '/build',
+        data: { name, description, admins },
     });
 };
 
@@ -36,4 +106,113 @@ export const getBuilds = () => {
     });
 };
 
-export default { addOrganizationToBuild, getBuilds };
+/**
+ * Update a build
+ *
+ * @type {POST}
+ * @param {String} buildId                  The ID of the build being updated
+ * @param {JSON Object} updatedData         The data being updated. May include description, started (date-time), or completed (date-time)
+ * @return {Response Object}
+ */
+export const updateBuild = (buildId, updatedData) => {
+    const data = {};
+    const { description, started, completed } = updatedData;
+
+    if (description) {
+        data.description = description;
+    }
+
+    if (updatedData.started) {
+        data.started = started;
+    }
+
+    if (updatedData.completed) {
+        data.completed = completed;
+    }
+
+    return requestWithToken({
+        method: 'POST',
+        url: `/build/${buildId}`,
+        data,
+    });
+};
+
+/**
+ * Remove a device from a build
+ *
+ * @type {DELETE}
+ * @param {String} buildId                  The ID of the build being updated
+ * @param {String} deviceId                 The ID of the device being removed
+ * @return {Response Object}
+ */
+export const removeDeviceFromBuild = (buildId, deviceId) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/build/${buildId}/device/${deviceId}`,
+    });
+};
+
+/**
+ * Remove an organization from a build
+ *
+ * @type {DELETE}
+ * @param {String} buildId                  The ID of the build being updated
+ * @param {String} organizationId           The ID of the organization being removed
+ * @return {Response Object}
+ */
+export const removeOrganizationFromBuild = (buildId, organizationId) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/build/${buildId}/user/${organizationId}`,
+        params: {
+            send_mail: 1,
+        },
+    });
+};
+
+/**
+ * Remove a rack from a build
+ *
+ * @type {DELETE}
+ * @param {String} buildId                  The ID of the build being updated
+ * @param {String} rackId                   The ID of the rack being removed
+ * @return {Response Object}
+ */
+export const removeRackFromBuild = (buildId, rackId) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/build/${buildId}/device/${rackId}`,
+    });
+};
+
+/**
+ * Remove a user from a build
+ *
+ * @type {DELETE}
+ * @param {String} buildId                  The ID of the build being updated
+ * @param {String} userId                   The ID of the user being removed
+ * @return {Response Object}
+ */
+export const removeUserFromBuild = (buildId, userId) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/build/${buildId}/user/${userId}`,
+        params: {
+            send_mail: 1,
+        },
+    });
+};
+
+export default {
+    addDeviceToBuild,
+    addOrganizationToBuild,
+    addRackToBuild,
+    addUserToBuild,
+    createBuild,
+    getBuilds,
+    removeDeviceFromBuild,
+    removeOrganizationFromBuild,
+    removeRackFromBuild,
+    removeUserFromBuild,
+    updateBuild,
+};
