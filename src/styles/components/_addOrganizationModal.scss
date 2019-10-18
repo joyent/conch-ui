@@ -1,7 +1,7 @@
 .add-organization-modal {
     .modal-content {
         border-radius: 4px;
-        min-height: 450px;
+        min-height: 500px;
         min-width: 800px;
     }
 
@@ -24,7 +24,7 @@
     }
 
     .modal-body {
-        min-height: 288px;
+        min-height: 327px;
         overflow: scroll;
     }
 
@@ -91,7 +91,7 @@
 
     .organization-details {
         // Check this with .step-body min-height
-        max-height: 450px;
+        max-height: 500px;
         padding: 20px;
         overflow: hidden;
     }
@@ -132,6 +132,10 @@
         &.first-step {
             justify-content: flex-end;
         }
+    }
+
+    a.button.create-organization {
+        height: 42px;
     }
 
     input.name,
