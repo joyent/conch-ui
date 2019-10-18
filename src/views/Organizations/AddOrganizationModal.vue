@@ -666,7 +666,7 @@
                                     </a>
                                 </div>
                                 <a
-                                    class="button is-fullwidth is-success"
+                                    class="button is-fullwidth is-success create-organization"
                                     :class="{ 'is-loading': isLoading }"
                                     @click="createOrganization()"
                                     style="border-radius: 3px; font-weight: bold;"

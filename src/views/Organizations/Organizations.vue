@@ -44,20 +44,32 @@
                 v-for="organization in filteredOrganizations"
                 :key="organization.created"
             >
-                <a @click="viewOrganization(organization.id)">
-                    <div class="card-content">
-                        <i class="material-icons">recent_actors</i>
-                        <p class="organization-name">
-                            {{ organization.name }}
-                        </p>
-                        <p class="organization-desc">
-                            {{ organization.description }}
-                        </p>
-                        <a class="button">
-                            View Organization
-                        </a>
-                    </div>
-                </a>
+                <div
+                    class="card-content"
+                    @mouseover="showDeleteOrganizationButton = organization.id"
+                    @mouseleave="showDeleteOrganizationButton = ''"
+                >
+                    <i
+                        class="material-icons close"
+                        v-if="showDeleteOrganizationButton === organization.id"
+                        @click="showConfirmationModal(organization)"
+                    >
+                        close
+                    </i>
+                    <i class="material-icons">recent_actors</i>
+                    <p class="organization-name">
+                        {{ organization.name }}
+                    </p>
+                    <p class="organization-desc">
+                        {{ organization.description }}
+                    </p>
+                    <a
+                        class="button"
+                        @click="viewOrganization(organization.id)"
+                    >
+                        View Organization
+                    </a>
+                </div>
             </div>
         </div>
         <OrganizationsTable
@@ -67,6 +79,83 @@
         />
         <transition name="fade">
             <AddOrganizationModal v-if="addingOrganization" />
+            <div class="delete-organization-modal" v-if="isActive">
+                <div class="modal" :class="{ 'is-active': isActive }">
+                    <div class="modal-background" @click="closeModal()"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Confirm Removal</p>
+                            <i
+                                class="material-icons close"
+                                @click="closeModal()"
+                            >
+                                close
+                            </i>
+                        </header>
+                        <section class="modal-card-body">
+                            <p>
+                                Are you sure you want to remove
+                                {{ organizationBeingRemoved.name }}?
+                            </p>
+                            <br />
+                            <article class="notification">
+                                <i class="material-icons">warning</i>
+                                <p>This action cannot be undone.</p>
+                            </article>
+                            <br />
+                            <div class="buttons-group">
+                                <a class="button" @click="closeModal()">
+                                    Cancel
+                                </a>
+                                <a
+                                    class="button is-danger"
+                                    :class="{ 'is-loading': isLoading }"
+                                    @click="deleteOrganization()"
+                                >
+                                    Confirm
+                                </a>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="fade">
+            <div
+                class="delete-organization-success-modal"
+                v-if="showSuccessModal === true"
+            >
+                <div class="modal is-active">
+                    <div
+                        class="modal-background"
+                        @click="showSuccessModal = false"
+                    ></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Success!</p>
+                            <i
+                                class="material-icons close"
+                                @click="closeModal()"
+                            >
+                                close
+                            </i>
+                        </header>
+                        <section class="modal-card-body">
+                            <p>
+                                {{ organizationBeingRemoved.name }} has been
+                                removed.
+                            </p>
+                            <br />
+                            <a
+                                class="button is-success"
+                                @click="showSuccessModal = false"
+                            >
+                                Close
+                            </a>
+                        </section>
+                    </div>
+                </div>
+            </div>
         </transition>
     </div>
 </template>
@@ -76,7 +165,7 @@ import search from 'fuzzysearch';
 import AddOrganizationModal from './AddOrganizationModal.vue';
 import OrganizationsTable from './OrganizationsTable.vue';
 import { EventBus } from '@src/eventBus.js';
-import { getOrganizations } from '@api/organizations.js';
+import * as Organizations from '@api/organizations.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
@@ -90,158 +179,10 @@ export default {
             addingOrganization: false,
             isActive: false,
             isHovered: '',
-            // organizations: [
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'First Build Team',
-            //         memberCount: 15,
-            //         adminUsers: 1,
-            //         regularUsers: 14,
-            //         builds: 5,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Ceres Build Team',
-            //         memberCount: 50,
-            //         adminUsers: 2,
-            //         regularUsers: 48,
-            //         builds: 10,
-            //         workspaces: 5,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'APAC Build Team',
-            //         memberCount: 25,
-            //         adminUsers: 3,
-            //         regularUsers: 22,
-            //         builds: 5,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'NetOps Build Team',
-            //         memberCount: 5,
-            //         adminUsers: 1,
-            //         regularUsers: 4,
-            //         builds: 2,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Server Maintenance Team',
-            //         memberCount: 10,
-            //         adminUsers: 1,
-            //         regularUsers: 9,
-            //         builds: 1,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Data Center Build Team',
-            //         memberCount: 29,
-            //         adminUsers: 1,
-            //         regularUsers: 28,
-            //         builds: 5,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Joyent Build Team',
-            //         memberCount: 18,
-            //         adminUsers: 2,
-            //         regularUsers: 16,
-            //         builds: 6,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Integrator Build Team',
-            //         memberCount: 8,
-            //         adminUsers: 2,
-            //         regularUsers: 6,
-            //         builds: 2,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Google Build Team',
-            //         memberCount: 40,
-            //         adminUsers: 4,
-            //         regularUsers: 36,
-            //         builds: 15,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Samsung Build Team',
-            //         memberCount: 30,
-            //         adminUsers: 1,
-            //         regularUsers: 29,
-            //         builds: 8,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Apple Build Team',
-            //         memberCount: 12,
-            //         adminUsers: 1,
-            //         regularUsers: 11,
-            //         builds: 3,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Linux Build Team',
-            //         memberCount: 40,
-            //         adminUsers: 4,
-            //         regularUsers: 36,
-            //         builds: 15,
-            //         workspaces: 12,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'CloudOps Build Team',
-            //         memberCount: 10,
-            //         adminUsers: 1,
-            //         regularUsers: 9,
-            //         builds: 2,
-            //         workspaces: 4,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Samsung Internet Team',
-            //         memberCount: 15,
-            //         adminUsers: 2,
-            //         regularUsers: 13,
-            //         builds: 2,
-            //         workspaces: 10,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            //     {
-            //         id: 'a2dbe92ledsa99d',
-            //         name: 'Infrastructure Team',
-            //         memberCount: 20,
-            //         adminUsers: 2,
-            //         regularUsers: 18,
-            //         builds: 2,
-            //         workspaces: 5,
-            //         desc: 'Cloud build engineers assigned to the Ceres build. Tasks include rack builds, net ops and general maintenance',
-            //     },
-            // ],
+            isLoading: false,
+            organizationBeingRemoved: {},
+            showDeleteOrganizationButton: '',
+            showSuccessModal: false,
             searchText: '',
         };
     },
@@ -252,6 +193,27 @@ export default {
         },
         closeModal() {
             this.addingOrganization = false;
+            this.isActive = false;
+            this.removingOrganization = false;
+        },
+        async deleteOrganization() {
+            this.isLoading = true;
+
+            await Organizations.deleteOrganization(
+                this.organizationBeingRemoved.id
+            );
+
+            await Organizations.getOrganizations().then(response => {
+                this.setOrganizations(response.data);
+            });
+
+            this.isActive = false;
+            this.showSuccessModal = true;
+            this.isLoading = false;
+        },
+        showConfirmationModal(organization) {
+            this.organizationBeingRemoved = organization;
+            this.isActive = true;
         },
         toggleView() {
             if (this.activeView === 'list') {
@@ -292,7 +254,7 @@ export default {
     },
     created() {
         if (!this.organizations.length) {
-            getOrganizations().then(response => {
+            Organizations.getOrganizations().then(response => {
                 this.setOrganizations(response.data);
             });
         }
@@ -303,7 +265,7 @@ export default {
         });
 
         EventBus.$on('organization-created', () => {
-            getOrganizations().then(response => {
+            Organizations.getOrganizations().then(response => {
                 this.setOrganizations(response.data);
             });
         });
