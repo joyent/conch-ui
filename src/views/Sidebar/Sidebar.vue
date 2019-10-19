@@ -69,26 +69,20 @@
                 </li>
             </ul>
             <ul class="menu-list child-pages" v-if="isBuildsExpanded">
-                <li class="nav-item">
+                <li
+                    class="nav-item"
+                    v-for="build in currentUser.builds"
+                    :key="build.id"
+                >
                     <router-link
                         :to="{
                             name: 'build',
-                            params: { buildId: 'a2dbe92ledsa99d' },
+                            params: { buildId: build.id },
                         }"
                         active-class="is-active"
+                        :key="`$route.path_${build.id}`"
                     >
-                        <span>UK-West-1</span>
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link
-                        :to="{
-                            name: 'build',
-                            params: { buildId: 'b2wee92hhdsa99a' },
-                        }"
-                        active-class="is-active"
-                    >
-                        <span>US-NORTHWEST-1a</span>
+                        <span>{{ build.name }}</span>
                     </router-link>
                 </li>
             </ul>
@@ -189,8 +183,9 @@
 <script>
 import isEmpty from 'lodash/isEmpty';
 import Spinner from '@src/views/components/Spinner.vue';
+import { EventBus } from '@src/eventBus.js';
 import { logout } from '@api/authentication.js';
-import { getCurrentUser } from '@api/users.js';
+import * as Users from '@api/users.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
@@ -199,14 +194,17 @@ export default {
     },
     data() {
         return {
-            conchVersion: '',
-            conchUIVersion: '',
             isBuildsExpanded: false,
             isOrganizationsExpanded: false,
         };
     },
     methods: {
         ...mapActions(['setCurrentUser']),
+        getCurrentUser() {
+            Users.getCurrentUser().then(response => {
+                this.setCurrentUser(response.data);
+            });
+        },
         isEmpty,
         navigateHomepage() {
             this.$router.push({
@@ -245,10 +243,16 @@ export default {
     },
     created() {
         if (isEmpty(this.currentUser)) {
-            getCurrentUser().then(response => {
-                this.setCurrentUser(response.data);
-            });
+            this.getCurrentUser();
         }
+    },
+    mounted() {
+        EventBus.$on(
+            ['build-created', 'organization-created', 'organization-deleted'],
+            () => {
+                this.getCurrentUser();
+            }
+        );
     },
 };
 </script>
