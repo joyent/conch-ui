@@ -12,7 +12,10 @@
                 </p>
                 <div class="button-group">
                     <a class="button" @click="closeModal()">Cancel</a>
-                    <a class="button is-danger is-capitalized">
+                    <a
+                        class="button is-danger is-capitalized"
+                        @click="removeItem()"
+                    >
                         Remove {{ itemType }}
                     </a>
                 </div>
@@ -23,9 +26,14 @@
 
 <script>
 import { EventBus } from '@src/eventBus.js';
+import * as Builds from '@api/builds.js';
 
 export default {
     props: {
+        build: {
+            type: Object,
+            required: true,
+        },
         item: {
             type: Object,
             required: true,
@@ -45,6 +53,15 @@ export default {
             this.isActive = false;
 
             EventBus.$emit('close-modal:remove-item');
+        },
+        removeItem() {
+            if (this.itemType === 'user') {
+                Builds.removeUserFromBuild(this.build.id, this.item.id).then(
+                    () => {
+                    // show success / failure modal
+                    }
+                );
+            }
         },
     },
 };

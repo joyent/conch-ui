@@ -140,6 +140,7 @@
         </div>
         <RemoveItemModal
             v-if="removingMember"
+            :build="build"
             :item="user"
             item-type="user"
         />
@@ -147,7 +148,7 @@
 </template>
 
 <script>
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
 import RemoveItemModal from './RemoveItemModal.vue';
 import { EventBus } from '@src/eventBus.js';
 
@@ -216,7 +217,8 @@ export default {
             return users;
         },
         regularUsersCount() {
-            return this.build.users.filter(user => user.role === 'regular user').length;
+            return this.build.users.filter(user => user.role === 'regular user')
+                .length;
         },
     },
     mounted() {
