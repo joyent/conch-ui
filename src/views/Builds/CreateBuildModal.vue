@@ -187,6 +187,37 @@
                                                                 {{ user.name }}
                                                             </span>
                                                         </td>
+                                                        <td class="role-select">
+                                                            <div
+                                                                class="select role"
+                                                            >
+                                                                <select
+                                                                    @change="
+                                                                        updateRole(
+                                                                            user.name,
+                                                                            $event
+                                                                        )
+                                                                    "
+                                                                >
+                                                                    <option
+                                                                        value="admin"
+                                                                    >
+                                                                        Admin
+                                                                    </option>
+                                                                    <option
+                                                                        value="rw"
+                                                                    >
+                                                                        Read / Write
+                                                                    </option>
+                                                                    <option
+                                                                        value="ro"
+                                                                        selected
+                                                                    >
+                                                                        Read Only
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </td>
                                                         <td class="action">
                                                             <i
                                                                 class="material-icons has-text-success add-item"
@@ -435,7 +466,7 @@
                             style="border-radius: 3px;"
                             v-else
                         >
-                            Create organization
+                            Create Build
                         </a>
                     </div>
                 </div>
@@ -634,6 +665,21 @@ export default {
                 adminUsersCount: false,
                 name: false,
             };
+        },
+        updateRole(itemName, event) {
+            if (event && event.target && event.target.value) {
+                const selectedMembers = this.selectedMembers;
+
+                for (let i = 0; i < selectedMembers.length; i++) {
+                    const modifiedUser = selectedMembers[i];
+
+                    if (modifiedUser.name === itemName) {
+                        this.selectedMembers[i].role = event.target.value;
+
+                        break;
+                    }
+                }
+            }
         },
     },
     computed: {

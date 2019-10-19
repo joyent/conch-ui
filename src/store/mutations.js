@@ -58,6 +58,22 @@ export const setBuilds = (state, builds) => {
     state.builds = builds;
 };
 
+export const setCurrentBuild = (state, currentBuild) => {
+    state.currentBuild = currentBuild;
+};
+
+export const setCurrentBuildDevices = (state, devices) => {
+    state.currentBuild.devices = devices;
+};
+
+export const setCurrentBuildRacks = (state, racks) => {
+    state.currentBuild.racks = racks;
+};
+
+export const setCurrentBuildUsers = (state, users) => {
+    state.currentBuild.users = users;
+};
+
 export const setCurrentUser = (state, currentUser) => {
     state.currentUser = currentUser;
 };
@@ -142,6 +158,10 @@ export default {
     setAllRooms,
     setAuthTokens,
     setBuilds,
+    setCurrentBuild,
+    setCurrentBuildDevices,
+    setCurrentBuildRacks,
+    setCurrentBuildUsers,
     setCurrentUser,
     setCurrentWorkspace,
     setDevices,

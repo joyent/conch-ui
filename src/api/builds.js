@@ -94,6 +94,62 @@ export const createBuild = (name, description, admins) => {
 };
 
 /**
+ * Get a build
+ *
+ * @type {GET}
+ * @param {String} buildId                  The ID of the build being updated
+ * @return {Response Object}
+ */
+export const getBuild = buildId => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/build/${buildId}`,
+    });
+};
+
+/**
+ * Get the devices of a build
+ *
+ * @type {GET}
+ * @param {String} buildId                  The ID of the build being updated
+ * @return {Response Object}
+ */
+export const getBuildDevices = buildId => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/build/${buildId}/device`,
+    });
+};
+
+/**
+ * Get the racks of a build
+ *
+ * @type {GET}
+ * @param {String} buildId                  The ID of the build being updated
+ * @return {Response Object}
+ */
+export const getBuildRacks = buildId => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/build/${buildId}/rack`,
+    });
+};
+
+/**
+ * Get the users of a build
+ *
+ * @type {GET}
+ * @param {String} buildId                  The ID of the build being updated
+ * @return {Response Object}
+ */
+export const getBuildUsers = buildId => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/build/${buildId}/user`,
+    });
+};
+
+/**
  * Get all builds
  *
  * @type   {GET}
@@ -209,6 +265,10 @@ export default {
     addRackToBuild,
     addUserToBuild,
     createBuild,
+    getBuild,
+    getBuildDevices,
+    getBuildRacks,
+    getBuildUsers,
     getBuilds,
     removeDeviceFromBuild,
     removeOrganizationFromBuild,
