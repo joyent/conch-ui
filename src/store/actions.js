@@ -61,6 +61,22 @@ export const setBuilds = ({ commit }, builds) => {
     commit('setBuilds', builds);
 };
 
+export const setCurrentBuild = ({ commit }, currentBuild) => {
+    commit('setCurrentBuild', currentBuild);
+};
+
+export const setCurrentBuildDevices = ({ commit }, devices) => {
+    commit('setCurrentBuildDevices', devices);
+};
+
+export const setCurrentBuildRacks = ({ commit }, racks) => {
+    commit('setCurrentBuildRacks', racks);
+};
+
+export const setCurrentBuildUsers = ({ commit }, users) => {
+    commit('setCurrentBuildUsers', users);
+};
+
 export const setCurrentUser = ({ commit }, currentUser) => {
     commit('setCurrentUser', currentUser);
 };
@@ -145,6 +161,10 @@ export default {
     setAllRooms,
     setAuthTokens,
     setBuilds,
+    setCurrentBuild,
+    setCurrentBuildDevices,
+    setCurrentBuildRacks,
+    setCurrentBuildUsers,
     setCurrentUser,
     setCurrentWorkspace,
     setDevices,
