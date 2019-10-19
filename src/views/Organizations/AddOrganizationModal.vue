@@ -691,6 +691,7 @@ import SuccessModal from './SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getUsers } from '@api/users.js';
+import { getBuilds } from '@api/builds.js';
 import * as Organizations from '@api/organizations.js';
 import { addOrganizationToBuild } from '@api/builds.js';
 
@@ -701,40 +702,6 @@ export default {
     data() {
         return {
             activeStep: 1,
-            builds: [
-                {
-                    name: 'Builds-1',
-                    id: 'abcd-1',
-                },
-                {
-                    name: 'Builds-2',
-                    id: 'abcd-2',
-                },
-                {
-                    name: 'Builds-3',
-                    id: 'abcd-3',
-                },
-                {
-                    name: 'Builds-4',
-                    id: 'abcd-4',
-                },
-                {
-                    name: 'Builds-5',
-                    id: 'abcd-5',
-                },
-                {
-                    name: 'Builds-6',
-                    id: 'abcd-6',
-                },
-                {
-                    name: 'Builds-7',
-                    id: 'abcd-7',
-                },
-                {
-                    name: 'Builds-8',
-                    id: 'abcd-8',
-                },
-            ],
             description: '',
             errors: {
                 adminUserCount: false,
@@ -755,7 +722,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setUsers']),
+        ...mapActions(['setBuilds', 'setUsers']),
         activateStep(step) {
             this.searchText = '';
             const activeStep = this.activeStep;
@@ -933,7 +900,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['users']),
+        ...mapState(['builds', 'users']),
         currentStepTitle() {
             const activeStep = this.activeStep;
 
@@ -949,6 +916,12 @@ export default {
         },
     },
     created() {
+        if (!this.builds.length) {
+            getBuilds().then(response => {
+                this.setBuilds(response.data);
+            });
+        }
+
         if (!this.users.length) {
             getUsers().then(response => {
                 this.setUsers(response.data);

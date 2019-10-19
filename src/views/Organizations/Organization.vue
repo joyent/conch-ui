@@ -20,7 +20,7 @@
                 <div class="box stats">
                     <h2 class="is-6">Members</h2>
                     <span class="is-size-3 has-text-info">
-                        {{ organizationUsers.length }}
+                        {{ organization.users.length }}
                     </span>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                                         @click="
                                             openActionModal('remove', 'builds')
                                         "
-                                        v-if="organizationBuilds.length > 0"
+                                        v-if="organization.builds.length > 0"
                                     >
                                         <i class="fas fa-trash-alt"></i>
                                         <p>Remove Builds</p>
@@ -91,7 +91,7 @@
                     </div>
                     <table
                         class="table is-fullwidth is-hoverable is-marginless"
-                        v-if="noBuildsExist"
+                        v-if="!noBuildsExist"
                     >
                         <thead>
                             <th>Name</th>
@@ -104,7 +104,7 @@
                         <tbody>
                             <tr
                                 class="row"
-                                v-for="build in organizationBuilds"
+                                v-for="build in organization.builds"
                                 :key="build.name"
                             >
                                 <td>{{ build.name }}</td>
@@ -193,7 +193,7 @@
                         <p
                             class="datatable-header-title is-size-5 has-text-white"
                         >
-                            Organization Members
+                            Members
                         </p>
                         <div
                             class="dropdown dropdown-members is-right"
@@ -265,7 +265,7 @@
                                         member.name
                                     ),
                                 }"
-                                v-for="member in organizationUsers"
+                                v-for="member in organization.users"
                                 :key="member.name"
                             >
                                 <td>
@@ -432,7 +432,7 @@ import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getBuilds } from '@api/builds.js';
 import { getUsers } from '@api/users.js';
-import { getOrganizations } from '@api/organizations.js';
+import { getOrganization, getOrganizations } from '@api/organizations.js';
 
 export default {
     components: {
@@ -450,8 +450,6 @@ export default {
             removingItem: {},
             removingType: '',
             organization: {},
-            organizationBuilds: [],
-            organizationUsers: [],
             modifiedMembers: [],
             noBuildsExist: false,
             noMembersExist: false,
@@ -501,13 +499,13 @@ export default {
             if (item === 'builds') {
                 this.showBuildsDropdown = false;
                 this.availableData = this.builds;
-                this.unavailableData = this.organizationBuilds.map(
+                this.unavailableData = this.organization.builds.map(
                     build => build.name
                 );
             } else if (item === 'members') {
                 this.showMembersDropdown = false;
                 this.availableData = this.users;
-                this.unavailableData = this.organizationUsers;
+                this.unavailableData = this.organization.users;
             }
 
             this.showActionModal = true;
@@ -527,26 +525,19 @@ export default {
                 organization => organization.id === currentOrganizationId
             );
 
-            if (this.organization.builds) {
-                this.organizationBuilds = this.organization.builds;
-            } else {
-                // this.noBuildsExist = true;
+            if (
+                !this.organization.builds ||
+                this.organization.builds.length === 0
+            ) {
+                this.noBuildsExist = true;
             }
 
-            if (this.organization.users && this.organization.users.length > 0) {
-                this.organizationUsers = this.organization.users;
-            } else {
+            if (
+                !this.organization.users ||
+                this.organization.users.length === 0
+            ) {
                 this.noMembersExist = true;
             }
-
-            // getOrganizationUsers(currentOrganizationId).then(response => {
-            //     const users = response.data;
-            //     this.organizationUsers = users;
-
-            //     if (!users.length) {
-            //         this.noMembersExist = true;
-            //     }
-            // });
         },
         toggleEditMembers() {
             this.editMembers = !this.editMembers;
@@ -600,17 +591,17 @@ export default {
     computed: {
         ...mapState(['builds', 'organizations', 'users']),
         buildsActive() {
-            return this.organizationBuilds.filter(
+            return this.organization.builds.filter(
                 build => build.status === 'active'
             ).length;
         },
         buildsComplete() {
-            return this.organizationBuilds.filter(
+            return this.organization.builds.filter(
                 build => build.status === 'complete'
             ).length;
         },
         organizationHasBuilds() {
-            return this.organizationBuilds.length > 0 && !this.noBuildsExist;
+            return this.organization.builds.length > 0 && !this.noBuildsExist;
         },
         organizationHasMembers() {
             return this.organizations.length > 0 && !this.noMembersExist;
@@ -628,11 +619,11 @@ export default {
             });
         }
 
-        // if (!this.builds.length) {
-        //     getBuilds().then(response => {
-        //         this.setBuilds(response.data);
-        //     });
-        // }
+        if (!this.builds.length) {
+            getBuilds().then(response => {
+                this.setBuilds(response.data);
+            });
+        }
 
         if (!this.users.length) {
             getUsers().then(response => {
@@ -647,6 +638,12 @@ export default {
 
         EventBus.$on('closeModal:baseModal', () => {
             this.closeModal();
+        });
+
+        EventBus.$on('build-added', () => {
+            getOrganization(this.organization.id).then(response => {
+                this.organization = response.data;
+            });
         });
     },
 };

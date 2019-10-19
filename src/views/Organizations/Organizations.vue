@@ -207,6 +207,8 @@ export default {
                 this.setOrganizations(response.data);
             });
 
+            EventBus.$emit('organization-deleted');
+
             this.isActive = false;
             this.showSuccessModal = true;
             this.isLoading = false;
