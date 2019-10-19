@@ -211,6 +211,7 @@ import {
     addUserToOrganization,
     removeUserFromOrganization,
 } from '@api/organizations';
+import { addOrganizationToBuild } from '@api/builds.js';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
@@ -280,8 +281,17 @@ export default {
             }
         },
         addMembers(data) {
-            data.forEach(item => {
-                addUserToOrganization(this.organizationId, item.role, item.id);
+            data.forEach(member => {
+                addUserToOrganization(
+                    this.organizationId,
+                    member.role,
+                    member.id
+                );
+            });
+        },
+        addBuilds(data) {
+            data.forEach(build => {
+                addOrganizationToBuild(build.id, this.organizationId, build.role);
             });
         },
         removeMembers(data) {
@@ -296,6 +306,11 @@ export default {
             if (this.action === 'add') {
                 if (this.itemType === 'members') {
                     await this.addMembers(data);
+                    this.closeModal();
+                    this.isLoading = false;
+                } else if (this.itemType === 'builds') {
+                    await this.addBuilds(data);
+                    EventBus.$emit('build-created');
                     this.closeModal();
                     this.isLoading = false;
                 }

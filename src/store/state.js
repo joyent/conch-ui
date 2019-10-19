@@ -7,6 +7,7 @@ export const state = {
     allRooms: [],
     builds: [],
     authTokens: [],
+    currentBuild: {},
     currentUser: {},
     currentWorkspace: {},
     devices: [],
