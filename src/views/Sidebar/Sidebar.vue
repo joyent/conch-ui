@@ -52,73 +52,82 @@
                     </router-link>
                 </li>
             </ul>
-            <p class="menu-label">Pages</p>
-            <ul
-                class="sidenav-dropdown menu-list"
-                :class="{ 'is-expanded': isBuildsExpanded }"
-                @click="isBuildsExpanded = !isBuildsExpanded"
-            >
-                <li class="nav-item">
-                    <a>
-                        <i class="material-icons">layers</i>
-                        <span class="name">Builds</span>
-                        <span class="icon chevron">
-                            <i class="fas fa-chevron-right"></i>
-                        </span>
-                    </a>
-                </li>
-            </ul>
-            <ul class="menu-list child-pages" v-if="isBuildsExpanded">
-                <li
-                    class="nav-item"
-                    v-for="build in currentUser.builds"
-                    :key="build.id"
+            <p class="menu-label" v-if="userHasBuilds || userHasOrganizations">
+                Pages
+            </p>
+            <template v-if="userHasBuilds">
+                <ul
+                    class="sidenav-dropdown menu-list"
+                    :class="{ 'is-expanded': isBuildsExpanded }"
+                    @click="isBuildsExpanded = !isBuildsExpanded"
                 >
-                    <router-link
-                        :to="{
-                            name: 'build',
-                            params: { buildId: build.id },
-                        }"
-                        active-class="is-active"
-                        :key="`$route.path_${build.id}`"
+                    <li class="nav-item">
+                        <a>
+                            <i class="material-icons">layers</i>
+                            <span class="name">Builds</span>
+                            <span class="icon chevron">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="menu-list child-pages" v-if="isBuildsExpanded">
+                    <li
+                        class="nav-item"
+                        v-for="build in currentUser.builds"
+                        :key="build.id"
                     >
-                        <span>{{ build.name }}</span>
-                    </router-link>
-                </li>
-            </ul>
-            <ul
-                class="sidenav-dropdown menu-list"
-                :class="{ 'is-expanded': isOrganizationsExpanded }"
-                @click="isOrganizationsExpanded = !isOrganizationsExpanded"
-            >
-                <li class="nav-item">
-                    <a>
-                        <i class="material-icons">recent_actors</i>
-                        <span class="name">Organizations</span>
-                        <span class="icon chevron">
-                            <i class="fas fa-chevron-right"></i>
-                        </span>
-                    </a>
-                </li>
-            </ul>
-            <ul class="menu-list child-pages" v-if="isOrganizationsExpanded">
-                <li
-                    class="nav-item"
-                    v-for="organization in currentUser.organizations"
-                    :key="organization.id"
+                        <router-link
+                            :to="{
+                                name: 'build',
+                                params: { buildId: build.id },
+                            }"
+                            active-class="is-active"
+                            :key="`$route.path_${build.id}`"
+                        >
+                            <span>{{ build.name }}</span>
+                        </router-link>
+                    </li>
+                </ul>
+            </template>
+            <template v-if="userHasOrganizations">
+                <ul
+                    class="sidenav-dropdown menu-list"
+                    :class="{ 'is-expanded': isOrganizationsExpanded }"
+                    @click="isOrganizationsExpanded = !isOrganizationsExpanded"
                 >
-                    <router-link
-                        :to="{
-                            name: 'organization',
-                            params: { organizationId: organization.id },
-                        }"
-                        active-class="is-active"
-                        :key="`$route.path_${organization.id}`"
+                    <li class="nav-item">
+                        <a>
+                            <i class="material-icons">recent_actors</i>
+                            <span class="name">Organizations</span>
+                            <span class="icon chevron">
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                <ul
+                    class="menu-list child-pages"
+                    v-if="isOrganizationsExpanded"
+                >
+                    <li
+                        class="nav-item"
+                        v-for="organization in currentUser.organizations"
+                        :key="organization.id"
                     >
-                        <span>{{ organization.name }}</span>
-                    </router-link>
-                </li>
-            </ul>
+                        <router-link
+                            :to="{
+                                name: 'organization',
+                                params: { organizationId: organization.id },
+                            }"
+                            active-class="is-active"
+                            :key="`$route.path_${organization.id}`"
+                        >
+                            <span>{{ organization.name }}</span>
+                        </router-link>
+                    </li>
+                </ul>
+            </template>
             <p v-if="currentUser.is_admin" class="menu-label">Conch Admin</p>
             <ul class="menu-list" v-if="currentUser.is_admin">
                 <li class="nav-item">
@@ -221,6 +230,24 @@ export default {
     computed: {
         ...mapGetters(['currentWorkspaceId']),
         ...mapState(['currentUser', 'currentWorkspace']),
+        userHasBuilds() {
+            const currentUser = this.currentUser;
+
+            if (!isEmpty(currentUser) && currentUser.builds.length > 0) {
+                return true;
+            }
+
+            return false;
+        },
+        userHasOrganizations() {
+            const currentUser = this.currentUser;
+
+            if (!isEmpty(currentUser) && currentUser.organizations.length > 0) {
+                return true;
+            }
+
+            return false;
+        },
         workspaceId() {
             let workspaceId = this.currentWorkspaceId;
 
