@@ -339,9 +339,7 @@ export default {
         });
 
         EventBus.$on('build-created', () => {
-            this.getBuilds().then(response => {
-                this.setBuilds(response.data);
-            });
+            this.getBuilds();
         });
     },
 };
