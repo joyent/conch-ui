@@ -75,12 +75,12 @@
         <OrganizationsTable
             :organizations="filteredOrganizations"
             :has-search-text="searchText.length > 0"
-            v-else-if="activeView === 'list'"
+            v-else
         />
         <transition name="fade">
             <AddOrganizationModal v-if="addingOrganization" />
-            <div class="delete-organization-modal" v-if="isActive">
-                <div class="modal" :class="{ 'is-active': isActive }">
+            <div class="delete-organization-modal" v-if="deletingOrganization">
+                <div class="modal is-active">
                     <div class="modal-background" @click="closeModal()"></div>
                     <div class="modal-card">
                         <header class="modal-card-head">
@@ -119,43 +119,12 @@
                     </div>
                 </div>
             </div>
-        </transition>
-        <transition name="fade">
-            <div
-                class="delete-organization-success-modal"
+            <SuccessModal
                 v-if="showSuccessModal === true"
-            >
-                <div class="modal is-active">
-                    <div
-                        class="modal-background"
-                        @click="showSuccessModal = false"
-                    ></div>
-                    <div class="modal-card">
-                        <header class="modal-card-head">
-                            <p class="modal-card-title">Success!</p>
-                            <i
-                                class="material-icons close"
-                                @click="closeModal()"
-                            >
-                                close
-                            </i>
-                        </header>
-                        <section class="modal-card-body">
-                            <p>
-                                {{ organizationBeingRemoved.name }} has been
-                                removed.
-                            </p>
-                            <br />
-                            <a
-                                class="button is-success"
-                                @click="showSuccessModal = false"
-                            >
-                                Close
-                            </a>
-                        </section>
-                    </div>
-                </div>
-            </div>
+                :name="organizationBeingRemoved.name"
+                class="remove"
+                action="remove"
+            />
         </transition>
     </div>
 </template>
@@ -164,6 +133,7 @@
 import search from 'fuzzysearch';
 import AddOrganizationModal from './AddOrganizationModal.vue';
 import OrganizationsTable from './OrganizationsTable.vue';
+import SuccessModal from '../components/SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import * as Organizations from '@api/organizations.js';
 import { mapActions, mapState } from 'vuex';
@@ -172,13 +142,13 @@ export default {
     components: {
         AddOrganizationModal,
         OrganizationsTable,
+        SuccessModal,
     },
     data() {
         return {
             activeView: 'grid',
             addingOrganization: false,
-            isActive: false,
-            isHovered: '',
+            deletingOrganization: false,
             isLoading: false,
             organizationBeingRemoved: {},
             showDeleteOrganizationButton: '',
@@ -193,8 +163,8 @@ export default {
         },
         closeModal() {
             this.addingOrganization = false;
-            this.isActive = false;
-            this.removingOrganization = false;
+            this.deletingOrganization = false;
+            this.showSuccessModal = false;
         },
         async deleteOrganization() {
             this.isLoading = true;
@@ -209,13 +179,13 @@ export default {
 
             EventBus.$emit('organization-deleted');
 
-            this.isActive = false;
+            this.deletingOrganization = false;
             this.showSuccessModal = true;
             this.isLoading = false;
         },
         showConfirmationModal(organization) {
             this.organizationBeingRemoved = organization;
-            this.isActive = true;
+            this.deletingOrganization = true;
         },
         toggleView() {
             if (this.activeView === 'list') {

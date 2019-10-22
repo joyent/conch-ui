@@ -111,7 +111,7 @@
                                                 class="control has-icons-right"
                                             >
                                                 <input
-                                                    class="input name"
+                                                    class="input name is-marginless"
                                                     :class="{
                                                         'is-danger':
                                                             errors.name,
@@ -237,17 +237,28 @@
                                                                         >
                                                                             <option
                                                                                 value="admin"
+                                                                                :selected="
+                                                                                    user.role ===
+                                                                                        'admin'
+                                                                                "
                                                                             >
                                                                                 Admin
                                                                             </option>
                                                                             <option
                                                                                 value="rw"
+                                                                                :selected="
+                                                                                    user.role ===
+                                                                                        'rw'
+                                                                                "
                                                                             >
                                                                                 Read / Write
                                                                             </option>
                                                                             <option
                                                                                 value="ro"
-                                                                                selected
+                                                                                :selected="
+                                                                                    user.role ===
+                                                                                        'ro'
+                                                                                "
                                                                             >
                                                                                 Read Only
                                                                             </option>
@@ -351,7 +362,7 @@
                                                                 class="control has-icons-left"
                                                             >
                                                                 <input
-                                                                    class="input search"
+                                                                    class="input search is-marginless"
                                                                     v-model="
                                                                         searchText
                                                                     "
@@ -681,13 +692,18 @@
                 </div>
             </div>
         </div>
-        <SuccessModal :organization-name="name" v-if="isSuccessful" />
+        <SuccessModal
+            v-if="isSuccessful"
+            class="create"
+            :name="name"
+            action="create"
+        />
     </div>
 </template>
 
 <script>
 import search from 'fuzzysearch';
-import SuccessModal from './SuccessModal.vue';
+import SuccessModal from '../components/SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getUsers } from '@api/users.js';
