@@ -25,6 +25,7 @@
     "d3-relationshipgraph": "^3.0.2",
     "fuzzysearch": "^1.0.3",
     "lodash": "^4.17.14",
+    "material-design-icons": "^3.0.1",
     "moment": "^2.22.1",
     "progressbar.js": "^1.0.1",
     "semver": "^6.1.1",
