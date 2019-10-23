@@ -85,12 +85,17 @@
                                             class="status"
                                             :class="{
                                                 'has-text-info':
-                                                    build.status === 'active',
+                                                    buildStatus(build) ===
+                                                    'started',
                                                 'has-text-success':
-                                                    build.status === 'complete',
+                                                    buildStatus(build) ===
+                                                    'completed',
+                                                'has-text-link':
+                                                    buildStatus(build) ===
+                                                    'created',
                                             }"
                                         >
-                                            {{ build.status }}
+                                            {{ buildStatus(build) }}
                                         </p>
                                     </div>
                                     <div class="build-progress">
@@ -116,13 +121,18 @@
                                     class="tag build-status"
                                     :class="{
                                         'is-success':
-                                            selectedBuild.status === 'complete',
+                                            buildStatus(selectedBuild) ===
+                                            'completed',
                                         'is-info':
-                                            selectedBuild.status === 'active',
+                                            buildStatus(selectedBuild) ===
+                                            'started',
+                                        'is-link':
+                                            buildStatus(selectedBuild) ===
+                                            'created',
                                     }"
                                     style="border-radius: 4px"
                                 >
-                                    {{ selectedBuild.status }}
+                                    {{ buildStatus(selectedBuild) }}
                                 </span>
                             </div>
                             <p class="build-id has-text-grey">
@@ -269,6 +279,19 @@ export default {
             return progress === 100 ? this.colors.green : this.colors.blue;
         },
         isEmpty,
+        buildStatus(build = null) {
+            if (!build) {
+                build = this.currentBuild;
+            }
+
+            if (build.completed) {
+                return 'completed';
+            } else if (build.started) {
+                return 'started';
+            }
+
+            return 'created';
+        },
         getUserName(index) {
             return this.selectedBuild.users[index].name;
         },
@@ -303,13 +326,15 @@ export default {
     },
     computed: {
         ...mapState(['builds']),
-        buildsActive() {
-            return this.builds.filter(build => build.status === 'active')
-                .length;
+        buildsStarted() {
+            return this.builds.filter(build => {
+                if (build.started && !build.completed) {
+                    return build;
+                }
+            }).length;
         },
         buildsComplete() {
-            return this.builds.filter(build => build.status === 'complete')
-                .length;
+            return this.builds.filter(build => build.completed === true).length;
         },
         filteredBuilds() {
             const searchText = this.searchText.toLowerCase();
