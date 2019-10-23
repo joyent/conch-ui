@@ -61,7 +61,7 @@
                                 "
                             >
                                 <span class="icon">
-                                    <i class="fas fa-ellipsis-v"></i>
+                                    <i class="material-icons">more_vert</i>
                                 </span>
                             </a>
                             <div class="dropdown-menu">
@@ -82,7 +82,7 @@
                                         "
                                         v-if="organization.builds.length > 0"
                                     >
-                                        <i class="fas fa-trash-alt"></i>
+                                        <i class="material-icons">delete</i>
                                         <p>Remove Builds</p>
                                     </a>
                                 </div>
@@ -140,10 +140,10 @@
                                     </div>
                                 </td>
                                 <td class="has-text-centered">
-                                    {{ getDate(build.startDate) }}
+                                    <span>23/10/2019</span>
                                 </td>
                                 <td class="has-text-centered">
-                                    {{ getDate(build.endDate) }}
+                                    <span>None</span>
                                 </td>
                                 <td class="row-action-button">
                                     <a
@@ -151,7 +151,7 @@
                                         @click="removeItem(build, 'builds')"
                                     >
                                         <span class="icon">
-                                            <i class="fas fa-trash-alt"></i>
+                                            <i class="material-icons">delete</i>
                                         </span>
                                     </a>
                                 </td>
@@ -206,7 +206,7 @@
                                 "
                             >
                                 <span class="icon">
-                                    <i class="fas fa-ellipsis-v"></i>
+                                    <i class="material-icons">more_vert</i>
                                 </span>
                             </a>
                             <div class="dropdown-menu">
@@ -240,7 +240,7 @@
                                             openActionModal('remove', 'members')
                                         "
                                     >
-                                        <i class="fas fa-trash-alt"></i>
+                                        <i class="material-icons">delete</i>
                                         <p>Remove Members</p>
                                     </a>
                                 </div>
@@ -351,7 +351,7 @@
                                         @click="removeItem(member, 'members')"
                                     >
                                         <span class="icon">
-                                            <i class="fas fa-trash-alt"></i>
+                                            <i class="material-icons">delete</i>
                                         </span>
                                     </a>
                                 </td>
