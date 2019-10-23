@@ -75,6 +75,13 @@ export default {
         RacksTab,
         MembersTab,
     },
+    props: {
+        buildId: {
+            type: String,
+            required: false,
+            default: '',
+        },
+    },
     data() {
         return {
             currentTab: 'OverviewTab',
@@ -112,7 +119,25 @@ export default {
         ...mapState(['currentBuild']),
     },
     created() {
-        this.getBuildData(this.$route.params.buildId);
+        let buildId;
+
+        if (this.buildId) {
+            this.getBuildData(this.buildId);
+
+            buildId = this.buildId;
+        } else {
+            if (
+                this.$route &&
+                this.$route.params &&
+                this.$route.params.buildId
+            ) {
+                this.getBuildData(this.$route.params.buildId);
+
+                buildId = this.$route.params.buildId;
+            }
+        }
+
+        localStorage.setItem('mostRecentBuildId', buildId);
     },
 };
 </script>
