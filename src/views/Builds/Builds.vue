@@ -287,6 +287,8 @@ export default {
                     });
                 }
             }
+
+            localStorage.setItem('mostRecentBuildId', build.id);
         },
         toggleView() {
             if (this.activeView === 'list') {

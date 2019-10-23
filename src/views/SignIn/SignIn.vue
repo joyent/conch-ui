@@ -225,11 +225,7 @@ export default {
                             if (isEmpty(this.workspaces)) {
                                 this.initWorkspaceData().then(() => {
                                     this.$router.push({
-                                        name: 'status',
-                                        params: {
-                                            currentWorkspace: this
-                                                .currentWorkspaceId,
-                                        },
+                                        name: 'dashboard',
                                     });
                                 });
                             } else {
@@ -237,11 +233,7 @@ export default {
                                     this.loadCurrentWorkspace()
                                 );
                                 this.$router.push({
-                                    name: 'status',
-                                    params: {
-                                        currentWorkspace: this.$store.getters
-                                            .currentWorkspaceId,
-                                    },
+                                    name: 'dashboard',
                                 });
                             }
                         }
