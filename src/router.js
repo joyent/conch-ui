@@ -3,7 +3,6 @@ import Router from 'vue-router';
 import Devices from './views/Devices/Devices.vue';
 import DataCenterBrowser from './views/DataCenterBrowser/DataCenterBrowser.vue';
 import SignIn from './views/SignIn/SignIn.vue';
-import Status from './views/Status/Status.vue';
 import UserProfile from './views/UserProfile/UserProfile.vue';
 import UserManagement from './views/UserManagement/UserManagement.vue';
 import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTokens.vue';
@@ -16,6 +15,7 @@ import SingleBuild from './views/Builds/SingleBuild.vue';
 import Organizations from './views/Organizations/Organizations.vue';
 import Organization from './views/Organizations/Organization.vue';
 import CreateBuild from './views/Builds/CreateBuild.vue';
+import Dashboard from './views/Dashboard/Dashboard.vue';
 
 Vue.use(Router);
 
@@ -27,20 +27,13 @@ export default new Router({
             component: SignIn,
         },
         {
-            path: '/:currentWorkspace/status',
-            name: 'status',
+            path: '/dashboard',
+            name: 'dashboard',
             components: {
-                default: Status,
+                default: Dashboard,
                 sidebar: Sidebar,
                 navbar: Navbar,
             },
-            children: [
-                {
-                    // when /status/device/:deviceId is matched
-                    path: 'device/:deviceId',
-                    component: Status,
-                },
-            ],
         },
         {
             path: '/:currentWorkspace/device',
