@@ -1,31 +1,26 @@
 <template>
-    <div class="racks-tab">
-        <div class="columns">
+    <div class="organizations-tab">
+        <!-- <div class="columns">
             <div class="column">
                 <div class="members-table is-paddingless">
                     <div class="datatable-header">
                         <span class="heading is-size-6 is-marginless">
-                            Racks
+                            Organizations
                         </span>
                         <div class="control has-icons-left has-icons-right">
                             <input
                                 type="text"
                                 class="input search"
                                 v-model="searchText"
-                                placeholder="Search racks"
+                                placeholder="Search Organizations"
                             />
                             <span class="icon is-small is-left">
-                                <i
-                                    class="material-icons"
-                                    style="font-size: 22px; margin-left: 5px;"
-                                >
-                                    search
-                                </i>
+                                <i class="material-icons">search</i>
                             </span>
                         </div>
                         <i
                             class="material-icons has-text-success"
-                            @click="addRack()"
+                            @click="addOrganization()"
                         >
                             add_circle
                         </i>
@@ -54,44 +49,44 @@
                             <th>
                                 <a
                                     class="table-header-filter role"
-                                    :class="{ 'has-text-white': sortBy === 'type' }"
+                                    :class="{ 'has-text-white': sortBy === 'role' }"
                                     @click="sort()"
                                 >
-                                    Type
+                                    Role
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortBy === 'type' && !reversedSort"
+                                        v-if="sortBy === 'role' && !reversedSort"
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortBy === 'type' && reversedSort"
+                                        v-else-if="sortBy === 'role' && reversedSort"
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot v-if="filteredRacks.length > 10">
+                        <tfoot v-if="filteredOrganizations.length > 10">
                             <th>Name</th>
-                            <th>Type</th>
+                            <th>Role</th>
                         </tfoot>
                         <tbody>
                             <tr
                                 class="row"
-                                v-for="rack in filteredRacks"
-                                :key="rack.name"
+                                v-for="organization in filteredOrganizations"
+                                :key="organization.name"
                             >
                                 <td class="name">
-                                    <span>{{ rack.name }}</span>
+                                    <span>{{ organization.name }}</span>
                                 </td>
                                 <td class="role">
-                                    <span>{{ rack.role }}</span>
+                                    <span>{{ organization.role }}</span>
                                 </td>
                                 <td class="remove-item has-text-right">
                                     <i
                                         class="fas fa-trash-alt"
-                                        @click="removeRack(rack)"
+                                        @click="removeOrganization(organization)"
                                     ></i>
                                 </td>
                             </tr>
@@ -101,84 +96,16 @@
             </div>
         </div>
         <RemoveItemModal
-            v-if="removingRack"
-            :item="rack"
-            item-type="rack"
-        />
+            v-if="removingOrganization"
+            :build="build"
+            :item="user"
+            item-type="user"
+        /> -->
     </div>
 </template>
 
 <script>
-import search from "fuzzysearch";
-import RemoveItemModal from './RemoveItemModal.vue';
-import { EventBus } from '@src/eventBus.js';
-
 export default {
-    components: {
-        RemoveItemModal,
-    },
-    props: {
-        build: {
-            type: Object,
-            required: true,
-        },
-    },
-    data() {
-        return {
-            rackFilter: 'all',
-            removingRack: false,
-            searchText: '',
-            sortBy: '',
-            rack: {},
-        };
-    },
-    methods: {
-        addRack(rack) {
 
-        },
-        removeRack(rack) {
-            this.rack = rack;
-            this.removingRack = true;
-        },
-        sort() {
-
-        },
-    },
-    computed: {
-        filteredRacks() {
-            let racks = this.build.racks;
-
-            if (this.searchText) {
-                const searchText = this.searchText.toLowerCase();
-
-                return racks.reduce((acc, rack) => {
-                    const name = rack.name.toLowerCase();
-
-                    if (search(searchText, name)) {
-                        acc.push(rack);
-                    }
-
-                    return acc;
-                }, []);
-            }
-
-            // if (this.rackFilter) {
-            //     const userFilter = this.userFilter;
-
-            //     if (rackFilter === 'admin') {
-            //         return users.filter(user => user.role === 'admin');
-            //     } else if (rackFilter === 'regular') {
-            //         return users.filter(user => user.role === 'regular user');
-            //     }
-            // }
-
-            return racks;
-        },
-    },
-    mounted() {
-        EventBus.$on('close-modal:remove-item', () => {
-            this.removingRack = false;
-        });
-    },
 };
 </script>

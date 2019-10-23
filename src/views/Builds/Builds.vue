@@ -20,7 +20,7 @@
                     <a class="button is-text" @click="toggleView()">
                         <template v-if="activeView === 'grid'">
                             <i class="material-icons view-list">
-                                vertical_split
+                                dehaze
                             </i>
                             <span>List View</span>
                         </template>
@@ -156,14 +156,27 @@
                                     <li
                                         :class="{
                                             'is-active':
-                                                currentTab === 'DevicesTab',
+                                                currentTab === 'MembersTab',
                                         }"
                                     >
                                         <a
-                                            class="tab devices-tab is-uppercase"
-                                            @click="changeTab('DevicesTab')"
+                                            class="tab members-tab is-uppercase"
+                                            @click="changeTab('MembersTab')"
                                         >
-                                            Devices
+                                            Members
+                                        </a>
+                                    </li>
+                                    <li
+                                        :class="{
+                                            'is-active':
+                                                currentTab === 'OrganizationsTab',
+                                        }"
+                                    >
+                                        <a
+                                            class="tab organizations-tab is-uppercase"
+                                            @click="changeTab('OrganizationsTab')"
+                                        >
+                                            Organizations
                                         </a>
                                     </li>
                                     <li
@@ -182,14 +195,14 @@
                                     <li
                                         :class="{
                                             'is-active':
-                                                currentTab === 'MembersTab',
+                                                currentTab === 'DevicesTab',
                                         }"
                                     >
                                         <a
-                                            class="tab members-tab is-uppercase"
-                                            @click="changeTab('MembersTab')"
+                                            class="tab devices-tab is-uppercase"
+                                            @click="changeTab('DevicesTab')"
                                         >
-                                            Members
+                                            Devices
                                         </a>
                                     </li>
                                 </ul>
@@ -219,6 +232,7 @@ import DevicesTab from './DevicesTab.vue';
 import OverviewTab from './OverviewTab.vue';
 import RacksTab from './RacksTab.vue';
 import MembersTab from './MembersTab.vue';
+import OrganizationsTab from './OrganizationsTab.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
@@ -228,10 +242,11 @@ export default {
         CreateBuild,
         CreateBuildModal,
         DevicesTab,
+        MembersTab,
+        OrganizationsTab,
         OverviewTab,
         RacksTab,
         RadialProgressBar,
-        MembersTab,
     },
     data() {
         return {

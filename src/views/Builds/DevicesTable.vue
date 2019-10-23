@@ -10,8 +10,13 @@
                             v-model="searchText"
                             placeholder="Search Devices"
                         />
-                        <span class="icon">
-                            <i class="fas fa-search"></i>
+                        <span class="icon is-small is-left">
+                            <i
+                                class="material-icons"
+                                style="font-size: 22px; margin-left: 5px;"
+                            >
+                                search
+                            </i>
                         </span>
                     </div>
                     <table class="table is-fullwidth">
