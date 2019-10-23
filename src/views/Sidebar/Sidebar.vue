@@ -10,7 +10,7 @@
                     class="brand-icon"
                     src="../../assets/brand.png"
                     width="150px"
-                    @click="navigateHomepage()"
+                    @click="navigateDashboard()"
                 />
             </div>
             <p class="menu-label">Datacenter Builds</p>
@@ -18,13 +18,12 @@
                 <li class="nav-item">
                     <router-link
                         :to="{
-                            name: 'status',
-                            params: { currentWorkspace: this.workspaceId },
+                            name: 'dashboard',
                         }"
                         active-class="is-active"
                     >
-                        <i class="material-icons">signal_cellular_alt</i>
-                        <span>Status</span>
+                        <i class="material-icons">dashboard</i>
+                        <span>Dashboard</span>
                     </router-link>
                 </li>
                 <li class="nav-item">
@@ -215,11 +214,8 @@ export default {
             });
         },
         isEmpty,
-        navigateHomepage() {
-            this.$router.push({
-                name: 'status',
-                params: { currentWorkspace: this.currentWorkspaceId },
-            });
+        navigateDashboard() {
+            this.$router.push({ name: 'dashboard' });
         },
         signOut() {
             logout().then(() => {

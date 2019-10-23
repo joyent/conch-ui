@@ -88,9 +88,7 @@ export default {
                 currentWorkspace: workspaceId,
             };
 
-            if (name === 'status') {
-                EventBus.$emit('changeWorkspace:status');
-            } else if (name === 'devices' || name === 'device') {
+            if (name === 'devices' || name === 'device') {
                 if (name === 'device') {
                     name = 'devices';
                 }
