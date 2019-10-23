@@ -469,7 +469,7 @@
                                                 <i
                                                     class="material-icons details"
                                                 >
-                                                    notes
+                                                    subject
                                                 </i>
                                                 <p class="item-title">
                                                     Details
@@ -508,7 +508,7 @@
                                                 <i
                                                     class="material-icons members"
                                                 >
-                                                    people_alt
+                                                    group
                                                 </i>
                                                 <p class="item-title">
                                                     Members
