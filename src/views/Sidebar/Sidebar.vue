@@ -161,7 +161,7 @@
                         :to="{ name: 'user-management' }"
                         active-class="is-active"
                     >
-                        <i class="material-icons">people_alt</i>
+                        <i class="material-icons">group</i>
                         <span>Users</span>
                     </router-link>
                 </li>
