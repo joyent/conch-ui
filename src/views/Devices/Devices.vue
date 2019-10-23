@@ -101,7 +101,13 @@ export default {
             }
         },
         setWorkspaceDevices() {
-            getWorkspaceDevices(this.currentWorkspaceId).then(response => {
+            let currentWorkspaceId = this.currentWorkspaceId;
+
+            if (!currentWorkspaceId) {
+                currentWorkspaceId = this.$route.params.currentWorkspace;
+            }
+
+            getWorkspaceDevices(currentWorkspaceId).then(response => {
                 this.workspaceDevices = response;
             });
         },
@@ -115,28 +121,31 @@ export default {
         ...mapState(['hardwareProducts']),
     },
     created() {
-        const route = this.$route.path;
-        const routePrefix = route.substring(0, route.indexOf('/device'));
-        let activeDeviceId = this.activeDeviceId;
+        // part of original conch-ui code, now causes errors
+        //
+        //
+        // const route = this.$route.path;
+        // const routePrefix = route.substring(0, route.indexOf('/device'));
+        // let activeDeviceId = this.activeDeviceId;
 
-        if (
-            !activeDeviceId &&
-            this.$route.params &&
-            this.$route.params.deviceId
-        ) {
-            activeDeviceId = this.$route.params.deviceId;
-        }
+        // if (
+        //     !activeDeviceId &&
+        //     this.$route.params &&
+        //     this.$route.params.deviceId
+        // ) {
+        //     activeDeviceId = this.$route.params.deviceId;
+        // }
 
-        let [queryS] = route.split('?');
-        queryS ? (queryS = `?${queryS}`) : (queryS = '');
-
-        if (activeDeviceId) {
-            this.$router.push({
-                path: `${routePrefix}/device/${activeDeviceId}${queryS}`,
-            });
-        } else {
-            this.$router.push({ path: `${routePrefix}/device` });
-        }
+        // let [queryS] = route.split('?');
+        // queryS ? (queryS = `?${queryS}`) : (queryS = '');
+        //
+        // if (activeDeviceId) {
+        //     this.$router.push({
+        //         path: `${routePrefix}/device/${activeDeviceId}${queryS}`,
+        //     });
+        // } else {
+        //     this.$router.push({ path: `${routePrefix}/device` });
+        // }
 
         this.setHardwareProductLookup();
         this.setWorkspaceDevices();

@@ -30,12 +30,24 @@
                             Overview
                         </a>
                     </li>
-                    <li :class="{ 'is-active': currentTab === 'DevicesTab' }">
+                    <li :class="{ 'is-active': currentTab === 'MembersTab' }">
                         <a
-                            class="tab devices-tab is-uppercase"
-                            @click="changeTab('DevicesTab')"
+                            class="tab users-tab is-uppercase"
+                            @click="changeTab('MembersTab')"
                         >
-                            Devices
+                            Members
+                        </a>
+                    </li>
+                    <li
+                        :class="{
+                            'is-active': currentTab === 'OrganizationsTab',
+                        }"
+                    >
+                        <a
+                            class="tab organizations-tab is-uppercase"
+                            @click="changeTab('OrganizationsTab')"
+                        >
+                            Organizations
                         </a>
                     </li>
                     <li :class="{ 'is-active': currentTab === 'RacksTab' }">
@@ -46,12 +58,12 @@
                             Racks
                         </a>
                     </li>
-                    <li :class="{ 'is-active': currentTab === 'MembersTab' }">
+                    <li :class="{ 'is-active': currentTab === 'DevicesTab' }">
                         <a
-                            class="tab users-tab is-uppercase"
-                            @click="changeTab('MembersTab')"
+                            class="tab devices-tab is-uppercase"
+                            @click="changeTab('DevicesTab')"
                         >
-                            Members
+                            Devices
                         </a>
                     </li>
                 </ul>
@@ -66,15 +78,17 @@ import DevicesTab from './DevicesTab.vue';
 import OverviewTab from './OverviewTab.vue';
 import RacksTab from './RacksTab.vue';
 import MembersTab from './MembersTab.vue';
+import OrganizationsTab from './OrganizationsTab.vue';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
 
 export default {
     components: {
         DevicesTab,
+        MembersTab,
+        OrganizationsTab,
         OverviewTab,
         RacksTab,
-        MembersTab,
     },
     props: {
         buildId: {

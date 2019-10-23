@@ -45,9 +45,14 @@
                                 class="input search"
                                 v-model="searchText"
                                 placeholder="Search Members"
-                            >
+                            />
                             <span class="icon is-small is-left">
-                                <i class="fas fa-search"></i>
+                                <i
+                                    class="material-icons"
+                                    style="font-size: 22px; margin-left: 5px;"
+                                >
+                                    search
+                                </i>
                             </span>
                         </div>
                         <div class="select member-type">
