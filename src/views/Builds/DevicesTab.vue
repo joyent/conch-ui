@@ -1,6 +1,6 @@
 <template>
     <div class="devices-tab">
-        <div class="columns is-vcentered">
+        <!-- <div class="columns is-vcentered">
             <div class="column">
                 <a class="filter-all" @click="deviceFilter = 'all'">
                     <div class="box">
@@ -31,7 +31,7 @@
                     </div>
                 </a>
             </div>
-        </div>
+        </div> -->
         <div class="columns">
             <div class="column">
                 <div class="devices-table is-paddingless">
@@ -47,7 +47,12 @@
                                 v-model="searchText"
                             />
                             <span class="icon is-small is-left">
-                                <i class="fas fa-search"></i>
+                                <i
+                                    class="material-icons"
+                                    style="font-size: 22px; margin-left: 5px;"
+                                >
+                                    search
+                                </i>
                             </span>
                         </div>
                         <div class="select-with-label">
@@ -103,38 +108,19 @@
                             </th>
                             <th>
                                 <a
-                                    class="table-header-filter graduated"
-                                    :class="{ 'has-text-white': sortBy === 'graduated' }"
-                                    @click="sort('graduated')"
+                                    class="table-header-filter health"
+                                    :class="{ 'has-text-white': sortBy === 'health' }"
+                                    @click="sort('health')"
                                 >
-                                    Graduated
+                                    Health
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="isSortedBy('graduated') && !reversedSort"
+                                        v-if="isSortedBy('health') && !reversedSort"
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="isSortedBy('graduated') && reversedSort"
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter validated"
-                                    :class="{ 'has-text-white': sortBy === 'validated' }"
-                                    @click="sort('validated')"
-                                >
-                                    Validated
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="isSortedBy('validated') && !reversedSort"
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="isSortedBy('validated') && reversedSort"
+                                        v-else-if="isSortedBy('health') && reversedSort"
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
@@ -158,13 +144,32 @@
                                     ></i>
                                 </a>
                             </th>
+                            <th>
+                                <a
+                                    class="table-header-filter hardware_product"
+                                    :class="{ 'has-text-white': sortBy === 'hardware_product' }"
+                                    @click="sort('hardware_product')"
+                                >
+                                    Hardware Product
+                                    <i
+                                        class="fas fa-angle-down"
+                                        v-if="isSortedBy('hardware_product') && !reversedSort"
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                    <i
+                                        class="fas fa-angle-up"
+                                        v-else-if="isSortedBy('hardware_product') && reversedSort"
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                </a>
+                            </th>
                             <th></th>
                         </thead>
                         <tfoot v-if="filteredDevices.length > 10">
                             <th>Name</th>
-                            <th>Graduated</th>
-                            <th>Validated</th>
+                            <th>Health</th>
                             <th>Phase</th>
+                            <th>Hardware Product</th>
                             <th></th>
                         </tfoot>
                         <tbody>
@@ -177,13 +182,13 @@
                                     <span>{{ device.name }}</span>
                                 </td>
                                 <td class="graduated">
-                                    <span>{{ device.graduated }}</span>
-                                </td>
-                                <td class="validated">
-                                    <span>{{ device.validated }}</span>
+                                    <span>{{ device.health }}</span>
                                 </td>
                                 <td class="phase">
                                     <span>{{ device.phase }}</span>
+                                </td>
+                                <td class="hardare-produc">
+                                    <span>dell-2u-compute-v1-256g-10-12tb</span>
                                 </td>
                                 <td class="remove-item has-text-right">
                                     <i

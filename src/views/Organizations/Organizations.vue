@@ -19,7 +19,7 @@
                 <a class="button is-text" @click="toggleView()">
                     <template v-if="activeView === 'grid'">
                         <i class="material-icons view-list">
-                            list_alt
+                            view_headline
                         </i>
                         <span>Table View</span>
                     </template>
