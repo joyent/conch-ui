@@ -8,12 +8,13 @@
                 <span
                     class="tag build-status"
                     :class="{
-                        'is-success': currentBuild.status === 'complete',
-                        'is-info': currentBuild.status === 'active',
+                        'is-success': buildStatus === 'completed',
+                        'is-info': buildStatus === 'started',
+                        'is-link': buildStatus === 'created',
                     }"
-                    style="border-radius: 4px"
+                    style="border-radius: 3px"
                 >
-                    {{ currentBuild.status }}
+                    {{ buildStatus }}
                 </span>
             </div>
             <p class="build-id has-text-grey">
@@ -117,6 +118,17 @@ export default {
     },
     computed: {
         ...mapState(['currentBuild']),
+        buildStatus() {
+            const build = this.currentBuild;
+
+            if (build.completed) {
+                return 'completed';
+            } else if (build.started) {
+                return 'started';
+            }
+
+            return 'created';
+        },
     },
     created() {
         let buildId;
