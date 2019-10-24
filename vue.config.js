@@ -82,4 +82,13 @@ module.exports = {
         },
     },
     filenameHashing: false,
+    pages: {
+        index: {
+            entry: 'src/main.js',
+            template: 'src/index.html',
+            filename: 'index.html',
+            title: 'Conch',
+            chunks: ['chunk-vendors', 'chunk-common', 'index'],
+        },
+    },
 };
