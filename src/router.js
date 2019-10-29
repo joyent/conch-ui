@@ -10,8 +10,8 @@ import Navbar from './views/Navbar/Navbar.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import PasswordReset from './views/PasswordReset/PasswordReset.vue';
-import Builds from './views/Builds/Builds.vue';
-import SingleBuild from './views/Builds/SingleBuild.vue';
+import BuildsList from './views/Builds/BuildsList.vue';
+import Build from './views/Builds/Build.vue';
 import Organizations from './views/Organizations/Organizations.vue';
 import Organization from './views/Organizations/Organization.vue';
 import CreateBuild from './views/Builds/CreateBuild.vue';
@@ -89,7 +89,7 @@ export default new Router({
             path: '/admin/builds',
             name: 'builds',
             components: {
-                default: Builds,
+                default: BuildsList,
                 sidebar: Sidebar,
                 navbar: Navbar,
             },
@@ -98,7 +98,7 @@ export default new Router({
                     // when /admin/builds/:buildId is matched
                     path: 'build/:buildId',
                     name: 'adminBuildDetails',
-                    component: SingleBuild,
+                    component: Build,
                 },
             ],
         },
@@ -175,7 +175,7 @@ export default new Router({
             path: '/build/:buildId',
             name: 'build',
             components: {
-                default: SingleBuild,
+                default: Build,
                 sidebar: Sidebar,
                 navbar: Navbar,
             },
