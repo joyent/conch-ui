@@ -206,21 +206,6 @@
 				}
 			}
 		}
-
-		.box {
-			padding: 0;
-		}
-
-		.build-devices {
-			padding: 20px;
-		}
-	}
-
-	.devices-tab,
-	.members-tab {
-		.box {
-			padding: 20px;
-		}
 	}
 
 	.devices-table,
@@ -412,6 +397,82 @@
 					background-color: #4A5DBD;
 				}
 			}
+		}
+	}
+}
+
+.build {
+	.overview-tab {
+		.total-build-progress {
+			.box-header {
+				.material-icons {
+					font-size: 36px;
+				}
+			}
+		}
+
+		.build-dates {
+			.box-header {
+				margin-bottom: 0;
+				width: 100%;
+
+				.dates {
+					display: flex;
+					flex-grow: 1;
+					justify-content: space-around;
+					text-align: center;
+				}
+			}
+		}
+
+		.build-dates,
+		.sign-off {
+			display: flex;
+
+			.box-header {
+				.material-icons {
+					font-size: 42px;
+				}
+			}
+		}
+
+		.build-devices,
+		.rack-devices {
+			padding: 20px;
+
+			.box-header {
+				.material-icons {
+					font-size: 36px;
+				}
+			}
+		}
+
+		.box {
+			&.filter {
+				background-color: #1f2d3b;
+			}
+		}
+
+		.view-all {
+			margin-left: 10px;
+		}
+	}
+
+	.devices-tab,
+	.members-tab,
+	.organizations-tab,
+	.racks-tab {
+		.datatable-header {
+			i.material-icons.search {
+				font-size: 22px;
+				margin-left: 5px;
+			}
+		}
+	}
+
+	.devices-tab {
+		.select-with-label.health {
+			margin-left: 20px;
 		}
 	}
 }
