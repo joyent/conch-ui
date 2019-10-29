@@ -62,91 +62,21 @@
                         </div>
                         <p class="subtitle is-4">Phase</p>
                         <div class="columns">
-                            <div class="column">
+                            <div
+                                class="column"
+                                v-for="phase in phaseList"
+                                :key="phase"
+                            >
                                 <a
-                                    class="filter-devices-phase-integration"
-                                    @click="filterDevicesByPhase('integration')"
+                                    :class="`filter-devices-phase-${phase}`"
+                                    @click="filterDevicesByPhase(phase)"
                                 >
                                     <div class="box filter">
-                                        <h2 class="is-6">Integration</h2>
+                                        <h2 class="is-6 is-capitalized">
+                                            {{ phase }}
+                                        </h2>
                                         <span class="is-size-3 has-text-info">
-                                            {{
-                                                getDeviceHealthCount(
-                                                    'integration'
-                                                )
-                                            }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-devices-phase-installation"
-                                    @click="
-                                        filterDevicesByPhase('installation')
-                                    "
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Installation</h2>
-                                        <span class="is-size-3 has-text-info">
-                                            {{
-                                                getDeviceHealthCount(
-                                                    'installation'
-                                                )
-                                            }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-devices-phase-production"
-                                    @click="filterDevicesByPhase('production')"
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Production</h2>
-                                        <span class="is-size-3 has-text-info">
-                                            {{
-                                                getDeviceHealthCount(
-                                                    'production'
-                                                )
-                                            }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-devices-phase-diagnostics"
-                                    @click="filterDevicesByPhase('diagnostics')"
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Diagnostics</h2>
-                                        <span class="is-size-3 has-text-info">
-                                            {{
-                                                getDeviceHealthCount(
-                                                    'diagnostics'
-                                                )
-                                            }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-devices-phase-decommissioned"
-                                    @click="
-                                        filterDevicesByPhase('decommissioned')
-                                    "
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Decommissioned</h2>
-                                        <span class="is-size-3 has-text-info">
-                                            {{
-                                                getDevicePhaseCount(
-                                                    'decommissioned'
-                                                )
-                                            }}
+                                            {{ getDeviceHealthCount(phase) }}
                                         </span>
                                     </div>
                                 </a>
@@ -154,60 +84,32 @@
                         </div>
                         <p class="subtitle is-4">Health</p>
                         <div class="columns">
-                            <div class="column">
+                            <div
+                                class="column"
+                                v-for="status in healthStatusList"
+                                :key="status"
+                            >
                                 <a
-                                    class="filter-devices-health-pass"
-                                    @click="filterDevicesByHealth('pass')"
+                                    :class="`filter-devices-health-${status}`"
+                                    @click="filterDevicesByHealth(status)"
                                 >
                                     <div class="box filter">
-                                        <h2 class="is-6">Pass</h2>
+                                        <h2 class="is-6 is-capitalized">
+                                            {{ status }}
+                                        </h2>
                                         <span
-                                            class="is-size-3 has-text-success"
+                                            class="is-size-3"
+                                            :class="{
+                                                'has-text-success':
+                                                    status === 'pass',
+                                                'has-text-warning':
+                                                    status === 'unknown',
+                                                'has-text-danger':
+                                                    status === 'error' ||
+                                                    status === 'fail',
+                                            }"
                                         >
-                                            {{ getDeviceHealthCount('pass') }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-devices-health-unknown"
-                                    @click="filterDevicesByHealth('unknown')"
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Unknown</h2>
-                                        <span
-                                            class="is-size-3 has-text-warning"
-                                        >
-                                            {{
-                                                getDeviceHealthCount('unknown')
-                                            }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-devices-health-error"
-                                    @click="filterDevicesByHealth('error')"
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Error</h2>
-                                        <span class="is-size-3 has-text-danger">
-                                            {{ getDeviceHealthCount('error') }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-devices-health-fail"
-                                    @click="filterDevicesByHealth('fail')"
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Fail</h2>
-                                        <span class="is-size-3 has-text-danger">
-                                            {{ getDeviceHealthCount('fail') }}
+                                            {{ getDeviceHealthCount(status) }}
                                         </span>
                                     </div>
                                 </a>
@@ -215,11 +117,11 @@
                         </div>
                     </div>
                     <a
-                        class="button is-fullwidth is-medium all"
+                        class="button is-fullwidth is-medium view-all"
                         @click="changeTab('DevicesTab')"
                     >
                         <span class="heading is-marginless is-size-6">
-                            All Devices
+                            View All Devices
                         </span>
                         <i class="material-icons view-all">arrow_forward</i>
                     </a>
@@ -236,81 +138,21 @@
                         </div>
                         <p class="subtitle is-4">Phase</p>
                         <div class="columns">
-                            <div class="column">
+                            <div
+                                class="column"
+                                v-for="phase in phaseList"
+                                :key="phase"
+                            >
                                 <a
-                                    class="filter-racks-phase-integration"
-                                    @click="filterRackByPhase('integration')"
+                                    :class="`filter-racks-phase-${phase}`"
+                                    @click="filterRackByPhase(phase)"
                                 >
                                     <div class="box filter">
-                                        <h2 class="is-6">Integration</h2>
+                                        <h2 class="is-6 is-capitalized">
+                                            {{ phase }}
+                                        </h2>
                                         <span class="is-size-3 has-text-info">
-                                            {{
-                                                getRackPhaseCount('integration')
-                                            }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-racks-phase-installation"
-                                    @click="filterRackByPhase('installation')"
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Installation</h2>
-                                        <span class="is-size-3 has-text-info">
-                                            {{
-                                                getRackPhaseCount(
-                                                    'installation'
-                                                )
-                                            }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-racks-phase-production"
-                                    @click="filterRackByPhase('production')"
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Production</h2>
-                                        <span class="is-size-3 has-text-info">
-                                            {{
-                                                getRackPhaseCount('production')
-                                            }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-racks-phase-diagnostics"
-                                    @click="filterRackByPhase('diagnostics')"
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Diagnostics</h2>
-                                        <span class="is-size-3 has-text-info">
-                                            {{
-                                                getRackPhaseCount('diagnostics')
-                                            }}
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="column">
-                                <a
-                                    class="filter-racks-phase-decommissioned"
-                                    @click="filterRackByPhase('decommissioned')"
-                                >
-                                    <div class="box filter">
-                                        <h2 class="is-6">Decommissioned</h2>
-                                        <span class="is-size-3 has-text-info">
-                                            {{
-                                                getRackPhaseCount(
-                                                    'decommissioned'
-                                                )
-                                            }}
+                                            {{ getRackPhaseCount(phase) }}
                                         </span>
                                     </div>
                                 </a>
@@ -318,11 +160,11 @@
                         </div>
                     </div>
                     <a
-                        class="button is-fullwidth is-medium all"
+                        class="button is-fullwidth is-medium view-all"
                         @click="changeTab('RacksTab')"
                     >
                         <span class="heading is-marginless is-size-6">
-                            All Racks
+                            View All Racks
                         </span>
                         <i class="material-icons view-all">arrow_forward</i>
                     </a>
@@ -342,6 +184,18 @@ export default {
             type: Object,
             required: true,
         },
+    },
+    data() {
+        return {
+            healthStatusList: ['pass', 'fail', 'error', 'unknown'],
+            phaseList: [
+                'integration',
+                'installation',
+                'production',
+                'diagnostics',
+                'decommissioned',
+            ],
+        };
     },
     methods: {
         changeTab(tab) {
