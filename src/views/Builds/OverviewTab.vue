@@ -2,12 +2,10 @@
     <div class="overview-tab">
         <div class="columns">
             <div class="column">
-                <div class="box" style="padding: 20px;">
+                <div class="box">
                     <div class="total-build-progress">
                         <div class="box-header">
-                            <i class="material-icons" style="font-size: 36px;">
-                                cloud_done
-                            </i>
+                            <i class="material-icons">cloud_done</i>
                             <p class="heading is-size-6">
                                 Overall Build Progress
                             </p>
@@ -18,9 +16,7 @@
                                 :value="80"
                                 max="100"
                             ></progress>
-                            <span class="amount is-size-5">
-                                80%
-                            </span>
+                            <span class="amount is-size-5">80%</span>
                         </div>
                     </div>
                 </div>
@@ -28,12 +24,10 @@
         </div>
         <div class="columns">
             <div class="column">
-                <div class="box build-dates" style="padding: 20px; display: flex;">
-                    <div class="box-header" style="margin-bottom: 0; width: 100%;">
-                        <i class="material-icons" style="font-size: 42px;">
-                            schedule
-                        </i>
-                        <div class="dates" style="display: flex; flex-grow: 1; justify-content: space-around; text-align: center;">
+                <div class="box build-dates">
+                    <div class="box-header">
+                        <i class="material-icons">schedule</i>
+                        <div class="dates">
                             <div class="start-date">
                                 <p class="heading is-size-6">Start Date</p>
                                 <p>22/09/2019</p>
@@ -47,11 +41,9 @@
                 </div>
             </div>
             <div class="column">
-                <div class="box sign-off" style="padding: 20px; display: flex;">
+                <div class="box sign-off">
                     <div class="box-header">
-                        <i class="material-icons" style="font-size: 42px;">
-                            gesture
-                        </i>
+                        <i class="material-icons">gesture</i>
                         <div class="sign-off-details">
                             <p class="heading is-size-6">Sign Off Details</p>
                             <p>10/12/2019 | Michael Scott</p>
@@ -62,117 +54,163 @@
         </div>
         <div class="columns">
             <div class="column">
-                <div class="box">
+                <div class="box is-paddingless">
                     <div class="build-devices">
                         <div class="box-header">
-                            <i class="material-icons" style="font-size: 36px;">
-                                storage
-                            </i>
+                            <i class="material-icons">dns</i>
                             <p class="heading is-size-6">Devices Overview</p>
                         </div>
                         <p class="subtitle is-4">Phase</p>
                         <div class="columns">
                             <div class="column">
-                                <div
-                                    class="box"
-                                    style="padding: 20px; background-color: #1f2d3b"
+                                <a
+                                    class="filter-devices-phase-integration"
+                                    @click="filterDevicesByPhase('integration')"
                                 >
-                                    <h2 class="is-6">Integration</h2>
-                                    <span class="is-size-3 has-text-info">
-                                        50
-                                    </span>
-                                </div>
+                                    <div class="box filter">
+                                        <h2 class="is-6">Integration</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getDeviceHealthCount(
+                                                    'integration'
+                                                )
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                             <div class="column">
-                                <div
-                                    class="box"
-                                    style="padding: 20px; background-color: #1f2d3b"
+                                <a
+                                    class="filter-devices-phase-installation"
+                                    @click="
+                                        filterDevicesByPhase('installation')
+                                    "
                                 >
-                                    <h2 class="is-6">Installation</h2>
-                                    <span class="is-size-3 has-text-info">
-                                        25
-                                    </span>
-                                </div>
+                                    <div class="box filter">
+                                        <h2 class="is-6">Installation</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getDeviceHealthCount(
+                                                    'installation'
+                                                )
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                             <div class="column">
-                                <div
-                                    class="box"
-                                    style="padding: 20px; background-color: #1f2d3b"
+                                <a
+                                    class="filter-devices-phase-production"
+                                    @click="filterDevicesByPhase('production')"
                                 >
-                                    <h2 class="is-6">Production</h2>
-                                    <span class="is-size-3 has-text-info">
-                                        45
-                                    </span>
-                                </div>
+                                    <div class="box filter">
+                                        <h2 class="is-6">Production</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getDeviceHealthCount(
+                                                    'production'
+                                                )
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                             <div class="column">
-                                <div
-                                    class="box"
-                                    style="padding: 20px; background-color: #1f2d3b"
+                                <a
+                                    class="filter-devices-phase-diagnostics"
+                                    @click="filterDevicesByPhase('diagnostics')"
                                 >
-                                    <h2 class="is-6">Diagnostics</h2>
-                                    <span class="is-size-3 has-text-info">
-                                        10
-                                    </span>
-                                </div>
+                                    <div class="box filter">
+                                        <h2 class="is-6">Diagnostics</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getDeviceHealthCount(
+                                                    'diagnostics'
+                                                )
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                             <div class="column">
-                                <div
-                                    class="box"
-                                    style="padding: 20px; background-color: #1f2d3b"
+                                <a
+                                    class="filter-devices-phase-decommissioned"
+                                    @click="
+                                        filterDevicesByPhase('decommissioned')
+                                    "
                                 >
-                                    <h2 class="is-6">Decommissioned</h2>
-                                    <span class="is-size-3 has-text-info">
-                                        {{ 50 }}
-                                    </span>
-                                </div>
+                                    <div class="box filter">
+                                        <h2 class="is-6">Decommissioned</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getDevicePhaseCount(
+                                                    'decommissioned'
+                                                )
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                         <p class="subtitle is-4">Health</p>
                         <div class="columns">
                             <div class="column">
-                                <div
-                                    class="box"
-                                    style="padding: 20px; background-color: #1f2d3b"
+                                <a
+                                    class="filter-devices-health-pass"
+                                    @click="filterDevicesByHealth('pass')"
                                 >
-                                    <h2 class="is-6">Pass</h2>
-                                    <span class="is-size-3 has-text-success">
-                                        50
-                                    </span>
-                                </div>
+                                    <div class="box filter">
+                                        <h2 class="is-6">Pass</h2>
+                                        <span
+                                            class="is-size-3 has-text-success"
+                                        >
+                                            {{ getDeviceHealthCount('pass') }}
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                             <div class="column">
-                                <div
-                                    class="box"
-                                    style="padding: 20px; background-color: #1f2d3b"
+                                <a
+                                    class="filter-devices-health-unknown"
+                                    @click="filterDevicesByHealth('unknown')"
                                 >
-                                    <h2 class="is-6">Unknown</h2>
-                                    <span class="is-size-3 has-text-warning">
-                                        11
-                                    </span>
-                                </div>
+                                    <div class="box filter">
+                                        <h2 class="is-6">Unknown</h2>
+                                        <span
+                                            class="is-size-3 has-text-warning"
+                                        >
+                                            {{
+                                                getDeviceHealthCount('unknown')
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                             <div class="column">
-                                <div
-                                    class="box"
-                                    style="padding: 20px; background-color: #1f2d3b"
+                                <a
+                                    class="filter-devices-health-error"
+                                    @click="filterDevicesByHealth('error')"
                                 >
-                                    <h2 class="is-6">Error</h2>
-                                    <span class="is-size-3 has-text-danger">
-                                        9
-                                    </span>
-                                </div>
+                                    <div class="box filter">
+                                        <h2 class="is-6">Error</h2>
+                                        <span class="is-size-3 has-text-danger">
+                                            {{ getDeviceHealthCount('error') }}
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                             <div class="column">
-                                <div
-                                    class="box"
-                                    style="padding: 20px; background-color: #1f2d3b"
+                                <a
+                                    class="filter-devices-health-fail"
+                                    @click="filterDevicesByHealth('fail')"
                                 >
-                                    <h2 class="is-6">Fail</h2>
-                                    <span class="is-size-3 has-text-danger">
-                                        32
-                                    </span>
-                                </div>
+                                    <div class="box filter">
+                                        <h2 class="is-6">Fail</h2>
+                                        <span class="is-size-3 has-text-danger">
+                                            {{ getDeviceHealthCount('fail') }}
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -183,9 +221,110 @@
                         <span class="heading is-marginless is-size-6">
                             All Devices
                         </span>
-                        <i class="material-icons" style="margin-left: 10px;">
-                            arrow_forward
-                        </i>
+                        <i class="material-icons view-all">arrow_forward</i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <div class="box is-paddingless">
+                    <div class="rack-devices">
+                        <div class="box-header">
+                            <i class="material-icons">storage</i>
+                            <p class="heading is-size-6">Racks Overview</p>
+                        </div>
+                        <p class="subtitle is-4">Phase</p>
+                        <div class="columns">
+                            <div class="column">
+                                <a
+                                    class="filter-racks-phase-integration"
+                                    @click="filterRackByPhase('integration')"
+                                >
+                                    <div class="box filter">
+                                        <h2 class="is-6">Integration</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getRackPhaseCount('integration')
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="column">
+                                <a
+                                    class="filter-racks-phase-installation"
+                                    @click="filterRackByPhase('installation')"
+                                >
+                                    <div class="box filter">
+                                        <h2 class="is-6">Installation</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getRackPhaseCount(
+                                                    'installation'
+                                                )
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="column">
+                                <a
+                                    class="filter-racks-phase-production"
+                                    @click="filterRackByPhase('production')"
+                                >
+                                    <div class="box filter">
+                                        <h2 class="is-6">Production</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getRackPhaseCount('production')
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="column">
+                                <a
+                                    class="filter-racks-phase-diagnostics"
+                                    @click="filterRackByPhase('diagnostics')"
+                                >
+                                    <div class="box filter">
+                                        <h2 class="is-6">Diagnostics</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getRackPhaseCount('diagnostics')
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="column">
+                                <a
+                                    class="filter-racks-phase-decommissioned"
+                                    @click="filterRackByPhase('decommissioned')"
+                                >
+                                    <div class="box filter">
+                                        <h2 class="is-6">Decommissioned</h2>
+                                        <span class="is-size-3 has-text-info">
+                                            {{
+                                                getRackPhaseCount(
+                                                    'decommissioned'
+                                                )
+                                            }}
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <a
+                        class="button is-fullwidth is-medium all"
+                        @click="changeTab('RacksTab')"
+                    >
+                        <span class="heading is-marginless is-size-6">
+                            All Racks
+                        </span>
+                        <i class="material-icons view-all">arrow_forward</i>
                     </a>
                 </div>
             </div>
@@ -195,6 +334,7 @@
 
 <script>
 import moment from 'moment';
+import { EventBus } from '@src/eventBus.js';
 
 export default {
     props: {
@@ -207,8 +347,50 @@ export default {
         changeTab(tab) {
             this.$parent.changeTab(tab);
         },
+        filterDevicesByHealth(health) {
+            this.$parent.changeTab('DevicesTab');
+
+            EventBus.$emit('setDeviceTabHealthFilter', health);
+        },
+        filterDevicesByPhase(phase) {
+            this.$parent.changeTab('DevicesTab');
+
+            EventBus.$emit('setDeviceTabPhaseFilter', phase);
+        },
+        filterRackByPhase(phase) {
+            this.$parent.changeTab('RacksTab');
+
+            EventBus.$emit('setRackTabPhaseFilter', phase);
+        },
         getDate(date) {
             return moment(date).format('MM/DD/YYYY');
+        },
+        getDeviceHealthCount(health) {
+            if (this.build && this.build.devices && this.build.devices.length) {
+                return this.build.devices.filter(device => {
+                    device.health === health;
+                }).length;
+            }
+
+            return 0;
+        },
+        getDevicePhaseCount(phase) {
+            if (this.build && this.build.devices && this.build.devices.length) {
+                return this.build.devices.filter(device => {
+                    device.phase === phase;
+                }).length;
+            }
+
+            return 0;
+        },
+        getRackPhaseCount(phase) {
+            if (this.build && this.build.racks && this.build.racks.length) {
+                return this.build.racks.filter(rack => {
+                    rack.phase === phase;
+                }).length;
+            }
+
+            return 0;
         },
     },
 };
