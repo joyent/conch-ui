@@ -12,15 +12,10 @@
                                 type="text"
                                 class="input search"
                                 v-model="searchText"
-                                placeholder="Search racks"
+                                placeholder="Search..."
                             />
                             <span class="icon is-small is-left">
-                                <i
-                                    class="material-icons"
-                                    style="font-size: 22px; margin-left: 5px;"
-                                >
-                                    search
-                                </i>
+                                <i class="material-icons search">search</i>
                             </span>
                         </div>
                         <i
@@ -86,7 +81,7 @@
                                     <span>{{ rack.name }}</span>
                                 </td>
                                 <td class="role">
-                                    <span>{{ rack.role }}</span>
+                                    <span>{{ rack.type }}</span>
                                 </td>
                                 <td class="remove-item has-text-right">
                                     <i
@@ -100,16 +95,12 @@
                 </div>
             </div>
         </div>
-        <RemoveItemModal
-            v-if="removingRack"
-            :item="rack"
-            item-type="rack"
-        />
+        <RemoveItemModal v-if="removingRack" :item="rack" item-type="rack" />
     </div>
 </template>
 
 <script>
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
 import RemoveItemModal from './RemoveItemModal.vue';
 import { EventBus } from '@src/eventBus.js';
 
@@ -129,11 +120,10 @@ export default {
             removingRack: false,
             searchText: '',
             sortBy: '',
-            rack: {},
         };
     },
     methods: {
-        addRack(rack) {
+        addRack() {
 
         },
         removeRack(rack) {
@@ -162,15 +152,11 @@ export default {
                 }, []);
             }
 
-            // if (this.rackFilter) {
-            //     const userFilter = this.userFilter;
-
-            //     if (rackFilter === 'admin') {
-            //         return users.filter(user => user.role === 'admin');
-            //     } else if (rackFilter === 'regular') {
-            //         return users.filter(user => user.role === 'regular user');
-            //     }
-            // }
+            if (this.rackFilter) {
+                return this.racks.filter(
+                    rack => rack.phase === this.rackFilter
+                );
+            }
 
             return racks;
         },
