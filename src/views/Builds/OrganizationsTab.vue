@@ -1,6 +1,6 @@
 <template>
     <div class="organizations-tab">
-        <!-- <div class="columns">
+        <div class="columns">
             <div class="column">
                 <div class="members-table is-paddingless">
                     <div class="datatable-header">
@@ -12,10 +12,10 @@
                                 type="text"
                                 class="input search"
                                 v-model="searchText"
-                                placeholder="Search Organizations"
+                                placeholder="Search..."
                             />
                             <span class="icon is-small is-left">
-                                <i class="material-icons">search</i>
+                                <i class="material-icons search">search</i>
                             </span>
                         </div>
                         <i
@@ -30,18 +30,24 @@
                             <th>
                                 <a
                                     class="table-header-filter name"
-                                    :class="{ 'has-text-white': sortBy === 'name' }"
+                                    :class="{
+                                        'has-text-white': sortBy === 'name',
+                                    }"
                                     @click="sort()"
                                 >
                                     Name
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortBy === 'name' && !reversedSort"
+                                        v-if="
+                                            sortBy === 'name' && !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortBy === 'name' && reversedSort"
+                                        v-else-if="
+                                            sortBy === 'name' && reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
@@ -49,25 +55,36 @@
                             <th>
                                 <a
                                     class="table-header-filter role"
-                                    :class="{ 'has-text-white': sortBy === 'role' }"
+                                    :class="{
+                                        'has-text-white': sortBy === 'role',
+                                    }"
                                     @click="sort()"
                                 >
                                     Role
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortBy === 'role' && !reversedSort"
+                                        v-if="
+                                            sortBy === 'role' && !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortBy === 'role' && reversedSort"
+                                        v-else-if="
+                                            sortBy === 'role' && reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot v-if="filteredOrganizations.length > 10">
+                        <tfoot
+                            v-if="
+                                filteredOrganizations &&
+                                    filteredOrganizations.length > 10
+                            "
+                        >
                             <th>Name</th>
                             <th>Role</th>
                         </tfoot>
@@ -86,7 +103,9 @@
                                 <td class="remove-item has-text-right">
                                     <i
                                         class="fas fa-trash-alt"
-                                        @click="removeOrganization(organization)"
+                                        @click="
+                                            removeOrganization(organization)
+                                        "
                                     ></i>
                                 </td>
                             </tr>
@@ -97,15 +116,62 @@
         </div>
         <RemoveItemModal
             v-if="removingOrganization"
-            :build="build"
-            :item="user"
-            item-type="user"
-        /> -->
+            :item="organization"
+            item-type="organization"
+        />
     </div>
 </template>
 
 <script>
-export default {
+import search from 'fuzzysearch';
+import RemoveItemModal from './RemoveItemModal.vue';
 
+export default {
+    components: {
+        RemoveItemModal,
+    },
+    props: {
+        build: {
+            type: Object,
+            required: true,
+        },
+    },
+    data() {
+        return {
+            removingOrganization: false,
+            reversedSort: false,
+            searchText: '',
+            sortBy: '',
+        };
+    },
+    methods: {
+        addOrganization() {
+
+        },
+        removeOrganization() {
+
+        },
+    },
+    computed: {
+        filteredOrganizations() {
+            let organizations = this.build.organizations;
+
+            if (this.searchText) {
+                const searchText = this.searchText.toLowerCase();
+
+                return organizations.reduce((acc, organization) => {
+                    const name = organization.name.toLowerCase();
+
+                    if (search(searchText, name)) {
+                        acc.push(organization);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            return organizations;
+        },
+    },
 };
 </script>

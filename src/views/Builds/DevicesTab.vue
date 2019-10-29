@@ -1,37 +1,5 @@
 <template>
     <div class="devices-tab">
-        <!-- <div class="columns is-vcentered">
-            <div class="column">
-                <a class="filter-all" @click="deviceFilter = 'all'">
-                    <div class="box">
-                        <h2 class="is-6">All Devices</h2>
-                        <span class="is-size-3 has-text-info">
-                            {{ build.devices.length }}
-                        </span>
-                    </div>
-                </a>
-            </div>
-            <div class="column">
-                <a class="filter-graduated" @click="deviceFilter = 'graduated'">
-                    <div class="box">
-                        <h2 class="is-6">Graduated</h2>
-                        <span class="is-size-3 has-text-info">
-                            {{ devicesGraduated }}
-                        </span>
-                    </div>
-                </a>
-            </div>
-            <div class="column">
-                <a class="filter-validated" @click="deviceFilter = 'validated'">
-                    <div class="box">
-                        <h2 class="is-6">Validated</h2>
-                        <span class="is-size-3 has-text-info">
-                            {{ devicesValidated }}
-                        </span>
-                    </div>
-                </a>
-            </div>
-        </div> -->
         <div class="columns">
             <div class="column">
                 <div class="devices-table is-paddingless">
@@ -41,21 +9,16 @@
                         </span>
                         <div class="control has-icons-left has-icons-right">
                             <input
-                                class="input search"
                                 type="text"
-                                placeholder="Search Devices"
+                                class="input search"
                                 v-model="searchText"
+                                placeholder="Search..."
                             />
                             <span class="icon is-small is-left">
-                                <i
-                                    class="material-icons"
-                                    style="font-size: 22px; margin-left: 5px;"
-                                >
-                                    search
-                                </i>
+                                <i class="material-icons search">search</i>
                             </span>
                         </div>
-                        <div class="select-with-label">
+                        <div class="select-with-label phase">
                             <label class="select-label">Phase</label>
                             <div class="select device-phase">
                                 <select v-model="devicePhaseFilter">
@@ -74,6 +37,26 @@
                                     </option>
                                     <option value="decommissioned">
                                         Decommissioned
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="select-with-label health">
+                            <label class="select-label">Health</label>
+                            <div class="select device-health">
+                                <select v-model="deviceHealthFilter">
+                                    <option value="all">All</option>
+                                    <option value="pass">
+                                        Pass
+                                    </option>
+                                    <option value="unknown">
+                                        Unknown
+                                    </option>
+                                    <option value="error">
+                                        Error
+                                    </option>
+                                    <option value="fail">
+                                        fail
                                     </option>
                                 </select>
                             </div>
@@ -165,7 +148,11 @@
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot v-if="filteredDevices.length > 10">
+                        <tfoot
+                            v-if="
+                                filteredDevices && filteredDevices.length > 10
+                            "
+                        >
                             <th>Name</th>
                             <th>Health</th>
                             <th>Phase</th>
@@ -212,7 +199,7 @@
 
 <script>
 import orderBy from 'lodash/orderBy';
-import search from "fuzzysearch";
+import search from 'fuzzysearch';
 import RemoveItemModal from './RemoveItemModal.vue';
 import { EventBus } from '@src/eventBus.js';
 
@@ -228,9 +215,9 @@ export default {
     },
     data() {
         return {
-            device: {},
             deviceFilter: 'all',
             devicePhaseFilter: 'all',
+            deviceHealthFilter: 'all',
             previousSortBy: '',
             removingDevice: false,
             reversedSort: false,
@@ -263,121 +250,109 @@ export default {
     },
     computed: {
         devicesGraduated() {
-            return this.devices.filter(
-                device => device.graduated === true
-            ).length;
+            if (this.devices && this.devices.length) {
+                return this.devices.filter(device => device.graduated === true)
+                    .length;
+            }
+
+            return 0;
         },
         devicesValidated() {
-            return this.devices.filter(
-                device => device.validated === true
-            ).length;
+            if (this.devices && this.devices.length) {
+                return this.devices.filter(device => device.validated === true)
+                    .length;
+            }
+
+            return 0;
         },
         filteredDevices() {
             let devices = this.build.devices;
 
-            if (this.searchText) {
-                const searchText = this.searchText.toLowerCase();
+            if (devices && devices.length) {
+                if (this.searchText) {
+                    const searchText = this.searchText.toLowerCase();
 
-                return devices.reduce((acc, device) => {
-                    const name = device.name.toLowerCase();
+                    return devices.reduce((acc, device) => {
+                        const name = device.name.toLowerCase();
 
-                    if (search(searchText, name)) {
-                        acc.push(device);
+                        if (search(searchText, name)) {
+                            acc.push(device);
+                        }
+
+                        return acc;
+                    }, []);
+                }
+
+                if (this.deviceHealthFilter) {
+                    devices = devices.filter(
+                        device => device.health === this.deviceHealthFilter
+                    );
+                }
+
+                if (this.devicePhaseFilter) {
+                    devices = devices.filter(
+                        device => device.phase === this.devicePhaseFilter
+                    );
+                }
+
+                if (this.sortBy) {
+                    const sortBy = this.sortBy;
+                    devices = this.sortedDevices;
+
+                    if (sortBy !== 'reverse') {
+                        if (sortBy === 'name') {
+                            devices = orderBy(
+                                devices,
+                                [device => device.name],
+                                ['asc']
+                            );
+                        } else if (sortBy === 'graduated') {
+                            devices = orderBy(
+                                devices,
+                                [device => device.graduated],
+                                ['asc']
+                            );
+                        } else if (sortBy === 'validated') {
+                            devices = orderBy(
+                                devices,
+                                [device => device.validated],
+                                ['asc']
+                            );
+                        } else if (sortBy === 'phase') {
+                            devices = orderBy(
+                                devices,
+                                [device => device.phase],
+                                ['asc']
+                            );
+                        }
+                    } else {
+                        devices.reverse();
                     }
-
-                    return acc;
-                }, []);
-            }
-
-            if (this.deviceFilter) {
-                const deviceFilter = this.deviceFilter;
-
-                if (deviceFilter === 'graduated') {
-                    devices = devices.filter(
-                        device => device.graduated === true
-                    );
-                } else if (deviceFilter === 'validated') {
-                    devices = devices.filter(
-                        device => device.validated === true
-                    );
+                    // Causes error
+                    //this.sortedDevices = devices;
                 }
-            }
-
-            if (this.devicePhaseFilter) {
-                const devicePhaseFilter = this.devicePhaseFilter;
-
-                if (devicePhaseFilter === 'integration') {
-                    devices = devices.filter(
-                        device => device.phase === 'integration'
-                    );
-                } else if (devicePhaseFilter === 'installation') {
-                    devices = devices.filter(
-                        device => device.phase === 'installation'
-                    );
-                } else if (devicePhaseFilter === 'production') {
-                    devices = devices.filter(
-                        device => device.phase === 'production'
-                    );
-                } else if (devicePhaseFilter === 'diagnostics') {
-                    devices = devices.filter(
-                        device => device.phase === 'diagnostics'
-                    );
-                } else if (devicePhaseFilter === 'decommissioned') {
-                    devices = devices.filter(
-                        device => device.phase === 'decommissioned'
-                    );
-                }
-            }
-
-            if (this.sortBy) {
-                const sortBy = this.sortBy;
-                devices = this.sortedDevices;
-
-                if (sortBy !== 'reverse') {
-                    if (sortBy === 'name') {
-                        devices = orderBy(
-                            devices,
-                            [device => device.name],
-                            ['asc']
-                        );
-                    } else if (sortBy === 'graduated') {
-                        devices = orderBy(
-                            devices,
-                            [device => device.graduated],
-                            ['asc']
-                        );
-                    } else if (sortBy === 'validated') {
-                        devices = orderBy(
-                            devices,
-                            [device => device.validated],
-                            ['asc']
-                        );
-                    } else if (sortBy === 'phase') {
-                        devices = orderBy(
-                            devices,
-                            [device => device.phase],
-                            ['asc']
-                        );
-                    }
-                } else {
-                    devices.reverse();
-                }
-
-                this.sortedDevices = devices;
             }
 
             return devices;
         },
     },
     created() {
+        console.log('created!')
         this.devices = this.build.devices;
-    },
-    mounted() {
-        this.sortedDevices = this.build.devices;
 
         EventBus.$on('close-modal:remove-item', () => {
             this.removingDevice = false;
         });
     },
+    mounted() {
+        console.log('mounted!')
+        this.sortedDevices = this.build.devices;
+    },
+    updated() {
+        console.log('updated!')
+    },
+    destroyed() {
+        console.log('destroyed!')
+    }
 };
 </script>
