@@ -1,15 +1,15 @@
 <template>
     <div class="dashboard">
-        <SingleBuild :build-id="buildId" />
+        <Build :build-id="buildId" />
     </div>
 </template>
 
 <script>
-import SingleBuild from '@src/views/Builds/SingleBuild.vue';
+import Build from '@src/views/Builds/Build.vue';
 
 export default {
     components: {
-        SingleBuild,
+        Build,
     },
     data() {
         return {
