@@ -1,37 +1,5 @@
 <template>
     <div class="members-tab">
-        <div class="columns is-vcentered">
-            <div class="column">
-                <a class="filter-all" @click="userFilter = 'all'">
-                    <div class="box">
-                        <h2 class="is-6">All Users</h2>
-                        <span class="is-size-3 has-text-info">
-                            {{ build.users.length }}
-                        </span>
-                    </div>
-                </a>
-            </div>
-            <div class="column">
-                <a class="filter-admin" @click="userFilter = 'admin'">
-                    <div class="box">
-                        <h2 class="is-6">Admin Users</h2>
-                        <span class="is-size-3 has-text-info">
-                            {{ adminUsersCount }}
-                        </span>
-                    </div>
-                </a>
-            </div>
-            <div class="column">
-                <a class="filter-regular" @click="userFilter = 'regular'">
-                    <div class="box">
-                        <h2 class="is-6">Regular Users</h2>
-                        <span class="is-size-3 has-text-info">
-                            {{ regularUsersCount }}
-                        </span>
-                    </div>
-                </a>
-            </div>
-        </div>
         <div class="columns">
             <div class="column">
                 <div class="members-table is-paddingless">
@@ -44,19 +12,14 @@
                                 type="text"
                                 class="input search"
                                 v-model="searchText"
-                                placeholder="Search Members"
+                                placeholder="Search..."
                             />
                             <span class="icon is-small is-left">
-                                <i
-                                    class="material-icons"
-                                    style="font-size: 22px; margin-left: 5px;"
-                                >
-                                    search
-                                </i>
+                                <i class="material-icons search">search</i>
                             </span>
                         </div>
                         <div class="select member-type">
-                            <select v-model="memberTypeFilter">
+                            <select v-model="userFilter">
                                 <option value="all">All Members</option>
                                 <option value="admin">
                                     Admins
@@ -68,7 +31,7 @@
                         </div>
                         <i
                             class="material-icons has-text-success"
-                            @click="addDevice()"
+                            @click="addUser()"
                         >
                             add_circle
                         </i>
@@ -78,18 +41,24 @@
                             <th>
                                 <a
                                     class="table-header-filter name"
-                                    :class="{ 'has-text-white': sortBy === 'name' }"
+                                    :class="{
+                                        'has-text-white': sortBy === 'name',
+                                    }"
                                     @click="sort()"
                                 >
                                     Name
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortBy === 'name' && !reversedSort"
+                                        v-if="
+                                            sortBy === 'name' && !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortBy === 'name' && reversedSort"
+                                        v-else-if="
+                                            sortBy === 'name' && reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
@@ -97,18 +66,52 @@
                             <th>
                                 <a
                                     class="table-header-filter role"
-                                    :class="{ 'has-text-white': sortBy === 'role' }"
+                                    :class="{
+                                        'has-text-white': sortBy === 'role',
+                                    }"
                                     @click="sort()"
                                 >
                                     Role
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortBy === 'role' && !reversedSort"
+                                        v-if="
+                                            sortBy === 'role' && !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortBy === 'role' && reversedSort"
+                                        v-else-if="
+                                            sortBy === 'role' && reversedSort
+                                        "
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                </a>
+                            </th>
+                            <th>
+                                <a
+                                    class="table-header-filter organization"
+                                    :class="{
+                                        'has-text-white':
+                                            sortBy === 'organization',
+                                    }"
+                                    @click="sort()"
+                                >
+                                    Organization
+                                    <i
+                                        class="fas fa-angle-down"
+                                        v-if="
+                                            sortBy === 'organization' &&
+                                                !reversedSort
+                                        "
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                    <i
+                                        class="fas fa-angle-up"
+                                        v-else-if="
+                                            sortBy === 'organization' &&
+                                                reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
@@ -118,6 +121,7 @@
                         <tfoot v-if="filteredUsers.length > 10">
                             <th>Name</th>
                             <th>Role</th>
+                            <th>Organization</th>
                         </tfoot>
                         <tbody>
                             <tr
@@ -130,6 +134,9 @@
                                 </td>
                                 <td class="role">
                                     <span>{{ user.role }}</span>
+                                </td>
+                                <td class="organization">
+                                    <span>{{ user.organization }}</span>
                                 </td>
                                 <td class="remove-item has-text-right">
                                     <i
@@ -169,15 +176,14 @@ export default {
     },
     data() {
         return {
-            memberTypeFilter: 'all',
             removingMember: false,
             searchText: '',
             sortBy: '',
-            user: {},
+            userFilter: 'all',
         };
     },
     methods: {
-        addUser(user) {
+        addUser() {
 
         },
         removeMember(user) {
@@ -190,9 +196,14 @@ export default {
     },
     computed: {
         adminUsersCount() {
-            return this.build.users.filter(user => user.role === 'admin').length;
+            if (this.build && this.build.users && this.build.users.length) {
+                return this.build.users.filter(user => user.role === 'admin')
+                    .length;
+            }
+
+            return 0;
         },
-        filteredUsers(filter) {
+        filteredUsers() {
             let users = this.build.users;
 
             if (this.searchText) {
@@ -222,8 +233,13 @@ export default {
             return users;
         },
         regularUsersCount() {
-            return this.build.users.filter(user => user.role === 'regular user')
-                .length;
+            if (this.build && this.build.users && this.build.users.length) {
+                return this.build.users.filter(
+                    user => user.role === 'regular user'
+                ).length;
+            }
+
+            return 0;
         },
     },
     mounted() {
