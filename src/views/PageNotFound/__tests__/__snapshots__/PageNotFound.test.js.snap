@@ -9,14 +9,14 @@ exports[`PageNotFound.vue should render correctly on initial render 1`] = `
     </h2>
     <hr>
     <p class="is-size-5">
-      Head back to the last known workspace.
+      Head back to the build you most recently interacted with.
     </p>
     <p class="is-size-5">
       If you think something is broken, please report it.
     </p>
-    <div class="buttons"><a class="button is-outlined is-info is-uppercase has-text-weight-semibold">
-        Last Known Workspace
-      </a> <a href="https://github.com/joyent/conch-ui/issues/new" target="_blank" class="button is-outlined is-danger is-uppercase has-text-weight-semibold">
+    <div class="buttons"><a class="button is-outlined is-info is-uppercase has-text-weight-semibold recent-build">
+        Most Recent Build
+      </a> <a href="https://github.com/joyent/conch-ui/issues/new" target="_blank" class="button is-outlined is-danger is-uppercase has-text-weight-semibold report-problem">
         Report a Problem
       </a></div>
   </div>
