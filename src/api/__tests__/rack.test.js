@@ -1,13 +1,13 @@
 import nock from 'nock';
 import { conchApi } from '@src/config.js';
-import * as rackApi from '@api/rack.js';
+import * as rackApi from '@api/racks.js';
 
 // Fixture
 import { rackLayout } from '@src/__fixtures__/rackLayout.js';
 
 sessionStorage.setItem('token', 'test-token');
 
-describe('rack.js API', () => {
+describe('racks.js API', () => {
     let data;
     let params;
     let response;

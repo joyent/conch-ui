@@ -1,5 +1,18 @@
 import { requestWithToken } from './request.js';
 
+/**
+ * Get all racks
+ *
+ * @type   {GET}
+ * @return {Response Object}
+ */
+export const getRacks = () => {
+    return requestWithToken({
+        method: 'GET',
+        url: '/rack',
+    });
+};
+
 export const setRackPhase = (rackId, data, params) => {
     return requestWithToken({
         method: 'POST',
@@ -17,4 +30,4 @@ export const updateRackAssignment = (rackId, data) => {
     });
 };
 
-export default { setRackPhase, updateRackAssignment };
+export default { getRacks, setRackPhase, updateRackAssignment };
