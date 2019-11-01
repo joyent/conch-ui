@@ -6,27 +6,16 @@
     }
 
     .modal-card-head {
-        display: flex;
         align-items: center;
+        background-color: $green;
         border-bottom: none;
+        display: flex;
         padding: 12px;
 
         .modal-card-title {
             color: white;
             font-weight: bold;
         }
-    }
-
-    &.create {
-        .modal-card-head {
-			background-color: $green;
-		}
-    }
-
-    &.remove {
-        .modal-card-head {
-			background-color: $red;
-		}
     }
 
     .modal-card-body {
