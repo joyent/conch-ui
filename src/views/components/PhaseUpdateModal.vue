@@ -160,7 +160,7 @@
 import BaseModal from '@src/views/components/BaseModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { setDevicePhase } from '@api/device.js';
-import { setRackPhase } from '@api/rack.js';
+import { setRackPhase } from '@api/racks.js';
 import { getRackById } from '@api/workspaces.js';
 import { mapActions, mapState } from 'vuex';
 

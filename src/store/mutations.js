@@ -82,6 +82,10 @@ export const setCurrentWorkspace = (state, workspace) => {
     state.currentWorkspace = workspace;
 };
 
+export const setDatacenterRooms = (state, datacenterRooms) => {
+    state.datacenterRooms = datacenterRooms;
+};
+
 export const setDevices = (state, devices) => {
     state.devices = devices;
 };
@@ -120,6 +124,10 @@ export const setRackRooms = (state, rackRooms) => {
 
 export const setRackRoomsByWorkspace = (state, rackRooms) => {
     state.rackRoomsByWorkspace.push(rackRooms);
+};
+
+export const setRacks = (state, racks) => {
+    state.racks = racks;
 };
 
 export const setShowDeviceInRack = (state, showDeviceInRack) => {
@@ -164,6 +172,7 @@ export default {
     setCurrentBuildUsers,
     setCurrentUser,
     setCurrentWorkspace,
+    setDatacenterRooms,
     setDevices,
     setDevicesByWorkspace,
     setForcePasswordChange,
@@ -174,6 +183,7 @@ export default {
     setRackLayout,
     setRackRooms,
     setRackRoomsByWorkspace,
+    setRacks,
     setShowDeviceInRack,
     setUserAuthTokens,
     setUsers,

@@ -226,7 +226,7 @@
 import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
-import { updateRackAssignment } from '@api/rack.js';
+import { updateRackAssignment } from '@api/racks.js';
 import { getDevices, getRackById } from '@api/workspaces';
 
 export default {

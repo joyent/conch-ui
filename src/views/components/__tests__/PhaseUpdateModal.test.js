@@ -2,7 +2,7 @@ import PhaseUpdateModal from '../PhaseUpdateModal.vue';
 import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
 import * as deviceApi from '@api/device.js';
-import * as rackApi from '@api/rack.js';
+import * as rackApi from '@api/racks.js';
 
 // Fixtures
 import deviceDetails from '@src/__fixtures__/deviceDetails.js';
