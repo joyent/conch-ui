@@ -216,14 +216,23 @@ export default {
     computed: {
         ...mapState(['builds']),
         buildsStarted() {
-            return this.builds.filter(build => {
-                if (build.started && !build.completed) {
-                    return build;
-                }
-            }).length;
+            if (this.builds) {
+                return this.builds.filter(build => {
+                    if (build.started && !build.completed) {
+                        return build;
+                    }
+                }).length;
+            }
+
+            return 0;
         },
         buildsComplete() {
-            return this.builds.filter(build => build.completed === true).length;
+            if (this.builds) {
+                return this.builds.filter(build => build.completed === true)
+                    .length;
+            }
+
+            return 0;
         },
         filteredBuilds() {
             const searchText = this.searchText.toLowerCase();
@@ -245,7 +254,7 @@ export default {
         },
     },
     created() {
-        if (!this.builds.length) {
+        if (!this.builds || !this.builds.length) {
             this.getBuilds();
         }
     },

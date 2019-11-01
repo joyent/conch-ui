@@ -328,8 +328,8 @@ export default {
                     } else {
                         devices.reverse();
                     }
-                    // Causes error
-                    //this.sortedDevices = devices;
+
+                    // this.sortedDevices = devices;
                 }
             }
 
@@ -337,22 +337,15 @@ export default {
         },
     },
     created() {
-        console.log('created!')
-        this.devices = this.build.devices;
+        this.devices =
+            this.build && this.build.devices ? this.build.devices : [];
 
         EventBus.$on('close-modal:remove-item', () => {
             this.removingDevice = false;
         });
     },
     mounted() {
-        console.log('mounted!')
         this.sortedDevices = this.build.devices;
     },
-    updated() {
-        console.log('updated!')
-    },
-    destroyed() {
-        console.log('destroyed!')
-    }
 };
 </script>
