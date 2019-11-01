@@ -306,17 +306,26 @@ export default {
             if (this.action === 'add') {
                 if (this.itemType === 'members') {
                     await this.addMembers(data);
+
+                    EventBus.$emit('members-added', {
+                        count: data.length,
+                        type: 'member',
+                    });
+
                     this.closeModal();
                     this.isLoading = false;
                 } else if (this.itemType === 'builds') {
                     await this.addBuilds(data);
-                    EventBus.$emit('build-created');
+
+                    EventBus.$emit('build-added');
+
                     this.closeModal();
                     this.isLoading = false;
                 }
             } else {
                 if (this.itemType === 'members') {
                     await this.removeMembers(data);
+
                     this.closeModal();
                     this.isLoading = false;
                 }
@@ -385,11 +394,6 @@ export default {
                 }, []);
             }
         },
-    },
-    mounted() {
-        EventBus.$on('closeModal:baseModal', () => {
-            this.closeModal();
-        });
     },
 };
 </script>
