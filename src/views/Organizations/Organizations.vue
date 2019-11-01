@@ -79,7 +79,7 @@
         />
         <transition name="fade">
             <AddOrganizationModal v-if="addingOrganization" />
-            <div class="delete-organization-modal" v-if="deletingOrganization">
+            <div class="remove-item-modal" v-if="deletingOrganization">
                 <div class="modal is-active">
                     <div class="modal-background" @click="closeModal()"></div>
                     <div class="modal-card">
@@ -95,7 +95,11 @@
                         <section class="modal-card-body">
                             <p>
                                 Are you sure you want to remove
-                                {{ organizationBeingRemoved.name }}?
+                                <span
+                                    class="has-text-white has-text-weight-bold"
+                                >
+                                    {{ organizationBeingRemoved.name }}?
+                                </span>
                             </p>
                             <br />
                             <article class="notification">

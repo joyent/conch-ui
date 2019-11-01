@@ -30,18 +30,24 @@
                             <th>
                                 <a
                                     class="table-header-filter name"
-                                    :class="{ 'has-text-white': sortBy === 'name' }"
+                                    :class="{
+                                        'has-text-white': sortBy === 'name',
+                                    }"
                                     @click="sort()"
                                 >
                                     Name
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortBy === 'name' && !reversedSort"
+                                        v-if="
+                                            sortBy === 'name' && !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortBy === 'name' && reversedSort"
+                                        v-else-if="
+                                            sortBy === 'name' && reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
@@ -49,25 +55,33 @@
                             <th>
                                 <a
                                     class="table-header-filter role"
-                                    :class="{ 'has-text-white': sortBy === 'type' }"
+                                    :class="{
+                                        'has-text-white': sortBy === 'type',
+                                    }"
                                     @click="sort()"
                                 >
                                     Type
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="sortBy === 'type' && !reversedSort"
+                                        v-if="
+                                            sortBy === 'type' && !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="sortBy === 'type' && reversedSort"
+                                        v-else-if="
+                                            sortBy === 'type' && reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot v-if="filteredRacks.length > 10">
+                        <tfoot
+                            v-if="filteredRacks && filteredRacks.length > 10"
+                        >
                             <th>Name</th>
                             <th>Type</th>
                         </tfoot>
@@ -136,29 +150,33 @@ export default {
     },
     computed: {
         filteredRacks() {
-            let racks = this.build.racks;
+            const build = this.build;
 
-            if (this.searchText) {
-                const searchText = this.searchText.toLowerCase();
+            if (build && build.racks) {
+                let racks = build.racks;
 
-                return racks.reduce((acc, rack) => {
-                    const name = rack.name.toLowerCase();
+                if (this.searchText) {
+                    const searchText = this.searchText.toLowerCase();
 
-                    if (search(searchText, name)) {
-                        acc.push(rack);
-                    }
+                    return racks.reduce((acc, rack) => {
+                        const name = rack.name.toLowerCase();
 
-                    return acc;
-                }, []);
+                        if (search(searchText, name)) {
+                            acc.push(rack);
+                        }
+
+                        return acc;
+                    }, []);
+                }
+
+                if (this.rackFilter) {
+                    return racks.filter(rack => rack.phase === this.rackFilter);
+                }
+
+                return racks;
             }
 
-            if (this.rackFilter) {
-                return this.racks.filter(
-                    rack => rack.phase === this.rackFilter
-                );
-            }
-
-            return racks;
+            return [];
         },
     },
     mounted() {
