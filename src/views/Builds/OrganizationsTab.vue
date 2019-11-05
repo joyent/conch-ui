@@ -115,8 +115,8 @@
             </div>
         </div>
         <RemoveItemModal
-            v-if="removingOrganization"
-            :item="organization"
+            v-if="removeOrganization"
+            :item="removingOrganization"
             item-type="organization"
         />
     </div>
@@ -125,6 +125,8 @@
 <script>
 import search from 'fuzzysearch';
 import RemoveItemModal from './RemoveItemModal.vue';
+import { EventBus } from '@src/eventBus.js';
+import * as Builds from '@api/builds.js';
 
 export default {
     components: {
@@ -138,7 +140,8 @@ export default {
     },
     data() {
         return {
-            removingOrganization: false,
+            removeOrganization: false,
+            removingOrganization: {},
             reversedSort: false,
             searchText: '',
             sortBy: '',
@@ -148,8 +151,16 @@ export default {
         addOrganization() {
 
         },
-        removeOrganization() {
+        removeOrganizationFromBuild() {
+            const buildId = this.build.id;
 
+            Builds.removeOrganizationFromBuild(
+                buildId,
+                this.removingOrganization.id
+            ).then(() => {
+                EventBus.$emit('item-removed');
+                this.$parent.getBuildData(buildId);
+            });
         },
     },
     computed: {
@@ -172,6 +183,15 @@ export default {
 
             return organizations;
         },
+    },
+    created() {
+        EventBus.$on('close-modal:remove-item', () => {
+            this.removeOrganization = false;
+        });
+
+        EventBus.$on('remove-item:organization', () => {
+            this.removeOrganizationFromBuild();
+        });
     },
 };
 </script>

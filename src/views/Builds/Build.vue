@@ -65,7 +65,17 @@
                 </li>
             </ul>
         </div>
-        <component :is="currentTab" :build="currentBuild"></component>
+        <OverviewTab
+            :build="currentBuild"
+            v-if="currentTab === 'OverviewTab'"
+        />
+        <OrganizationsTab
+            :build="currentBuild"
+            v-if="currentTab === 'OrganizationsTab'"
+        />
+        <MembersTab :build="currentBuild" v-if="currentTab === 'MembersTab'" />
+        <RacksTab :build="currentBuild" v-if="currentTab === 'RacksTab'" />
+        <DevicesTab :build="currentBuild" v-if="currentTab === 'DevicesTab'" />
     </div>
 </template>
 
@@ -108,7 +118,11 @@ export default {
         changeTab(tab) {
             this.currentTab = tab;
         },
-        getBuildData(buildId) {
+        getBuildData(buildId = null) {
+            if (!buildId) {
+                buildId = this.currentBuild.id;
+            }
+
             Builds.getBuild(buildId).then(response => {
                 this.setCurrentBuild(response.data);
             });

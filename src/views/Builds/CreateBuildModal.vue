@@ -185,7 +185,7 @@
                                                             class="row item"
                                                             :class="{
                                                                 'is-selected': isItemSelected(
-                                                                    user.name,
+                                                                    user.id,
                                                                     'members'
                                                                 ),
                                                             }"
@@ -195,7 +195,7 @@
                                                             :key="user.id"
                                                         >
                                                             <template
-                                                                v-if="isItemSelected(user.name, 'members')"
+                                                                v-if="isItemSelected(user.id, 'members')"
                                                             >
                                                                 <td class="item-name">
                                                                     <span
@@ -211,7 +211,7 @@
                                                                         <select
                                                                             @change="
                                                                                 updateRole(
-                                                                                    user.name,
+                                                                                    user.id,
                                                                                     $event
                                                                                 )
                                                                             "
@@ -242,11 +242,11 @@
                                                                         class="material-icons has-text-success add-item"
                                                                         v-if="
                                                                             showRemoveIcon !==
-                                                                                user.name
+                                                                                user.id
                                                                         "
                                                                         @mouseover="
                                                                             showRemoveIcon =
-                                                                                user.name
+                                                                                user.id
                                                                         "
                                                                     >
                                                                         check
@@ -255,9 +255,9 @@
                                                                         class="material-icons has-text-danger remove-item"
                                                                         v-if="
                                                                             showRemoveIcon ===
-                                                                                user.name
+                                                                                user.id
                                                                         "
-                                                                        @click="removeItem(user.name, 'members')"
+                                                                        @click="removeItem(user.id, 'members')"
                                                                         @mouseleave="
                                                                             showRemoveIcon =
                                                                                 ''
@@ -288,33 +288,40 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="step-body" v-else-if="activeStep === 3">
-                                        <template
-                                            v-if="filteredItems('racks').length > 0"
-                                        >
-                                            <div class="search">
-                                                <div class="control has-icons-left">
-                                                    <input
-                                                        class="input search is-marginless"
-                                                        v-model="searchText"
-                                                        placeholder="Search..."
-                                                        type="text"
-                                                    />
-                                                    <span class="icon is-left">
-                                                        <i class="material-icons">
-                                                            search
-                                                        </i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="item-table">
-                                                <div class="table is-fullwidth">
-                                                    <tbody>
+                                    <div
+                                        class="step-body"
+                                        v-else-if="activeStep === 3"
+                                    >
+                                        <div class="item-table racks">
+                                            <table class="table is-fullwidth">
+                                                <tbody>
+                                                    <tr class="row search">
+                                                        <td colspan="3">
+                                                            <p
+                                                                class="control has-icons-left"
+                                                            >
+                                                                <input
+                                                                    class="input search is-marginless"
+                                                                    v-model="searchText"
+                                                                    placeholder="Search..."
+                                                                    type="text"
+                                                                />
+                                                                <span class="icon is-left">
+                                                                    <i class="material-icons">
+                                                                        search
+                                                                    </i>
+                                                                </span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <template
+                                                        v-if="filteredItems('racks').length > 0"
+                                                    >
                                                         <tr
                                                             class="row item"
                                                             :class="{
                                                                 'is-selected': isItemSelected(
-                                                                    rack.name,
+                                                                    rack.id,
                                                                     'racks'
                                                                 ),
                                                             }"
@@ -324,26 +331,31 @@
                                                             :key="rack.id"
                                                         >
                                                             <template
-                                                                v-if="isItemSelected(rack.name, 'racks')"
+                                                                v-if="isItemSelected(rack.id, 'racks')"
                                                             >
                                                                 <td class="item-name">
                                                                     <span class="name has-text-grey-light">
                                                                         {{ rack.name }}
                                                                     </span>
                                                                 </td>
+                                                                <td class="datacenter-room has-text-grey-light">
+                                                                    <span>
+                                                                        {{ getDatacenterRoom(rack.datacenter_room_id) }}
+                                                                    </span>
+                                                                </td>
                                                                 <td class="action">
                                                                     <i
                                                                         class="material-icons has-text-success add-item"
-                                                                        v-if="showRemoveIcon !== rack.name"
-                                                                        @mouseover="showRemoveIcon = rack.name"
+                                                                        v-if="showRemoveIcon !== rack.id"
+                                                                        @mouseover="showRemoveIcon = rack.id"
                                                                     >
                                                                         check
                                                                     </i>
                                                                     <i
                                                                         class="material-icons has-text-danger remove-item"
-                                                                        v-if="showRemoveIcon === rack.name"
-                                                                        @click="removeItem(rack.name, 'racks')"
-                                                                        @mouseleave="showRemoveIcon == ''"
+                                                                        v-if="showRemoveIcon === rack.id"
+                                                                        @click="removeItem(rack.id, 'racks')"
+                                                                        @mouseleave="showRemoveIcon = ''"
                                                                     >
                                                                         close
                                                                     </i>
@@ -353,6 +365,11 @@
                                                                 <td class="item-name">
                                                                     <span>
                                                                         {{ rack.name }}
+                                                                    </span>
+                                                                </td>
+                                                                <td class="datacenter-room has-text-grey-light">
+                                                                    <span>
+                                                                        {{ getDatacenterRoom(rack.datacenter_room_id) }}
                                                                     </span>
                                                                 </td>
                                                                 <td class="action">
@@ -365,39 +382,45 @@
                                                                 </td>
                                                             </template>
                                                         </tr>
-                                                    </tbody>
-                                                </div>
-                                            </div>
-                                        </template>
-                                        <Spinner v-else />
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                    <div class="step-body" v-else-if="activeStep === 4">
-                                        <template
-                                            v-if="filteredItems('devices').length > 0"
-                                        >
-                                            <div class="search">
-                                                <div class="control has-icons-left">
-                                                    <input
-                                                        type="text"
-                                                        class="input is-marginless"
-                                                        placeholder="Search..."
-                                                        v-model="searchText"
-                                                    />
-                                                    <span class="icon is-left">
-                                                        <i class="material-icons">
-                                                            search
-                                                        </i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="item-table">
-                                                <div class="table is-fullwidth">
-                                                    <tbody>
+                                    <div
+                                        class="step-body"
+                                        v-else-if="activeStep === 4"
+                                    >
+                                        <div class="item-table">
+                                            <table class="table is-fullwidth">
+                                                <tbody>
+                                                    <tr class="row search">
+                                                        <td colspan="3">
+                                                            <p
+                                                                class="control has-icons-left"
+                                                            >
+                                                                <input
+                                                                    class="input search is-marginless"
+                                                                    v-model="searchText"
+                                                                    placeholder="Search..."
+                                                                    type="text"
+                                                                />
+                                                                <span class="icon is-left">
+                                                                    <i class="material-icons">
+                                                                        search
+                                                                    </i>
+                                                                </span>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <template
+                                                        v-if="filteredItems('devices').length > 0"
+                                                    >
                                                         <tr
                                                             class="row item"
                                                             :class="{
                                                                 'is-selected': isItemSelected(
-                                                                    device.serial_number,
+                                                                    device.id,
                                                                     'devices'
                                                                 ),
                                                             }"
@@ -406,7 +429,7 @@
                                                             )"
                                                             :key="device.id"
                                                         >
-                                                            <template v-if="isItemSelected(device.serial_number, 'devices')">
+                                                            <template v-if="isItemSelected(device.id, 'devices')">
                                                                 <td class="item-name">
                                                                     <span class="name has-text-grey-light">
                                                                         {{ device.serial_number }}
@@ -415,16 +438,16 @@
                                                                 <td class="action">
                                                                     <i
                                                                         class="material-icons has-text-success add-item"
-                                                                        v-if="showRemoveIcon !== device.serial_number"
-                                                                        @mouseover="showRemoveIcon = device.serial_number"
+                                                                        v-if="showRemoveIcon !== device.id"
+                                                                        @mouseover="showRemoveIcon = device.id"
                                                                     >
                                                                         check
                                                                     </i>
                                                                     <i
                                                                         class="material-icons has-text-danger remove-item"
-                                                                        v-if="showRemoveIcon === device.serial_number"
-                                                                        @click="removeItem(device.serial_number, 'devices')"
-                                                                        @mouseleave="showRemoveIcon == ''"
+                                                                        v-if="showRemoveIcon === device.id"
+                                                                        @click="removeItem(device.id, 'devices')"
+                                                                        @mouseleave="showRemoveIcon = ''"
                                                                     >
                                                                         close
                                                                     </i>
@@ -446,11 +469,10 @@
                                                                 </td>
                                                             </template>
                                                         </tr>
-                                                    </tbody>
-                                                </div>
-                                            </div>
-                                        </template>
-                                        <Spinner v-else />
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <div
                                         class="step-body review"
@@ -637,7 +659,7 @@
                                                     v-for="device in selectedDevices"
                                                     :key="device.id"
                                                 >
-                                                    {{ device.name }}
+                                                    {{ device.serial_number }}
                                                 </div>
                                             </div>
                                             <div
@@ -696,8 +718,7 @@
         <transition name="fade">
             <SuccessModal
                 v-if="showSuccessModal"
-                class="create"
-                :name="name"
+                :item="name"
                 action="create"
             />
         </transition>
@@ -710,9 +731,11 @@ import Spinner from '@src/views/components/Spinner.vue';
 import SuccessModal from '../components/SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
-import { getUsers } from '@api/users.js';
-import { getDevices } from '@api/workspaces.js';
 import * as Builds from '@api/builds.js';
+import * as DatacenterRooms from '@api/datacenterRooms.js';
+import * as Workspaces from '@api/workspaces.js';
+import * as Racks from '@api/racks.js';
+import * as Users from '@api/users.js';
 
 export default {
     components: {
@@ -735,22 +758,23 @@ export default {
             isExpandedMembers: true,
             isLoading: false,
             name: '',
-            racks: [
-                {
-                    id: '1a',
-                    name: 'Racks Racks Racks!',
-                }
-            ],
             searchText: '',
             selectedDevices: [],
             selectedMembers: [],
+            selectedOrganizations: [],
             selectedRacks: [],
             showRemoveIcon: '',
             showSuccessModal: false,
         };
     },
     methods: {
-        ...mapActions(['setDevices', 'setUsers']),
+        ...mapActions([
+            'setDatacenterRooms',
+            'setDevices',
+            'setOrganizations',
+            'setRacks',
+            'setUsers',
+        ]),
         activateStep(step) {
             this.searchText = '';
             this.resetErrors();
@@ -789,6 +813,29 @@ export default {
 
             EventBus.$emit('close-modal:create-build');
         },
+        addBuildData() {
+            const buildId = this.buildId;
+
+            this.selectedOrganizations.forEach(organization => {
+                Builds.addOrganizationToBuild(
+                    buildId,
+                    organization.id,
+                    organization.role,
+                );
+            });
+
+            this.selectedMembers.forEach(member => {
+                Builds.addUserToBuild(buildId, member.id, member.role);
+            });
+
+            this.selectedRacks.forEach(rack => {
+                Builds.addRackToBuild(buildId, rack.id);
+            });
+
+            this.selectedDevices.forEach(device => {
+                Builds.addDeviceToBuild(buildId, device.id);
+            });
+        },
         async createBuild() {
             this.isLoading = true;
 
@@ -801,6 +848,8 @@ export default {
                     this.buildId = response.data.id;
                 }
             );
+
+            await this.addBuildData();
 
             EventBus.$emit('build-created');
 
@@ -844,27 +893,95 @@ export default {
                 member => member.role === 'admin'
             ).length;
         },
-        isItemSelected(itemName, itemType) {
+        getDatacenterRoom(datacenterRoomId) {
+            return this.datacenterRooms.find(datacenterRoom => {
+                return datacenterRoom.id === datacenterRoomId;
+            }).az;
+        },
+        getDatacenterRooms() {
+            if (this.datacenterRooms && !this.datacenterRooms.length) {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        DatacenterRooms.getDatacenterRooms().then(response => {
+                            this.setDatacenterRooms(response.data);
+                        })
+                    );
+                });
+            }
+        },
+        getDevices() {
+            if (this.devices && !this.devices.length) {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        Workspaces.getDevices(this.currentWorkspace.id).then(
+                            response => {
+                                this.setDevices(response.data);
+                            }
+                        )
+                    );
+                });
+            }
+        },
+        getOrganizations() {
+            if (this.organizations && !this.organizations.length) {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        Workspaces.getOrganizations().then(response => {
+                            this.setOrganizations(response.data);
+                        })
+                    );
+                });
+            }
+        },
+        getRacks() {
+            if (this.racks && !this.racks.length) {
+                // Should reject promise errors?
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        Racks.getRacks().then(response => {
+                            this.setRacks(response.data);
+                        })
+                    );
+                });
+            }
+        },
+        getUsers() {
+            if (this.users && !this.users.length) {
+                return new Promise((resolve, reject) => {
+                    resolve(
+                        Users.getUsers().then(response => {
+                            this.setUsers(response.data);
+                        })
+                    );
+                });
+            }
+        },
+        async initializeData() {
+            await Promise.all([
+                this.getUsers(),
+                this.getDevices(),
+                this.getRacks(),
+                this.getDatacenterRooms(),
+            ]);
+        },
+        isItemSelected(itemId, itemType) {
             const selectedMembers = this.selectedMembers;
             const selectedRacks = this.selectedRacks;
             const selectedDevices = this.selectedDevices;
 
             if (itemType === 'members' && selectedMembers.length) {
-                return selectedMembers
-                    .map(user => user.name)
-                    .indexOf(itemName) !== -1
+                return selectedMembers.map(user => user.id).indexOf(itemId) !==
+                    -1
                     ? true
                     : false;
             } else if (itemType === 'racks' && selectedRacks.length) {
-                return selectedRacks
-                    .map(rack => rack.name)
-                    .indexOf(itemName) !== -1
+                return selectedRacks.map(rack => rack.id).indexOf(itemId) !== -1
                     ? true
                     : false;
             } else if (itemType === 'devices' && selectedDevices.length) {
                 return selectedDevices
-                    .map(device => device.serial_number)
-                    .indexOf(itemName) !== -1
+                    .map(device => device.id)
+                    .indexOf(itemId) !== -1
                     ? true
                     : false;
             }
@@ -892,25 +1009,23 @@ export default {
                 this.activeStep++;
             }
         },
-        removeItem(itemName, itemType) {
+        removeItem(itemId, itemType) {
             let index;
 
             if (itemType === 'members') {
                 index = this.selectedMembers
-                    .map(member => member.name)
-                    .indexOf(itemName);
+                    .map(member => member.id)
+                    .indexOf(itemId);
 
                 this.selectedMembers.splice(index, 1);
             } else if (itemType === 'racks') {
-                index = this.selectedRacks
-                    .map(rack => rack.name)
-                    .indexOf(itemName);
+                index = this.selectedRacks.map(rack => rack.id).indexOf(itemId);
 
                 this.selectedRacks.splice(index, 1);
             } else if (itemType === 'devices') {
                 index = this.selectedDevices
-                    .map(device => device.serial_number)
-                    .indexOf(itemName);
+                    .map(device => device.id)
+                    .indexOf(itemId);
 
                 this.selectedDevices.splice(index, 1);
             }
@@ -921,14 +1036,14 @@ export default {
                 name: false,
             };
         },
-        updateRole(itemName, event) {
+        updateRole(itemId, event) {
             if (event && event.target && event.target.value) {
                 const selectedMembers = this.selectedMembers;
 
                 for (let i = 0; i < selectedMembers.length; i++) {
                     const modifiedUser = selectedMembers[i];
 
-                    if (modifiedUser.name === itemName) {
+                    if (modifiedUser.id === itemId) {
                         this.selectedMembers[i].role = event.target.value;
 
                         break;
@@ -938,7 +1053,14 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentWorkspace', 'devices', 'users']),
+        ...mapState([
+            'currentWorkspace',
+            'datacenterRooms',
+            'devices',
+            'organizations',
+            'racks',
+            'users',
+        ]),
         currentStepTitle() {
             const activeStep = this.activeStep;
 
@@ -969,17 +1091,7 @@ export default {
         },
     },
     created() {
-        if (!this.users.length) {
-            getUsers().then(response => {
-                this.setUsers(response.data);
-            });
-        }
-
-        if (!this.devices.length) {
-            getDevices(this.currentWorkspace.id).then(response => {
-                this.setDevices(response.data);
-            });
-        }
+        this.initializeData();
     },
 };
 </script>
