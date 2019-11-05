@@ -23,20 +23,12 @@
                             <div class="select device-phase">
                                 <select v-model="devicePhaseFilter">
                                     <option value="all">All</option>
-                                    <option value="integration">
-                                        Integration
-                                    </option>
-                                    <option value="installation">
-                                        Installation
-                                    </option>
-                                    <option value="production">
-                                        Production
-                                    </option>
-                                    <option value="diagnostics">
-                                        Diagnostics
-                                    </option>
-                                    <option value="decommissioned">
-                                        Decommissioned
+                                    <option
+                                        v-for="phase in phases"
+                                        :key="phase"
+                                        :value="phase"
+                                    >
+                                        {{ phase }}
                                     </option>
                                 </select>
                             </div>
@@ -46,17 +38,12 @@
                             <div class="select device-health">
                                 <select v-model="deviceHealthFilter">
                                     <option value="all">All</option>
-                                    <option value="pass">
-                                        Pass
-                                    </option>
-                                    <option value="unknown">
-                                        Unknown
-                                    </option>
-                                    <option value="error">
-                                        Error
-                                    </option>
-                                    <option value="fail">
-                                        fail
+                                    <option
+                                        v-for="state in healthStates"
+                                        :key="state"
+                                        value="state"
+                                    >
+                                        {{ state }}
                                     </option>
                                 </select>
                             </div>
@@ -70,93 +57,41 @@
                     </div>
                     <table class="table is-hoverable is-fullwidth">
                         <thead>
-                            <th>
+                            <th v-for="header in headers" :key="header">
                                 <a
-                                    class="table-header-filter name"
-                                    :class="{ 'has-text-white': sortBy === 'name' }"
-                                    @click="sort('name')"
+                                    class="table-header-filter is-capitalized"
+                                    :class="{
+                                        'has-text-white': sortBy === header,
+                                    }"
+                                    @click="sort()"
                                 >
-                                    Name
+                                    {{ header }}
                                     <i
                                         class="fas fa-angle-down"
-                                        v-if="isSortedBy('name') && !reversedSort"
+                                        v-if="
+                                            sortBy === header && !reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
-                                        v-else-if="isSortedBy('name') && reversedSort"
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter health"
-                                    :class="{ 'has-text-white': sortBy === 'health' }"
-                                    @click="sort('health')"
-                                >
-                                    Health
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="isSortedBy('health') && !reversedSort"
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="isSortedBy('health') && reversedSort"
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter phase"
-                                    :class="{ 'has-text-white': sortBy === 'phase' }"
-                                    @click="sort('phase')"
-                                >
-                                    Phase
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="isSortedBy('phase') && !reversedSort"
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="isSortedBy('phase') && reversedSort"
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter hardware_product"
-                                    :class="{ 'has-text-white': sortBy === 'hardware_product' }"
-                                    @click="sort('hardware_product')"
-                                >
-                                    Hardware Product
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="isSortedBy('hardware_product') && !reversedSort"
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="isSortedBy('hardware_product') && reversedSort"
+                                        v-else-if="
+                                            sortBy === header && reversedSort
+                                        "
                                         style="margin-left: 10px;"
                                     ></i>
                                 </a>
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot
-                            v-if="
-                                filteredDevices && filteredDevices.length > 10
-                            "
-                        >
-                            <th>Name</th>
-                            <th>Health</th>
-                            <th>Phase</th>
-                            <th>Hardware Product</th>
+                        <tfoot>
+                            <th
+                                class="is-capitalized"
+                                v-for="header in headers"
+                                :key="header"
+                            >
+                                {{ header }}
+                            </th>
                             <th></th>
                         </tfoot>
                         <tbody>
@@ -219,6 +154,15 @@ export default {
             deviceFilter: 'all',
             devicePhaseFilter: 'all',
             deviceHealthFilter: 'all',
+            headers: ['name', 'health', 'phase', 'hardware product'],
+            healthStates: ['Pass', 'Fail', 'Error', 'Unknown'],
+            phases: [
+                'Installation',
+                'Integration',
+                'Production',
+                'Diagnostics',
+                'Decommissioned',
+            ],
             previousSortBy: '',
             removeDevice: false,
             removingDevice: {},
@@ -301,13 +245,17 @@ export default {
 
                 if (this.deviceHealthFilter !== 'all') {
                     devices = devices.filter(
-                        device => device.health === this.deviceHealthFilter
+                        device =>
+                            device.health ===
+                            this.deviceHealthFilter.toLowerCase()
                     );
                 }
 
                 if (this.devicePhaseFilter !== 'all') {
                     devices = devices.filter(
-                        device => device.phase === this.devicePhaseFilter
+                        device =>
+                            device.phase ===
+                            this.devicePhaseFilter.toLowerCase()
                     );
                 }
 
