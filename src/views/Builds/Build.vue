@@ -107,6 +107,7 @@ export default {
         ...mapActions([
             'setCurrentBuild',
             'setCurrentBuildDevices',
+            'setCurrentBuildOrganizations',
             'setCurrentBuildRacks',
             'setCurrentBuildUsers',
         ]),
@@ -120,6 +121,10 @@ export default {
 
             Builds.getBuild(buildId).then(response => {
                 this.setCurrentBuild(response.data);
+            });
+
+            Builds.getBuildOrganizations(buildId).then(response => {
+                this.setCurrentBuildOrganizations(response.data);
             });
 
             Builds.getBuildDevices(buildId).then(response => {
