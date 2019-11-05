@@ -79,6 +79,8 @@
         />
         <transition name="fade">
             <AddOrganizationModal v-if="addingOrganization" />
+        </transition>
+        <transition name="fade">
             <div class="remove-item-modal" v-if="deletingOrganization">
                 <div class="modal is-active">
                     <div class="modal-background" @click="closeModal()"></div>
@@ -123,6 +125,8 @@
                     </div>
                 </div>
             </div>
+        </transition>
+        <transition name="fade">
             <SuccessModal
                 v-if="showSuccessModal === true"
                 :name="organizationBeingRemoved.name"
