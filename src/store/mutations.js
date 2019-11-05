@@ -66,6 +66,10 @@ export const setCurrentBuildDevices = (state, devices) => {
     state.currentBuild.devices = devices;
 };
 
+export const setCurrentBuildOrganizations = (state, organizations) => {
+    state.currentBuild.organizations = organizations;
+};
+
 export const setCurrentBuildRacks = (state, racks) => {
     state.currentBuild.racks = racks;
 };
@@ -168,6 +172,7 @@ export default {
     setBuilds,
     setCurrentBuild,
     setCurrentBuildDevices,
+    setCurrentBuildOrganizations,
     setCurrentBuildRacks,
     setCurrentBuildUsers,
     setCurrentUser,

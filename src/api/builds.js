@@ -97,7 +97,7 @@ export const createBuild = (name, description, admins) => {
  * Get a build
  *
  * @type {GET}
- * @param {String} buildId                  The ID of the build being updated
+ * @param {String} buildId                  The ID of the build
  * @return {Response Object}
  */
 export const getBuild = buildId => {
@@ -111,7 +111,7 @@ export const getBuild = buildId => {
  * Get the devices of a build
  *
  * @type {GET}
- * @param {String} buildId                  The ID of the build being updated
+ * @param {String} buildId                  The ID of the build
  * @return {Response Object}
  */
 export const getBuildDevices = buildId => {
@@ -122,10 +122,24 @@ export const getBuildDevices = buildId => {
 };
 
 /**
+ * Get the organizations of a build
+ *
+ * @type {GET}
+ * @param {String} buildId                  The ID of the build
+ * @return {Response Object}
+ */
+export const getBuildOrganizations = buildId => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/build/${buildId}/organization`,
+    });
+};
+
+/**
  * Get the racks of a build
  *
  * @type {GET}
- * @param {String} buildId                  The ID of the build being updated
+ * @param {String} buildId                  The ID of the build
  * @return {Response Object}
  */
 export const getBuildRacks = buildId => {
@@ -139,7 +153,7 @@ export const getBuildRacks = buildId => {
  * Get the users of a build
  *
  * @type {GET}
- * @param {String} buildId                  The ID of the build being updated
+ * @param {String} buildId                  The ID of the build
  * @return {Response Object}
  */
 export const getBuildUsers = buildId => {
@@ -267,6 +281,7 @@ export default {
     createBuild,
     getBuild,
     getBuildDevices,
+    getBuildOrganizations,
     getBuildRacks,
     getBuildUsers,
     getBuilds,
