@@ -15,6 +15,10 @@
             color: white;
             font-weight: bold;
         }
+
+        &.is-success {
+            background-color: $green;
+        }
     }
 
     .modal-card-body {

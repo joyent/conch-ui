@@ -18,6 +18,44 @@
                                 <i class="material-icons search">search</i>
                             </span>
                         </div>
+                        <div class="select-with-label phase">
+                            <label class="select-label">Phase</label>
+                            <div class="select device-phase">
+                                <select v-model="phaseFilter">
+                                    <option value="all">All</option>
+                                    <option value="integration">
+                                        Integration
+                                    </option>
+                                    <option value="installation">
+                                        Installation
+                                    </option>
+                                    <option value="production">
+                                        Production
+                                    </option>
+                                    <option value="diagnostics">
+                                        Diagnostics
+                                    </option>
+                                    <option value="decommissioned">
+                                        Decommissioned
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="select-with-label phase">
+                            <label class="select-label">Datacenter Room</label>
+                            <div class="select device-phase">
+                                <select v-model="datacenterRoomFilter">
+                                    <option value="all" selected>All</option>
+                                    <option
+                                        v-for="datacenterRoom in availableDatacenterRooms"
+                                        :key="datacenterRoom"
+                                        :value="datacenterRoom"
+                                    >
+                                        {{ datacenterRoom }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                         <i
                             class="material-icons has-text-success"
                             @click="addRack()"
@@ -54,13 +92,66 @@
                             </th>
                             <th>
                                 <a
-                                    class="table-header-filter role"
+                                    class="table-header-filter datacenterRoom"
+                                    :class="{
+                                        'has-text-white':
+                                            sortBy === 'datacenterRoom',
+                                    }"
+                                    @click="sort()"
+                                >
+                                    Datacenter Room
+                                    <i
+                                        class="fas fa-angle-down"
+                                        v-if="
+                                            sortBy === 'datacenterRoom' &&
+                                                !reversedSort
+                                        "
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                    <i
+                                        class="fas fa-angle-up"
+                                        v-else-if="
+                                            sortBy === 'datacenterRoom' &&
+                                                reversedSort
+                                        "
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                </a>
+                            </th>
+                            <th>
+                                <a
+                                    class="table-header-filter phase"
+                                    :class="{
+                                        'has-text-white': sortBy === 'phase',
+                                    }"
+                                    @click="sort()"
+                                >
+                                    Phase
+                                    <i
+                                        class="fas fa-angle-down"
+                                        v-if="
+                                            sortBy === 'phase' && !reversedSort
+                                        "
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                    <i
+                                        class="fas fa-angle-up"
+                                        v-else-if="
+                                            sortBy === 'phase' && reversedSort
+                                        "
+                                        style="margin-left: 10px;"
+                                    ></i>
+                                </a>
+                            </th>
+                            <th>
+                                <a
+                                    class="table-header-filter type"
                                     :class="{
                                         'has-text-white': sortBy === 'type',
                                     }"
                                     @click="sort()"
                                 >
-                                    Type
+                                    Type?
                                     <i
                                         class="fas fa-angle-down"
                                         v-if="
@@ -83,24 +174,37 @@
                             v-if="filteredRacks && filteredRacks.length > 10"
                         >
                             <th>Name</th>
+                            <th>Datacenter Room</th>
+                            <th>Phase</th>
                             <th>Type</th>
+                            <th></th>
                         </tfoot>
                         <tbody>
                             <tr
                                 class="row"
                                 v-for="rack in filteredRacks"
-                                :key="rack.name"
+                                :key="rack.id"
                             >
                                 <td class="name">
                                     <span>{{ rack.name }}</span>
                                 </td>
-                                <td class="role">
-                                    <span>{{ rack.type }}</span>
+                                <td class="datacenterRoom">
+                                    <span>
+                                        {{
+                                            getDatacenterRoom(
+                                                rack.datacenter_room_id
+                                            )
+                                        }}
+                                    </span>
+                                </td>
+                                <td class="phase">{{ rack.phase }}</td>
+                                <td class="type">
+                                    <span>Type</span>
                                 </td>
                                 <td class="remove-item has-text-right">
                                     <i
                                         class="fas fa-trash-alt"
-                                        @click="removeRack(rack)"
+                                        @click="showRemoveItemModal(rack)"
                                     ></i>
                                 </td>
                             </tr>
@@ -109,14 +213,21 @@
                 </div>
             </div>
         </div>
-        <RemoveItemModal v-if="removingRack" :item="rack" item-type="rack" />
+        <RemoveItemModal
+            v-if="removeRack"
+            :item="removingRack"
+            item-type="rack"
+        />
     </div>
 </template>
 
 <script>
 import search from 'fuzzysearch';
 import RemoveItemModal from './RemoveItemModal.vue';
+import * as DatacenterRooms from '@api/datacenterRooms.js';
 import { EventBus } from '@src/eventBus.js';
+import { mapActions, mapState } from 'vuex';
+import * as Builds from '@api/builds.js';
 
 export default {
     components: {
@@ -130,30 +241,82 @@ export default {
     },
     data() {
         return {
-            rackFilter: 'all',
-            removingRack: false,
+            datacenterRoomFilter: 'all',
+            phaseFilter: 'all',
+            removeRack: false,
+            removingRack: {},
             searchText: '',
             sortBy: '',
         };
     },
     methods: {
+        ...mapActions(['setDatacenterRooms']),
         addRack() {
 
         },
-        removeRack(rack) {
-            this.rack = rack;
-            this.removingRack = true;
+        closeModal() {
+            this.removeRack = false;
+            this.removingRack = {};
+        },
+        getDatacenterRoom(datacenterRoomId) {
+            if (this.datacenterRooms) {
+                const datacenterRoom = this.datacenterRooms.find(room => {
+                    return room.id === datacenterRoomId;
+                });
+
+                if (datacenterRoom && datacenterRoom.az) {
+                    return datacenterRoom.az;
+                } else {
+                    return '';
+                }
+            }
+        },
+        async getDatacenterRooms() {
+            await DatacenterRooms.getDatacenterRooms().then(response => {
+                this.setDatacenterRooms(response.data);
+            });
+        },
+        showRemoveItemModal(rack) {
+            this.removingRack = rack;
+            this.removeRack = true;
+        },
+        removeRackFromBuild() {
+            const buildId = this.build.id;
+
+            Builds.removeRackFromBuild(buildId, this.removingRack.id).then(
+                () => {
+                    EventBus.$emit('item-removed');
+                    this.$parent.getBuildData(buildId);
+                }
+            );
         },
         sort() {
 
         },
     },
     computed: {
-        filteredRacks() {
-            const build = this.build;
+        ...mapState(['datacenterRooms']),
+        availableDatacenterRooms() {
+            const racks =
+                this.build && this.build.racks ? this.build.racks : [];
 
-            if (build && build.racks) {
-                let racks = build.racks;
+            if (racks) {
+                const drs = Array.from(
+                    new Set(
+                        racks.map(rack =>
+                            this.getDatacenterRoom(rack.datacenter_room_id)
+                        )
+                    )
+                ).sort();
+
+                return drs;
+            }
+
+            return [];
+        },
+        filteredRacks() {
+            if (this.build && this.build.racks) {
+                let racks = this.build.racks;
 
                 if (this.searchText) {
                     const searchText = this.searchText.toLowerCase();
@@ -179,9 +342,17 @@ export default {
             return [];
         },
     },
-    mounted() {
+    created() {
+        if (this.datacenterRooms || !this.datacenterRooms.length) {
+            this.getDatacenterRooms();
+        }
+
         EventBus.$on('close-modal:remove-item', () => {
-            this.removingRack = false;
+            this.closeModal();
+        });
+
+        EventBus.$on('remove-item:rack', () => {
+            this.removeRackFromBuild();
         });
     },
 };
