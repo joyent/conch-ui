@@ -27,51 +27,26 @@
                     </div>
                     <table class="table is-hoverable is-fullwidth">
                         <thead>
-                            <th>
+                            <th v-for="header in headers" :key="header">
                                 <a
-                                    class="table-header-filter name"
+                                    class="table-header-filter is-capitalized"
                                     :class="{
-                                        'has-text-white': sortBy === 'name',
+                                        'has-text-white': sortBy === header,
                                     }"
                                     @click="sort()"
                                 >
-                                    Name
+                                    {{ header }}
                                     <i
                                         class="fas fa-angle-down"
                                         v-if="
-                                            sortBy === 'name' && !reversedSort
+                                            sortBy === header && !reversedSort
                                         "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
                                         v-else-if="
-                                            sortBy === 'name' && reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter role"
-                                    :class="{
-                                        'has-text-white': sortBy === 'role',
-                                    }"
-                                    @click="sort()"
-                                >
-                                    Role
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="
-                                            sortBy === 'role' && !reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="
-                                            sortBy === 'role' && reversedSort
+                                            sortBy === header && reversedSort
                                         "
                                         style="margin-left: 10px;"
                                     ></i>
@@ -79,14 +54,14 @@
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot
-                            v-if="
-                                filteredOrganizations &&
-                                    filteredOrganizations.length > 10
-                            "
-                        >
-                            <th>Name</th>
-                            <th>Role</th>
+                        <tfoot>
+                            <th
+                                class="is-capitalized"
+                                v-for="header in headers"
+                                :key="header"
+                            >
+                                {{ header }}
+                            </th>
                         </tfoot>
                         <tbody>
                             <tr
@@ -140,6 +115,7 @@ export default {
     },
     data() {
         return {
+            headers: ['name', 'role'],
             removeOrganization: false,
             removingOrganization: {},
             reversedSort: false,

@@ -39,107 +39,26 @@
                     </div>
                     <table class="table is-hoverable is-fullwidth">
                         <thead>
-                            <th>
+                            <th v-for="header in headers" :key="header">
                                 <a
-                                    class="table-header-filter name"
+                                    class="table-header-filter is-capitalized"
                                     :class="{
-                                        'has-text-white': sortBy === 'name',
+                                        'has-text-white': sortBy === header,
                                     }"
                                     @click="sort()"
                                 >
-                                    Name
+                                    {{ header }}
                                     <i
                                         class="fas fa-angle-down"
                                         v-if="
-                                            sortBy === 'name' && !reversedSort
+                                            sortBy === header && !reversedSort
                                         "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
                                         v-else-if="
-                                            sortBy === 'name' && reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter role"
-                                    :class="{
-                                        'has-text-white': sortBy === 'role',
-                                    }"
-                                    @click="sort()"
-                                >
-                                    Role
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="
-                                            sortBy === 'role' && !reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="
-                                            sortBy === 'role' && reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter permissions"
-                                    :class="{
-                                        'has-text-white':
-                                            sortBy === 'permissions',
-                                    }"
-                                    @click="sort()"
-                                >
-                                    Permissions
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="
-                                            sortBy === 'permissions' &&
-                                                !reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="
-                                            sortBy === 'permissions' &&
-                                                reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter organization"
-                                    :class="{
-                                        'has-text-white':
-                                            sortBy === 'organization',
-                                    }"
-                                    @click="sort()"
-                                >
-                                    Organization
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="
-                                            sortBy === 'organization' &&
-                                                !reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="
-                                            sortBy === 'organization' &&
-                                                reversedSort
+                                            sortBy === header && reversedSort
                                         "
                                         style="margin-left: 10px;"
                                     ></i>
@@ -150,10 +69,14 @@
                         <tfoot
                             v-if="filteredUsers && filteredUsers.length > 10"
                         >
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Permissions</th>
-                            <th>Organization</th>
+                            <th
+                                class="is-capitalized"
+                                v-for="header in headers"
+                                :key="header"
+                            >
+                                {{ header }}
+                            </th>
+                            <th></th>
                         </tfoot>
                         <tbody>
                             <tr
@@ -241,6 +164,7 @@ export default {
     data() {
         return {
             addUser: false,
+            headers: ['name', 'role', 'permissions', 'organization'],
             removeUser: false,
             removingUser: {},
             searchText: '',
