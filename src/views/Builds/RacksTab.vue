@@ -23,20 +23,12 @@
                             <div class="select device-phase">
                                 <select v-model="phaseFilter">
                                     <option value="all">All</option>
-                                    <option value="integration">
-                                        Integration
-                                    </option>
-                                    <option value="installation">
-                                        Installation
-                                    </option>
-                                    <option value="production">
-                                        Production
-                                    </option>
-                                    <option value="diagnostics">
-                                        Diagnostics
-                                    </option>
-                                    <option value="decommissioned">
-                                        Decommissioned
+                                    <option
+                                        :value="phase"
+                                        v-for="phase in phases"
+                                        :key="phase"
+                                    >
+                                        {{ phase }}
                                     </option>
                                 </select>
                             </div>
@@ -65,104 +57,26 @@
                     </div>
                     <table class="table is-hoverable is-fullwidth">
                         <thead>
-                            <th>
+                            <th v-for="header in headers" :key="header">
                                 <a
-                                    class="table-header-filter name"
+                                    class="table-header-filter is-capitalized"
                                     :class="{
-                                        'has-text-white': sortBy === 'name',
+                                        'has-text-white': sortBy === header,
                                     }"
                                     @click="sort()"
                                 >
-                                    Name
+                                    {{ header }}
                                     <i
                                         class="fas fa-angle-down"
                                         v-if="
-                                            sortBy === 'name' && !reversedSort
+                                            sortBy === header && !reversedSort
                                         "
                                         style="margin-left: 10px;"
                                     ></i>
                                     <i
                                         class="fas fa-angle-up"
                                         v-else-if="
-                                            sortBy === 'name' && reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter datacenterRoom"
-                                    :class="{
-                                        'has-text-white':
-                                            sortBy === 'datacenterRoom',
-                                    }"
-                                    @click="sort()"
-                                >
-                                    Datacenter Room
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="
-                                            sortBy === 'datacenterRoom' &&
-                                                !reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="
-                                            sortBy === 'datacenterRoom' &&
-                                                reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter phase"
-                                    :class="{
-                                        'has-text-white': sortBy === 'phase',
-                                    }"
-                                    @click="sort()"
-                                >
-                                    Phase
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="
-                                            sortBy === 'phase' && !reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="
-                                            sortBy === 'phase' && reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
-                            </th>
-                            <th>
-                                <a
-                                    class="table-header-filter type"
-                                    :class="{
-                                        'has-text-white': sortBy === 'type',
-                                    }"
-                                    @click="sort()"
-                                >
-                                    Type?
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="
-                                            sortBy === 'type' && !reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="
-                                            sortBy === 'type' && reversedSort
+                                            sortBy === header && reversedSort
                                         "
                                         style="margin-left: 10px;"
                                     ></i>
@@ -173,10 +87,9 @@
                         <tfoot
                             v-if="filteredRacks && filteredRacks.length > 10"
                         >
-                            <th>Name</th>
-                            <th>Datacenter Room</th>
-                            <th>Phase</th>
-                            <th>Type</th>
+                            <th v-for="header in headers" :key="header">
+                                {{ header }}
+                            </th>
                             <th></th>
                         </tfoot>
                         <tbody>
@@ -242,7 +155,15 @@ export default {
     data() {
         return {
             datacenterRoomFilter: 'all',
+            headers: ['name', 'datacenter room', 'phase', 'type'],
             phaseFilter: 'all',
+            phases: [
+                'Installation',
+                'Integration',
+                'Production',
+                'Diagnostics',
+                'Decommissioned',
+            ],
             removeRack: false,
             removingRack: {},
             searchText: '',
