@@ -69,6 +69,10 @@ export const setCurrentBuildDevices = ({ commit }, devices) => {
     commit('setCurrentBuildDevices', devices);
 };
 
+export const setCurrentBuildOrganizations = ({ commit }, organizations) => {
+    commit('setCurrentBuildOrganizations', organizations);
+};
+
 export const setCurrentBuildRacks = ({ commit }, racks) => {
     commit('setCurrentBuildRacks', racks);
 };
@@ -171,6 +175,7 @@ export default {
     setBuilds,
     setCurrentBuild,
     setCurrentBuildDevices,
+    setCurrentBuildOrganizations,
     setCurrentBuildRacks,
     setCurrentBuildUsers,
     setCurrentUser,
