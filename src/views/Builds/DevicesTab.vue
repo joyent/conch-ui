@@ -166,7 +166,7 @@
                                 :key="device.name"
                             >
                                 <td class="name">
-                                    <span>{{ device.name }}</span>
+                                    <span>{{ device.serial_number }}</span>
                                 </td>
                                 <td class="graduated">
                                     <span>{{ device.health }}</span>
@@ -174,13 +174,13 @@
                                 <td class="phase">
                                     <span>{{ device.phase }}</span>
                                 </td>
-                                <td class="hardare-produc">
+                                <td class="hardare-product">
                                     <span>dell-2u-compute-v1-256g-10-12tb</span>
                                 </td>
                                 <td class="remove-item has-text-right">
                                     <i
                                         class="fas fa-trash-alt"
-                                        @click="removeDevice(device)"
+                                        @click="showRemoveDeviceModal(device)"
                                     ></i>
                                 </td>
                             </tr>
@@ -190,8 +190,8 @@
             </div>
         </div>
         <RemoveItemModal
-            v-if="removingDevice"
-            :item="device"
+            v-if="removeDevice"
+            :item="removingDevice"
             item-type="device"
         />
     </div>
@@ -202,6 +202,7 @@ import orderBy from 'lodash/orderBy';
 import search from 'fuzzysearch';
 import RemoveItemModal from './RemoveItemModal.vue';
 import { EventBus } from '@src/eventBus.js';
+import * as Builds from '@api/builds.js';
 
 export default {
     components: {
@@ -219,7 +220,8 @@ export default {
             devicePhaseFilter: 'all',
             deviceHealthFilter: 'all',
             previousSortBy: '',
-            removingDevice: false,
+            removeDevice: false,
+            removingDevice: {},
             reversedSort: false,
             searchText: '',
             sortBy: '',
@@ -230,12 +232,26 @@ export default {
         addDevice() {
 
         },
+        closeModal() {
+            this.removeDevice = false;
+            this.removingDevice = {};
+        },
         isSortedBy(field) {
             return this.sortBy === field || this.previousSortBy === field;
         },
-        removeDevice(device) {
-            this.device = device;
-            this.removingDevice = true;
+        removeDeviceFromBuild() {
+            const buildId = this.build.id;
+
+            Builds.removeDeviceFromBuild(buildId, this.removingDevice.id).then(
+                () => {
+                    EventBus.$emit('item-removed');
+                    this.$parent.getBuildData(buildId);
+                }
+            );
+        },
+        showRemoveDeviceModal(device) {
+            this.removingDevice = device;
+            this.removeDevice = true;
         },
         sort(field) {
             if (this.sortBy === field) {
@@ -273,9 +289,9 @@ export default {
                     const searchText = this.searchText.toLowerCase();
 
                     return devices.reduce((acc, device) => {
-                        const name = device.name.toLowerCase();
+                        const serialNumber = device.serial_number.toLowerCase();
 
-                        if (search(searchText, name)) {
+                        if (search(searchText, serialNumber)) {
                             acc.push(device);
                         }
 
@@ -283,13 +299,13 @@ export default {
                     }, []);
                 }
 
-                if (this.deviceHealthFilter) {
+                if (this.deviceHealthFilter !== 'all') {
                     devices = devices.filter(
                         device => device.health === this.deviceHealthFilter
                     );
                 }
 
-                if (this.devicePhaseFilter) {
+                if (this.devicePhaseFilter !== 'all') {
                     devices = devices.filter(
                         device => device.phase === this.devicePhaseFilter
                     );
@@ -328,8 +344,6 @@ export default {
                     } else {
                         devices.reverse();
                     }
-
-                    // this.sortedDevices = devices;
                 }
             }
 
@@ -341,7 +355,11 @@ export default {
             this.build && this.build.devices ? this.build.devices : [];
 
         EventBus.$on('close-modal:remove-item', () => {
-            this.removingDevice = false;
+            this.closeModal();
+        });
+
+        EventBus.$on('remove-item:device', () => {
+            this.removeDeviceFromBuild();
         });
     },
     mounted() {
