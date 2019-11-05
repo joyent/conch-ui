@@ -203,8 +203,8 @@
 			padding: 20px;
 
 			.control {
-				margin: 0 20px;
 				flex-grow: 1;
+				margin-left: 20px;
 
 				input {
 					margin-bottom: 0;
@@ -232,9 +232,7 @@
 		}
 	}
 
-	.devices-tab {
-		.select-with-label.health {
-			margin-left: 20px;
-		}
+	.select-with-label {
+		margin-left: 20px;
 	}
 }
