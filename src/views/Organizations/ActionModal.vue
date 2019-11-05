@@ -291,7 +291,11 @@ export default {
         },
         addBuilds(data) {
             data.forEach(build => {
-                addOrganizationToBuild(build.id, this.organizationId, build.role);
+                addOrganizationToBuild(
+                    build.id,
+                    this.organizationId,
+                    build.role
+                );
             });
         },
         removeMembers(data) {
