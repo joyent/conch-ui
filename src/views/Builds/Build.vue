@@ -19,48 +19,16 @@
         <p class="build-id has-text-grey">Build ID: {{ currentBuild.id }}</p>
         <div class="tabs is-toggle">
             <ul>
-                <li :class="{ 'is-active': currentTab === 'OverviewTab' }">
-                    <a
-                        class="tab overview-tab is-uppercase"
-                        @click="changeTab('OverviewTab')"
-                    >
-                        Overview
-                    </a>
-                </li>
-                <li :class="{ 'is-active': currentTab === 'MembersTab' }">
-                    <a
-                        class="tab users-tab is-uppercase"
-                        @click="changeTab('MembersTab')"
-                    >
-                        Members
-                    </a>
-                </li>
                 <li
-                    :class="{
-                        'is-active': currentTab === 'OrganizationsTab',
-                    }"
+                    :class="{ 'is-active': currentTab === tab.component }"
+                    v-for="tab in tabs"
+                    :key="tab.name"
                 >
                     <a
-                        class="tab organizations-tab is-uppercase"
-                        @click="changeTab('OrganizationsTab')"
+                        :class="`tab is-uppercase ${tab.classname}`"
+                        @click="changeTab(tab.component)"
                     >
-                        Organizations
-                    </a>
-                </li>
-                <li :class="{ 'is-active': currentTab === 'RacksTab' }">
-                    <a
-                        class="tab racks-tab is-uppercase"
-                        @click="changeTab('RacksTab')"
-                    >
-                        Racks
-                    </a>
-                </li>
-                <li :class="{ 'is-active': currentTab === 'DevicesTab' }">
-                    <a
-                        class="tab devices-tab is-uppercase"
-                        @click="changeTab('DevicesTab')"
-                    >
-                        Devices
+                        {{ tab.name }}
                     </a>
                 </li>
             </ul>
@@ -106,6 +74,33 @@ export default {
     data() {
         return {
             currentTab: 'OverviewTab',
+            tabs: [
+                {
+                    class: 'overview-tab',
+                    component: 'OverviewTab',
+                    name: 'Overview',
+                },
+                {
+                    class: 'members-tab',
+                    component: 'MembersTab',
+                    name: 'Members',
+                },
+                {
+                    class: 'organizations-tab',
+                    component: 'OrganizationsTab',
+                    name: 'Organizations',
+                },
+                {
+                    class: 'racls-tab',
+                    component: 'RacksTab',
+                    name: 'Racks',
+                },
+                {
+                    class: 'devices-tab',
+                    component: 'DevicesTab',
+                    name: 'Devices',
+                },
+            ]
         };
     },
     methods: {
