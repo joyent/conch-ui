@@ -172,7 +172,7 @@
                     </div>
                 </div>
             </div>
-            <MembersTable v-else-if="step === 2" />
+            <UserTable v-else-if="step === 2" />
             <RacksTable v-else-if="step === 3" />
             <DevicesTable v-else-if="step === 4" />
         </div>
@@ -196,7 +196,7 @@
 <script>
 import Vue from 'vue';
 import DevicesTable from './DevicesTable.vue';
-import MembersTable from './MembersTable.vue';
+import UsersTable from './UsersTable.vue';
 import RacksTable from './RacksTable.vue';
 import { setupCalendar, DatePicker } from 'v-calendar';
 import { EventBus } from '@src/eventBus.js';
@@ -207,7 +207,7 @@ setupCalendar(Vue);
 export default {
     components: {
         DevicesTable,
-        MembersTable,
+        UsersTable,
         RacksTable,
         'v-date-picker': DatePicker,
     },
