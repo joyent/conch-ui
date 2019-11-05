@@ -127,6 +127,10 @@ export default {
         addOrganization() {
 
         },
+        closeModal() {
+            this.removeOrganization = false;
+            this.removingOrganization = {};
+        },
         removeOrganizationFromBuild() {
             const buildId = this.build.id;
 
@@ -162,7 +166,7 @@ export default {
     },
     created() {
         EventBus.$on('close-modal:remove-item', () => {
-            this.removeOrganization = false;
+            this.closeModal();
         });
 
         EventBus.$on('remove-item:organization', () => {
