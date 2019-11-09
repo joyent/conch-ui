@@ -50,12 +50,15 @@
                         </div>
                         <i
                             class="material-icons has-text-success"
-                            @click="addDevice()"
+                            @click="showAddDeviceModal()"
                         >
                             add_circle
                         </i>
                     </div>
-                    <table class="table is-hoverable is-fullwidth">
+                    <table
+                        class="table is-hoverable is-fullwidth"
+                        v-if="filteredDevices && filteredDevices.length > 0"
+                    >
                         <thead>
                             <th v-for="header in headers" :key="header">
                                 <a
@@ -84,7 +87,7 @@
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot>
+                        <tfoot v-if="filteredDevices.length > 10">
                             <th
                                 class="is-capitalized"
                                 v-for="header in headers"
@@ -121,6 +124,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="no-results" v-else>
+                        <p class="subtitle has-text-centered">
+                            No Results to Display
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -129,28 +137,33 @@
             :item="removingDevice"
             item-type="device"
         />
+        <AddDeviceModal v-if="addDevice" />
     </div>
 </template>
 
 <script>
 import orderBy from 'lodash/orderBy';
 import search from 'fuzzysearch';
+import AddDeviceModal from './AddDeviceModal.vue';
 import RemoveItemModal from './RemoveItemModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import * as Builds from '@api/builds.js';
+import { mapState, mapActions } from 'vuex';
 
 export default {
     components: {
+        AddDeviceModal,
         RemoveItemModal,
     },
     props: {
-        build: {
-            type: Object,
+        buildId: {
+            type: String,
             required: true,
         },
     },
     data() {
         return {
+            addDevice: false,
             deviceFilter: 'all',
             devicePhaseFilter: 'all',
             deviceHealthFilter: 'all',
@@ -173,25 +186,32 @@ export default {
         };
     },
     methods: {
-        addDevice() {
-
-        },
+        ...mapActions(['setCurrentBuildDevices']),
         closeModal() {
+            this.addDevice = false;
             this.removeDevice = false;
             this.removingDevice = {};
         },
         isSortedBy(field) {
             return this.sortBy === field || this.previousSortBy === field;
         },
+        refetchCurrentBuildDevices() {
+            Builds.getBuildDevices(this.buildId).then(response => {
+                this.setCurrentBuildDevices(response.data);
+            });
+        },
         removeDeviceFromBuild() {
-            const buildId = this.build.id;
+            Builds.removeDeviceFromBuild(
+                this.buildId,
+                this.removingDevice.id
+            ).then(() => {
+                EventBus.$emit('item-removed');
 
-            Builds.removeDeviceFromBuild(buildId, this.removingDevice.id).then(
-                () => {
-                    EventBus.$emit('item-removed');
-                    this.$parent.getBuildData(buildId);
-                }
-            );
+                this.refetchCurrentBuildDevices();
+            });
+        },
+        showAddDeviceModal() {
+            this.addDevice = true;
         },
         showRemoveDeviceModal(device) {
             this.removingDevice = device;
@@ -209,24 +229,9 @@ export default {
         },
     },
     computed: {
-        devicesGraduated() {
-            if (this.devices && this.devices.length) {
-                return this.devices.filter(device => device.graduated === true)
-                    .length;
-            }
-
-            return 0;
-        },
-        devicesValidated() {
-            if (this.devices && this.devices.length) {
-                return this.devices.filter(device => device.validated === true)
-                    .length;
-            }
-
-            return 0;
-        },
+        ...mapState(['currentBuildDevices']),
         filteredDevices() {
-            let devices = this.build.devices;
+            let devices = this.currentBuildDevices;
 
             if (devices && devices.length) {
                 if (this.searchText) {
@@ -299,19 +304,20 @@ export default {
         },
     },
     created() {
-        this.devices =
-            this.build && this.build.devices ? this.build.devices : [];
-
-        EventBus.$on('close-modal:remove-item', () => {
-            this.closeModal();
-        });
+        EventBus.$on(
+            ['close-modal:remove-item', 'close-modal:add-item'],
+            () => {
+                this.closeModal();
+            }
+        );
 
         EventBus.$on('remove-item:device', () => {
             this.removeDeviceFromBuild();
         });
-    },
-    mounted() {
-        this.sortedDevices = this.build.devices;
+
+        EventBus.$on('device-added-to-build', () => {
+            this.refetchCurrentBuildDevices();
+        });
     },
 };
 </script>

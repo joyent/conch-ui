@@ -63,19 +63,19 @@ export const setCurrentBuild = (state, currentBuild) => {
 };
 
 export const setCurrentBuildDevices = (state, devices) => {
-    state.currentBuild.devices = devices;
+    state.currentBuildDevices = devices;
 };
 
 export const setCurrentBuildOrganizations = (state, organizations) => {
-    state.currentBuild.organizations = organizations;
+    state.currentBuildOrganizations = organizations;
 };
 
 export const setCurrentBuildRacks = (state, racks) => {
-    state.currentBuild.racks = racks;
+    state.currentBuildRacks = racks;
 };
 
 export const setCurrentBuildUsers = (state, users) => {
-    state.currentBuild.users = users;
+    state.currentBuildUsers = users;
 };
 
 export const setCurrentUser = (state, currentUser) => {
