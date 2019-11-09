@@ -20,12 +20,18 @@
                         </div>
                         <i
                             class="material-icons has-text-success"
-                            @click="addOrganization()"
+                            @click="showAddOrganizationModal()"
                         >
                             add_circle
                         </i>
                     </div>
-                    <table class="table is-hoverable is-fullwidth">
+                    <table
+                        class="table is-hoverable is-fullwidth"
+                        v-if="
+                            filteredOrganizations &&
+                                filteredOrganizations.length > 1
+                        "
+                    >
                         <thead>
                             <th v-for="header in headers" :key="header">
                                 <a
@@ -54,7 +60,7 @@
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot>
+                        <tfoot v-if="filteredOrganizations.length > 10">
                             <th
                                 class="is-capitalized"
                                 v-for="header in headers"
@@ -62,12 +68,13 @@
                             >
                                 {{ header }}
                             </th>
+                            <th></th>
                         </tfoot>
                         <tbody>
                             <tr
                                 class="row"
                                 v-for="organization in filteredOrganizations"
-                                :key="organization.name"
+                                :key="organization.id"
                             >
                                 <td class="name">
                                     <span>{{ organization.name }}</span>
@@ -79,13 +86,20 @@
                                     <i
                                         class="fas fa-trash-alt"
                                         @click="
-                                            removeOrganization(organization)
+                                            showRemoveOrganizationModal(
+                                                organization
+                                            )
                                         "
                                     ></i>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <div class="no-results" v-else>
+                        <p class="subtitle has-text-centered">
+                            No Results to Display
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,27 +108,32 @@
             :item="removingOrganization"
             item-type="organization"
         />
+        <AddOrganizationModal v-if="addOrganization" />
     </div>
 </template>
 
 <script>
 import search from 'fuzzysearch';
+import AddOrganizationModal from './AddOrganizationsModal.vue';
 import RemoveItemModal from './RemoveItemModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import * as Builds from '@api/builds.js';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
+        AddOrganizationModal,
         RemoveItemModal,
     },
     props: {
-        build: {
-            type: Object,
+        buildId: {
+            type: String,
             required: true,
         },
     },
     data() {
         return {
+            addOrganization: false,
             headers: ['name', 'role'],
             removeOrganization: false,
             removingOrganization: {},
@@ -124,28 +143,41 @@ export default {
         };
     },
     methods: {
-        addOrganization() {
-
-        },
+        ...mapActions(['setCurrentBuildOrganizations']),
         closeModal() {
+            this.addOrganization = false;
             this.removeOrganization = false;
             this.removingOrganization = {};
         },
+        refetchCurrentBuildOrganizations() {
+            Builds.getBuildOrganizations(this.buildId).then(response => {
+                this.setCurrentBuildOrganizations(response.data);
+            });
+        },
         removeOrganizationFromBuild() {
-            const buildId = this.build.id;
-
             Builds.removeOrganizationFromBuild(
-                buildId,
+                this.buildId,
                 this.removingOrganization.id
             ).then(() => {
                 EventBus.$emit('item-removed');
-                this.$parent.getBuildData(buildId);
+
+                this.refetchCurrentBuildOrganizations();
             });
+        },
+        showAddOrganizationModal() {
+            this.addOrganization = true;
+        },
+        showRemoveOrganizationModal(organization) {
+            this.removingOrganization = organization;
+            this.removeOrganization = true;
         },
     },
     computed: {
+        ...mapState(['currentBuildOrganizations']),
         filteredOrganizations() {
-            let organizations = this.build.organizations;
+            let organizations = this.currentBuildOrganizations;
+
+            this.refetchCurrentBuildOrganizations();
 
             if (this.searchText) {
                 const searchText = this.searchText.toLowerCase();
@@ -171,6 +203,10 @@ export default {
 
         EventBus.$on('remove-item:organization', () => {
             this.removeOrganizationFromBuild();
+        });
+
+        EventBus.$on('organizations-added-to-build', () => {
+            this.refetchCurrentBuildOrganizations();
         });
     },
 };

@@ -33,17 +33,23 @@
                 </li>
             </ul>
         </div>
-        <OverviewTab
-            :build="currentBuild"
-            v-if="currentTab === 'OverviewTab'"
-        />
+        <OverviewTab v-if="currentTab === 'OverviewTab'" />
         <OrganizationsTab
-            :build="currentBuild"
+            :build-id="currentBuild.id"
             v-if="currentTab === 'OrganizationsTab'"
         />
-        <MembersTab :build="currentBuild" v-if="currentTab === 'MembersTab'" />
-        <RacksTab :build="currentBuild" v-if="currentTab === 'RacksTab'" />
-        <DevicesTab :build="currentBuild" v-if="currentTab === 'DevicesTab'" />
+        <MembersTab
+            :build-id="currentBuild.id"
+            v-if="currentTab === 'MembersTab'"
+        />
+        <RacksTab
+            :build-id="currentBuild.id"
+            v-if="currentTab === 'RacksTab'"
+        />
+        <DevicesTab
+            :build-id="currentBuild.id"
+            v-if="currentTab === 'DevicesTab'"
+        />
     </div>
 </template>
 
@@ -55,6 +61,10 @@ import MembersTab from './MembersTab.vue';
 import OrganizationsTab from './OrganizationsTab.vue';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
+import { getDevices } from '@api/workspaces.js';
+import { getRacks } from '@api/racks.js';
+import { getOrganizations } from '@api/organizations.js';
+import { getUsers } from '@api/users.js';
 
 export default {
     components: {
@@ -100,7 +110,7 @@ export default {
                     component: 'DevicesTab',
                     name: 'Devices',
                 },
-            ]
+            ],
         };
     },
     methods: {
@@ -110,15 +120,15 @@ export default {
             'setCurrentBuildOrganizations',
             'setCurrentBuildRacks',
             'setCurrentBuildUsers',
+            'setDevices',
+            'setOrganizations',
+            'setRacks',
+            'setUsers',
         ]),
         changeTab(tab) {
             this.currentTab = tab;
         },
-        getBuildData(buildId = null) {
-            if (!buildId) {
-                buildId = this.currentBuild.id;
-            }
-
+        getBuildData(buildId) {
             Builds.getBuild(buildId).then(response => {
                 this.setCurrentBuild(response.data);
             });
@@ -139,9 +149,41 @@ export default {
                 this.setCurrentBuildUsers(response.data);
             });
         },
+        preFetchData() {
+            if (!this.users.length) {
+                getUsers().then(response => {
+                    this.setUsers(response.data);
+                });
+            }
+
+            if (!this.devices.length) {
+                getDevices(this.currentWorkspace.id).then(response => {
+                    this.setDevices(response.data);
+                });
+            }
+
+            if (!this.racks.length) {
+                getRacks().then(response => {
+                    this.setRacks(response.data);
+                });
+            }
+
+            if (!this.organizations.length) {
+                getOrganizations().then(response => {
+                    this.setOrganizations(response.data);
+                });
+            }
+        },
     },
     computed: {
-        ...mapState(['currentBuild']),
+        ...mapState([
+            'currentBuild',
+            'currentWorkspace',
+            'devices',
+            'organizations',
+            'racks',
+            'users',
+        ]),
         buildStatus() {
             const build = this.currentBuild;
 
@@ -155,25 +197,29 @@ export default {
         },
     },
     created() {
-        let buildId;
+        let buildId = this.buildId;
 
-        if (this.buildId) {
-            this.getBuildData(this.buildId);
+        if (!buildId) {
+            buildId = this.currentBuild.id;
+        }
 
-            buildId = this.buildId;
-        } else {
+        if (!buildId) {
             if (
                 this.$route &&
                 this.$route.params &&
                 this.$route.params.buildId
             ) {
-                this.getBuildData(this.$route.params.buildId);
-
                 buildId = this.$route.params.buildId;
             }
         }
 
-        localStorage.setItem('mostRecentBuildId', buildId);
+        if (buildId) {
+            this.getBuildData(buildId);
+
+            localStorage.setItem('mostRecentBuildId', buildId);
+        }
+
+        this.preFetchData();
     },
 };
 </script>
