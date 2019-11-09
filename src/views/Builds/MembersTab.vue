@@ -37,7 +37,10 @@
                             add_circle
                         </i>
                     </div>
-                    <table class="table is-hoverable is-fullwidth">
+                    <table
+                        class="table is-hoverable is-fullwidth"
+                        v-if="filteredUsers && filteredUsers.length > 1"
+                    >
                         <thead>
                             <th v-for="header in headers" :key="header">
                                 <a
@@ -66,9 +69,7 @@
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot
-                            v-if="filteredUsers && filteredUsers.length > 10"
-                        >
+                        <tfoot v-if="filteredUsers.length > 10">
                             <th
                                 class="is-capitalized"
                                 v-for="header in headers"
@@ -91,9 +92,7 @@
                                     <span v-if="user.role === 'admin'">
                                         Admin
                                     </span>
-                                    <span v-else>
-                                        Regular Member
-                                    </span>
+                                    <span v-else>Regular Member</span>
                                 </td>
                                 <td class="permissions">
                                     <span
@@ -131,6 +130,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="no-results" v-else>
+                        <p class="subtitle has-text-centered">
+                            No Results to Display
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -145,10 +149,11 @@
 
 <script>
 import search from 'fuzzysearch';
-import RemoveItemModal from './RemoveItemModal.vue';
 import AddUsersModal from './AddUsersModal.vue';
+import RemoveItemModal from './RemoveItemModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import * as Builds from '@api/builds.js';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
@@ -156,8 +161,8 @@ export default {
         RemoveItemModal,
     },
     props: {
-        build: {
-            type: Object,
+        buildId: {
+            type: String,
             required: true,
         },
     },
@@ -173,20 +178,23 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['setCurrentBuildUsers']),
         closeModal() {
             this.addUser = false;
             this.removeUser = false;
             this.removingUser = {};
         },
-        removeUserFromBuild() {
-            const buildId = this.build.id;
+        refetchCurrentBuildUsers() {
+            Builds.getBuildUsers(this.buildId).then(response => {
+                this.setCurrentBuildUsers(response.data);
+            });
+        },
+        removeUserFromBuild(user) {
+            Builds.removeUserFromBuild(this.buildId, user.id).then(() => {
+                EventBus.$emit('item-removed');
 
-            Builds.removeUserFromBuild(buildId, this.removingUser.id).then(
-                () => {
-                    EventBus.$emit('item-removed');
-                    this.$parent.getBuildData(buildId);
-                }
-            );
+                this.refetchCurrentBuildUsers();
+            });
         },
         showAddUserModal() {
             this.addUser = true;
@@ -200,53 +208,55 @@ export default {
         },
     },
     computed: {
+        ...mapState(['currentBuildUsers']),
         adminUsersCount() {
             if (this.buildHasUsers) {
-                return this.build.users.filter(user => user.role === 'admin')
-                    .length;
+                return this.currentBuildUsers.filter(
+                    user => user.role === 'admin'
+                ).length;
             }
 
             return 0;
         },
         buildHasUsers() {
-            return this.build && this.build.users && this.build.users.length;
+            return this.currentBuildUsers && this.currentBuildUsers.length;
         },
         filteredUsers() {
-            if (this.buildHasUsers) {
-                let users = this.build.users;
-
-                if (this.searchText) {
-                    const searchText = this.searchText.toLowerCase();
-
-                    return users.reduce((acc, user) => {
-                        const name = user.name.toLowerCase();
-
-                        if (search(searchText, name)) {
-                            acc.push(user);
-                        }
-
-                        return acc;
-                    }, []);
-                }
-
-                if (this.userFilter !== 'all') {
-                    const userFilter = this.userFilter;
-
-                    if (userFilter === 'admin') {
-                        return users.filter(user => user.role === 'admin');
-                    } else if (userFilter === 'regular') {
-                        return users.filter(user => user.role !== 'admin');
-                    }
-                }
-
-                return users;
+            if (!this.buildHasUsers) {
+                return [];
             }
 
-            return [];
+            let users = this.currentBuildUsers;
+
+            if (this.searchText) {
+                const searchText = this.searchText.toLowerCase();
+
+                return users.reduce((acc, user) => {
+                    const name = user.name.toLowerCase();
+
+                    if (search(searchText, name)) {
+                        acc.push(user);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            if (this.userFilter !== 'all') {
+                const userFilter = this.userFilter;
+
+                if (userFilter === 'admin') {
+                    return users.filter(user => user.role === 'admin');
+                } else if (userFilter === 'regular') {
+                    return users.filter(user => user.role !== 'admin');
+                }
+            }
+
+            return users;
         },
         regularUsersCount() {
             if (this.buildHasUsers) {
-                return this.build.users.filter(
+                return this.currentBuildUsers.filter(
                     user => user.role === 'regular user'
                 ).length;
             }
@@ -262,12 +272,12 @@ export default {
             }
         );
 
-        EventBus.$on('remove-item:member', () => {
-            this.removeUserFromBuild();
+        EventBus.$on('remove-item:member', user => {
+            this.removeUserFromBuild(user);
         });
 
-        EventBus.$on('get-current-build', () => {
-            this.$parent.getBuildData();
+        EventBus.$on('users-added-to-build', () => {
+            this.refetchCurrentBuildUsers();
         });
     },
 };
