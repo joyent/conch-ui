@@ -1,0 +1,79 @@
+.add-device-modal {
+    .notification {
+        border-radius: 4px;
+        padding: 25px;
+        position: relative;
+    }
+
+    .modal-content {
+        width: 450px;
+    }
+
+    i.close {
+        cursor: pointer;
+        font-size: 26px;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
+
+    p.title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i.material-icons {
+            margin-right: 7px;
+        }
+    }
+
+    .content-body {
+        .control input {
+            height: 42px;
+            margin-bottom: 25px;
+
+            &:focus {
+                border: 1px solid $blue;
+                box-shadow: none;
+            }
+
+            &.is-danger {
+                border-color: $red;
+            }
+
+            &.is-success {
+                border-color: $green;
+            }
+
+            &.is-warning {
+                border-color: $yellow;
+            }
+        }
+
+        .icon {
+            height: 2.5em;
+        }
+    }
+
+    .content-footer {
+        font-weight: bold;
+
+        .create-new-device {
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            text-align: center;
+        }
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+
+        .button {
+            height: 42px;
+            min-width: 170px;
+            font-weight: bold;
+        }
+    }
+}

@@ -9,7 +9,7 @@
             <div class="modal-card">
                 <div class="modal-card-head">
                     <p class="modal-card-title is-uppercase">
-                        Add Members
+                        Add Organizations
                     </p>
                     <i class="material-icons close" @click="closeModal()">
                         close
@@ -36,28 +36,34 @@
                             <tr
                                 class="row item"
                                 :class="{
-                                    'is-selected': isUserSelected(user.id),
+                                    'is-selected': isOrganizationSelected(
+                                        organization.id
+                                    ),
                                 }"
-                                v-for="user in filteredUsers"
-                                :key="user.id"
+                                v-for="organization in filteredOrganizations"
+                                :key="organization.id"
                             >
-                                <template v-if="isUserSelected(user.id)">
+                                <template
+                                    v-if="
+                                        isOrganizationSelected(organization.id)
+                                    "
+                                >
                                     <td class="item-name">
                                         <span class="name has-text-grey-light">
-                                            {{ user.name }}
+                                            {{ organization.name }}
                                         </span>
                                     </td>
                                     <td class="role-select">
                                         <div class="select role">
                                             <select
                                                 @change="
-                                                    updateRole(user.id, $event)
+                                                    updateRole(organization.id, $event)
                                                 "
                                             >
                                                 <option
                                                     value="admin"
                                                     :selected="
-                                                        user.role === 'admin'
+                                                        organization.role === 'admin'
                                                     "
                                                 >
                                                     Admin
@@ -65,7 +71,7 @@
                                                 <option
                                                     value="rw"
                                                     :selected="
-                                                        user.role === 'rw'
+                                                        organization.role === 'rw'
                                                     "
                                                 >
                                                     Read / Write
@@ -73,7 +79,7 @@
                                                 <option
                                                     value="ro"
                                                     :selected="
-                                                        user.role === 'ro'
+                                                        organization.role === 'ro'
                                                     "
                                                 >
                                                     Read Only
@@ -84,17 +90,17 @@
                                     <td class="action">
                                         <i
                                             class="material-icons has-text-success add-item"
-                                            v-if="showRemoveIcon !== user.id"
+                                            v-if="showRemoveIcon !== organization.id"
                                             @mouseover="
-                                                showRemoveIcon = user.id
+                                                showRemoveIcon = organization.id
                                             "
                                         >
                                             check
                                         </i>
                                         <i
                                             class="material-icons has-text-danger remove-item"
-                                            v-if="showRemoveIcon === user.id"
-                                            @click="removeMember(user.id)"
+                                            v-if="showRemoveIcon === organization.id"
+                                            @click="removeOrganization(organization.id)"
                                             @mouseleave="showRemoveIcon = ''"
                                         >
                                             close
@@ -104,13 +110,13 @@
                                 <template v-else>
                                     <td class="item-name">
                                         <span>
-                                            {{ user.name }}
+                                            {{ organization.name }}
                                         </span>
                                     </td>
                                     <td class="action">
                                         <i
                                             class="material-icons has-text-success add-item"
-                                            @click="addMember(user)"
+                                            @click="addOrganization(organization)"
                                         >
                                             add
                                         </i>
@@ -132,9 +138,9 @@
                         <a
                             class="button is-capitalized is-success"
                             :class="{ 'is-loading': isLoading }"
-                            @click="addMembers()"
+                            @click="addOrganizations()"
                         >
-                            Add Members
+                            Add Organizations
                         </a>
                     </div>
                 </footer>
@@ -155,8 +161,8 @@
                 </header>
                 <section class="modal-card-body">
                     <p>
-                        {{ selectedUsers.length }} users have been successfully
-                        added.
+                        {{ selectedOrganizations.length }} organizations have
+                        been successfully added.
                     </p>
                     <br />
                     <a class="button is-success" @click="closeModal()">
@@ -171,9 +177,9 @@
 <script>
 import search from 'fuzzysearch';
 import { EventBus } from '@src/eventBus.js';
-import { getUsers } from '@api/users.js';
+import { getOrganizations } from '@api/organizations.js';
 import { mapActions, mapState } from 'vuex';
-import { addUserToBuild, getBuildUsers } from '@api/builds.js';
+import { addOrganizationToBuild, getBuildOrganizations } from '@api/builds.js';
 
 export default {
     data() {
@@ -182,54 +188,59 @@ export default {
             isLoading: false,
             isSuccess: false,
             searchText: '',
-            selectedUsers: [],
+            selectedOrganizations: [],
             showRemoveIcon: '',
         };
     },
     methods: {
-        ...mapActions(['setCurrentBuildUsers', 'setUsers']),
-        async addMembers() {
+        ...mapActions(['setCurrentBuildOrganizations', 'setOrganizations']),
+        async addOrganizations() {
             this.isLoading = true;
-            const buildId = this.currentBuild.id;
 
-            await this.selectedUsers.forEach(user => {
-                addUserToBuild(buildId, user.id, user.role);
+            await this.selectedOrganizations.forEach(organization => {
+                addOrganizationToBuild(
+                    this.currentBuild.id,
+                    organization.id,
+                    organization.role
+                );
             });
 
             this.isSuccess = true;
             this.isLoading = false;
-            EventBus.$emit('users-added-to-build');
+            EventBus.$emit('organizations-added-to-build');
         },
-        addMember(user) {
+        addOrganization(organization) {
             const role = { role: 'ro' };
-            this.selectedUsers.push(Object.assign(user, role));
+            this.selectedOrganizations.push(Object.assign(organization, role));
         },
         closeModal() {
             this.isActive = false;
             this.isSuccess = false;
             EventBus.$emit('close-modal:add-item');
         },
-        isUserSelected(userId) {
+        isOrganizationSelected(organizationId) {
             return (
-                this.selectedUsers.map(user => user.id).indexOf(userId) !== -1
+                this.selectedOrganizations
+                    .map(organization => organization.id)
+                    .indexOf(organizationId) !== -1
             );
         },
-        removeMember(userId) {
-            const index = this.selectedUsers
-                .map(user => user.id)
-                .indexOf(userId);
+        removeMember(organizationId) {
+            const index = this.selectedOrganizations
+                .map(organization => organization.id)
+                .indexOf(organizationId);
 
-            this.selectedUsers.splice(index, 1);
+            this.selectedOrganizations.splice(index, 1);
         },
-        updateRole(userId, event) {
+        updateRole(organizationId, event) {
             if (event && event.target && event.target.value) {
-                const selectedUsers = this.selectedUsers;
+                const selectedOrganizations = this.selectedOrganizations;
 
-                for (let i = 0; i < selectedUsers.length; i++) {
-                    const modifiedUser = selectedUsers[i];
+                for (let i = 0; i < selectedOrganizations.length; i++) {
+                    const modifiedOrganization = selectedOrganizations[i];
 
-                    if (modifiedUser.id === userId) {
-                        this.selectedUsers[i].role = event.target.value;
+                    if (modifiedOrganization.name === organizationId) {
+                        this.selectedOrganizations[i].role = event.target.value;
 
                         break;
                     }
@@ -238,23 +249,27 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentBuild', 'currentBuildUsers', 'users']),
-        filteredUsers() {
-            return this.users.reduce((acc, user) => {
-                const index = this.currentBuildUsers
-                    .map(buildUser => buildUser.id)
-                    .indexOf(user.id);
+        ...mapState([
+            'currentBuild',
+            'currentBuildOrganizations',
+            'organizations',
+        ]),
+        filteredOrganizations() {
+            return this.organizations.reduce((acc, organization) => {
+                const index = this.currentBuildOrganizations
+                    .map(buildOrganization => buildOrganization.id)
+                    .indexOf(organization.id);
 
                 if (index === -1) {
                     if (this.searchText) {
                         const searchText = this.searchText.toLowerCase();
-                        const name = user.name.toLowerCase();
+                        const name = organization.name.toLowerCase();
 
                         if (search(searchText, name)) {
-                            acc.push(user);
+                            acc.push(organization);
                         }
                     } else {
-                        acc.push(user);
+                        acc.push(organization);
                     }
                 }
 
@@ -263,15 +278,15 @@ export default {
         },
     },
     created() {
-        if (!this.users) {
-            getUsers().then(response => {
-                this.setUsers(response.data);
+        if (!this.organizations) {
+            getOrganizations().then(response => {
+                this.setOrganizations(response.data);
             });
         }
 
-        if (!this.currentBuildUsers) {
-            getBuildUsers(this.currentBuild.id).then(response => {
-                this.setCurrentBuildUsers(response.data);
+        if (!this.currentBuildOrganizations) {
+            getBuildOrganizations(this.currentBuild.id).then(response => {
+                this.setCurrentBuildOrganizations(response.data);
             });
         }
     },

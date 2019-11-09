@@ -77,6 +77,28 @@ export const addUserToBuild = (buildId, userId, role) => {
 };
 
 /**
+ * Create a device and add it to an existing build
+ *
+ * @type {POST}
+ * @param {String} buildId                  The ID of the build being updated
+ * @param {String} serial_number            The serial number of the device being created
+ * @param {String} sku                      The SKU of the device being created
+ * @return {Response Object}
+ */
+export const createDeviceAddToBuild = (buildId, serial_number, sku) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/build/${buildId}/device`,
+        data: [
+            {
+                sku,
+                serial_number,
+            },
+        ],
+    });
+};
+
+/**
  * Create a new build
  *
  * @type  {POST}
@@ -233,7 +255,7 @@ export const removeDeviceFromBuild = (buildId, deviceId) => {
 export const removeOrganizationFromBuild = (buildId, organizationId) => {
     return requestWithToken({
         method: 'DELETE',
-        url: `/build/${buildId}/user/${organizationId}`,
+        url: `/build/${buildId}/organization/${organizationId}`,
         params: {
             send_mail: 1,
         },
@@ -251,7 +273,7 @@ export const removeOrganizationFromBuild = (buildId, organizationId) => {
 export const removeRackFromBuild = (buildId, rackId) => {
     return requestWithToken({
         method: 'DELETE',
-        url: `/build/${buildId}/device/${rackId}`,
+        url: `/build/${buildId}/rack/${rackId}`,
     });
 };
 

@@ -174,10 +174,10 @@
 			border-color: $grey;
 			border-radius: 4px;
 			color: $grey-lighter;
-			margin-bottom: 15px;
+			// margin-bottom: 15px;
 
 			&::placeholder {
-				color: $grey-lighter;
+				color: $grey-light;
 			}
 		}
 
@@ -229,6 +229,10 @@
 			&:hover {
 				color: $red;
 			}
+		}
+
+		.no-results {
+			margin: 40px auto;
 		}
 	}
 
