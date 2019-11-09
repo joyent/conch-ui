@@ -76,7 +76,7 @@
                                             {{ phase }}
                                         </h2>
                                         <span class="is-size-3 has-text-info">
-                                            {{ getDeviceHealthCount(phase) }}
+                                            {{ getDevicePhaseCount(phase) }}
                                         </span>
                                     </div>
                                 </a>
@@ -177,14 +177,9 @@
 <script>
 import moment from 'moment';
 import { EventBus } from '@src/eventBus.js';
+import { mapState } from 'vuex';
 
 export default {
-    props: {
-        build: {
-            type: Object,
-            required: true,
-        },
-    },
     data() {
         return {
             healthStatusList: ['pass', 'fail', 'error', 'unknown'],
@@ -220,32 +215,41 @@ export default {
             return moment(date).format('MM/DD/YYYY');
         },
         getDeviceHealthCount(health) {
-            if (this.build && this.build.devices && this.build.devices.length) {
-                return this.build.devices.filter(device => {
-                    device.health === health;
-                }).length;
+            if (!this.currentBuildDevices.length) {
+                return 0;
             }
 
-            return 0;
+            return this.currentBuildDevices.filter(device => {
+                if (device.health === health) {
+                    return device;
+                }
+            }).length;
         },
         getDevicePhaseCount(phase) {
-            if (this.build && this.build.devices && this.build.devices.length) {
-                return this.build.devices.filter(device => {
-                    device.phase === phase;
-                }).length;
+            if (!this.currentBuildDevices.length) {
+                return 0;
             }
 
-            return 0;
+            return this.currentBuildDevices.filter(device => {
+                if (device.phase === phase.toLowerCase()) {
+                    return device;
+                }
+            }).length;
         },
         getRackPhaseCount(phase) {
-            if (this.build && this.build.racks && this.build.racks.length) {
-                return this.build.racks.filter(rack => {
-                    rack.phase === phase;
-                }).length;
+            if (!this.currentBuildRacks.length) {
+                return 0;
             }
 
-            return 0;
+            return this.currentBuildRacks.filter(rack => {
+                if (rack.phase === phase.toLowerCase()) {
+                    return rack;
+                }
+            }).length;
         },
+    },
+    computed: {
+        ...mapState(['currentBuildDevices', 'currentBuildRacks']),
     },
 };
 </script>

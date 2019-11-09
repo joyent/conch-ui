@@ -55,7 +55,10 @@
                             add_circle
                         </i>
                     </div>
-                    <table class="table is-hoverable is-fullwidth">
+                    <table
+                        class="table is-hoverable is-fullwidth"
+                        v-if="filteredRacks && filteredRacks.length > 1"
+                    >
                         <thead>
                             <th v-for="header in headers" :key="header">
                                 <a
@@ -84,9 +87,7 @@
                             </th>
                             <th></th>
                         </thead>
-                        <tfoot
-                            v-if="filteredRacks && filteredRacks.length > 10"
-                        >
+                        <tfoot v-if="filteredRacks.length > 10">
                             <th v-for="header in headers" :key="header">
                                 {{ header }}
                             </th>
@@ -123,6 +124,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="no-results" v-else>
+                        <p class="subtitle has-text-centered">
+                            No Results to Display
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -147,8 +153,8 @@ export default {
         RemoveItemModal,
     },
     props: {
-        build: {
-            type: Object,
+        buildId: {
+            type: String,
             required: true,
         },
     },
@@ -201,13 +207,17 @@ export default {
             this.removingRack = rack;
             this.removeRack = true;
         },
+        refetchCurrentBuildRacks() {
+            Builds.getBuildRacks(this.buildId).then(response => {
+                this.setCurrentBuildRacks(response.data);
+            });
+        },
         removeRackFromBuild() {
-            const buildId = this.build.id;
-
-            Builds.removeRackFromBuild(buildId, this.removingRack.id).then(
+            Builds.removeRackFromBuild(this.buildId, this.removingRack.id).then(
                 () => {
                     EventBus.$emit('item-removed');
-                    this.$parent.getBuildData(buildId);
+
+                    this.refetchCurrentBuildRacks();
                 }
             );
         },
@@ -216,55 +226,64 @@ export default {
         },
     },
     computed: {
-        ...mapState(['datacenterRooms']),
+        ...mapState(['currentBuildRacks', 'datacenterRooms']),
         availableDatacenterRooms() {
-            const racks =
-                this.build && this.build.racks ? this.build.racks : [];
-
-            if (racks) {
-                const drs = Array.from(
-                    new Set(
-                        racks.map(rack =>
-                            this.getDatacenterRoom(rack.datacenter_room_id)
-                        )
-                    )
-                ).sort();
-
-                return drs;
+            if (!this.currentBuildRacks.length) {
+                return [];
             }
 
-            return [];
+            return Array.from(
+                new Set(
+                    this.currentBuildRacks.map(rack =>
+                        this.getDatacenterRoom(rack.datacenter_room_id)
+                    )
+                )
+            ).sort();
         },
         filteredRacks() {
-            if (this.build && this.build.racks) {
-                let racks = this.build.racks;
-
-                if (this.searchText) {
-                    const searchText = this.searchText.toLowerCase();
-
-                    return racks.reduce((acc, rack) => {
-                        const name = rack.name.toLowerCase();
-
-                        if (search(searchText, name)) {
-                            acc.push(rack);
-                        }
-
-                        return acc;
-                    }, []);
-                }
-
-                if (this.rackFilter) {
-                    return racks.filter(rack => rack.phase === this.rackFilter);
-                }
-
-                return racks;
+            if (!this.currentBuildRacks.length) {
+                return [];
             }
 
-            return [];
+            let racks = this.currentBuildRacks;
+
+            if (this.searchText) {
+                const searchText = this.searchText.toLowerCase();
+
+                return racks.reduce((acc, rack) => {
+                    const name = rack.name.toLowerCase();
+
+                    if (search(searchText, name)) {
+                        acc.push(rack);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            if (this.phaseFilter !== 'all') {
+                racks = racks.filter(rack => {
+                    return rack.phase === this.phaseFilter.toLowerCase();
+                });
+            }
+
+            if (this.datacenterRoomFilter !== 'all') {
+                racks = racks.filter(rack => {
+                    const datacenterRoom = this.getDatacenterRoom(
+                        rack.datacenter_room_id
+                    );
+
+                    if (datacenterRoom === this.datacenterRoomFilter) {
+                        return rack;
+                    }
+                });
+            }
+
+            return racks;
         },
     },
     created() {
-        if (this.datacenterRooms || !this.datacenterRooms.length) {
+        if (!this.datacenterRooms.length) {
             this.getDatacenterRooms();
         }
 
