@@ -3,11 +3,9 @@
     <div class="organizations" v-else>
         <div class="empty-state" v-if="noOrganizationsExist">
             <img src="../../assets/organization.svg" width="500" />
-            <p class="empty-state-heading">
-                No Organizations exist.
-            </p>
+            <p class="empty-state-heading">No Organizations exist.</p>
             <a
-                class="button is-info create-token"
+                class="button is-info create-organization"
                 @click="createOrganization()"
             >
                 Create an Organization
@@ -20,7 +18,7 @@
                     <input
                         type="text"
                         class="input"
-                        placeholder="Search organizations"
+                        placeholder="Search..."
                         v-model="searchText"
                     />
                     <span class="icon is-small is-left">
@@ -41,12 +39,12 @@
                         </template>
                     </a>
                 </div>
-                <i
-                    class="material-icons add-organization"
+                <a
+                    class="button is-success create-organization"
                     @click="createOrganization()"
                 >
-                    add_circle
-                </i>
+                    Create Organization
+                </a>
             </div>
             <div
                 class="no-results title is-4 has-text-white has-text-centered"
@@ -77,17 +75,7 @@
                             close
                         </i>
                         <i class="material-icons">recent_actors</i>
-                        <p class="organization-name">
-                            {{ organization.name }}
-                        </p>
-                        <p class="organization-desc">
-                            <span v-if="organization.description">
-                                {{ organization.description }}
-                            </span>
-                            <span class="has-text-grey-light" v-else>
-                                No Description
-                            </span>
-                        </p>
+                        <p class="organization-name">{{ organization.name }}</p>
                         <a
                             class="button"
                             @click="viewOrganization(organization.id)"
@@ -126,7 +114,7 @@
                                 <span
                                     class="has-text-white has-text-weight-bold"
                                 >
-                                    {{ organizationBeingRemoved.name }}?
+                                    {{ organizationBeingEdited.name }}?
                                 </span>
                             </p>
                             <br />
@@ -155,9 +143,8 @@
         <transition name="fade">
             <SuccessModal
                 v-if="showSuccessModal === true"
-                :name="organizationBeingRemoved.name"
-                class="remove"
-                action="remove"
+                :item="organizationBeingEdited.name"
+                :action="action"
             />
         </transition>
     </div>
@@ -182,12 +169,13 @@ export default {
     },
     data() {
         return {
+            action: '',
             activeView: 'grid',
             creatingOrganization: false,
             deletingOrganization: false,
             isLoading: false,
             noOrganizationsExist: false,
-            organizationBeingRemoved: {},
+            organizationBeingEdited: {},
             searchText: '',
             showDeleteOrganizationButton: '',
             showSuccessModal: false,
@@ -199,15 +187,21 @@ export default {
             this.creatingOrganization = true;
         },
         closeModal() {
+            this.action = '';
             this.creatingOrganization = false;
             this.deletingOrganization = false;
+            this.organizationBeingEdited = {};
             this.showSuccessModal = false;
+        },
+        closeCreateOrganizationModal() {
+            this.creatingOrganization = false;
         },
         async deleteOrganization() {
             this.isLoading = true;
+            this.action = 'delete';
 
             await Organizations.deleteOrganization(
-                this.organizationBeingRemoved.id
+                this.organizationBeingEdited.id
             );
 
             await Organizations.getOrganizations().then(response => {
@@ -234,7 +228,7 @@ export default {
             });
         },
         showConfirmationModal(organization) {
-            this.organizationBeingRemoved = organization;
+            this.organizationBeingEdited = organization;
             this.deletingOrganization = true;
         },
         toggleView() {
@@ -278,11 +272,15 @@ export default {
         }
     },
     mounted() {
-        EventBus.$on('close-modal:add-organization', () => {
-            this.closeModal();
+        EventBus.$on('close-modal:create-organization', () => {
+            this.closeCreateOrganizationModal();
         });
 
-        EventBus.$on('organization-created', () => {
+        EventBus.$on('organization-created', data => {
+            this.action = 'create';
+            this.organizationBeingEdited.name = data.name;
+            this.showSuccessModal = true;
+
             Organizations.getOrganizations().then(response => {
                 this.setOrganizations(response.data);
             });
