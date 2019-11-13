@@ -95,7 +95,7 @@
                     </div>
                     <table
                         class="table is-fullwidth is-hoverable is-marginless"
-                        v-if="!noBuildsExist"
+                        v-if="organizationHasBuilds"
                     >
                         <thead>
                             <th>Name</th>
@@ -152,7 +152,7 @@
                                 <td class="row-action-button">
                                     <a
                                         class="button-delete"
-                                        @click="removeItem(build, 'builds')"
+                                        @click="showRemoveItemModal(build, 'build')"
                                     >
                                         <span class="icon">
                                             <i class="fas fa-trash-alt"></i>
@@ -352,7 +352,7 @@
                                 <td class="row-action-button">
                                     <a
                                         class="button-delete"
-                                        @click="removeItem(member, 'members')"
+                                        @click="showRemoveItemModal(member, 'member')"
                                         v-if="
                                             member.role !== 'admin' ||
                                                 adminMembersCount > 1
@@ -422,7 +422,7 @@
             />
         </transition>
         <transition name="fade">
-            <div class="remove-item-modal" v-if="showRemoveItemModal">
+            <div class="remove-item-modal" v-if="removingItem">
                 <div class="modal is-active">
                     <div class="modal-background" @click="closeModal()"></div>
                     <div class="modal-card">
@@ -440,12 +440,7 @@
                         <section class="modal-card-body">
                             <p>
                                 Are you sure you want to remove
-                                <span
-                                    class="has-text-weight-bold has-text-white"
-                                >
-                                    {{ removingItem.name }}
-                                </span>
-                                from the organization?
+                                {{ itemBeingRemoved.name }}?
                             </p>
                             <br />
                             <div class="buttons-group">
@@ -459,7 +454,7 @@
                                 <a
                                     class="button is-danger"
                                     :class="{ 'is-loading': isLoading }"
-                                    @click="removeMemberFromOrganization()"
+                                    @click="removeItemFromOrganization()"
                                     :disabled="isLoading ? 'disabled' : false"
                                 >
                                     Confirm
@@ -473,7 +468,7 @@
         <transition name="fade">
             <SuccessModal
                 v-if="showSuccessModal"
-                :item="removingItem.name"
+                :item="itemBeingRemoved.name"
                 :action="action"
                 :item-type="itemType"
                 :item-count="itemCount"
@@ -490,8 +485,8 @@ import SuccessModal from '@src/views/components/SuccessModal.vue';
 import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
-import { getBuilds } from '@api/builds.js';
 import { getUsers } from '@api/users.js';
+import * as Builds from '@api/builds.js';
 import * as Organizations from '@api/organizations.js';
 
 export default {
@@ -508,15 +503,13 @@ export default {
             isActive: false,
             isLoading: false,
             item: '',
+            itemBeingRemoved: {},
             itemCount: 0,
             itemType: '',
-            removingItem: {},
+            removingItem: false,
             removingType: '',
             organization: {},
             modifiedMembers: [],
-            noBuildsExist: false,
-            noMembersExist: false,
-            showRemoveItemModal: false,
             showActionModal: false,
             showBuildsDropdown: false,
             showMembersDropdown: false,
@@ -526,14 +519,14 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setBuilds', 'setOrganizations', 'setUsers']),
+        ...mapActions(['setBuilds', 'setUsers']),
         closeModal() {
-            this.showActionModal = false;
-            this.showRemoveItemModal = false;
-            this.showSuccessModal = false;
             this.action = '';
             this.itemCount = 0;
             this.itemType = '';
+            this.removingItem = false;
+            this.showActionModal = false;
+            this.showSuccessModal = false;
         },
         getDate(date) {
             return moment(date).format('YYYY/MM/DD');
@@ -549,12 +542,14 @@ export default {
 
             return -1;
         },
-        getOrganization() {
-            Organizations.getOrganization(this.organization.id).then(
-                response => {
-                    this.organization = response.data;
-                }
-            );
+        getOrganization(organizationId = null) {
+            if (!organizationId) {
+                organizationId = this.organization.id;
+            }
+
+            Organizations.getOrganization(organizationId).then(response => {
+                this.organization = response.data;
+            });
         },
         isEmpty,
         isMemberModified(memberName) {
@@ -580,53 +575,44 @@ export default {
 
             this.showActionModal = true;
         },
-        removeItem(item, type) {
+        showRemoveItemModal(item, type) {
             this.action = 'remove';
-            this.removingItem = item;
+            this.itemBeingRemoved = item;
             this.removingType = type;
-
-            this.showRemoveItemModal = true;
+            this.removingItem = true;
         },
-        removeMemberFromOrganization() {
+        removeItemFromOrganization() {
             this.isLoading = true;
 
-            Organizations.removeUserFromOrganization(
-                this.organization.id,
-                this.removingItem.id
-            ).then(() => {
-                this.showRemoveItemModal = false;
-                this.showSuccessModal = true;
-                this.isLoading = false;
-                this.getOrganization();
-            });
+            const itemId = this.itemBeingRemoved.id;
+            const organizationId = this.organization.id;
+            const itemType = this.removingType;
+
+            if (itemType === 'member') {
+                Organizations.removeUserFromOrganization(
+                    organizationId,
+                    itemId
+                ).then(() => {
+                    this.removingItem = false;
+                    this.showSuccessModal = true;
+                    this.isLoading = false;
+                    this.getOrganization();
+                });
+            } else if (itemType === 'build') {
+                Builds.removeOrganizationFromBuild(itemId, organizationId).then(
+                    () => {
+                        this.removingItem = false;
+                        this.showSuccessModal = true;
+                        this.isLoading = false;
+                        this.getOrganization();
+                    }
+                );
+            }
         },
         removeMemberModification(item) {
             const index = this.modifiedMembers.indexOf(item);
 
             this.modifiedMembers.splice(index, 1);
-        },
-        async setOrganizationData(currentOrganizationId, organizations = null) {
-            if (organizations) {
-                await this.setOrganizations(organizations);
-            }
-
-            this.organization = this.organizations.find(
-                organization => organization.id === currentOrganizationId
-            );
-
-            if (
-                !this.organization.builds ||
-                this.organization.builds.length === 0
-            ) {
-                this.noBuildsExist = true;
-            }
-
-            if (
-                !this.organization.users ||
-                this.organization.users.length === 0
-            ) {
-                this.noMembersExist = true;
-            }
         },
         toggleEditMembers() {
             this.editMembers = !this.editMembers;
@@ -678,7 +664,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['builds', 'organizations', 'users']),
+        ...mapState(['builds', 'users']),
         adminMembersCount() {
             if (this.organizationHasMembers) {
                 return this.organization.users.filter(user => {
@@ -722,19 +708,12 @@ export default {
         },
     },
     created() {
-        const currentOrganizationId = this.$route.params.organizationId;
-
-        if (this.organizations.length) {
-            this.setOrganizationData(currentOrganizationId);
-        } else {
-            Organizations.getOrganizations().then(response => {
-                const organizations = response.data;
-                this.setOrganizationData(currentOrganizationId, organizations);
-            });
+        if (this.$route.params && this.$route.params.organizationId) {
+            this.getOrganization(this.$route.params.organizationId);
         }
 
         if (!this.builds.length) {
-            getBuilds().then(response => {
+            Builds.getBuilds().then(response => {
                 this.setBuilds(response.data);
             });
         }
@@ -753,10 +732,19 @@ export default {
             }
         );
 
-        EventBus.$on(['build-added', 'members-added'], async data => {
+        EventBus.$on(['build-added', 'member-added'], async data => {
             await this.getOrganization();
 
             this.action = 'add';
+            this.itemCount = data.count;
+            this.itemType = data.type;
+            this.showSuccessModal = true;
+        });
+
+        EventBus.$on(['build-removed', 'member-removed'], async data => {
+            await this.getOrganization();
+
+            this.action = 'remove';
             this.itemCount = data.count;
             this.itemType = data.type;
             this.showSuccessModal = true;
