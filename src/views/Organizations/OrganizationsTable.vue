@@ -8,16 +8,14 @@
                 <th>Name</th>
                 <th class="has-text-centered">Admin Users</th>
                 <th class="has-text-centered">Regular Users</th>
-                <th class="has-text-centered">Builds Completed</th>
-                <th class="has-text-centered">Builds In Progress</th>
+                <th class="has-text-centered">Total Build Count</th>
                 <th></th>
             </thead>
             <tfoot v-if="organizations.length >= 10">
                 <th>Name</th>
                 <th class="has-text-centered">Admin Users</th>
                 <th class="has-text-centered">Regular Users</th>
-                <th class="has-text-centered">Builds Completed</th>
-                <th class="has-text-centered">Builds In Progress</th>
+                <th class="has-text-centered">Total Build Count</th>
                 <th></th>
             </tfoot>
             <tbody>
@@ -35,10 +33,10 @@
                         {{ getRegularUserCount(organization) }}
                     </td>
                     <td class="has-text-centered">
-                        {{ getCompletedBuildsCount(organization.builds) }}
-                    </td>
-                    <td class="has-text-centered">
-                        {{ getInProgressBuildsCount(organization.builds) }}
+                        <span v-if="organizationBuildCount(organization) > 0">
+                            {{ organizationBuildCount(organization) }}
+                        </span>
+                        <span v-else>0</span>
                     </td>
                     <td class="has-text-right">
                         <a class="button">
@@ -90,15 +88,12 @@ export default {
             return organization.users.filter(user => user.role === 'admin')
                 .length;
         },
-        getCompletedBuildsCount(builds) {
-            return builds.filter(build => build.completed !== null).length;
-        },
-        getInProgressBuildsCount(builds) {
-            return builds.filter(build => build.compelted === null).length;
-        },
         getRegularUserCount(organization) {
             return organization.users.filter(user => user.role !== 'admin')
                 .length;
+        },
+        organizationBuildCount(organization) {
+            return organization.builds && organization.builds.length;
         },
         viewOrganizationPage(organizationId) {
             this.$router.push({
@@ -108,15 +103,6 @@ export default {
                 },
             });
         },
-    },
-    // TEMP FIX
-    created() {
-        this.organizations.map(organization => {
-            organization.builds = [];
-            organization.users = [];
-
-            return organization;
-        });
     },
 };
 </script>

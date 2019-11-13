@@ -1,84 +1,104 @@
 <template>
-    <div class="organizations">
-        <div class="page-heading">
-            <h1 class="title is-3 has-text-weight-bold">
-                Organizations
-            </h1>
-            <div class="control has-icons-left">
-                <input
-                    type="text"
-                    class="input"
-                    placeholder="Search organizations"
-                    v-model="searchText"
-                />
-                <span class="icon is-small is-left">
-                    <i class="material-icons">search</i>
-                </span>
-            </div>
-            <div class="views">
-                <a class="button is-text" @click="toggleView()">
-                    <template v-if="activeView === 'grid'">
-                        <i class="material-icons view-list">
-                            view_headline
-                        </i>
-                        <span>Table View</span>
-                    </template>
-                    <template v-else-if="activeView === 'list'">
-                        <i class="material-icons view-grid">
-                            apps
-                        </i>
-                        <span>Grid View</span>
-                    </template>
-                </a>
-            </div>
-            <i
-                class="material-icons add-organization"
-                @click="addOrganization()"
+    <Spinner v-if="organizations.length < 1 && !noOrganizationsExist" />
+    <div class="organizations" v-else>
+        <div class="empty-state" v-if="noOrganizationsExist">
+            <img src="../../assets/organization.svg" width="500" />
+            <p class="empty-state-heading">
+                No Organizations exist.
+            </p>
+            <a
+                class="button is-info create-token"
+                @click="createOrganization()"
             >
-                add_circle
-            </i>
+                Create an Organization
+            </a>
         </div>
-        <div class="cards" v-if="activeView === 'grid'">
-            <div
-                class="card"
-                v-for="organization in filteredOrganizations"
-                :key="organization.created"
-            >
-                <div
-                    class="card-content"
-                    @mouseover="showDeleteOrganizationButton = organization.id"
-                    @mouseleave="showDeleteOrganizationButton = ''"
-                >
-                    <i
-                        class="material-icons close"
-                        v-if="showDeleteOrganizationButton === organization.id"
-                        @click="showConfirmationModal(organization)"
-                    >
-                        close
-                    </i>
-                    <i class="material-icons">recent_actors</i>
-                    <p class="organization-name">
-                        {{ organization.name }}
-                    </p>
-                    <p class="organization-desc">
-                        {{ organization.description }}
-                    </p>
-                    <a
-                        class="button"
-                        @click="viewOrganization(organization.id)"
-                    >
-                        View Organization
+        <template v-else>
+            <div class="page-heading">
+                <h1 class="title is-3 has-text-weight-bold">Organizations</h1>
+                <div class="control has-icons-left">
+                    <input
+                        type="text"
+                        class="input"
+                        placeholder="Search organizations"
+                        v-model="searchText"
+                    />
+                    <span class="icon is-small is-left">
+                        <i class="material-icons">search</i>
+                    </span>
+                </div>
+                <div class="views">
+                    <a class="button is-text" @click="toggleView()">
+                        <template v-if="activeView === 'grid'">
+                            <i class="material-icons view-list">
+                                view_headline
+                            </i>
+                            <span>Table View</span>
+                        </template>
+                        <template v-else-if="activeView === 'list'">
+                            <i class="material-icons view-grid">apps</i>
+                            <span>Grid View</span>
+                        </template>
                     </a>
                 </div>
+                <i
+                    class="material-icons add-organization"
+                    @click="createOrganization()"
+                >
+                    add_circle
+                </i>
             </div>
-        </div>
-        <OrganizationsTable
-            :organizations="filteredOrganizations"
-            :has-search-text="searchText.length > 0"
-            v-else
-        />
+            <div class="cards" v-if="activeView === 'grid'">
+                <div
+                    class="card"
+                    v-for="organization in filteredOrganizations"
+                    :key="organization.id"
+                >
+                    <div
+                        class="card-content"
+                        @mouseover="
+                            showDeleteOrganizationButton = organization.id
+                        "
+                        @mouseleave="showDeleteOrganizationButton = ''"
+                    >
+                        <i
+                            class="material-icons close"
+                            v-if="
+                                showDeleteOrganizationButton === organization.id
+                            "
+                            @click="showConfirmationModal(organization)"
+                        >
+                            close
+                        </i>
+                        <i class="material-icons">recent_actors</i>
+                        <p class="organization-name">
+                            {{ organization.name }}
+                        </p>
+                        <p class="organization-desc">
+                            <span v-if="organization.description">
+                                {{ organization.description }}
+                            </span>
+                            <span class="has-text-grey-light" v-else>
+                                No Description
+                            </span>
+                        </p>
+                        <a
+                            class="button"
+                            @click="viewOrganization(organization.id)"
+                        >
+                            View Organization
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <OrganizationsTable
+                :organizations="filteredOrganizations"
+                :has-search-text="searchText.length > 0"
+                v-else
+            />
+        </template>
         <transition name="fade">
-            <AddOrganizationModal v-if="addingOrganization" />
+            <AddOrganizationModal v-if="creatingOrganization" />
         </transition>
         <transition name="fade">
             <div class="remove-item-modal" v-if="deletingOrganization">
@@ -142,6 +162,7 @@ import search from 'fuzzysearch';
 import AddOrganizationModal from './AddOrganizationModal.vue';
 import OrganizationsTable from './OrganizationsTable.vue';
 import SuccessModal from '../components/SuccessModal.vue';
+import Spinner from '../components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
 import * as Organizations from '@api/organizations.js';
 import { mapActions, mapState } from 'vuex';
@@ -150,27 +171,29 @@ export default {
     components: {
         AddOrganizationModal,
         OrganizationsTable,
+        Spinner,
         SuccessModal,
     },
     data() {
         return {
             activeView: 'grid',
-            addingOrganization: false,
+            creatingOrganization: false,
             deletingOrganization: false,
             isLoading: false,
+            noOrganizationsExist: false,
             organizationBeingRemoved: {},
+            searchText: '',
             showDeleteOrganizationButton: '',
             showSuccessModal: false,
-            searchText: '',
         };
     },
     methods: {
         ...mapActions(['setOrganizations']),
-        addOrganization() {
-            this.addingOrganization = true;
+        createOrganization() {
+            this.creatingOrganization = true;
         },
         closeModal() {
-            this.addingOrganization = false;
+            this.creatingOrganization = false;
             this.deletingOrganization = false;
             this.showSuccessModal = false;
         },
@@ -187,9 +210,22 @@ export default {
 
             EventBus.$emit('organization-deleted');
 
+            this.getOrganizations();
+
             this.deletingOrganization = false;
             this.showSuccessModal = true;
             this.isLoading = false;
+        },
+        getOrganizations() {
+            Organizations.getOrganizations().then(response => {
+                const organizations = response.data;
+
+                if (!organizations.length) {
+                    this.noOrganizationsExist = true;
+                } else {
+                    this.setOrganizations(organizations);
+                }
+            });
         },
         showConfirmationModal(organization) {
             this.organizationBeingRemoved = organization;
@@ -205,9 +241,7 @@ export default {
         viewOrganization(organizationId) {
             this.$router.push({
                 name: 'organization',
-                params: {
-                    organizationId,
-                },
+                params: { organizationId },
             });
         },
     },
@@ -234,9 +268,7 @@ export default {
     },
     created() {
         if (!this.organizations.length) {
-            Organizations.getOrganizations().then(response => {
-                this.setOrganizations(response.data);
-            });
+            this.getOrganizations();
         }
     },
     mounted() {
