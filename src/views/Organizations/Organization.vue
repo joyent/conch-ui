@@ -109,7 +109,7 @@
                             <tr
                                 class="row"
                                 v-for="build in organization.builds"
-                                :key="build.name"
+                                :key="build.id"
                             >
                                 <td>{{ build.name }}</td>
                                 <td colspan="2">
@@ -710,14 +710,14 @@ export default {
             return (
                 this.organization &&
                 this.organization.builds &&
-                this.organization.builds.length > 0
+                this.organization.builds.length
             );
         },
         organizationHasMembers() {
             return (
                 this.organization &&
                 this.organization.users &&
-                this.organization.users.length > 0
+                this.organization.users.length
             );
         },
     },
