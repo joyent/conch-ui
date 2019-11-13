@@ -1,10 +1,6 @@
 <template>
     <div class="add-organization-modal">
-        <div
-            class="modal"
-            :class="{ 'is-active': isActive }"
-            v-if="!isSuccessful"
-        >
+        <div class="modal" :class="{ 'is-active': isActive }">
             <div class="modal-background" @click="closeModal()"></div>
             <div class="modal-content">
                 <div class="notification">
@@ -251,7 +247,9 @@
                                                                                         'rw'
                                                                                 "
                                                                             >
-                                                                                Read / Write
+                                                                                Read
+                                                                                &#47;
+                                                                                Write
                                                                             </option>
                                                                             <option
                                                                                 value="ro"
@@ -260,7 +258,8 @@
                                                                                         'ro'
                                                                                 "
                                                                             >
-                                                                                Read Only
+                                                                                Read
+                                                                                Only
                                                                             </option>
                                                                         </select>
                                                                     </div>
@@ -539,11 +538,16 @@
                                                 <div class="item-content-row">
                                                     {{ name }}
                                                 </div>
-                                                <div
-                                                    class="item-content-row"
-                                                    v-if="description"
-                                                >
-                                                    {{ description }}
+                                                <div class="item-content-row">
+                                                    <span v-if="description">
+                                                        {{ description }}
+                                                    </span>
+                                                    <span
+                                                        class="has-text-grey"
+                                                        v-else
+                                                    >
+                                                        No description provided
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -692,18 +696,11 @@
                 </div>
             </div>
         </div>
-        <SuccessModal
-            v-if="isSuccessful"
-            class="create"
-            :name="name"
-            action="create"
-        />
     </div>
 </template>
 
 <script>
 import search from 'fuzzysearch';
-import SuccessModal from '../components/SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getUsers } from '@api/users.js';
@@ -712,9 +709,6 @@ import * as Organizations from '@api/organizations.js';
 import { addOrganizationToBuild } from '@api/builds.js';
 
 export default {
-    components: {
-        SuccessModal,
-    },
     data() {
         return {
             activeStep: 1,
@@ -728,7 +722,6 @@ export default {
             isExpandedDetails: true,
             isExpandedMembers: true,
             isLoading: false,
-            isSuccessful: false,
             name: '',
             organizationId: '',
             searchText: '',
@@ -773,7 +766,7 @@ export default {
         closeModal() {
             this.isActive = false;
 
-            EventBus.$emit('close-modal:add-organization');
+            EventBus.$emit('close-modal:create-organization');
         },
         addOrganizationToBuilds() {
             const organizationId = this.organizationId;
@@ -789,20 +782,18 @@ export default {
                 .filter(member => member.role === 'admin')
                 .map(user => ({ user_id: user.id }));
 
-            await Organizations.createOrganization(
+            const response = await Organizations.createOrganization(
                 this.name,
                 this.description,
                 admins
-            ).then(response => {
-                this.organizationId = response.data.id;
-            });
+            );
 
-            EventBus.$emit('organization-created');
+            this.organizationId = response.data.id;
+            EventBus.$emit('organization-created', { name: this.name });
 
             await this.addOrganizationToBuilds();
-
+            this.closeModal();
             this.isLoading = false;
-            this.isSuccessful = true;
         },
         filteredItems(itemType) {
             const searchText = this.searchText.toLowerCase();
