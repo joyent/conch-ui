@@ -64,7 +64,7 @@
                                                 <select
                                                     @change="
                                                         updateRole(
-                                                            item.name,
+                                                            item.id,
                                                             $event
                                                         )
                                                     "
@@ -311,7 +311,7 @@ export default {
                 if (this.itemType === 'members') {
                     await this.addMembers(data);
 
-                    EventBus.$emit('members-added', {
+                    EventBus.$emit('member-added', {
                         count: data.length,
                         type: 'member',
                     });
@@ -321,7 +321,10 @@ export default {
                 } else if (this.itemType === 'builds') {
                     await this.addBuilds(data);
 
-                    EventBus.$emit('build-added');
+                    EventBus.$emit('build-added', {
+                        count: data.length,
+                        type: 'build',
+                    });
 
                     this.closeModal();
                     this.isLoading = false;
@@ -330,19 +333,34 @@ export default {
                 if (this.itemType === 'members') {
                     await this.removeMembers(data);
 
+                    EventBus.$emit('member-removed', {
+                        count: data.length,
+                        type: 'member',
+                    });
+
+                    this.closeModal();
+                    this.isLoading = false;
+                } else if (this.itemType === 'builds') {
+                    await this.removeBuilds(data);
+
+                    EventBus.$emit('build-removed', {
+                        count: data.length,
+                        type: 'build',
+                    });
+
                     this.closeModal();
                     this.isLoading = false;
                 }
             }
         },
-        updateRole(itemName, event) {
+        updateRole(itemId, event) {
             if (event && event.target && event.target.value) {
                 const modifiedData = this.modifiedData;
 
                 for (let i = 0; i < modifiedData.length; i++) {
                     const modifiedItem = modifiedData[i];
 
-                    if (modifiedItem.name === itemName) {
+                    if (modifiedItem.id === itemId) {
                         this.modifiedData[i].role = event.target.value;
 
                         break;
