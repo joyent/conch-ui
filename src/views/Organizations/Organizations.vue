@@ -48,6 +48,12 @@
                     add_circle
                 </i>
             </div>
+            <div
+                class="no-results title is-4 has-text-white has-text-centered"
+                v-if="!filteredOrganizations.length && searchText"
+            >
+                <p>No results found.</p>
+            </div>
             <div class="cards" v-if="activeView === 'grid'">
                 <div
                     class="card"
