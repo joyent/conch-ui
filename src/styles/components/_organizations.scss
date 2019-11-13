@@ -229,7 +229,6 @@
 		.views {
 			display: flex;
 			align-items: center;
-			// flex-grow: 1;
 
 			i {
 				cursor: pointer;
@@ -260,15 +259,11 @@
 			}
 		}
 
-		.add-organization {
-			color: $green;
-			cursor: pointer;
-			font-size: 42px;
+		.create-organization {
+			font-weight: bold;
+			height: 42px;
+			padding: 5px 20px;
 			margin: 0 20px;
-
-			&:hover {
-				color: darken($green, 8%);
-			}
 		}
 	}
 
@@ -287,6 +282,8 @@
 			border-radius: 4px;
 			box-shadow: 0px 9px 45px -19px rgba(0,0,0,1);
 			max-height: 225px;
+			min-width: 276px;
+			max-width: 276px;
 			transition: all 0.1s ease-in-out;
 
 			.card-content {
@@ -315,6 +312,9 @@
 					font-size: 20px;
 					margin-bottom: 10px;
 					flex-grow: 1;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
 				}
 
 				.organization-desc {
