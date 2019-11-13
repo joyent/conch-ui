@@ -3,6 +3,7 @@ aside.menu {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+	min-width: 200px;
 	overflow-y: auto;
 	z-index: 1;
 
