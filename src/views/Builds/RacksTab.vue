@@ -57,7 +57,7 @@
                     </div>
                     <table
                         class="table is-hoverable is-fullwidth"
-                        v-if="filteredRacks && filteredRacks.length > 1"
+                        v-if="filteredRacks && filteredRacks.length > 0"
                     >
                         <thead>
                             <th v-for="header in headers" :key="header">

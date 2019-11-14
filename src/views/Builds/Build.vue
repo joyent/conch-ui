@@ -4,17 +4,6 @@
             <p class="build-name title has-text-white">
                 {{ currentBuild.name }}
             </p>
-            <span
-                class="tag build-status"
-                :class="{
-                    'is-success': buildStatus === 'completed',
-                    'is-info': buildStatus === 'started',
-                    'is-link': buildStatus === 'created',
-                }"
-                style="border-radius: 3px"
-            >
-                {{ buildStatus }}
-            </span>
         </div>
         <p class="build-id has-text-grey">Build ID: {{ currentBuild.id }}</p>
         <div class="tabs is-toggle">
@@ -61,8 +50,6 @@ import MembersTab from './MembersTab.vue';
 import OrganizationsTab from './OrganizationsTab.vue';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
-import { getDevices } from '@api/workspaces.js';
-import { getRacks } from '@api/racks.js';
 import { getOrganizations } from '@api/organizations.js';
 import { getUsers } from '@api/users.js';
 
@@ -156,18 +143,6 @@ export default {
                 });
             }
 
-            if (!this.devices.length) {
-                getDevices(this.currentWorkspace.id).then(response => {
-                    this.setDevices(response.data);
-                });
-            }
-
-            if (!this.racks.length) {
-                getRacks().then(response => {
-                    this.setRacks(response.data);
-                });
-            }
-
             if (!this.organizations.length) {
                 getOrganizations().then(response => {
                     this.setOrganizations(response.data);
@@ -184,24 +159,9 @@ export default {
             'racks',
             'users',
         ]),
-        buildStatus() {
-            const build = this.currentBuild;
-
-            if (build.completed) {
-                return 'completed';
-            } else if (build.started) {
-                return 'started';
-            }
-
-            return 'created';
-        },
     },
     created() {
         let buildId = this.buildId;
-
-        if (!buildId) {
-            buildId = this.currentBuild.id;
-        }
 
         if (!buildId) {
             if (
