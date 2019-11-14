@@ -30,18 +30,14 @@
             </div>
             <div class="column">
                 <div class="box stats">
-                    <h2 class="is-6">Active Builds</h2>
-                    <span class="is-size-3 has-text-warning">
-                        {{ buildsActive }}
+                    <h2 class="is-6">Builds</h2>
+                    <span
+                        class="is-size-3 has-text-info"
+                        v-if="organizationHasBuilds"
+                    >
+                        {{ organization.builds.length }}
                     </span>
-                </div>
-            </div>
-            <div class="column">
-                <div class="box stats">
-                    <h2 class="is-6">Completed Builds</h2>
-                    <span class="is-size-3 has-text-success">
-                        {{ buildsComplete }}
-                    </span>
+                    <span class="is-size-3 has-text-info" v-else>0</span>
                 </div>
             </div>
         </div>
@@ -99,10 +95,8 @@
                     >
                         <thead>
                             <th>Name</th>
-                            <th>Progress</th>
-                            <th></th>
-                            <th class="has-text-centered">Start Date</th>
-                            <th class="has-text-centered">End Date</th>
+                            <th class="has-text-centered">Started</th>
+                            <th class="has-text-centered">Completed</th>
                             <th></th>
                         </thead>
                         <tbody>
@@ -112,47 +106,28 @@
                                 :key="build.id"
                             >
                                 <td>{{ build.name }}</td>
-                                <td colspan="2">
-                                    <div
-                                        style="display: flex; align-items: center"
-                                    >
-                                        <progress
-                                            class="progress"
-                                            :class="[
-                                                {
-                                                    'is-success':
-                                                        build.status ===
-                                                        'complete',
-                                                },
-                                                {
-                                                    'is-info':
-                                                        build.status ===
-                                                        'active',
-                                                },
-                                                {
-                                                    'is-warning':
-                                                        build.status ===
-                                                        'on-hold',
-                                                },
-                                            ]"
-                                            :value="build.progress"
-                                            max="100"
-                                            style="margin: 0 8px 0 0; height: 0.5rem"
-                                        >
-                                        </progress>
-                                        <span>{{ build.progress }}%</span>
-                                    </div>
+                                <td class="has-text-centered">
+                                    <span v-if="build.started">
+                                        {{ getDate(build.started) }}
+                                    </span>
+                                    <span v-else>
+                                        Not Started
+                                    </span>
                                 </td>
                                 <td class="has-text-centered">
-                                    {{ getDate(build.startDate) }}
-                                </td>
-                                <td class="has-text-centered">
-                                    {{ getDate(build.endDate) }}
+                                    <span v-if="build.completed">
+                                        {{ getDate(build.completed) }}
+                                    </span>
+                                    <span v-else>
+                                        Not Completed
+                                    </span>
                                 </td>
                                 <td class="row-action-button">
                                     <a
                                         class="button-delete"
-                                        @click="showRemoveItemModal(build, 'build')"
+                                        @click="
+                                            showRemoveItemModal(build, 'build')
+                                        "
                                     >
                                         <span class="icon">
                                             <i class="fas fa-trash-alt"></i>
@@ -352,7 +327,12 @@
                                 <td class="row-action-button">
                                     <a
                                         class="button-delete"
-                                        @click="showRemoveItemModal(member, 'member')"
+                                        @click="
+                                            showRemoveItemModal(
+                                                member,
+                                                'member'
+                                            )
+                                        "
                                         v-if="
                                             member.role !== 'admin' ||
                                                 adminMembersCount > 1
@@ -500,7 +480,6 @@ export default {
             action: '',
             availableData: [],
             editMembers: false,
-            isActive: false,
             isLoading: false,
             item: '',
             itemBeingRemoved: {},
@@ -514,7 +493,6 @@ export default {
             showBuildsDropdown: false,
             showMembersDropdown: false,
             showSuccessModal: false,
-            showUserActionsDropdown: false,
             unavailableData: [],
         };
     },
@@ -522,6 +500,7 @@ export default {
         ...mapActions(['setBuilds', 'setUsers']),
         closeModal() {
             this.action = '';
+            this.itemBeingRemoved = {};
             this.itemCount = 0;
             this.itemType = '';
             this.removingItem = false;
@@ -532,7 +511,7 @@ export default {
             return moment(date).format('YYYY/MM/DD');
         },
         getModifiedMemberIndex(memberName) {
-            if (this.modifiedMembers) {
+            if (this.modifiedMembers && this.modifiedMembers.length) {
                 for (let i = 0; i < this.modifiedMembers.length; i++) {
                     if (this.modifiedMembers[i].name === memberName) {
                         return i;
@@ -564,9 +543,7 @@ export default {
             if (item === 'builds') {
                 this.showBuildsDropdown = false;
                 this.availableData = this.builds;
-                this.unavailableData = this.organization.builds.map(
-                    build => build.name
-                );
+                this.unavailableData = this.organization.builds;
             } else if (item === 'members') {
                 this.showMembersDropdown = false;
                 this.availableData = this.users;
@@ -581,7 +558,7 @@ export default {
             this.removingType = type;
             this.removingItem = true;
         },
-        removeItemFromOrganization() {
+        async removeItemFromOrganization() {
             this.isLoading = true;
 
             const itemId = this.itemBeingRemoved.id;
@@ -589,25 +566,21 @@ export default {
             const itemType = this.removingType;
 
             if (itemType === 'member') {
-                Organizations.removeUserFromOrganization(
+                await Organizations.removeUserFromOrganization(
                     organizationId,
                     itemId
-                ).then(() => {
-                    this.removingItem = false;
-                    this.showSuccessModal = true;
-                    this.isLoading = false;
-                    this.getOrganization();
-                });
+                );
             } else if (itemType === 'build') {
-                Builds.removeOrganizationFromBuild(itemId, organizationId).then(
-                    () => {
-                        this.removingItem = false;
-                        this.showSuccessModal = true;
-                        this.isLoading = false;
-                        this.getOrganization();
-                    }
+                await Builds.removeOrganizationFromBuild(
+                    itemId,
+                    organizationId
                 );
             }
+
+            this.removingItem = false;
+            this.showSuccessModal = true;
+            this.isLoading = false;
+            this.getOrganization();
         },
         removeMemberModification(item) {
             const index = this.modifiedMembers.indexOf(item);
