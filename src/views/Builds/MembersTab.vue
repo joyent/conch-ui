@@ -39,7 +39,7 @@
                     </div>
                     <table
                         class="table is-hoverable is-fullwidth"
-                        v-if="filteredUsers && filteredUsers.length > 1"
+                        v-if="filteredUsers && filteredUsers.length > 0"
                     >
                         <thead>
                             <th v-for="header in headers" :key="header">
