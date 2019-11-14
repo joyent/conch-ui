@@ -14,10 +14,10 @@
                         <span class="has-text-white has-text-weight-bold">
                             {{ item }}
                         </span>
-                        has been {{ action }}d.
+                        has been {{ actionText }}.
                     </p>
                     <p v-else>
-                        {{ itemCount }} {{ itemType }}s have been
+                        {{ itemCount }} {{ itemTypeText }} have been
                         {{ actionText }}.
                     </p>
                     <br />
@@ -68,17 +68,10 @@ export default {
     },
     computed: {
         actionText() {
-            const action = this.action;
-
-            if (action) {
-                if (action === 'add') {
-                    return 'added';
-                } else if (action === 'remove') {
-                    return 'removed';
-                }
-            }
-
-            return '';
+            return this.action === 'add' ? 'added' : 'removed';
+        },
+        itemTypeText() {
+            return this.itemCount > 1 ? `${this.itemType}s` : this.itemType;
         },
     },
 };
