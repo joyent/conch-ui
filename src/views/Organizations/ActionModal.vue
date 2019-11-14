@@ -40,15 +40,15 @@
                                     :class="{
                                         'is-adding':
                                             action === 'add' &&
-                                            isModified(item.name),
+                                            isModified(item.id),
                                         'is-removing':
                                             action === 'remove' &&
-                                            isModified(item.name),
+                                            isModified(item.id),
                                     }"
                                     v-for="item in itemList"
                                     :key="item.id"
                                 >
-                                    <template v-if="isModified(item.name)">
+                                    <template v-if="isModified(item.id)">
                                         <td class="item-name">
                                             <span
                                                 class="name has-text-grey-light"
@@ -102,7 +102,7 @@
                                                         item.name &&
                                                         action === 'add'
                                                 "
-                                                @click="removeItem(item.name)"
+                                                @click="removeItem(item.id)"
                                                 @mouseleave="
                                                     showRemoveIcon = ''
                                                 "
@@ -127,7 +127,7 @@
                                                     showAddIcon === item.name &&
                                                         action === 'remove'
                                                 "
-                                                @click="removeItem(item.name)"
+                                                @click="removeItem(item.id)"
                                                 @mouseleave="showAddIcon = ''"
                                             >
                                                 add
@@ -211,7 +211,7 @@ import {
     addUserToOrganization,
     removeUserFromOrganization,
 } from '@api/organizations';
-import { addOrganizationToBuild } from '@api/builds.js';
+import * as Builds from '@api/builds.js';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
@@ -259,20 +259,21 @@ export default {
         },
         closeModal() {
             this.isActive = false;
+            this.modifiedData = [];
             EventBus.$emit('close-modal:action-modal');
         },
-        getModifiedDataIndex(itemName) {
+        getModifiedDataIndex(itemId) {
             return this.modifiedData
-                .map(modifiedItem => modifiedItem.name)
-                .indexOf(itemName);
+                .map(modifiedItem => modifiedItem.id)
+                .indexOf(itemId);
         },
-        isModified(itemName) {
+        isModified(itemId) {
             return this.modifiedData.some(modifiedItem => {
-                return modifiedItem.name === itemName;
+                return modifiedItem.id === itemId;
             });
         },
-        removeItem(itemName) {
-            const index = this.getModifiedDataIndex(itemName);
+        removeItem(itemId) {
+            const index = this.getModifiedDataIndex(itemId);
 
             this.modifiedData.splice(index, 1);
 
@@ -280,78 +281,74 @@ export default {
                 this.changesExist = false;
             }
         },
-        addMembers(data) {
-            data.forEach(member => {
-                addUserToOrganization(
-                    this.organizationId,
-                    member.role,
-                    member.id
-                );
-            });
-        },
-        addBuilds(data) {
-            data.forEach(build => {
-                addOrganizationToBuild(
-                    build.id,
-                    this.organizationId,
-                    build.role
-                );
-            });
-        },
-        removeMembers(data) {
-            data.forEach(item => {
-                removeUserFromOrganization(this.organizationId, item.id);
-            });
-        },
         async saveChanges() {
             this.isLoading = true;
             const data = this.modifiedData;
+            const dataLength = data.length;
+            const organizationId = this.organizationId;
 
             if (this.action === 'add') {
                 if (this.itemType === 'members') {
-                    await this.addMembers(data);
+                    for (let i = 0; i < dataLength; i++) {
+                        const member = data[i];
+                        await addUserToOrganization(
+                            organizationId,
+                            member.role,
+                            member.id
+                        );
+                    }
 
                     EventBus.$emit('member-added', {
-                        count: data.length,
+                        count: dataLength,
                         type: 'member',
                     });
-
-                    this.closeModal();
-                    this.isLoading = false;
                 } else if (this.itemType === 'builds') {
-                    await this.addBuilds(data);
+                    for (let i = 0; i < dataLength; i++) {
+                        const build = data[i];
+                        await Builds.addOrganizationToBuild(
+                            build.id,
+                            organizationId,
+                            build.role
+                        );
+                    }
 
                     EventBus.$emit('build-added', {
-                        count: data.length,
+                        count: dataLength,
                         type: 'build',
                     });
-
-                    this.closeModal();
-                    this.isLoading = false;
                 }
             } else {
                 if (this.itemType === 'members') {
-                    await this.removeMembers(data);
+                    for (let i = 0; i < dataLength; i++) {
+                        const member = data[i];
+                        await removeUserFromOrganization(
+                            organizationId,
+                            member.id
+                        );
+                    }
 
                     EventBus.$emit('member-removed', {
-                        count: data.length,
+                        count: dataLength,
                         type: 'member',
                     });
-
-                    this.closeModal();
-                    this.isLoading = false;
                 } else if (this.itemType === 'builds') {
-                    await this.removeBuilds(data);
+                    for (let i = 0; i < dataLength; i++) {
+                        const build = data[i];
+                        await Builds.removeOrganizationFromBuild(
+                            build.id,
+                            organizationId
+                        );
+                    }
 
                     EventBus.$emit('build-removed', {
-                        count: data.length,
+                        count: dataLength,
                         type: 'build',
                     });
-
-                    this.closeModal();
-                    this.isLoading = false;
                 }
             }
+
+            this.closeModal();
+            this.isLoading = false;
         },
         updateRole(itemId, event) {
             if (event && event.target && event.target.value) {
