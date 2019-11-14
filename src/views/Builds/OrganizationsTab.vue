@@ -29,7 +29,7 @@
                         class="table is-hoverable is-fullwidth"
                         v-if="
                             filteredOrganizations &&
-                                filteredOrganizations.length > 1
+                                filteredOrganizations.length > 0
                         "
                     >
                         <thead>
@@ -176,8 +176,6 @@ export default {
         ...mapState(['currentBuildOrganizations']),
         filteredOrganizations() {
             let organizations = this.currentBuildOrganizations;
-
-            this.refetchCurrentBuildOrganizations();
 
             if (this.searchText) {
                 const searchText = this.searchText.toLowerCase();
