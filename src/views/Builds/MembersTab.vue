@@ -114,9 +114,6 @@
                                         Read &#47; Write
                                     </span>
                                 </td>
-                                <td class="organization">
-                                    <span>{{ user.organization }}</span>
-                                </td>
                                 <td class="remove-item has-text-right">
                                     <i
                                         class="fas fa-trash-alt"
@@ -169,7 +166,7 @@ export default {
     data() {
         return {
             addUser: false,
-            headers: ['name', 'role', 'permissions', 'organization'],
+            headers: ['name', 'role', 'permissions'],
             removeUser: false,
             removingUser: {},
             searchText: '',
