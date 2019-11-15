@@ -29,12 +29,18 @@
                         <i class="material-icons">schedule</i>
                         <div class="dates">
                             <div class="start-date">
-                                <p class="heading is-size-6">Start Date</p>
-                                <p>22/09/2019</p>
+                                <p class="heading is-size-6">Started</p>
+                                <p v-if="currentBuild.started">
+                                    {{ getDate(currentBuild.started) }}
+                                </p>
+                                <p v-else>Not Started</p>
                             </div>
                             <div class="sign-off-date">
-                                <p class="heading is-size-6">Sign Off Date</p>
-                                <p>10/12/2019</p>
+                                <p class="heading is-size-6">Completed</p>
+                                <p v-if="currentBuild.completed">
+                                    {{ getDate(currentBuild.completed) }}
+                                </p>
+                                <p v-else>Not Completed</p>
                             </div>
                         </div>
                     </div>
@@ -46,7 +52,11 @@
                         <i class="material-icons">gesture</i>
                         <div class="sign-off-details">
                             <p class="heading is-size-6">Sign Off Details</p>
-                            <p>10/12/2019 | Michael Scott</p>
+                            <p v-if="currentBuild.completed">
+                                Completed on {{ currentBuild.completed }} by
+                                {{ build.completed_user.name }}
+                            </p>
+                            <p v-else>Build Not Complete</p>
                         </div>
                     </div>
                 </div>
@@ -212,7 +222,7 @@ export default {
             EventBus.$emit('setRackTabPhaseFilter', phase);
         },
         getDate(date) {
-            return moment(date).format('MM/DD/YYYY');
+            return moment(date).format('YYYY/MM/DD');
         },
         getDeviceHealthCount(health) {
             if (!this.currentBuildDevices.length) {
@@ -249,7 +259,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentBuildDevices', 'currentBuildRacks']),
+        ...mapState(['currentBuild', 'currentBuildDevices', 'currentBuildRacks']),
     },
 };
 </script>
