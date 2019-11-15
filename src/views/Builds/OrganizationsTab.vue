@@ -18,6 +18,18 @@
                                 <i class="material-icons search">search</i>
                             </span>
                         </div>
+                        <div class="select-with-label role">
+                            <label class="select-label">Role</label>
+                            <div class="select role-type">
+                                <select v-model="roleFilter">
+                                    <option value="all">All</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="regular">
+                                        Regular Member
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                         <i
                             class="material-icons has-text-success"
                             @click="showAddOrganizationModal()"
@@ -80,7 +92,10 @@
                                     <span>{{ organization.name }}</span>
                                 </td>
                                 <td class="role">
-                                    <span>{{ organization.role }}</span>
+                                    <span v-if="organization.role === 'admin'">
+                                        Admin
+                                    </span>
+                                    <span v-else>Regular User</span>
                                 </td>
                                 <td class="remove-item has-text-right">
                                     <i
@@ -137,6 +152,7 @@ export default {
             headers: ['name', 'role'],
             removeOrganization: false,
             removingOrganization: {},
+            roleFilter: 'all',
             reversedSort: false,
             searchText: '',
             sortBy: '',
@@ -189,6 +205,20 @@ export default {
 
                     return acc;
                 }, []);
+            }
+
+            if (this.roleFilter !== 'all') {
+                const roleFilter = this.roleFilter;
+
+                if (roleFilter === 'admin') {
+                    return organizations.filter(
+                        organization => organization.role === 'admin'
+                    );
+                } else if (roleFilter === 'regular') {
+                    return organizations.filter(
+                        organization => organization.role !== 'admin'
+                    );
+                }
             }
 
             return organizations;
