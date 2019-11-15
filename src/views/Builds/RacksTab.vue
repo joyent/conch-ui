@@ -50,7 +50,7 @@
                         </div>
                         <i
                             class="material-icons has-text-success"
-                            @click="addRack()"
+                            @click="showAddRackModal()"
                         >
                             add_circle
                         </i>
@@ -137,11 +137,13 @@
             :item="removingRack"
             item-type="rack"
         />
+        <AddRackModal v-if="addingRack" />
     </div>
 </template>
 
 <script>
 import search from 'fuzzysearch';
+import AddRackModal from './AddRackModal.vue';
 import RemoveItemModal from './RemoveItemModal.vue';
 import * as DatacenterRooms from '@api/datacenterRooms.js';
 import { EventBus } from '@src/eventBus.js';
@@ -150,6 +152,7 @@ import * as Builds from '@api/builds.js';
 
 export default {
     components: {
+        AddRackModal,
         RemoveItemModal,
     },
     props: {
@@ -160,6 +163,7 @@ export default {
     },
     data() {
         return {
+            addingRack: false,
             datacenterRoomFilter: 'all',
             headers: ['name', 'datacenter room', 'phase', 'type'],
             phaseFilter: 'all',
@@ -177,11 +181,9 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setDatacenterRooms']),
-        addRack() {
-
-        },
+        ...mapActions(['setDatacenterRooms', 'setCurrentBuildRacks']),
         closeModal() {
+            this.addingRack = false;
             this.removeRack = false;
             this.removingRack = {};
         },
@@ -202,6 +204,9 @@ export default {
             await DatacenterRooms.getDatacenterRooms().then(response => {
                 this.setDatacenterRooms(response.data);
             });
+        },
+        showAddRackModal() {
+            this.addingRack = true;
         },
         showRemoveItemModal(rack) {
             this.removingRack = rack;
@@ -287,12 +292,23 @@ export default {
             this.getDatacenterRooms();
         }
 
-        EventBus.$on('close-modal:remove-item', () => {
-            this.closeModal();
-        });
+        EventBus.$on(
+            [
+                'close-modal:add-item',
+                'close-modal:remove-item',
+                'close-modal:success-modal',
+            ],
+            () => {
+                this.closeModal();
+            }
+        );
 
         EventBus.$on('remove-item:rack', () => {
             this.removeRackFromBuild();
+        });
+
+        EventBus.$on('rack-added', () => {
+            this.refetchCurrentBuildRacks();
         });
     },
 };
