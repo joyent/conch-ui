@@ -114,7 +114,7 @@ describe('App.vue', () => {
     });
 
     describe.skip('Page refresh/reload correct data', () => {
-        // sessionStorage.setItem('token', 'my-token');
+        // localStorage.setItem('token', 'my-token');
         // jest.mock('../api/request.js');
         // jest.mock('../api/authentication.js');
         // const auth = jest.genMockFromModule('../api/authentication.js');

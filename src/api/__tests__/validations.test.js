@@ -5,7 +5,7 @@ import { getValidations } from '../validations';
 // Fixture
 import validations from '@src/__fixtures__/validations.js';
 
-sessionStorage.setItem('token', 'my-token');
+localStorage.setItem('token', 'my-token');
 
 describe('validations API', () => {
     describe('getValidations', () => {

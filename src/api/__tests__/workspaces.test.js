@@ -8,7 +8,7 @@ import {rack, rackLayout} from '@src/__fixtures__/rackLayout.js';
 import workspaceRacks from '@src/__fixtures__/workspaceRacks.js';
 import workspaces from '@src/__fixtures__/workspaces.js';
 
-sessionStorage.setItem('token', 'my-token');
+localStorage.setItem('token', 'my-token');
 
 describe('workspaces.js API', () => {
     let response;

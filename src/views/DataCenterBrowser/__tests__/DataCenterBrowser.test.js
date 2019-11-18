@@ -12,7 +12,7 @@ import workspaces from '@src/__fixtures__/workspaces.js';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-sessionStorage.setItem('token', 'my-token');
+localStorage.setItem('token', 'my-token');
 
 jest.mock('../../../api/request.js');
 

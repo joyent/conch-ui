@@ -8,7 +8,7 @@ import deviceLocation from '@src/__fixtures__/deviceLocation.js';
 import deviceSettings from '@src/__fixtures__/deviceSettings.js';
 import deviceValidations from '@src/__fixtures__/deviceValidations.js';
 
-sessionStorage.setItem('token', 'my-token');
+localStorage.setItem('token', 'my-token');
 
 const id = 'JCNWLD2';
 

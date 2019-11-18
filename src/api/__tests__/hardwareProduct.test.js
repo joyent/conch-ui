@@ -5,7 +5,7 @@ import nock from 'nock';
 // Fixture
 import hardwareProducts from '@src/__fixtures__/hardwareProducts.js';
 
-sessionStorage.setItem('token', 'my-token');
+localStorage.setItem('token', 'my-token');
 
 describe('hardwareProduct API', () => {
     describe('getHardwareProduct', () => {
