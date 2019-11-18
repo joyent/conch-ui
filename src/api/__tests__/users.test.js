@@ -5,7 +5,7 @@ import * as Users from '../users.js';
 // Fixture
 import users from '@src/__fixtures__/users.js';
 
-sessionStorage.setItem('token', 'my-token');
+localStorage.setItem('token', 'my-token');
 
 describe('users API', () => {
     let response;

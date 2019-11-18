@@ -12,33 +12,33 @@ jest.mock('axios');
 describe('request API', () => {
     describe('setToken', () => {
         test('should set a token in session storage', () => {
-            expect(sessionStorage.getItem('token')).toBeNull();
+            expect(localStorage.getItem('token')).toBeNull();
             setToken('my-token');
-            expect(sessionStorage.getItem('token')).toEqual('my-token');
+            expect(localStorage.getItem('token')).toEqual('my-token');
 
-            sessionStorage.removeItem('token');
+            localStorage.removeItem('token');
         });
     });
 
     describe('getToken', () => {
         test('should get a token from session storage', () => {
-            sessionStorage.setItem('token', 'abcdefg');
+            localStorage.setItem('token', 'abcdefg');
             const token = getToken();
 
             expect(token).toEqual('abcdefg');
-            sessionStorage.removeItem('token');
+            localStorage.removeItem('token');
         });
     });
 
     describe('clearToken', () => {
         test('should clear token from session storage', () => {
             // Set token in session storage and assert it exists
-            sessionStorage.setItem('token', '12345');
-            expect(sessionStorage.getItem('token')).toEqual('12345');
+            localStorage.setItem('token', '12345');
+            expect(localStorage.getItem('token')).toEqual('12345');
 
             clearToken();
-            expect(sessionStorage.getItem('token')).toBeNull();
-            sessionStorage.removeItem('token');
+            expect(localStorage.getItem('token')).toBeNull();
+            localStorage.removeItem('token');
         });
     });
 
@@ -89,7 +89,7 @@ describe('request API', () => {
 
         test('should call the request method with the Authorization header set in args', async () => {
             axios.mockResolvedValueOnce(response);
-            sessionStorage.setItem('token', 'a1b2c3d4');
+            localStorage.setItem('token', 'a1b2c3d4');
 
             const req = await requestWithToken(args);
             expect(req).toMatchObject(response);

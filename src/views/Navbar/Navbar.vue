@@ -81,7 +81,7 @@ export default {
         ...mapActions(['setCurrentWorkspace']),
         changeWorkspace(workspaceId) {
             this.setCurrentWorkspace(this.loadCurrentWorkspace(workspaceId));
-            sessionStorage.setItem('currentWorkspace', workspaceId);
+            localStorage.setItem('currentWorkspace', workspaceId);
 
             let name = this.$route.name;
             const params = {

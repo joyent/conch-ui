@@ -5,7 +5,7 @@ import * as rackApi from '@api/rack.js';
 // Fixture
 import { rackLayout } from '@src/__fixtures__/rackLayout.js';
 
-sessionStorage.setItem('token', 'test-token');
+localStorage.setItem('token', 'test-token');
 
 describe('rack.js API', () => {
     let data;

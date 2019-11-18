@@ -108,10 +108,10 @@ describe('getters', () => {
 
         test('it returns the workspace from session storage', () => {
             const workspaceId = workspaces[1].id;
-            sessionStorage.setItem('currentWorkspace', workspaceId);
+            localStorage.setItem('currentWorkspace', workspaceId);
             const workspace = getters.loadCurrentWorkspace(state)();
 
-            sessionStorage.removeItem('currentWorkspace');
+            localStorage.removeItem('currentWorkspace');
 
             expect(workspace).toMatchObject(workspaces[1]);
         });
