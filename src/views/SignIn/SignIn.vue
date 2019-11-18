@@ -100,7 +100,7 @@ export default {
                     this.setCurrentWorkspace(this.loadCurrentWorkspace());
 
                     this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
-                    sessionStorage.setItem('currentWorkspace', this.currentWorkspaceId);
+                    localStorage.setItem('currentWorkspace', this.currentWorkspaceId);
 
                     return Promise.resolve();
                 });
