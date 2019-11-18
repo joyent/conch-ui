@@ -4,15 +4,15 @@ import store from '@src/store/store.js';
 import { logout } from '@api/authentication.js';
 
 export const clearToken = () => {
-    return sessionStorage.removeItem('token');
+    return localStorage.removeItem('token');
 };
 
 export const getToken = () => {
-    return sessionStorage.getItem('token');
+    return localStorage.getItem('token');
 };
 
 export const setToken = token => {
-    sessionStorage.setItem('token', token);
+    localStorage.setItem('token', token);
 };
 
 export const request = args => {

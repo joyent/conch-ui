@@ -33,7 +33,7 @@ export const loadCurrentWorkspace = state => id => {
 
     if (!currentWorkspace) {
         currentWorkspace = findWorkspaceById(state)(
-            sessionStorage.getItem('currentWorkspace')
+            localStorage.getItem('currentWorkspace')
         );
     }
 
