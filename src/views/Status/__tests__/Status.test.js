@@ -19,7 +19,7 @@ localVue.use(GlobalPlugins);
 
 jest.mock('../../../api/request.js');
 
-sessionStorage.setItem('token', 'my-token');
+localStorage.setItem('token', 'my-token');
 
 describe('Status.vue', () => {
     let actions;

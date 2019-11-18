@@ -8,7 +8,7 @@ import rackRooms from '@src/__fixtures__/rackRooms.js';
 import workspaceRackRooms from '@src/__fixtures__/workspaceRackRooms.js';
 import workspaceRacks from '@src/__fixtures__/workspaceRacks.js';
 
-sessionStorage.setItem('token', 'my-token');
+localStorage.setItem('token', 'my-token');
 
 describe('utils.js', () => {
     describe('deviceToProgress', () => {

@@ -9,7 +9,7 @@ import hardwareProductLookup from '@src/__fixtures__/hardwareProductLookup.js';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-sessionStorage.setItem('token', 'my-token');
+localStorage.setItem('token', 'my-token');
 jest.mock('../../../api/request.js');
 
 describe('Devices.vue', () => {
