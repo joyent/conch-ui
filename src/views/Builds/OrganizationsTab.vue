@@ -225,9 +225,12 @@ export default {
         },
     },
     created() {
-        EventBus.$on('close-modal:remove-item', () => {
-            this.closeModal();
-        });
+        EventBus.$on(
+            ['close-modal:add-item', 'close-modal:remove-item'],
+            () => {
+                this.closeModal();
+            }
+        );
 
         EventBus.$on('remove-item:organization', () => {
             this.removeOrganizationFromBuild();
