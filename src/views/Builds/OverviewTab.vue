@@ -53,8 +53,8 @@
                         <div class="sign-off-details">
                             <p class="heading is-size-6">Sign Off Details</p>
                             <p v-if="currentBuild.completed">
-                                Completed on {{ currentBuild.completed }} by
-                                {{ build.completed_user.name }}
+                                {{ getDate(currentBuild.completed) }} |
+                                {{ currentBuild.completed_user.name }}
                             </p>
                             <p v-else>Build Not Complete</p>
                         </div>
@@ -259,7 +259,11 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentBuild', 'currentBuildDevices', 'currentBuildRacks']),
+        ...mapState([
+            'currentBuild',
+            'currentBuildDevices',
+            'currentBuildRacks',
+        ]),
     },
 };
 </script>
