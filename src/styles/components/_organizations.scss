@@ -1,4 +1,10 @@
 .organization {
+	.spinner-column {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
 	.stats {
 		height: 112px;
 		transition: all 0.2s ease-in-out;
