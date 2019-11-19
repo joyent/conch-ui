@@ -768,13 +768,6 @@ export default {
 
             EventBus.$emit('close-modal:create-organization');
         },
-        addOrganizationToBuilds() {
-            const organizationId = this.organizationId;
-
-            this.selectedBuilds.forEach(build => {
-                addOrganizationToBuild(build.id, organizationId, build.role);
-            });
-        },
         async createOrganization() {
             this.isLoading = true;
 
@@ -789,10 +782,31 @@ export default {
             );
 
             this.organizationId = response.data.id;
-            EventBus.$emit('organization-created', { name: this.name });
 
-            await this.addOrganizationToBuilds();
+            const nonAdminUsers = this.selectedMembers.filter(
+                user => user.role !== 'admin'
+            );
+
+            for (let i = 0; i < nonAdminUsers.length; i++) {
+                const member = nonAdminUsers[i];
+                await Organizations.addUserToOrganization(
+                    this.organizationId,
+                    member.role,
+                    member.id
+                );
+            }
+
+            for (let i = 0; i < this.selectedBuilds.length; i++) {
+                const build = this.selectedBuilds[i];
+                await addOrganizationToBuild(
+                    build.id,
+                    this.organizationId,
+                    build.role
+                );
+            }
+
             this.closeModal();
+            EventBus.$emit('organization-created', { name: this.name });
             this.isLoading = false;
         },
         filteredItems(itemType) {
