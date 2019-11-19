@@ -68,7 +68,17 @@ export default {
     },
     computed: {
         actionText() {
-            return this.action === 'add' ? 'added' : 'removed';
+            const action = this.action;
+
+            if (action === 'add') {
+                return 'added';
+            } else if (action === 'create') {
+                return 'created';
+            } else if (action === 'remove') {
+                return 'removed';
+            }
+
+            return '';
         },
         itemTypeText() {
             return this.itemCount > 1 ? `${this.itemType}s` : this.itemType;
