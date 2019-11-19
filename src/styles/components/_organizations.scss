@@ -81,6 +81,8 @@
 		.datatable-header-icon {
 			color: $white;
 			padding: 15px 12px;
+			display: flex;
+			align-content: center;
 
 			&:hover {
 				color: $grey-lighter;
@@ -92,13 +94,20 @@
 			cursor: pointer;
 		}
 
-		.row-action-button a i &:hover {
-			color: $red;
-		}
-
 		.row-action-button,
 		.table-data {
 			border: none;
+		}
+
+		.row-action-button {
+			.button-delete {
+				display: flex;
+				justify-content: center;
+
+				&:hover {
+					color: $red;
+				}
+			}
 		}
 
 		select {
