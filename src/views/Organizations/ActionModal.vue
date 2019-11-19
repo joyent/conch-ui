@@ -150,8 +150,16 @@
                                             </i>
                                             <i
                                                 class="material-icons remove-item"
-                                                v-if="action === 'remove'"
-                                                @click="modifyItem(item)"
+                                                v-if="
+                                                    action === 'remove' &&
+                                                        (itemType !==
+                                                            'members' ||
+                                                            (item.role !==
+                                                                'admin' ||
+                                                                adminUsersRemaining >
+                                                                    1))
+                                                "
+                                                @click="modifyItem(item, 'remove')"
                                             >
                                                 close
                                             </i>
@@ -249,13 +257,18 @@ export default {
         };
     },
     methods: {
-        modifyItem(item) {
+        modifyItem(item, action = null) {
             this.changesExist = true;
-            this.modifiedData.push({
-                name: item.name,
-                id: item.id,
-                role: 'ro',
-            });
+
+            if (action && action === 'remove') {
+                this.modifiedData.push(item);
+            } else {
+                this.modifiedData.push({
+                    name: item.name,
+                    id: item.id,
+                    role: 'ro',
+                });
+            }
         },
         closeModal() {
             this.isActive = false;
@@ -367,6 +380,30 @@ export default {
         },
     },
     computed: {
+        adminUsersRemaining() {
+            if (
+                this.itemType === 'members' &&
+                this.itemList &&
+                this.itemList.length
+            ) {
+                const adminMemberCount = this.itemList.filter(
+                    member => member.role === 'admin'
+                ).length;
+                let modifiedAdminMemberCount;
+
+                if (this.modifiedData.length) {
+                    modifiedAdminMemberCount = this.modifiedData.filter(
+                        member => member.role === 'admin'
+                    ).length;
+                } else {
+                    modifiedAdminMemberCount = 0;
+                }
+
+                return adminMemberCount - modifiedAdminMemberCount;
+            }
+
+            return 0;
+        },
         itemList() {
             const searchText = this.searchText.toLowerCase();
             let data;
