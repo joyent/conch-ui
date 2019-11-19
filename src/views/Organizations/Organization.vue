@@ -416,7 +416,7 @@
                         <section class="modal-card-body">
                             <p>
                                 Are you sure you want to remove
-                                {{ itemBeingRemoved.name }}?
+                                {{ itemBeingModified.name }}?
                             </p>
                             <br />
                             <div class="buttons-group">
@@ -444,7 +444,7 @@
         <transition name="fade">
             <SuccessModal
                 v-if="showSuccessModal"
-                :item="itemBeingRemoved.name"
+                :item="itemBeingModified.name"
                 :action="action"
                 :item-type="itemType"
                 :item-count="itemCount"
@@ -478,7 +478,7 @@ export default {
             editMembers: false,
             isLoading: false,
             item: '',
-            itemBeingRemoved: {},
+            itemBeingModified: {},
             itemCount: 0,
             itemType: '',
             removingItem: false,
@@ -496,7 +496,7 @@ export default {
         ...mapActions(['setBuilds', 'setUsers']),
         closeModal() {
             this.action = '';
-            this.itemBeingRemoved = {};
+            this.itemBeingModified = {};
             this.itemCount = 0;
             this.itemType = '';
             this.removingItem = false;
@@ -550,14 +550,14 @@ export default {
         },
         showRemoveItemModal(item, type) {
             this.action = 'remove';
-            this.itemBeingRemoved = item;
+            this.itemBeingModified = item;
             this.removingType = type;
             this.removingItem = true;
         },
         async removeItemFromOrganization() {
             this.isLoading = true;
 
-            const itemId = this.itemBeingRemoved.id;
+            const itemId = this.itemBeingModified.id;
             const organizationId = this.organization.id;
             const itemType = this.removingType;
 
@@ -705,8 +705,14 @@ export default {
             await this.getOrganization();
 
             this.action = 'add';
-            this.itemCount = data.count;
-            this.itemType = data.type;
+
+            if (data.count === 1) {
+                this.itemBeingModified = data.items[0];
+            } else {
+                this.itemCount = data.count;
+                this.itemType = data.type;
+            }
+
             this.showSuccessModal = true;
         });
 
@@ -714,8 +720,14 @@ export default {
             await this.getOrganization();
 
             this.action = 'remove';
-            this.itemCount = data.count;
-            this.itemType = data.type;
+
+            if (data.count === 1) {
+                this.itemBeingModified = data.items[0];
+            } else {
+                this.itemCount = data.count;
+                this.itemType = data.type;
+            }
+
             this.showSuccessModal = true;
         });
     },

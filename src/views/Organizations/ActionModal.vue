@@ -313,6 +313,7 @@ export default {
 
                     EventBus.$emit('member-added', {
                         count: dataLength,
+                        items: data,
                         type: 'member',
                     });
                 } else if (this.itemType === 'builds') {
@@ -327,6 +328,7 @@ export default {
 
                     EventBus.$emit('build-added', {
                         count: dataLength,
+                        items: data,
                         type: 'build',
                     });
                 }
@@ -342,6 +344,7 @@ export default {
 
                     EventBus.$emit('member-removed', {
                         count: dataLength,
+                        items: data,
                         type: 'member',
                     });
                 } else if (this.itemType === 'builds') {
@@ -355,6 +358,7 @@ export default {
 
                     EventBus.$emit('build-removed', {
                         count: dataLength,
+                        items: data,
                         type: 'build',
                     });
                 }
