@@ -133,18 +133,23 @@
                             </tr>
                         </tbody>
                     </table>
+                    <table
+                        class="table is-fullwidth is-marginless"
+                        v-else-if="loadingOrganization"
+                    >
+                        <tbody>
+                            <tr class="row">
+                                <td colspan="6" class="has-text-centered">
+                                    <Spinner />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <table class="table is-fullwidth is-marginless" v-else>
                         <tbody>
                             <tr class="row">
                                 <td colspan="6" class="has-text-centered">
-                                    <span
-                                        class="has-text-white has-text-weight-bold"
-                                    >
-                                        {{ organization.name }}
-                                    </span>
-                                    <span>
-                                        has no builds.
-                                    </span>
+                                    {{ organization.name }} has no builds.
                                 </td>
                             </tr>
                         </tbody>
@@ -344,14 +349,7 @@
                         <tbody>
                             <tr class="row">
                                 <td colspan="6" class="has-text-centered">
-                                    <span
-                                        class="has-text-white has-text-weight-bold"
-                                    >
-                                        {{ organization.name }}
-                                    </span>
-                                    <span>
-                                        has no members.
-                                    </span>
+                                    <Spinner />
                                 </td>
                             </tr>
                         </tbody>
@@ -481,10 +479,11 @@ export default {
             itemBeingModified: {},
             itemCount: 0,
             itemType: '',
-            removingItem: false,
-            removingType: '',
+            loadingOrganization: false,
             organization: {},
             modifiedMembers: [],
+            removingItem: false,
+            removingType: '',
             showActionModal: false,
             showBuildsDropdown: false,
             showMembersDropdown: false,
@@ -518,12 +517,15 @@ export default {
             return -1;
         },
         getOrganization(organizationId = null) {
+            this.loadingOrganization = true;
+
             if (!organizationId) {
                 organizationId = this.organization.id;
             }
 
             Organizations.getOrganization(organizationId).then(response => {
                 this.organization = response.data;
+                this.loadingOrganization = false;
             });
         },
         isEmpty,
