@@ -9,24 +9,8 @@
                     {{ organization.description }}
                 </p>
             </div>
-            <div
-                class="column is-6"
-                style="display: flex; align-items: center; justify-content: center;"
-                v-else
-            >
+            <div class="column is-6 spinner-column" v-else>
                 <Spinner />
-            </div>
-            <div class="column">
-                <div class="box stats">
-                    <h2 class="is-6">Members</h2>
-                    <span
-                        class="is-size-3 has-text-info"
-                        v-if="organizationHasMembers"
-                    >
-                        {{ organization.users.length }}
-                    </span>
-                    <span class="is-size-3 has-text-info" v-else>0</span>
-                </div>
             </div>
             <div class="column">
                 <div class="box stats">
@@ -36,6 +20,18 @@
                         v-if="organizationHasBuilds"
                     >
                         {{ organization.builds.length }}
+                    </span>
+                    <span class="is-size-3 has-text-info" v-else>0</span>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box stats">
+                    <h2 class="is-6">Members</h2>
+                    <span
+                        class="is-size-3 has-text-info"
+                        v-if="organizationHasMembers"
+                    >
+                        {{ organization.users.length }}
                     </span>
                     <span class="is-size-3 has-text-info" v-else>0</span>
                 </div>
