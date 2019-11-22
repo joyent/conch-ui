@@ -2,15 +2,14 @@
   "name": "conch-ui",
   "version": "1.0.0",
   "private": true,
-  "license": "Apache-2.0",
   "scripts": {
     "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
     "jest": "vue-cli-service test:unit -c=./jest.config.js --passWithNoTests",
     "jest:coverage": "vue-cli-service test:unit -c=./jest.config.js --coverage --passWithNoTests",
     "jest:local": "vue-cli-service test:unit -c=./jest.config.js -o --passWithNoTests",
     "jest:watch": "vue-cli-service test:unit -c=./jest.config.js --watch --passWithNoTests",
     "jest:watch:all": "vue-cli-service test:unit -c=./jest.config.js --watchAll --passWithNoTests",
-    "lint": "vue-cli-service lint",
     "start": "vue-cli-service serve"
   },
   "dependencies": {
@@ -20,7 +19,7 @@
     "bulma-tooltip": "^2.0.2",
     "bulmaswatch": "^0.7.2",
     "clipboard": "^2.0.4",
-    "core-js": "^2.6.5",
+    "core-js": "^3.3.2",
     "d3": "^4.10.2",
     "d3-relationshipgraph": "^3.0.2",
     "fuzzysearch": "^1.0.3",
@@ -40,12 +39,12 @@
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-transform-react-jsx": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
-    "@vue/cli-plugin-babel": "^3.9.0",
-    "@vue/cli-plugin-eslint": "^3.9.0",
-    "@vue/cli-plugin-router": "^4.0.0-alpha.4",
-    "@vue/cli-plugin-unit-jest": "^3.9.0",
-    "@vue/cli-plugin-vuex": "^4.0.0-alpha.4",
-    "@vue/cli-service": "^3.9.0",
+    "@vue/cli-plugin-babel": "^4.0.5",
+    "@vue/cli-plugin-eslint": "^4.0.5",
+    "@vue/cli-plugin-router": "^4.0.5",
+    "@vue/cli-plugin-unit-jest": "^4.0.5",
+    "@vue/cli-plugin-vuex": "^4.0.5",
+    "@vue/cli-service": "^4.0.5",
     "@vue/eslint-config-prettier": "^4.0.1",
     "@vue/test-utils": "^1.0.0-beta.29",
     "babel-core": "^7.0.0-bridge.0",
@@ -80,5 +79,6 @@
     "webpack-cli": "^3.2.3",
     "webpack-command": "^0.4.1",
     "webpack-merge": "^4.1.2"
-  }
+  },
+  "license": "Apache-2.0"
 }
