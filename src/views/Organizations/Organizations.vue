@@ -17,7 +17,7 @@
                 <div class="control has-icons-left">
                     <input
                         type="text"
-                        class="input"
+                        class="input search"
                         placeholder="Search..."
                         v-model="searchText"
                     />
@@ -58,18 +58,9 @@
                     v-for="organization in filteredOrganizations"
                     :key="organization.id"
                 >
-                    <div
-                        class="card-content"
-                        @mouseover="
-                            showDeleteOrganizationButton = organization.id
-                        "
-                        @mouseleave="showDeleteOrganizationButton = ''"
-                    >
+                    <div class="card-content">
                         <i
                             class="material-icons close"
-                            v-if="
-                                showDeleteOrganizationButton === organization.id
-                            "
                             @click="showConfirmationModal(organization)"
                         >
                             close
@@ -124,11 +115,11 @@
                             </article>
                             <br />
                             <div class="buttons-group">
-                                <a class="button" @click="closeModal()">
+                                <a class="button cancel" @click="closeModal()">
                                     Cancel
                                 </a>
                                 <a
-                                    class="button is-danger"
+                                    class="button is-danger confirm"
                                     :class="{ 'is-loading': isLoading }"
                                     @click="deleteOrganization()"
                                 >
@@ -177,7 +168,6 @@ export default {
             noOrganizationsExist: false,
             organizationBeingEdited: {},
             searchText: '',
-            showDeleteOrganizationButton: '',
             showSuccessModal: false,
         };
     },
