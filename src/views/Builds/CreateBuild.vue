@@ -194,22 +194,22 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import DevicesTable from './DevicesTable.vue';
-import UsersTable from './UsersTable.vue';
-import RacksTable from './RacksTable.vue';
-import { setupCalendar, DatePicker } from 'v-calendar';
+// import Vue from 'vue';
+// import DevicesTable from './DevicesTable.vue';
+// import UsersTable from './UsersTable.vue';
+// import RacksTable from './RacksTable.vue';
+// import { setupCalendar, DatePicker } from 'v-calendar';
 import { EventBus } from '@src/eventBus.js';
 
-setupCalendar(Vue);
+// setupCalendar(Vue);
 // Vue.component('v-calendar', Calendar);
 
 export default {
     components: {
-        DevicesTable,
-        UsersTable,
-        RacksTable,
-        'v-date-picker': DatePicker,
+        // DevicesTable,
+        // UsersTable,
+        // RacksTable,
+        // 'v-date-picker': DatePicker,
     },
     data() {
         return {
