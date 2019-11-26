@@ -82,7 +82,12 @@
                                 <ProgressIcon :progress="slot.progress" />
                             </p>
                         </td>
-                        <td>{{ slot.name }}</td>
+                        <td
+                            class="tooltip is-tooltip-top"
+                            :data-tooltip="`SKU: ${slot.sku}`"
+                        >
+                            {{ slot.name }}
+                        </td>
                         <td class="has-text-right ">
                             <span class="has-text-light" v-if="slot.occupant">
                                 {{ slot.occupant.id }}
@@ -126,9 +131,11 @@ import EditLayoutModal from './EditLayoutModal.vue';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
 import Spinner from '@views/components/Spinner.vue';
 import isEmpty from 'lodash/isEmpty';
+import keyBy from 'lodash/keyBy';
 import search from 'fuzzysearch';
 import { EventBus } from '@src/eventBus.js';
 import { deviceToProgress } from '@views/shared/utils.js';
+import { getHardwareProduct } from '@api/hardwareProduct.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
@@ -154,7 +161,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setActiveDevice']),
+        ...mapActions(['setActiveDevice', 'setHardwareProducts']),
         activateDevice(slot) {
             const device = slot.occupant;
 
@@ -188,7 +195,12 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentWorkspace', 'highlightDeviceId', 'rackLayout']),
+        ...mapState([
+            'currentWorkspace',
+            'hardwareProducts',
+            'highlightDeviceId',
+            'rackLayout',
+        ]),
         availableDeviceProgress() {
             return Array.from(
                 Object.keys(this.rackLayout.slots || {}).reduce(
@@ -221,9 +233,18 @@ export default {
         normalizedSlots() {
             return Object.keys(this.rackLayout.slots || {})
                 .reverse()
-                .map(slotId => {
+                .map(async slotId => {
                     const slot = this.rackLayout.slots[slotId];
                     const occupant = slot.occupant;
+
+                    if (isEmpty(this.hardwareProducts)) {
+                        const response = await getHardwareProduct();
+                        const hardwareProducts = keyBy(response.data, 'id');
+
+                        this.setHardwareProducts(hardwareProducts);
+                    }
+
+                    const sku = this.hardwareProducts[slotId];
 
                     return {
                         id: slotId,
@@ -232,6 +253,7 @@ export default {
                             ? deviceToProgress(occupant)
                             : 'unassigned',
                         occupant: occupant,
+                        sku,
                     };
                 });
         },
