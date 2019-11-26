@@ -76,7 +76,7 @@
                         @click="activateDevice(slot)"
                         style="cursor: pointer;"
                     >
-                        <th>{{ slot.id }}</th>
+                        <td>{{ slot.id }}</td>
                         <td>
                             <p>
                                 <ProgressIcon :progress="slot.progress" />
