@@ -83,7 +83,7 @@
                             </p>
                         </td>
                         <td
-                            class="tooltip is-tooltip-top"
+                            class="tooltip is-tooltip-top is-tooltip-info"
                             :data-tooltip="`SKU: ${slot.sku}`"
                         >
                             {{ slot.name }}
