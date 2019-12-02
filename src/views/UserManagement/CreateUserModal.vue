@@ -300,12 +300,16 @@ export default {
             }
         },
         async addWorkspaces(userId) {
-            await this.workspacePermissions.forEach(workspace => {
-                addUserToWorkspace(workspace.workspaceId, {
+            const workspacePermissions = this.workspacePermissions;
+
+            for (let i = 0; i < workspacePermissions.length; i++) {
+                const workspace = workspacePermissions[i];
+
+                await addUserToWorkspace(workspace.workspaceId, {
                     user: this.email,
-                    role: workspace.permissions,
+                    role: workspace.permissions
                 });
-            });
+            }
 
             EventBus.$emit('action-success', {
                 userId,
