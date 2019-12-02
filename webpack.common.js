@@ -9,11 +9,10 @@ const gitRevisionPlugin = new GitRevisionWebpackPlugin({
 	versionCommand: 'describe --tags --long'
 });
 
+require("babel-polyfill");
+
 module.exports = {
-	entry: {
-		// Main Javascript file
-		app: "./src/index.js",
-	},
+	entry: ["babel-polyfill", "./src/index.js"],
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 	},
