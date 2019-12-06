@@ -210,10 +210,10 @@ export default {
             Organizations.getOrganizations().then(response => {
                 const organizations = response.data;
 
-                if (!organizations.length) {
-                    this.noOrganizationsExist = true;
-                } else {
+                if (organizations.length) {
                     this.setOrganizations(organizations);
+                } else {
+                    this.noOrganizationsExist = true;
                 }
             });
         },
