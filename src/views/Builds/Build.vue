@@ -14,7 +14,7 @@
                     :key="tab.name"
                 >
                     <a
-                        :class="`tab is-uppercase ${tab.classname}`"
+                        :class="`tab is-uppercase ${tab.class}`"
                         @click="changeTab(tab.component)"
                     >
                         {{ tab.name }}
@@ -88,7 +88,7 @@ export default {
                     name: 'Organizations',
                 },
                 {
-                    class: 'racls-tab',
+                    class: 'racks-tab',
                     component: 'RacksTab',
                     name: 'Racks',
                 },
