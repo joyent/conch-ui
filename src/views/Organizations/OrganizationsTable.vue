@@ -1,9 +1,6 @@
 <template>
     <div class="organizations-table">
-        <table
-            class="table is-hoverable is-fullwidth"
-            v-if="organizations.length"
-        >
+        <table class="table is-hoverable is-fullwidth" v-if="hasOrganizations">
             <thead>
                 <th>Name</th>
                 <th class="has-text-centered">Admin Users</th>
@@ -11,7 +8,7 @@
                 <th class="has-text-centered">Total Build Count</th>
                 <th></th>
             </thead>
-            <tfoot v-if="organizations.length >= 10">
+            <tfoot v-if="hasOrganizations && organizations.length >= 10">
                 <th>Name</th>
                 <th class="has-text-centered">Admin Users</th>
                 <th class="has-text-centered">Regular Users</th>
@@ -39,9 +36,7 @@
                         <span v-else>0</span>
                     </td>
                     <td class="has-text-right">
-                        <a class="button">
-                            View Organization
-                        </a>
+                        <a class="button">View Organization</a>
                     </td>
                 </tr>
             </tbody>
@@ -52,9 +47,7 @@
         >
             <tbody>
                 <tr class="row">
-                    <td colspan="5">
-                        <Spinner />
-                    </td>
+                    <td colspan="5"><Spinner /></td>
                 </tr>
             </tbody>
         </table>
@@ -78,22 +71,41 @@ export default {
     components: {
         Spinner,
     },
-    data() {
-        return {
-            users: [],
-        };
-    },
     methods: {
         getAdminUserCount(organization) {
-            return organization.users.filter(user => user.role === 'admin')
-                .length;
+            if (
+                organization &&
+                organization.users &&
+                organization.users.length
+            ) {
+                return organization.users.filter(user => user.role === 'admin')
+                    .length;
+            }
+
+            return 0;
         },
         getRegularUserCount(organization) {
-            return organization.users.filter(user => user.role !== 'admin')
-                .length;
+            if (
+                organization &&
+                organization.users &&
+                organization.users.length
+            ) {
+                return organization.users.filter(user => user.role !== 'admin')
+                    .length;
+            }
+
+            return 0;
         },
         organizationBuildCount(organization) {
-            return organization.builds && organization.builds.length;
+            if (
+                organization &&
+                organization.builds &&
+                organization.builds.length
+            ) {
+                return organization.builds.length;
+            }
+
+            return 0;
         },
         viewOrganizationPage(organizationId) {
             this.$router.push({
@@ -102,6 +114,11 @@ export default {
                     organizationId,
                 },
             });
+        },
+    },
+    computed: {
+        hasOrganizations() {
+            return this.organizations && this.organizations.length;
         },
     },
 };
