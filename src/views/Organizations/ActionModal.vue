@@ -83,7 +83,7 @@
                                         </td>
                                         <td class="action">
                                             <i
-                                                class="material-icons has-text-success add-item"
+                                                class="material-icons has-text-success item-added"
                                                 v-if="
                                                     showRemoveIcon !==
                                                         item.name &&
@@ -110,7 +110,7 @@
                                                 close
                                             </i>
                                             <i
-                                                class="material-icons has-text-danger remove-item"
+                                                class="material-icons has-text-danger item-added"
                                                 v-if="
                                                     showAddIcon !== item.name &&
                                                         action === 'remove'
@@ -176,9 +176,7 @@
                             </template>
                             <template v-else>
                                 <tr class="row no-data">
-                                    <td>
-                                        No search results found
-                                    </td>
+                                    <td>No search results found</td>
                                 </tr>
                             </template>
                         </tbody>
@@ -187,14 +185,14 @@
                 <footer class="modal-card-foot">
                     <div class="buttons is-marginless">
                         <a
-                            class="button is-outlined is-danger"
+                            class="button is-outlined is-danger cancel"
                             @click="closeModal()"
                             :disabled="isLoading"
                         >
                             Cancel
                         </a>
                         <a
-                            class="button is-capitalized"
+                            class="button is-capitalized confirm"
                             :class="{
                                 'is-loading': isLoading,
                                 'is-danger': action === 'remove',

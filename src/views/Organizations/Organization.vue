@@ -679,17 +679,21 @@ export default {
         },
     },
     created() {
-        if (this.$route.params && this.$route.params.organizationId) {
+        if (
+            this.$route &&
+            this.$route.params &&
+            this.$route.params.organizationId
+        ) {
             this.getOrganization(this.$route.params.organizationId);
         }
 
-        if (!this.builds.length) {
+        if (this.builds && !this.builds.length) {
             Builds.getBuilds().then(response => {
                 this.setBuilds(response.data);
             });
         }
 
-        if (!this.users.length) {
+        if (this.users && !this.users.length) {
             getUsers().then(response => {
                 this.setUsers(response.data);
             });
