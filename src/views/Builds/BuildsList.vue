@@ -1,12 +1,13 @@
 <template>
-    <div class="builds-list">
+    <Spinner v-if="builds.length < 1 && !noBuildsExist" />
+    <div class="builds-list" v-else>
         <div class="page-heading">
             <h1 class="title is-3 has-text-weight-bold">Builds</h1>
             <div class="control has-icons-left">
                 <input
                     type="text"
-                    class="input"
-                    placeholder="Search builds"
+                    class="input search"
+                    placeholder="Search..."
                     v-model="searchText"
                 />
                 <span class="icon is-small is-left">
@@ -25,7 +26,7 @@
                     </template>
                 </a>
             </div>
-            <i class="material-icons add-build" @click="createBuild()">
+            <i class="material-icons create-build" @click="createBuild()">
                 add_circle
             </i>
         </div>
@@ -111,6 +112,7 @@ import isEmpty from 'lodash/isEmpty';
 import search from 'fuzzysearch';
 import RadialProgressBar from '@views/components/RadialProgressBar.vue';
 import CreateBuildModal from './CreateBuildModal.vue';
+import Spinner from '../components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
@@ -121,6 +123,7 @@ export default {
         Build,
         CreateBuildModal,
         RadialProgressBar,
+        Spinner,
     },
     data() {
         return {
@@ -132,27 +135,13 @@ export default {
                 red: '#d9534f',
             },
             creatingBuild: false,
-            currentTab: 'OverviewTab',
-            devices: [
-                'ANDROID1',
-                'Astromech 210',
-                'Battle Droid',
-                'Translator Droid',
-                'Navigational Computer',
-                'TARS',
-                'PLEX',
-                'CASE',
-                'KIPP',
-            ],
+            noBuildsExist: false,
             searchText: '',
             selectedBuild: {},
         };
     },
     methods: {
         ...mapActions(['setBuilds']),
-        changeTab(tab) {
-            this.currentTab = tab;
-        },
         closeModal() {
             this.creatingBuild = false;
         },
@@ -161,7 +150,13 @@ export default {
         },
         getBuilds() {
             Builds.getBuilds().then(response => {
-                this.setBuilds(response.data);
+                const builds = response.data;
+
+                if (builds.length) {
+                    this.setBuilds(builds);
+                } else {
+                    this.noBuildsExist = true;
+                }
             });
         },
         graphColor(progress) {
@@ -180,9 +175,6 @@ export default {
             }
 
             return 'created';
-        },
-        getUserName(index) {
-            return this.selectedBuild.users[index].name;
         },
         selectBuild(build) {
             if (this.selectedBuild.name === build.name) {
@@ -215,25 +207,6 @@ export default {
     },
     computed: {
         ...mapState(['builds']),
-        buildsStarted() {
-            if (this.builds) {
-                return this.builds.filter(build => {
-                    if (build.started && !build.completed) {
-                        return build;
-                    }
-                }).length;
-            }
-
-            return 0;
-        },
-        buildsComplete() {
-            if (this.builds) {
-                return this.builds.filter(build => build.completed === true)
-                    .length;
-            }
-
-            return 0;
-        },
         filteredBuilds() {
             const searchText = this.searchText.toLowerCase();
             let builds = this.builds;
