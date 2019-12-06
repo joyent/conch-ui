@@ -31,7 +31,7 @@
                             </div>
                         </div>
                         <i
-                            class="material-icons has-text-success"
+                            class="material-icons has-text-success add-organization"
                             @click="showAddOrganizationModal()"
                         >
                             add_circle
@@ -99,7 +99,7 @@
                                 </td>
                                 <td class="remove-item has-text-right">
                                     <i
-                                        class="fas fa-trash-alt"
+                                        class="fas fa-trash-alt remove-organization"
                                         @click="
                                             showRemoveOrganizationModal(
                                                 organization

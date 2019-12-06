@@ -734,6 +734,7 @@ import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
 import * as DatacenterRooms from '@api/datacenterRooms.js';
 import * as Workspaces from '@api/workspaces.js';
+import * as Organizations from '@api/organizations.js';
 import * as Racks from '@api/racks.js';
 import * as Users from '@api/users.js';
 
@@ -926,7 +927,7 @@ export default {
             if (this.organizations && !this.organizations.length) {
                 return new Promise((resolve, reject) => {
                     resolve(
-                        Workspaces.getOrganizations().then(response => {
+                        Organizations.getOrganizations().then(response => {
                             this.setOrganizations(response.data);
                         })
                     );
