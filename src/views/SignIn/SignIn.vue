@@ -66,78 +66,96 @@
                                             Sign in to get started
                                         </p>
                                     </div>
-                                    <div class="sign-in-input">
-                                        <div class="field">
-                                            <label class="label has-text-left">
-                                                Email Address
-                                            </label>
-                                            <div class="control has-icons-left">
-                                                <input
-                                                    type="text"
-                                                    class="input"
-                                                    :class="{
-                                                        'has-error': badEmailAddress,
-                                                    }"
-                                                    placeholder="Email Address"
-                                                    v-model="emailAddress"
-                                                    @keyup.enter="signIn()"
-                                                />
-                                                <span class="icon is-left">
-                                                    <i
-                                                        class="material-icons has-text-danger"
-                                                        v-if="badEmailAddress"
-                                                    >
-                                                        error
-                                                    </i>
-                                                    <i
-                                                        class="material-icons has-text-grey"
-                                                        v-else
-                                                    >
-                                                        email
-                                                    </i>
-                                                </span>
+                                    <form>
+                                        <div class="sign-in-input">
+                                            <div class="field">
+                                                <label
+                                                    class="label has-text-left"
+                                                >
+                                                    Email Address
+                                                </label>
+                                                <div
+                                                    class="control has-icons-left"
+                                                >
+                                                    <input
+                                                        type="text"
+                                                        class="input"
+                                                        :class="{
+                                                            'has-error': badEmailAddress,
+                                                        }"
+                                                        placeholder="Email Address"
+                                                        v-model="emailAddress"
+                                                        @keyup.enter="signIn()"
+                                                        autocomplete="email"
+                                                    />
+                                                    <span class="icon is-left">
+                                                        <i
+                                                            class="material-icons has-text-danger"
+                                                            v-if="
+                                                                badEmailAddress
+                                                            "
+                                                        >
+                                                            error
+                                                        </i>
+                                                        <i
+                                                            class="material-icons has-text-grey"
+                                                            v-else
+                                                        >
+                                                            email
+                                                        </i>
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="field">
-                                            <label class="label has-text-left">
-                                                Password
-                                            </label>
-                                            <div class="control has-icons-left">
-                                                <input
-                                                    type="password"
-                                                    class="input"
-                                                    :class="{
-                                                        'has-error': badPassword,
-                                                    }"
-                                                    placeholder="Password"
-                                                    v-model="password"
-                                                    @keyup.enter="signIn()"
-                                                />
-                                                <span class="icon is-left">
-                                                    <i
-                                                        class="material-icons has-text-danger"
-                                                        v-if="badPassword"
-                                                    >
-                                                        error
-                                                    </i>
-                                                    <i
-                                                        class="material-icons has-text-grey"
-                                                        v-else
-                                                    >
-                                                        lock
-                                                    </i>
-                                                </span>
+                                            <div class="field">
+                                                <label
+                                                    class="label has-text-left"
+                                                >
+                                                    Password
+                                                </label>
+                                                <div
+                                                    class="control has-icons-left"
+                                                >
+                                                    <input
+                                                        type="password"
+                                                        class="input"
+                                                        :class="{
+                                                            'has-error': badPassword,
+                                                        }"
+                                                        placeholder="Password"
+                                                        v-model="password"
+                                                        @keyup.enter="signIn()"
+                                                        autocomplete="password"
+                                                    />
+                                                    <span class="icon is-left">
+                                                        <i
+                                                            class="material-icons has-text-danger"
+                                                            v-if="badPassword"
+                                                        >
+                                                            error
+                                                        </i>
+                                                        <i
+                                                            class="material-icons has-text-grey"
+                                                            v-else
+                                                        >
+                                                            lock
+                                                        </i>
+                                                    </span>
+                                                </div>
                                             </div>
+                                            <a
+                                                class="button button-sign-in is-info is-fullwidth"
+                                                :class="{
+                                                    'is-loading': isLoading,
+                                                }"
+                                                @click="signIn()"
+                                                :disabled="
+                                                    incompatibleApiVersion
+                                                "
+                                            >
+                                                Sign In
+                                            </a>
                                         </div>
-                                        <a
-                                            class="button button-sign-in is-info is-fullwidth"
-                                            :class="{ 'is-loading': isLoading }"
-                                            @click="signIn()"
-                                            :disabled="incompatibleApiVersion"
-                                        >
-                                            Sign In
-                                        </a>
-                                    </div>
+                                    </form>
                                 </div>
                                 <div class="column">
                                     <div class="sign-in-image">
