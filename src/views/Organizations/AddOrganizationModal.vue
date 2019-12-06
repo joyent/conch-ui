@@ -57,28 +57,28 @@
                                         :class="{
                                             'is-active': activeStep === 1,
                                         }"
-                                        @click="activateStep(1)"
+                                        @click="tryActivateStep(1)"
                                     ></span>
                                     <span
                                         class="dot"
                                         :class="{
                                             'is-active': activeStep === 2,
                                         }"
-                                        @click="activateStep(2)"
+                                        @click="tryActivateStep(2)"
                                     ></span>
                                     <span
                                         class="dot"
                                         :class="{
                                             'is-active': activeStep === 3,
                                         }"
-                                        @click="activateStep(3)"
+                                        @click="tryActivateStep(3)"
                                     ></span>
                                     <span
                                         class="dot"
                                         :class="{
                                             'is-active': activeStep === 4,
                                         }"
-                                        @click="activateStep(4)"
+                                        @click="tryActivateStep(4)"
                                     ></span>
                                 </div>
                             </div>
@@ -163,7 +163,7 @@
                                                                     v-model="
                                                                         searchText
                                                                     "
-                                                                    placeholder="Search users"
+                                                                    placeholder="Search..."
                                                                     type="text"
                                                                 />
                                                                 <span
@@ -226,6 +226,7 @@
                                                                         <select
                                                                             @change="
                                                                                 updateRole(
+                                                                                    'member',
                                                                                     user.name,
                                                                                     $event
                                                                                 )
@@ -268,7 +269,7 @@
                                                                     class="action"
                                                                 >
                                                                     <i
-                                                                        class="material-icons has-text-success add-item"
+                                                                        class="material-icons has-text-success item-added"
                                                                         v-if="
                                                                             showRemoveIcon !==
                                                                                 user.name
@@ -289,7 +290,7 @@
                                                                         @click="
                                                                             removeItem(
                                                                                 user.name,
-                                                                                'members'
+                                                                                'member'
                                                                             )
                                                                         "
                                                                         @mouseleave="
@@ -319,7 +320,7 @@
                                                                         @click="
                                                                             addItem(
                                                                                 user,
-                                                                                'members'
+                                                                                'member'
                                                                             )
                                                                         "
                                                                     >
@@ -365,7 +366,7 @@
                                                                     v-model="
                                                                         searchText
                                                                     "
-                                                                    placeholder="Search builds"
+                                                                    placeholder="Search..."
                                                                     type="text"
                                                                 />
                                                                 <span
@@ -420,10 +421,58 @@
                                                                     </span>
                                                                 </td>
                                                                 <td
+                                                                    class="role-select"
+                                                                >
+                                                                    <div
+                                                                        class="select role"
+                                                                    >
+                                                                        <select
+                                                                            @change="
+                                                                                updateRole(
+                                                                                    'build',
+                                                                                    build.name,
+                                                                                    $event
+                                                                                )
+                                                                            "
+                                                                        >
+                                                                            <option
+                                                                                value="admin"
+                                                                                :selected="
+                                                                                    build.role ===
+                                                                                        'admin'
+                                                                                "
+                                                                            >
+                                                                                Admin
+                                                                            </option>
+                                                                            <option
+                                                                                value="rw"
+                                                                                :selected="
+                                                                                    build.role ===
+                                                                                        'rw'
+                                                                                "
+                                                                            >
+                                                                                Read
+                                                                                &#47;
+                                                                                Write
+                                                                            </option>
+                                                                            <option
+                                                                                value="ro"
+                                                                                :selected="
+                                                                                    build.role ===
+                                                                                        'ro'
+                                                                                "
+                                                                            >
+                                                                                Read
+                                                                                Only
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                                <td
                                                                     class="action"
                                                                 >
                                                                     <i
-                                                                        class="material-icons has-text-success add-item"
+                                                                        class="material-icons has-text-success item-added"
                                                                         v-if="
                                                                             showRemoveIcon !==
                                                                                 build.name
@@ -444,7 +493,7 @@
                                                                         @click="
                                                                             removeItem(
                                                                                 build.name,
-                                                                                'builds'
+                                                                                'build'
                                                                             )
                                                                         "
                                                                         @mouseleave="
@@ -474,7 +523,7 @@
                                                                         @click="
                                                                             addItem(
                                                                                 build,
-                                                                                'builds'
+                                                                                'build'
                                                                             )
                                                                         "
                                                                     >
@@ -675,7 +724,7 @@
                                     </a>
                                     <a
                                         class="button next is-info"
-                                        @click="nextStep()"
+                                        @click="tryNextStep()"
                                     >
                                         Next
                                     </a>
@@ -732,35 +781,40 @@ export default {
     },
     methods: {
         ...mapActions(['setBuilds', 'setUsers']),
-        activateStep(step) {
-            this.searchText = '';
-            const activeStep = this.activeStep;
-
-            if (activeStep === 1) {
+        tryActivateStep(step) {
+            if (this.activeStep === 1) {
                 if (this.name) {
-                    this.resetErrors();
-                    this.activeStep = step;
+                    this.activateStep(step);
                 } else {
                     this.errors.name = true;
                 }
-            } else if (activeStep === 2) {
+            } else if (this.activeStep === 2) {
                 if (this.getAdminUserCount() === 0) {
                     this.errors.adminUserCount = true;
+                } else {
+                    this.activateStep(step);
                 }
             } else {
-                this.resetErrors();
+                this.activateStep(step);
+            }
+        },
+        activateStep(step = null) {
+            this.searchText = '';
+            this.resetErrors();
+
+            if (step) {
                 this.activeStep = step;
+            } else {
+                this.activeStep++;
             }
         },
         addItem(item, itemType) {
-            const role = { role: 'ro' };
+            const itemWithDefaultRole = Object.assign(item, { role: 'ro' });
 
-            if (itemType === 'members') {
-                const member = Object.assign(item, role);
-                this.selectedMembers.push(member);
-            } else if (itemType === 'builds') {
-                const build = Object.assign(item, role);
-                this.selectedBuilds.push(build);
+            if (itemType === 'build') {
+                this.selectedBuilds.push(itemWithDefaultRole);
+            } else if (itemType === 'member') {
+                this.selectedMembers.push(itemWithDefaultRole);
             }
         },
         closeModal() {
@@ -770,7 +824,7 @@ export default {
         },
         async createOrganization() {
             this.isLoading = true;
-
+            console.log('hi 1')
             const admins = this.selectedMembers
                 .filter(member => member.role === 'admin')
                 .map(user => ({ user_id: user.id }));
@@ -781,6 +835,7 @@ export default {
                 admins
             );
 
+            console.log('hi 2')
             this.organizationId = response.data.id;
 
             const nonAdminUsers = this.selectedMembers.filter(
@@ -794,6 +849,7 @@ export default {
                     member.role,
                     member.id
                 );
+                console.log('hi 3', i)
             }
 
             for (let i = 0; i < this.selectedBuilds.length; i++) {
@@ -803,8 +859,9 @@ export default {
                     this.organizationId,
                     build.role
                 );
+                console.log('hi 4', i)
             }
-
+            console.log('hi 5')
             this.closeModal();
             EventBus.$emit('organization-created', { name: this.name });
             this.isLoading = false;
@@ -858,39 +915,33 @@ export default {
 
             return false;
         },
-        nextStep() {
-            this.searchText = '';
-            const activeStep = this.activeStep;
-
-            if (activeStep === 1) {
+        tryNextStep() {
+            if (this.activeStep === 1) {
                 if (this.name) {
-                    this.resetErrors();
-                    this.activeStep++;
+                    this.activateStep();
                 } else {
                     this.errors.name = true;
                 }
-            } else if (activeStep === 2) {
+            } else if (this.activeStep === 2) {
                 if (this.getAdminUserCount() === 0) {
                     this.errors.adminUserCount = true;
                 } else {
-                    this.resetErrors();
-                    this.activeStep++;
+                    this.activateStep();
                 }
             } else {
-                this.resetErrors();
-                this.activeStep++;
+                this.activateStep();
             }
         },
         removeItem(itemName, itemType) {
             let index;
 
-            if (itemType === 'members') {
+            if (itemType === 'member') {
                 index = this.selectedMembers
                     .map(member => member.name)
                     .indexOf(itemName);
 
                 this.selectedMembers.splice(index, 1);
-            } else if (itemType === 'builds') {
+            } else if (itemType === 'build') {
                 index = this.selectedBuilds
                     .map(build => build.name)
                     .indexOf(itemName);
@@ -904,17 +955,31 @@ export default {
                 name: false,
             };
         },
-        updateRole(itemName, event) {
+        updateRole(itemType, itemName, event) {
             if (event && event.target && event.target.value) {
-                const selectedMembers = this.selectedMembers;
+                if (itemType === 'build') {
+                    const selectedBuilds = this.selectedBuilds;
 
-                for (let i = 0; i < selectedMembers.length; i++) {
-                    const modifiedUser = selectedMembers[i];
+                    for (let i = 0; i < selectedBuilds.length; i++) {
+                        const modifiedBuild = selectedBuilds[i];
 
-                    if (modifiedUser.name === itemName) {
-                        this.selectedMembers[i].role = event.target.value;
+                        if (modifiedBuild.name === itemName) {
+                            this.selectedBuilds[i].role = event.target.value;
 
-                        break;
+                            break;
+                        }
+                    }
+                } else if (itemType === 'member') {
+                    const selectedMembers = this.selectedMembers;
+
+                    for (let i = 0; i < selectedMembers.length; i++) {
+                        const modifiedUser = selectedMembers[i];
+
+                        if (modifiedUser.name === itemName) {
+                            this.selectedMembers[i].role = event.target.value;
+
+                            break;
+                        }
                     }
                 }
             }
