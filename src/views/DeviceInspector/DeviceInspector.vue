@@ -4,7 +4,7 @@
             <Spinner />
         </section>
         <div class="tabs-container" v-else>
-            <div class="tabs is-centered is-boxed is-small">
+            <div class="tabs is-toggle is-centered">
                 <ul>
                     <li
                         v-for="(tab, index) in tabs"

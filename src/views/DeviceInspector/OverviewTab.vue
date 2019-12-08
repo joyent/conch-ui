@@ -2,7 +2,7 @@
     <div class="overview-tab">
         <div class="level">
             <div class="level-left">
-                <div class="level-item tags">
+                <div class="level-item tags are-medium">
                     <div
                         class="tag"
                         v-for="(tag, index) in deviceTags"
@@ -16,7 +16,7 @@
             <div class="level-right">
                 <div class="level-item" v-if="userHasPermissions">
                     <button
-                        class="button update-phase is-small is-info"
+                        class="button update-phase is-info"
                         @click="updatingPhase = true"
                     >
                         Update Device Phase
@@ -24,7 +24,7 @@
                 </div>
                 <div class="level-item" v-if="activeDeviceDetails.location">
                     <button
-                        class="button show-device-in-rack is-small is-info"
+                        class="button show-device-in-rack is-info"
                         @click="showDeviceInRack()"
                     >
                         Show Device in Rack

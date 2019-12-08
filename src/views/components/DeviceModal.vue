@@ -8,7 +8,7 @@
         <div class="modal-card">
             <header class="modal-card-head">
                 <p class="modal-card-title has-text-left">
-                    Device {{ activeDeviceId }}
+                    {{ activeDevice.serial_number }}
                 </p>
                 <button
                     class="delete"
@@ -29,7 +29,7 @@
 import DeviceInspector from '@views/DeviceInspector/DeviceInspector.vue';
 import Spinner from './Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 
 export default {
     components: {
@@ -50,6 +50,7 @@ export default {
     },
     computed: {
         ...mapGetters(['activeDeviceId']),
+        ...mapState(['activeDevice']),
     },
     mounted() {
         EventBus.$on('openModal:deviceModal', () => {
