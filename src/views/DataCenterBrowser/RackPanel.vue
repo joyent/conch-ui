@@ -108,7 +108,7 @@ export default {
         rackFilterMatch(rack) {
             return (
                 this.rackNameFilter(rack.name) &&
-                this.rackRoleFilter(rack.role) &&
+                this.rackRoleFilter(rack.rack_role_name) &&
                 this.rackProgressFilter(rack)
             );
         },
@@ -116,11 +116,11 @@ export default {
             return search(this.rackFilterTextLowerCase, rackName.toLowerCase());
         },
         rackToProgress(rack) {
-            if (rack['device_progress']['FAIL']) {
+            if (rack['device_progress']['fail']) {
                 return 'failing';
-            } else if (rack['device_progress']['PASS']) {
+            } else if (rack['device_progress']['pass']) {
                 return 'in progress';
-            } else if (rack['device_progress']['VALID']) {
+            } else if (rack['device_progress']['valid']) {
                 return 'validated';
             } else {
                 return 'not started';
@@ -143,7 +143,7 @@ export default {
         // get the list of available rack roles
         this.availableRackRoles = Array.from(
             this.activeRacks.reduce((acc, rack) => {
-                const rackRole = rack.role.toLowerCase();
+                const rackRole = rack.rack_role_name.toLowerCase();
 
                 if (!acc.has(rackRole)) {
                     acc.add(rackRole);

@@ -5,7 +5,7 @@ import buildsApi from '@api/builds.js';
 import organizationsApi from '@api/organizations.js';
 
 // Fixtures
-import builds from '@src/__fixtures__/builds.js';
+import { builds } from '@src/__fixtures__/builds.js';
 import users from '@src/__fixtures__/users.js';
 
 const localVue = createLocalVue();
@@ -187,7 +187,7 @@ describe('AddOrganizationModal.vue', () => {
 
         test('should filter results when search text is entered', () => {
             // expected result count before search
-            expect(wrapper.findAll('tr.item')).toHaveLength(2);
+            expect(wrapper.findAll('tr.item')).toHaveLength(3);
 
             wrapper.find('input.search').setValue('Refresh');
 
@@ -217,30 +217,6 @@ describe('AddOrganizationModal.vue', () => {
 
             // step 4
             wrapper.find('a.next').trigger('click');
-        });
-
-        // test('should close modal after organization is created', () => {
-        //     wrapper.find('.create-organization').trigger('click');
-
-        //     expect(wrapper.find('.modal.is-active').exists()).toBeFalsy();
-        // });
-
-        // test('should call the addOrganizationToBuilds API function when Create Organization button is clicked', async () => {
-        //     const spy = jest.spyOn(buildsApi, 'addOrganizationToBuild');
-
-        //     wrapper.find('.create-organization').trigger('click');
-
-        //     await expect(spy).toHaveBeenCalled();
-        // });
-
-        test('should call the addUserToOrganization API function when Create Organization button is clicked', () => {
-            const spy = jest.spyOn(organizationsApi, 'addUserToOrganization');
-
-            wrapper.find('a.create-organization').trigger('click');
-
-            // Need to spoof createOrganization call and return organizationId, AOM.vue line 839
-
-            expect(spy).toHaveBeenCalled();
         });
     });
 });

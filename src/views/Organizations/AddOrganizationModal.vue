@@ -824,7 +824,7 @@ export default {
         },
         async createOrganization() {
             this.isLoading = true;
-            console.log('hi 1')
+
             const admins = this.selectedMembers
                 .filter(member => member.role === 'admin')
                 .map(user => ({ user_id: user.id }));
@@ -835,7 +835,6 @@ export default {
                 admins
             );
 
-            console.log('hi 2')
             this.organizationId = response.data.id;
 
             const nonAdminUsers = this.selectedMembers.filter(
@@ -849,7 +848,6 @@ export default {
                     member.role,
                     member.id
                 );
-                console.log('hi 3', i)
             }
 
             for (let i = 0; i < this.selectedBuilds.length; i++) {
@@ -859,9 +857,8 @@ export default {
                     this.organizationId,
                     build.role
                 );
-                console.log('hi 4', i)
             }
-            console.log('hi 5')
+
             this.closeModal();
             EventBus.$emit('organization-created', { name: this.name });
             this.isLoading = false;
