@@ -4,7 +4,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import * as buildsApi from '@api/builds.js';
 
 // Fixture
-import builds from '@src/__fixtures__/builds.js';
+import { builds } from '@src/__fixtures__/builds.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

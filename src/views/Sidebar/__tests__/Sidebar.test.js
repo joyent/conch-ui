@@ -46,10 +46,6 @@ describe('Sidebar.vue', () => {
         return expect(auth.logout).toHaveBeenCalled();
     });
 
-    test('should call getApiVersion from conchApiVersion API on created lifecycle hook', () => {
-        return expect(conchApi.getApiVersion).toHaveBeenCalled();
-    });
-
     test('should display a loading indicator when the currentWorkspace is being loaded', () => {
         state.currentWorkspace = {};
         store = new Vuex.Store({ state, getters });
