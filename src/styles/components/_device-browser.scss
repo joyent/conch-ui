@@ -38,11 +38,33 @@
 		padding-left: 20px;
 	}
 
-	.box.serial-number {
-		background-color: $dark;
+	.device-details {
+		position: sticky;
+		top: 0;
+
+		.box.serial-number {
+			background-color: $dark;
+		}
 	}
 
-	.tabs {
+	.empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		img {
+			margin: 30px auto;
+		}
+
+		.empty-state-heading {
+			color: $white;
+			font-size: 24px;
+			margin-bottom: 30px;
+		}
+	}
+
+	.device-inspector .tabs {
 		margin: 20px 0 25px;
 
 		li {
@@ -69,23 +91,6 @@
 					border-bottom-right-radius: 4px;
 				}
 			}
-		}
-	}
-
-	.empty-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-
-		img {
-			margin: 30px auto;
-		}
-
-		.empty-state-heading {
-			color: $white;
-			font-size: 24px;
-			margin-bottom: 30px;
 		}
 	}
 }
