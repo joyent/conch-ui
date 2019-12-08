@@ -32,7 +32,7 @@ describe('Devices.vue', () => {
             currentWorkspaceId: jest.fn(),
             currentWorkspaceName: jest.fn(),
         };
-        mocks = { $route: { path: '' }, $router: [] };
+        mocks = { $route: { path: '', params: {} }, $router: [] };
         store = new Vuex.Store({ actions, getters });
         stubs = ['router'];
         wrapper = shallowMount(Devices, { localVue, store, mocks, stubs });
@@ -45,7 +45,7 @@ describe('Devices.vue', () => {
     test('should display the DevicesPanel component when workspaceDevices are available', () => {
         wrapper.setData({
             hardwareProductLookup,
-            workspaceDevices: devices[0],
+            workspaceDevices: devices,
         });
 
         expect(wrapper.html()).toContain('devicespanel-stub');

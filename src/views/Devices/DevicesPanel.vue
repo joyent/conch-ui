@@ -76,7 +76,7 @@ export default {
             required: true,
         },
         workspaceDevices: {
-            type: Object,
+            type: Array,
             required: true,
         },
     },
