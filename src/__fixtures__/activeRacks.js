@@ -5,7 +5,7 @@ export const activeRacks = [
         },
         id: '05767f38-b7b8-4f57-b330-25933e05cc16',
         name: 'AB-08A-334422',
-        role: 'MANTA',
+        rack_role_name: 'MANTA',
         size: 45,
     },
     {
@@ -14,7 +14,7 @@ export const activeRacks = [
         },
         id: '05767f38-b7b8-4f57-b330-25933e05cc16',
         name: 'BC-08B-334422',
-        role: 'TRITON',
+        rack_role_name: 'TRITON',
         size: 45,
     },
     {
@@ -23,7 +23,7 @@ export const activeRacks = [
         },
         id: '05767f38-b7b8-4f57-b330-25933e05cc16',
         name: 'CD-08C-334422',
-        role: 'CERES',
+        rack_role_name: 'CERES',
         size: 45,
     },
     {
@@ -32,7 +32,7 @@ export const activeRacks = [
         },
         id: '05767f38-b7b8-4f57-b330-25933e05cc16',
         name: 'DE-08D-334422',
-        role: 'CONCH',
+        rack_role_name: 'CONCH',
         size: 45,
     },
 ];

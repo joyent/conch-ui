@@ -9,14 +9,12 @@ import hardwareProductLookup from '@src/__fixtures__/hardwareProductLookup.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-localVue.use(VueRouter);
-
-const router = new VueRouter();
 
 describe('DevicesPanel.vue', () => {
     let actions;
     let getters;
     let propsData;
+    let methods;
     let store;
     let wrapper;
 
@@ -24,10 +22,11 @@ describe('DevicesPanel.vue', () => {
         actions = { setActiveDevice: jest.fn() };
         getters = { activeDeviceId: jest.fn() };
         propsData = { hardwareProductLookup, workspaceDevices: devices };
+        methods = { activateDevice: jest.fn() };
         store = new Vuex.Store({ actions, getters });
         wrapper = shallowMount(DevicesPanel, {
             localVue,
-            router,
+            methods,
             propsData,
             store,
         });
@@ -45,7 +44,6 @@ describe('DevicesPanel.vue', () => {
     });
 
     test('should filter the devices displayed based on the clicked progress filter', () => {
-        const devices = propsData.workspaceDevices;
         const panel = wrapper.find('.panel');
 
         wrapper
@@ -58,7 +56,6 @@ describe('DevicesPanel.vue', () => {
     });
 
     test('should filter the devices displayed based on the clicked hardware product filter', () => {
-        const devices = propsData.workspaceDevices;
         const panel = wrapper.find('.panel');
 
         wrapper

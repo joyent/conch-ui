@@ -229,7 +229,11 @@ export default {
         userHasBuilds() {
             const currentUser = this.currentUser;
 
-            if (!isEmpty(currentUser) && currentUser.builds.length > 0) {
+            if (
+                !isEmpty(currentUser) &&
+                currentUser.builds &&
+                currentUser.builds.length > 0
+            ) {
                 return true;
             }
 
@@ -238,7 +242,11 @@ export default {
         userHasOrganizations() {
             const currentUser = this.currentUser;
 
-            if (!isEmpty(currentUser) && currentUser.organizations.length > 0) {
+            if (
+                !isEmpty(currentUser) &&
+                currentUser.organizations &&
+                currentUser.organizations.length > 0
+            ) {
                 return true;
             }
 
