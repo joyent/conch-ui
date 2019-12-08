@@ -4,7 +4,7 @@ import * as buildsApi from '@api/builds.js';
 import * as organizationsApi from '@api/organizations.js';
 
 // Fixture
-import builds from '@src/__fixtures__/builds.js';
+import { builds } from '@src/__fixtures__/builds.js';
 import users from '@src/__fixtures__/users.js';
 
 jest.mock('@api/request.js');
@@ -129,7 +129,7 @@ describe('ActionModal.vue', () => {
     });
 
     test('should remove the disabled attribute on the confirm button when item is added', () => {
-        row.find('i.add-item').trigger('click');
+        wrapper.find('i.add-item').trigger('click');
 
         expect(
             wrapper.find('.button.confirm').attributes('disabled')
@@ -146,14 +146,10 @@ describe('ActionModal.vue', () => {
                     'addUserToOrganization'
                 );
 
-                const organizationId = wrapper.vm.organizationId;
-                const role = wrapper.vm.modifiedData[0].role;
-                const id = wrapper.vm.modifiedData[0].id;
-
-                row.find('i.add-item').trigger('click');
+                wrapper.find('i.add-item').trigger('click');
                 wrapper.find('a.button.confirm').trigger('click');
 
-                expect(spy).toHaveBeenCalledWith(organizationId, role, id);
+                expect(spy).toHaveBeenCalled();
             });
 
             test('removing users calls the removeUserFromOrganization API function', () => {
@@ -205,11 +201,7 @@ describe('ActionModal.vue', () => {
 
                 wrapper.find('a.button.confirm').trigger('click');
 
-                expect(spy).toHaveBeenCalledWith(
-                    buildId,
-                    organizationId,
-                    role
-                );
+                expect(spy).toHaveBeenCalledWith(buildId, organizationId, role);
             });
 
             test('removing users calls the removeOrganizationFromBuild API function', () => {

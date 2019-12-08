@@ -4,7 +4,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import * as buildsApi from '@api/builds.js';
 
 // Fixtures
-import builds from '@src/__fixtures__/builds.js';
+import { builds } from '@src/__fixtures__/builds.js';
 import organizations from '@src/__fixtures__/organizations.js';
 import devices from '@src/__fixtures__/devices.js';
 import { rack } from '@src/__fixtures__/rackLayout.js';
