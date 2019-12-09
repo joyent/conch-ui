@@ -268,6 +268,7 @@ export default {
 
         EventBus.$on('organization-created', data => {
             this.action = 'create';
+            this.noOrganizationsExist = false;
             this.organizationBeingEdited.name = data.name;
             this.showSuccessModal = true;
 

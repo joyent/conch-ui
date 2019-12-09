@@ -345,6 +345,11 @@
                                                             No search results
                                                         </td>
                                                     </tr>
+                                                    <tr v-else>
+                                                        <td class="row">
+                                                            <Spinner />
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -750,6 +755,7 @@
 
 <script>
 import search from 'fuzzysearch';
+import Spinner from '@src/views/components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import { getUsers } from '@api/users.js';
@@ -758,6 +764,9 @@ import * as Organizations from '@api/organizations.js';
 import { addOrganizationToBuild } from '@api/builds.js';
 
 export default {
+    components: {
+        Spinner,
+    },
     data() {
         return {
             activeStep: 1,
