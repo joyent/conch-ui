@@ -91,8 +91,8 @@ describe('PhaseUpdateModal.vue', () => {
         });
 
         test('should display device id', () => {
-            expect(wrapper.find('.device-id').text()).toContain(
-                deviceDetails.id
+            expect(wrapper.find('.device-serial-number').text()).toContain(
+                deviceDetails.serial_number
             );
         });
 

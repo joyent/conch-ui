@@ -5,7 +5,7 @@
         style="align-items: start;"
     >
         <div class="modal-background" @click="closeModal()"></div>
-        <div class="modal-card">
+        <div class="modal-card" v-if="activeDevice && activeDevice.id">
             <header class="modal-card-head">
                 <p class="modal-card-title has-text-left">
                     {{ activeDevice.serial_number }}
@@ -17,10 +17,12 @@
                 ></button>
             </header>
             <section class="modal-card-body">
-                <DeviceInspector v-if="activeDeviceId" />
-                <Spinner v-else />
+                <DeviceInspector />
             </section>
             <footer class="modal-card-foot"></footer>
+        </div>
+        <div class="modal-card" v-else>
+            <Spinner />
         </div>
     </div>
 </template>
@@ -29,7 +31,7 @@
 import DeviceInspector from '@views/DeviceInspector/DeviceInspector.vue';
 import Spinner from './Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
@@ -49,7 +51,6 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(['activeDeviceId']),
         ...mapState(['activeDevice']),
     },
     mounted() {

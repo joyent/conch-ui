@@ -15,7 +15,7 @@
                     class="subtitle has-text-centered"
                     style="margin-bottom: 10px;"
                 >
-                    <span class="device-id" v-if="item === 'device'">
+                    <span class="device-serial-number" v-if="item === 'device'">
                         Device:
                         <strong class="has-text-white">{{
                             itemData.serial_number
