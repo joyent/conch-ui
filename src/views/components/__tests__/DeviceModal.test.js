@@ -3,6 +3,9 @@ import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { EventBus } from '@src/eventBus.js';
 
+// Fixture
+import devices from '@src/__fixtures__/devices.js';
+
 const GlobalPlugins = {
     install(v) {
         v.prototype.$bus = EventBus;
@@ -15,29 +18,25 @@ localVue.use(GlobalPlugins);
 
 describe('DeviceModal.vue', () => {
     let actions;
-    let getters;
     let methods;
+    let state;
     let store;
     let wrapper;
 
     beforeEach(() => {
         actions = { clearActiveDevice: jest.fn() };
-        getters = { activeDeviceId: jest.fn() };
         methods = { closeModal: jest.fn() };
-        store = new Vuex.Store({ actions, getters });
+        state = { activeDevice: devices[0] };
+        store = new Vuex.Store({ actions, state });
         wrapper = shallowMount(DeviceModal, { localVue, methods, store });
     });
 
-    test('should display a loading indicator when no activeDeviceId is available', () => {
-        expect(wrapper.html()).toContain('spinner-stub');
-    });
+    test('should display a loading indicator when no activeDevice is available', () => {
+        state = { activeDevice: {} };
+        store = new Vuex.Store({ actions, state });
+        wrapper = shallowMount(DeviceModal, { localVue, methods, store });
 
-    test('should display the DeviceInspector component when activeDeviceId is available', () => {
-        getters.activeDeviceId = jest.fn(() => 1010);
-        store = new Vuex.Store({ getters });
-        wrapper = shallowMount(DeviceModal, { localVue, store });
-
-        expect(wrapper.html()).toContain('deviceinspector-stub');
+        expect(wrapper.find('spinner-stub').exists()).toBeTruthy();
     });
 
     test('should call closeModal method when modal background is clicked', () => {
@@ -46,10 +45,10 @@ describe('DeviceModal.vue', () => {
         expect(methods.closeModal).toHaveBeenCalled();
     });
 
-    test('should call closeModal method when close button is clicked', () => {
+    test('should close the modal when close button is clicked', () => {
         wrapper.find('button.delete').trigger('click');
 
-        expect(methods.closeModal).toHaveBeenCalled();
+        expect(wrapper.find('.modal.is-active').exists()).toBeFalsy();
     });
 
     test('should emit closeModal:deviceModal event when modal background is clicked', () => {

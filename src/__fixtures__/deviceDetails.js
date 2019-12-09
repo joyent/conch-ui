@@ -6,7 +6,8 @@ const deviceDetails = {
     hardware_product: 'e3e7c2c0-7b4d-4q9a-b865-2y678976543h',
     health: 'pass',
     hostname: null,
-    id: 'ACEGI82',
+    serial_number: 'ACEGI82',
+    id: 'e3e7c2c0-7b4d-4q9a-b865-2y678976543a',
     invalid_report: null,
     last_seen: '2018-05-16T10:34:45.356014-07:00',
     latest_report: {
