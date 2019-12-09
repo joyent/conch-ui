@@ -18,7 +18,7 @@
                     <span class="device-id" v-if="item === 'device'">
                         Device:
                         <strong class="has-text-white">{{
-                            itemData.id
+                            itemData.serial_number
                         }}</strong>
                     </span>
                     <span class="rack-name" v-else-if="item === 'rack'">
@@ -127,7 +127,7 @@
                     <span>
                         The phase for
                         <strong class="has-text-white" v-if="item === 'device'">
-                            {{ itemData.id }}
+                            {{ itemData.serial_number }}
                         </strong>
                         <strong
                             class="has-text-white"
