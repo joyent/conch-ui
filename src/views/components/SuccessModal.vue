@@ -72,13 +72,9 @@ export default {
 
             if (action === 'add') {
                 return 'added';
-            } else if (action === 'create') {
-                return 'created';
-            } else if (action === 'remove') {
-                return 'removed';
             }
 
-            return '';
+            return `${action}d`;
         },
         itemTypeText() {
             return this.itemCount > 1 ? `${this.itemType}s` : this.itemType;
