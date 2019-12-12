@@ -93,7 +93,7 @@ import RackPanel from './RackPanel.vue';
 import RoomPanel from './RoomPanel.vue';
 import Spinner from '@views/components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
-import { getRackById } from '@api/workspaces.js';
+import { getRack } from '@api/racks.js';
 import { getLocation } from '@api/device.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import {
@@ -191,11 +191,8 @@ export default {
                     if (location.rack && location.rack.id) {
                         this.rackLoading = true;
 
-                        getRackById(
-                            this.currentWorkspaceId,
-                            location.rack.id
-                        ).then(response => {
-                            this.setRackLayout(response);
+                        getRack(location.rack.id).then(response => {
+                            this.setRackLayout(response.data);
                             this.rackLoading = false;
                         });
                     }
@@ -258,11 +255,8 @@ export default {
             if (routeParams.currentWorkspace && routeParams.rackId) {
                 this.currentWorkspaceId = routeParams.currentWorkspace;
 
-                getRackById(
-                    routeParams.currentWorkspace,
-                    routeParams.rackId
-                ).then(response => {
-                    this.setRackLayout(response);
+                getRack(routeParams.rackId).then(response => {
+                    this.setRackLayout(response.data);
                 });
             }
         }
