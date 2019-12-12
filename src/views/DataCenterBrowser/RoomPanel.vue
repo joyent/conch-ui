@@ -7,14 +7,14 @@
                     type="text"
                     class="input is-small"
                     placeholder="Search Rooms"
-                    v-model="roomFilterText"
+                    v-model="searchText"
                 />
                 <span class="icon is-small is-left">
                     <i class="fas fa-search"></i>
                 </span>
             </p>
         </div>
-        <p class="panel-tabs">
+        <p class="panel-tabs" v-if="filteredRackRooms.length > 0">
             <a
                 :class="{ 'is-active': selectedProgress === progress }"
                 @click="selectedProgress = progress"
@@ -25,18 +25,27 @@
                 {{ progress }}
             </a>
         </p>
-        <a
-            v-for="(room, index) in filteredRackRooms"
-            :key="index"
+        <template v-if="filteredRackRooms.length > 0">
+            <a
+                v-for="(room, index) in filteredRackRooms"
+                :key="index"
+                class="panel-block"
+                :class="{ 'is-active': activeRoomName === room.name }"
+                @click="activateRoom(room)"
+            >
+                <div class="panel-icon">
+                    <ProgressIcon :progress="room.progress" />
+                </div>
+                {{ room.name }}
+            </a>
+        </template>
+        <p
             class="panel-block"
-            :class="{ 'is-active': activeRoomName === room.name }"
-            @click="activateRoom(room)"
+            v-else-if="filteredRackRooms.length === 0 && searchText"
+            style="justify-content: center;"
         >
-            <div class="panel-icon">
-                <ProgressIcon :progress="room.progress" />
-            </div>
-            {{ room.name }}
-        </a>
+            No rooms found
+        </p>
     </nav>
 </template>
 
@@ -58,7 +67,7 @@ export default {
     },
     data() {
         return {
-            roomFilterText: '',
+            searchText: '',
             selectedProgress: 'all',
         };
     },
@@ -101,17 +110,12 @@ export default {
 
             this.$router.push({
                 name: 'datacenterRoom',
-                params: {
-                    roomName: `${this.activeRoomName}`,
-                },
+                params: { roomName: this.activeRoomName },
             });
-        },
-        roomFilterTextLowerCase() {
-            return this.roomFilterText.toLowerCase();
         },
         roomNameFilter(roomName) {
             return search(
-                this.roomFilterTextLowerCase(),
+                this.searchText.toLowerCase(),
                 roomName.toLowerCase()
             );
         },
