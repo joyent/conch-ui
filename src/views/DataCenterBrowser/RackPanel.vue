@@ -9,14 +9,14 @@
                     type="text"
                     class="input is-small"
                     placeholder="Search Racks"
-                    v-model="rackFilterText"
+                    v-model="searchText"
                 />
                 <span class="icon is-small is-left">
                     <i class="fas fa-search"></i>
                 </span>
             </p>
         </div>
-        <p class="panel-tabs">
+        <p class="panel-tabs" v-if="filteredActiveRacks.length > 0">
             <a
                 v-for="(progress, index) in availableRackProgress"
                 :key="index"
@@ -26,7 +26,7 @@
                 {{ progress }}
             </a>
         </p>
-        <p class="panel-tabs">
+        <p class="panel-tabs" v-if="filteredActiveRacks.length > 0">
             <a
                 v-for="(role, index) in availableRackRoles"
                 :key="index"
@@ -36,25 +36,34 @@
                 {{ role }}
             </a>
         </p>
-        <a
-            v-for="(rack, index) in filteredActiveRacks"
-            :key="index"
+        <template v-if="filteredActiveRacks.length > 0">
+            <a
+                v-for="(rack, index) in filteredActiveRacks"
+                :key="index"
+                class="panel-block"
+                :class="{ 'is-active': isRackSelected(rack.id) }"
+                @click="activateRack(rack.id)"
+            >
+                <div class="panel-icon">
+                    <ProgressIcon :progress="rackToProgress(rack)" />
+                </div>
+                {{ rack.name }}
+            </a>
+        </template>
+        <p
             class="panel-block"
-            :class="{ 'is-active': isRackSelected(rack.id) }"
-            @click="activateRack(rack.id)"
+            v-else-if="filteredActiveRacks.length === 0 && searchText"
+            style="justify-content: center;"
         >
-            <div class="panel-icon">
-                <ProgressIcon :progress="rackToProgress(rack)" />
-            </div>
-            {{ rack.name }}
-        </a>
+            No racks found
+        </p>
     </nav>
 </template>
 
 <script>
 import search from 'fuzzysearch';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { getRack, getRackAssignment } from '@api/racks';
 import { getDeviceDetails } from '@api/device.js';
 import { EventBus } from '@src/eventBus.js';
@@ -66,14 +75,12 @@ export default {
             required: true,
         },
     },
-    components: {
-        ProgressIcon,
-    },
+    components: { ProgressIcon },
     data() {
         return {
             availableRackRoles: '',
             availableRackProgress: '',
-            rackFilterText: '',
+            searchText: '',
             selectedProgress: 'all',
             selectedRole: 'all',
         };
@@ -107,9 +114,11 @@ export default {
 
             this.setRackLayout(rack);
 
-
             if (pushRoute) {
-                this.$router.push({ name: 'datacenterRack', params: { rackId } });
+                this.$router.push({
+                    name: 'datacenterRack',
+                    params: { rackId },
+                });
             }
         },
         isRackSelected(rackId) {
@@ -131,7 +140,10 @@ export default {
             );
         },
         rackNameFilter(rackName) {
-            return search(this.rackFilterTextLowerCase, rackName.toLowerCase());
+            return search(
+                this.searchText.toLowerCase(),
+                rackName.toLowerCase()
+            );
         },
         rackToProgress(rack) {
             if (rack['device_progress']['fail']) {
@@ -158,7 +170,6 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(['currentWorkspaceId']),
         ...mapState(['activeRoomName', 'rackLayout']),
         filteredActiveRacks() {
             return this.activeRacks.reduce((acc, rack) => {
@@ -168,9 +179,6 @@ export default {
 
                 return acc;
             }, []);
-        },
-        rackFilterTextLowerCase() {
-            return this.rackFilterText.toLowerCase();
         },
     },
     created() {

@@ -10,14 +10,14 @@
                         type="text"
                         class="input is-small"
                         placeholder="Search Device"
-                        v-model="deviceSearchText"
+                        v-model="searchText"
                     />
                     <span class="icon is-small is-left">
                         <i class="fas fa-search"></i>
                     </span>
                 </p>
             </div>
-            <p class="panel-tabs">
+            <p class="panel-tabs" v-if="filteredSlots.length > 0">
                 <a
                     v-for="progress in availableDeviceProgress"
                     :key="progress"
@@ -52,7 +52,10 @@
                     Edit Assignments
                 </button>
             </div>
-            <table class="table is-fullwidth is-hoverable">
+            <table
+                class="table is-fullwidth is-hoverable"
+                v-if="filteredSlots.length > 0"
+            >
                 <thead>
                     <tr>
                         <th>Slot</th>
@@ -116,6 +119,13 @@
                     </tr>
                 </tfoot>
             </table>
+            <p
+                class="panel-block"
+                v-else-if="filteredSlots.length === 0 && searchText"
+                style="justify-content: center;"
+            >
+                No devices found
+            </p>
         </nav>
         <transition name="fade">
             <EditLayoutModal
@@ -151,7 +161,7 @@ export default {
     },
     data() {
         return {
-            deviceSearchText: '',
+            searchText: '',
             editLayout: false,
             selectedProgress: 'all',
             updatingPhase: false,
@@ -223,8 +233,8 @@ export default {
                 let searchFilter;
 
                 if (occupant) {
-                    const searchText = this.deviceSearchText
-                        ? this.deviceSearchText.toLowerCase()
+                    const searchText = this.searchText
+                        ? this.searchText.toLowerCase()
                         : '';
                     let deviceId = '';
                     let assetTag = '';
