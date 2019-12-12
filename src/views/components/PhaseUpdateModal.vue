@@ -161,7 +161,7 @@ import BaseModal from '@src/views/components/BaseModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { setDevicePhase } from '@api/device.js';
 import { setRackPhase } from '@api/racks.js';
-import { getRackById } from '@api/workspaces.js';
+import { getRack } from '@api/racks.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
@@ -217,11 +217,8 @@ export default {
                 const params = { rack_only: this.updateRackDevices ? 0 : 1 };
 
                 setRackPhase(id, data, params).then(() => {
-                    getRackById(
-                        this.currentWorkspace.id,
-                        this.rackLayout.id
-                    ).then(response => {
-                        this.setRackLayout(response);
+                    getRack(this.rackLayout.id).then(response => {
+                        this.setRackLayout(response.data);
                         this.isLoading = false;
                         this.updatingPhase = false;
                         this.updateSuccess = true;

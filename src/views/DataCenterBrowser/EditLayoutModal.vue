@@ -70,7 +70,7 @@
                             }"
                         >
                             <td>{{ assignment.slot }}</td>
-                            <td>{{ assignment.name }}</td>
+                            <td>{{ assignment.hardware_product_name }}</td>
                             <template
                                 v-if="isEditingAssignment(assignment.slot)"
                             >
@@ -102,7 +102,9 @@
                                                         assignment.slot
                                                     ),
                                             }"
-                                            v-model.trim="assignment.id"
+                                            v-model.trim="
+                                                assignment.serial_number
+                                            "
                                             placeholder="Serial Number"
                                         />
                                         <span
@@ -142,7 +144,7 @@
                                                     assignment.slot
                                                 ),
                                             }"
-                                            v-model.trim="assignment.assetTag"
+                                            v-model.trim="assignment.asset_tag"
                                             placeholder="Asset Tag"
                                         />
                                         <span
@@ -163,17 +165,20 @@
                                 </td>
                             </template>
                             <template v-else>
-                                <td class="serial-number" v-if="assignment.id">
-                                    {{ assignment.id }}
+                                <td
+                                    class="serial-number"
+                                    v-if="assignment.serial_number"
+                                >
+                                    {{ assignment.serial_number }}
                                 </td>
                                 <td class="serial-number" v-else>
                                     None
                                 </td>
                                 <td
                                     class="asset-tag"
-                                    v-if="assignment.assetTag"
+                                    v-if="assignment.asset_tag"
                                 >
-                                    {{ assignment.assetTag }}
+                                    {{ assignment.asset_tag }}
                                 </td>
                                 <td class="asset-tag" v-else>
                                     None
@@ -227,7 +232,7 @@ import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
 import { updateRackAssignment } from '@api/racks.js';
-import { getDevices, getRackById } from '@api/workspaces';
+import { getRack } from '@api/racks';
 
 export default {
     props: {
@@ -272,8 +277,10 @@ export default {
                 if (this.assignments[i].slot === slot) {
                     const assignment = this.assignments[i];
 
-                    this.assignments[i].id = assignment.originalSerialNumber;
-                    this.assignments[i].assetTag = assignment.originalAssetTag;
+                    this.assignments[i].serial_number =
+                        assignment.original_serial_number;
+                    this.assignments[i].asset_tag =
+                        assignment.original_asset_tag;
 
                     break;
                 }
@@ -371,9 +378,9 @@ export default {
 
                 await modifiedAssignments.map(assignment => {
                     newRackAssignments.push({
-                        device_asset_tag: assignment.assetTag,
-                        device_id: assignment.id,
-                        rack_unit_start: assignment.rackUnitStart,
+                        device_asset_tag: assignment.asset_tag,
+                        device_serial_number: assignment.serial_number,
+                        rack_unit_start: assignment.rack_unit_start,
                     });
                 });
 
@@ -381,15 +388,8 @@ export default {
                     this.rackLayout.id,
                     newRackAssignments
                 ).then(() => {
-                    getRackById(
-                        this.currentWorkspace.id,
-                        this.rackLayout.id
-                    ).then(response => {
-                        this.setRackLayout(response);
-
-                        getDevices(this.currentWorkspace.id).then(response => {
-                            this.setDevices(response.data);
-                        });
+                    getRack(this.rackLayout.id).then(response => {
+                        this.setRackLayout(response.data);
 
                         this.modifiedAssignments = [];
                         this.isLoading = false;
@@ -410,8 +410,8 @@ export default {
 
             for (let i = 0; i < modifiedAssignments.length; i++) {
                 const assignment = modifiedAssignments[i];
-                const assetTag = assignment.assetTag;
-                const serialNumber = assignment.id;
+                const assetTag = assignment.asset_tag;
+                const serialNumber = assignment.serial_number;
                 let invalidSerialNumber = false;
                 let duplicateAssetTag = false;
                 let duplicateSerialNumber = false;
@@ -431,7 +431,7 @@ export default {
 
                     if (
                         device.asset_tag === assetTag &&
-                        assetTag !== assignment.originalAssetTag
+                        assetTag !== assignment.original_asset_tag
                     ) {
                         // Checks for edge case where an assignment is given a new asset
                         // tag equal to an existing asset tag, but the duplicated asset
@@ -440,9 +440,9 @@ export default {
                         const duplicatedAssetTagModified = modifiedAssignments.some(
                             modifiedAssignment =>
                                 assetTag ===
-                                    modifiedAssignment.originalAssetTag &&
-                                modifiedAssignment.assetTag !==
-                                    modifiedAssignment.originalAssetTag
+                                    modifiedAssignment.original_asset_tag &&
+                                modifiedAssignment.asset_tag !==
+                                    modifiedAssignment.original_asset_tag
                         );
 
                         if (!duplicatedAssetTagModified) {
@@ -452,8 +452,8 @@ export default {
                     }
 
                     if (
-                        device.id === serialNumber &&
-                        serialNumber !== assignment.originalSerialNumber
+                        device.serial_number === serialNumber &&
+                        serialNumber !== assignment.original_serial_number
                     ) {
                         // Checks for edge case where an assignment is given a new serial
                         // number equal to an existing serial number, but the duplicated
@@ -462,9 +462,9 @@ export default {
                         const duplicatedSerialNumberModified = modifiedAssignments.some(
                             modifiedAssignment =>
                                 serialNumber ===
-                                    modifiedAssignment.originalSerialNumber &&
-                                modifiedAssignment.serialNumber !==
-                                    modifiedAssignment.originalSerialNumber
+                                    modifiedAssignment.original_serial_number &&
+                                modifiedAssignment.serial_number !==
+                                    modifiedAssignment.original_serial_number
                         );
 
                         if (!duplicatedSerialNumberModified) {
@@ -499,12 +499,12 @@ export default {
 
             if (!isEmpty(occupant)) {
                 this.assignments.push({
-                    assetTag: occupant.asset_tag,
-                    id: occupant.id || '',
-                    name: slot.name,
-                    originalAssetTag: occupant.asset_tag,
-                    originalSerialNumber: occupant.id,
-                    rackUnitStart: occupant.rack_unit_start,
+                    asset_tag: occupant.asset_tag,
+                    hardware_product_name: slot.hardware_product_name,
+                    original_asset_tag: occupant.asset_tag,
+                    original_serial_number: occupant.serial_number,
+                    rack_unit_start: occupant.rack_unit_start,
+                    serial_number: occupant.serial_number || '',
                     slot: slot.id,
                 });
             }
