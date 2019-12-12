@@ -3,9 +3,10 @@
         class="modal device-modal"
         :class="{ 'is-active': isActive }"
         style="align-items: start;"
+        v-if="activeDevice && activeDevice.id"
     >
         <div class="modal-background" @click="closeModal()"></div>
-        <div class="modal-card" v-if="activeDevice && activeDevice.id">
+        <div class="modal-card">
             <header class="modal-card-head">
                 <p class="modal-card-title has-text-left">
                     {{ activeDevice.serial_number }}
@@ -21,23 +22,35 @@
             </section>
             <footer class="modal-card-foot"></footer>
         </div>
-        <div class="modal-card" v-else>
-            <Spinner />
+    </div>
+    <div class="modal empty-slot" :class="{ 'is-active': isActive }" v-else>
+        <div class="modal-background" @click="closeModal()"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">No Device</p>
+                <i class="material-icons close" @click="closeModal()">
+                    close
+                </i>
+            </header>
+            <section class="modal-card-body">
+                <p>
+                    There is no device in this slot.
+                </p>
+                <a class="button" @click="closeModal()">
+                    Close
+                </a>
+            </section>
         </div>
     </div>
 </template>
 
 <script>
 import DeviceInspector from '@views/DeviceInspector/DeviceInspector.vue';
-import Spinner from './Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
-    components: {
-        DeviceInspector,
-        Spinner,
-    },
+    components: { DeviceInspector },
     data() {
         return {
             isActive: false,
