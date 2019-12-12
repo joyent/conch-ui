@@ -232,6 +232,22 @@
 		.no-results {
 			margin: 40px auto;
 		}
+
+		.no-items {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+
+			a.button {
+				font-weight: bold;
+				height: 42px;
+				padding-left: 20px;
+				padding-right: 20px;
+				margin: 0 auto;
+				max-width: 200px;
+				min-width: 150px;
+			}
+		}
 	}
 
 	.select-with-label {
