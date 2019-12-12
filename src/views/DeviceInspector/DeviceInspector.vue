@@ -38,7 +38,6 @@ import {
     getDeviceValidations,
 } from '@api/device.js';
 import { getValidations } from '@api/validations.js';
-import { getRack } from '@api/racks.js';
 
 export default {
     components: {
