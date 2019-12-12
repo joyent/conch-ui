@@ -40,8 +40,8 @@
             v-for="(rack, index) in filteredActiveRacks"
             :key="index"
             class="panel-block"
-            :class="{ 'is-active': rackLayout.id === rack.id }"
-            @click="activateRack(rack)"
+            :class="{ 'is-active': isRackSelected(rack.id) }"
+            @click="activateRack(rack.id)"
         >
             <div class="panel-icon">
                 <ProgressIcon :progress="rackToProgress(rack)" />
@@ -55,7 +55,8 @@
 import search from 'fuzzysearch';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getRackById } from '@api/workspaces';
+import { getRack, getRackAssignment } from '@api/racks';
+import { getDeviceDetails } from '@api/device.js';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
@@ -77,33 +78,50 @@ export default {
             selectedRole: 'all',
         };
     },
-    computed: {
-        ...mapGetters(['currentWorkspaceId']),
-        ...mapState(['activeRoomName', 'rackLayout']),
-        filteredActiveRacks() {
-            return this.activeRacks.reduce((acc, rack) => {
-                if (this.rackFilterMatch(rack)) {
-                    acc.push(rack);
-                }
-
-                return acc;
-            }, []);
-        },
-        rackFilterTextLowerCase() {
-            return this.rackFilterText.toLowerCase();
-        },
-    },
     methods: {
         ...mapActions(['setRackLayout']),
-        activateRack(rack) {
-            getRackById(this.currentWorkspaceId, rack.id).then(response => {
-                this.setRackLayout(response);
+        async activateRack(rackId, pushRoute = true) {
+            let rack = await getRack(rackId).then(response => response.data);
 
-                this.$router.push({
-                    name: 'datacenterRack',
-                    params: { rackId: `${this.rackLayout.id}` },
-                });
-            });
+            const rackAssignment = await getRackAssignment(rackId).then(
+                response => response.data
+            );
+
+            rack.slots = {};
+
+            for (let i = 0; i < rackAssignment.length; i++) {
+                const assignment = rackAssignment[i];
+                const deviceId = assignment.device_id;
+                const slotId = assignment.rack_unit_start;
+
+                if (deviceId) {
+                    assignment.occupant = await getDeviceDetails(deviceId).then(
+                        response => response.data
+                    );
+                } else {
+                    assignment.occupant = {};
+                }
+
+                rack.slots[slotId] = assignment;
+            }
+
+            this.setRackLayout(rack);
+
+
+            if (pushRoute) {
+                this.$router.push({ name: 'datacenterRack', params: { rackId } });
+            }
+        },
+        isRackSelected(rackId) {
+            if (this.rackLayout && this.rackLayout.id) {
+                return this.rackLayout.id === rackId ? true : false;
+            } else if (this.$route.params && this.$route.params.rackId) {
+                const rackIdParam = this.$route.params.rackId;
+
+                return rackId === rackIdParam ? true : false;
+            }
+
+            return false;
         },
         rackFilterMatch(rack) {
             return (
@@ -139,6 +157,22 @@ export default {
             );
         },
     },
+    computed: {
+        ...mapGetters(['currentWorkspaceId']),
+        ...mapState(['activeRoomName', 'rackLayout']),
+        filteredActiveRacks() {
+            return this.activeRacks.reduce((acc, rack) => {
+                if (this.rackFilterMatch(rack)) {
+                    acc.push(rack);
+                }
+
+                return acc;
+            }, []);
+        },
+        rackFilterTextLowerCase() {
+            return this.rackFilterText.toLowerCase();
+        },
+    },
     created() {
         // get the list of available rack roles
         this.availableRackRoles = Array.from(
@@ -160,10 +194,14 @@ export default {
                 return acc;
             }, new Set(['all']))
         ).sort();
+
+        if (this.$route.params && this.$route.params.rackId) {
+            this.activateRack(this.$route.params.rackId, false);
+        }
     },
     mounted() {
         EventBus.$on('refreshRackLayout', rack => {
-            this.activateRack(rack);
+            this.activateRack(rack.id);
         });
     },
 };
