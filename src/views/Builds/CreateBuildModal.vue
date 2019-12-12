@@ -727,20 +727,17 @@
 
 <script>
 import search from 'fuzzysearch';
-import Spinner from '@src/views/components/Spinner.vue';
 import SuccessModal from '../components/SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
 import * as DatacenterRooms from '@api/datacenterRooms.js';
-import * as Workspaces from '@api/workspaces.js';
 import * as Organizations from '@api/organizations.js';
 import * as Racks from '@api/racks.js';
 import * as Users from '@api/users.js';
 
 export default {
     components: {
-        Spinner,
         SuccessModal,
     },
     data() {
@@ -910,19 +907,6 @@ export default {
                 });
             }
         },
-        getDevices() {
-            if (this.devices && !this.devices.length) {
-                return new Promise((resolve, reject) => {
-                    resolve(
-                        Workspaces.getDevices(this.currentWorkspace.id).then(
-                            response => {
-                                this.setDevices(response.data);
-                            }
-                        )
-                    );
-                });
-            }
-        },
         getOrganizations() {
             if (this.organizations && !this.organizations.length) {
                 return new Promise((resolve, reject) => {
@@ -960,7 +944,6 @@ export default {
         async initializeData() {
             await Promise.all([
                 this.getUsers(),
-                this.getDevices(),
                 this.getRacks(),
                 this.getDatacenterRooms(),
             ]);
