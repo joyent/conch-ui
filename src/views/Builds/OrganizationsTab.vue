@@ -2,7 +2,13 @@
     <div class="organizations-tab">
         <div class="columns">
             <div class="column">
-                <div class="members-table is-paddingless">
+                <div
+                    class="organizations-table is-paddingless"
+                    v-if="
+                        filteredOrganizations &&
+                            filteredOrganizations.length > 0
+                    "
+                >
                     <div class="datatable-header">
                         <span class="heading is-size-6 is-marginless">
                             Organizations
@@ -110,11 +116,29 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="no-results" v-else>
-                        <p class="subtitle has-text-centered">
-                            No Results to Display
-                        </p>
-                    </div>
+                </div>
+                <div
+                    class="no-results"
+                    v-else-if="
+                        filteredOrganizations &&
+                            filteredOrganizations.length &&
+                            searchText
+                    "
+                >
+                    <p class="subtitle has-text-centered">
+                        No Results to Display
+                    </p>
+                </div>
+                <div class="no-items" style="margin-top: 40px;" v-else>
+                    <p class="subtitle has-text-centered">
+                        No organizations in this build
+                    </p>
+                    <a
+                        class="button is-success"
+                        @click="showAddOrganizationModal()"
+                    >
+                        Add an Organization
+                    </a>
                 </div>
             </div>
         </div>
