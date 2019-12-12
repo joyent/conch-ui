@@ -1,6 +1,34 @@
 import { requestWithToken } from './request.js';
 
 /**
+ * Get rack
+ *
+ * @type   {GET}
+ * @param rackId                            The id of the rack being retrieved
+ * @return {Response Object}
+ */
+export const getRack = rackId => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/rack/${rackId}`,
+    });
+};
+
+/**
+ * Get the assignment of a rack
+ *
+ * @type   {GET}
+ * @param rackId                            The id of the rack being retrieved
+ * @return {Response Object}
+ */
+export const getRackAssignment = rackId => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/rack/${rackId}/assignment`,
+    });
+};
+
+/**
  * Get all racks
  *
  * @type   {GET}
@@ -30,4 +58,10 @@ export const updateRackAssignment = (rackId, data) => {
     });
 };
 
-export default { getRacks, setRackPhase, updateRackAssignment };
+export default {
+    getRack,
+    getRackAssignment,
+    getRacks,
+    setRackPhase,
+    updateRackAssignment,
+};

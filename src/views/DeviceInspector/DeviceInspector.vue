@@ -38,7 +38,7 @@ import {
     getDeviceValidations,
 } from '@api/device.js';
 import { getValidations } from '@api/validations.js';
-import { getRackById } from '@api/workspaces';
+import { getRack } from '@api/racks.js';
 
 export default {
     components: {
@@ -101,18 +101,10 @@ export default {
                 this.setActiveDeviceDetails(deviceDetails);
 
                 if (deviceDetails.location) {
-                    const { datacenter_room, rack } = deviceDetails.location;
+                    const { datacenter_room } = deviceDetails.location;
 
                     if (datacenter_room && datacenter_room.az) {
                         this.setActiveRoomName(datacenter_room.az);
-                    }
-
-                    if (rack && rack.id) {
-                        getRackById(this.currentWorkspaceId, rack.id).then(
-                            response => {
-                                this.setRackLayout(response);
-                            }
-                        );
                     }
                 }
             });
@@ -137,13 +129,7 @@ export default {
             'currentWorkspaceId',
             'getRoomByName',
         ]),
-        ...mapState([
-            'activeDevice',
-            'activeRoom',
-            'rackLayout',
-            'showDeviceInRack',
-            'validations',
-        ]),
+        ...mapState(['activeDevice', 'showDeviceInRack', 'validations']),
         hasActiveDevice() {
             return !isEmpty(this.activeDevice);
         },

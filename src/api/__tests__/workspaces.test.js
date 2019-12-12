@@ -59,20 +59,6 @@ describe('workspaces.js API', () => {
         });
     });
 
-    describe('getRackById', () => {
-        beforeEach(() => {
-            nock(conchApi)
-                .get(`/workspace/${workspaceId}/rack/${rackId}`)
-                .reply(200, rack);
-        });
-
-        test('should return an object containing workspace rack by ID', async () => {
-            expect.assertions(1);
-            response = await workspace.getRackById(workspaceId, rackId);
-            expect(response).toMatchObject(rackLayout);
-        });
-    });
-
     describe('loadAllWorkspaces', () => {
         beforeEach(() => {
             nock(conchApi)

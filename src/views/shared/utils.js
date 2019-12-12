@@ -1,23 +1,6 @@
-import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
 import { getAllRacks, getDevices } from '@api/workspaces.js';
 import store from '@src/store/store.js';
-
-export const deviceToProgress = device => {
-    if (device == null) {
-        return 'unassigned';
-    } else if (device.graduated) {
-        return 'graduated';
-    } else if (device.validated) {
-        return 'validated';
-    } else if (device.health.toLowerCase() === 'fail') {
-        return 'failing';
-    } else if (moment().diff(moment(device.last_seen), 'second') <= 300) {
-        return 'active';
-    }
-
-    return 'in progress';
-};
 
 export const getRackRooms = rooms => {
     return Object.keys(rooms)
@@ -89,7 +72,6 @@ export const roomToProgress = racks => {
 };
 
 export default {
-    deviceToProgress,
     getRackRooms,
     getWorkspaceDevices,
     getWorkspaceRacks,

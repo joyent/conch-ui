@@ -19,7 +19,7 @@
                         class="button update-phase is-info"
                         @click="updatingPhase = true"
                     >
-                        Update Device Phase
+                        Update Phase
                     </button>
                 </div>
                 <div class="level-item" v-if="activeDeviceDetails.location">
