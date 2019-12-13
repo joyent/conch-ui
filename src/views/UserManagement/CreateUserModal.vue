@@ -174,7 +174,7 @@
                                         >
                                             <option value="admin">Admin</option>
                                             <option value="rw">
-                                                Read / Write
+                                                Read &#47; Write
                                             </option>
                                             <option value="ro" selected>
                                                 Read Only

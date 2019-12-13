@@ -297,7 +297,7 @@
                                                     Read Only
                                                 </option>
                                                 <option value="rw">
-                                                    Read / Write
+                                                    Read &#47; Write
                                                 </option>
                                             </select>
                                         </div>
@@ -318,7 +318,7 @@
                                             Admin
                                         </p>
                                         <p v-else-if="member.role === 'rw'">
-                                            Read / Write
+                                            Read &#47; Write
                                         </p>
                                         <p v-else>
                                             Read Only
