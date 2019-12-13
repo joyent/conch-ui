@@ -200,9 +200,7 @@ export default {
             this.removingUser = user;
             this.removeUser = true;
         },
-        sort() {
-
-        },
+        sort() {},
     },
     computed: {
         ...mapState(['currentBuildUsers']),

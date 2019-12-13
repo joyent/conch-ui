@@ -74,7 +74,7 @@
                                                         organization.role === 'rw'
                                                     "
                                                 >
-                                                    Read / Write
+                                                    Read &#47; Write
                                                 </option>
                                                 <option
                                                     value="ro"
