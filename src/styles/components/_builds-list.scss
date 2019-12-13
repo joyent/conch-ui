@@ -65,15 +65,11 @@
 			}
 		}
 
-		.create-build {
-			color: $green;
-			cursor: pointer;
-			font-size: 42px;
+		.create-organization {
+			font-weight: bold;
+			height: 42px;
+			padding: 5px 20px;
 			margin: 0 20px;
-
-			&:hover {
-				color: darken($green, 8%);
-			}
 		}
 	}
 
