@@ -94,6 +94,12 @@
         max-height: 500px;
         padding: 20px;
         overflow: hidden;
+
+        input.name {
+            &.is-danger {
+                border-color: $red;
+            }
+        }
     }
 
     .modal-body {

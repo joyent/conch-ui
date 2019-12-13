@@ -85,6 +85,34 @@
                             @input="!deviceSku ? resetErrors() : null"
                         />
                     </div>
+                    <label class="label">Links</label>
+                    <div class="control">
+                        <input
+                            type="text"
+                            class="input"
+                            :class="{
+                                'is-success': isSuccess,
+                            }"
+                            placeholder="Device Link"
+                            v-model.trim="deviceLinkOne"
+                            :readonly="setInputReadOnly ? true : false"
+                            @input="!deviceLinkOne ? resetErrors() : null"
+                            style="margin-bottom: 10px;"
+                        />
+                    </div>
+                    <div class="control">
+                        <input
+                            type="text"
+                            class="input"
+                            :class="{
+                                'is-success': isSuccess,
+                            }"
+                            placeholder="Device Link"
+                            v-model.trim="deviceLinkTwo"
+                            :readonly="setInputReadOnly ? true : false"
+                            @input="!deviceLinkTwo ? resetErrors() : null"
+                        />
+                    </div>
                 </template>
             </div>
             <div class="content-footer">
@@ -155,6 +183,8 @@ export default {
     data() {
         return {
             creatingNewDevice: false,
+            deviceLinkOne: '',
+            deviceLinkTwo: '',
             deviceSku: '',
             isActive: true,
             isInputLoading: false,
@@ -189,7 +219,8 @@ export default {
                 createDeviceAddToBuild(
                     this.currentBuild.id,
                     serialNumber,
-                    deviceSku
+                    deviceSku,
+                    this.links
                 ).then(() => {
                     this.isSuccess = true;
                     this.isButtonLoading = false;
