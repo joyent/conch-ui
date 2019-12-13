@@ -26,9 +26,12 @@
                     </template>
                 </a>
             </div>
-            <i class="material-icons create-build" @click="createBuild()">
-                add_circle
-            </i>
+            <a
+                class="button is-success create-organization"
+                @click="createBuild()"
+            >
+                Create a Build
+            </a>
         </div>
         <div class="cards grid-view" v-if="activeView === 'grid'">
             <div class="card" v-for="build in filteredBuilds" :key="build.name">

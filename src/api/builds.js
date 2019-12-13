@@ -81,11 +81,12 @@ export const addUserToBuild = (buildId, userId, role) => {
  *
  * @type {POST}
  * @param {String} buildId                  The ID of the build being updated
- * @param {String} serial_number            The serial number of the device being created
- * @param {String} sku                      The SKU of the device being created
+ * @param {String} serial_number            The serial number of the device
+ * @param {String} sku                      The SKU of the device
+ * @param {Array} links                     An array of relevant links for the device
  * @return {Response Object}
  */
-export const createDeviceAddToBuild = (buildId, serial_number, sku) => {
+export const createDeviceAddToBuild = (buildId, serial_number, sku, links) => {
     return requestWithToken({
         method: 'POST',
         url: `/build/${buildId}/device`,
@@ -93,6 +94,7 @@ export const createDeviceAddToBuild = (buildId, serial_number, sku) => {
             {
                 sku,
                 serial_number,
+                links,
             },
         ],
     });
