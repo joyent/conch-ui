@@ -38,7 +38,7 @@ export default {
         trailColor: {
             type: String,
             required: false,
-            default: '#eee'
+            default: '#eee',
         },
         trailWidth: {
             type: Number,

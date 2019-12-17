@@ -107,13 +107,14 @@ export const createDeviceAddToBuild = (buildId, serial_number, sku, links) => {
  * @param {String} name                     The name of the build
  * @param {String} description              The description of the build
  * @param {Array} admins                    An array of admin users for the build
+ * @param {String} started                  A string containing the start date of the build
  * @return {Response Object}
  */
-export const createBuild = (name, description, admins) => {
+export const createBuild = (name, description, admins, started) => {
     return requestWithToken({
         method: 'POST',
         url: '/build',
-        data: { name, description, admins },
+        data: { name, description, admins, started },
     });
 };
 

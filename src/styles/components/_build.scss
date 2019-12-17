@@ -1,4 +1,30 @@
 .build {
+	.message {
+		position: absolute;
+		left: 50%;
+		margin-left: -50px;
+		margin-bottom: 0;
+	}
+
+	.message, .message-header {
+		border-radius: 3px;
+		width: 300px;
+		z-index: 1000;
+	}
+
+	.message-header {
+		display: flex;
+		align-items: center;
+
+		i {
+			position: absolute;
+		}
+
+		p {
+			margin: 0 auto;
+		}
+	}
+
 	.box {
 		transition: all 0.2s ease-in-out;
 
@@ -42,10 +68,19 @@
 	.build-header {
 		display: flex;
 		align-items: center;
+		height: 42px;
 		margin-bottom: 6px;
 
 		.build-name {
+			flex-grow: 1;
 			margin: 0 10px 0 0;
+		}
+
+		.button {
+			height: 42px;
+			font-weight: bold;
+			padding-right: 20px;
+			padding-left: 20px;
 		}
 	}
 
