@@ -34,7 +34,7 @@
             </a>
         </div>
         <div class="cards grid-view" v-if="activeView === 'grid'">
-            <div class="card" v-for="build in filteredBuilds" :key="build.name">
+            <div class="card" v-for="build in filteredBuilds" :key="build.id">
                 <a @click="viewBuild(build.id)">
                     <div class="card-content">
                         <div class="build-progress">
@@ -69,21 +69,8 @@
                                     <p class="name is-size-5">
                                         {{ build.name }}
                                     </p>
-                                    <p
-                                        class="status"
-                                        :class="{
-                                            'has-text-info':
-                                                buildStatus(build) ===
-                                                'started',
-                                            'has-text-success':
-                                                buildStatus(build) ===
-                                                'completed',
-                                            'has-text-link':
-                                                buildStatus(build) ===
-                                                'created',
-                                        }"
-                                    >
-                                        {{ buildStatus(build) }}
+                                    <p class="status" :class="`${buildStatusClass(build)}`">
+                                        {{ buildStatusText(build) }}
                                     </p>
                                 </div>
                                 <div class="build-progress">
@@ -166,18 +153,23 @@ export default {
             return progress === 100 ? this.colors.green : this.colors.blue;
         },
         isEmpty,
-        buildStatus(build = null) {
-            if (!build) {
-                build = this.currentBuild;
+        buildStatusClass(build) {
+            if (build.completed) {
+                return 'has-text-success';
+            } else if (build.started) {
+                return 'has-text-info';
+            } else {
+                return 'has-text-link';
             }
-
+        },
+        buildStatusText(build) {
             if (build.completed) {
                 return 'completed';
             } else if (build.started) {
                 return 'started';
+            } else {
+                return 'created';
             }
-
-            return 'created';
         },
         selectBuild(build) {
             if (this.selectedBuild.name === build.name) {
