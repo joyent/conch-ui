@@ -112,9 +112,6 @@
                                     </span>
                                 </td>
                                 <td class="phase">{{ rack.phase }}</td>
-                                <td class="type">
-                                    <span>Type</span>
-                                </td>
                                 <td class="remove-item has-text-right">
                                     <i
                                         class="fas fa-trash-alt"
@@ -176,7 +173,7 @@ export default {
         return {
             addingRack: false,
             datacenterRoomFilter: 'all',
-            headers: ['name', 'datacenter room', 'phase', 'type'],
+            headers: ['name', 'datacenter room', 'phase'],
             phaseFilter: 'all',
             phases: [
                 'Installation',

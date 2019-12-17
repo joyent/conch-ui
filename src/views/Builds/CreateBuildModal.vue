@@ -2,716 +2,837 @@
     <div class="create-build-modal">
         <div class="modal is-active" v-if="creatingBuild && !showSuccessModal">
             <div class="modal-background" @click="closeModal()"></div>
-            <div class="modal-content">
-                <div class="notification">
-                    <div class="columns">
-                        <div class="column is-4 step-details">
-                            <div class="step-content">
-                                <p class="title is-marginless">
-                                    {{ currentStepTitle }}
-                                </p>
-                                <hr />
-                                <template v-if="activeStep === 1">
-                                    <p>Let's get started!</p>
-                                    <br />
-                                    <p>
-                                        Give the new build a name and description.
-                                    </p>
-                                </template>
-                                <template v-if="activeStep === 2">
-                                    <p>Add some members to the build.</p>
-                                    <br />
-                                    <p
-                                        :class="{
-                                            'has-text-danger has-text-weight-bold':
-                                                errors.adminUserCount,
-                                        }"
-                                    >
-                                        Every build must have at least one user with
-                                        admin privileges.
-                                    </p>
-                                </template>
-                                <template v-if="activeStep === 3">
-                                    <p>Add some racks to the build.</p>
-                                    <br />
-                                    <p>
-                                        When a rack is associated with a build, it's
-                                        devices are also made a part of the build.
-                                    </p>
-                                </template>
-                                <template v-if="activeStep === 4">
-                                    <p>Add some devices to the build.</p>
-                                </template>
-                                <template v-if="activeStep === 5">
-                                    <p>Last step!</p>
-                                    <br />
-                                    <p>
-                                        Review the details of the new build and make any
-                                        changes necessary.
-                                    </p>
-                                </template>
-                            </div>
-                            <div class="steps">
-                                <p class="step-text">Step {{ activeStep }}</p>
-                                <div class="dots">
-                                    <span
-                                        class="dot"
-                                        :class="{
-                                            'is-active': activeStep === 1,
-                                        }"
-                                        @click="activateStep(1)"
-                                    ></span>
-                                    <span
-                                        class="dot"
-                                        :class="{
-                                            'is-active': activeStep === 2,
-                                        }"
-                                        @click="activateStep(2)"
-                                    ></span>
-                                    <span
-                                        class="dot"
-                                        :class="{
-                                            'is-active': activeStep === 3,
-                                        }"
-                                        @click="activateStep(3)"
-                                    ></span>
-                                    <span
-                                        class="dot"
-                                        :class="{
-                                            'is-active': activeStep === 4,
-                                        }"
-                                        @click="activateStep(4)"
-                                    ></span>
-                                    <span
-                                        class="dot"
-                                        :class="{
-                                            'is-active': activeStep === 5,
-                                        }"
-                                        @click="activateStep(5)"
-                                    ></span>
-                                </div>
+            <div class="modal-content notification">
+                <div class="modal-heading">
+                    <p class="modal-title">
+                        <template v-if="activeStep === 1">
+                            Create Build
+                        </template>
+                        <template v-else-if="activeStep === 2">
+                            Add Users to Build
+                        </template>
+                        <template v-else-if="activeStep === 3">
+                            Add Organizations to Build
+                        </template>
+                        <template v-else-if="activeStep === 4">
+                            Add Racks to Build
+                        </template>
+                        <template v-else-if="activeStep === 5">
+                            Add Devices to Build
+                        </template>
+                        <template v-else-if="activeStep === 6">
+                            Review Build Details
+                        </template>
+                    </p>
+                    <i class="material-icons close" @click="closeModal()">
+                        close
+                    </i>
+                </div>
+                <article
+                    class="message"
+                    :class="{
+                        'is-danger':
+                            hasItemError || emptyBuildName || emptyAdminUsers,
+                        'is-success': itemValidated,
+                    }"
+                    v-if="
+                        emptyBuildName ||
+                            emptyAdminUsers ||
+                            hasItemError ||
+                            itemValidated
+                    "
+                >
+                    <div class="message-header">
+                        <p v-if="emptyBuildName">
+                            Build Name is a required field.
+                        </p>
+                        <p v-else-if="emptyAdminUsers">
+                            Builds must have at least one user with admin
+                            privileges.
+                        </p>
+                        <p v-else-if="itemUnknown">
+                            Unknown
+                            <span class="is-capitalized">
+                                {{ errorItemType }}
+                            </span>
+                        </p>
+                        <p v-else-if="itemDuplicated">
+                            This {{ errorItemType }} is already being added to
+                            the build.
+                        </p>
+                        <p v-else-if="itemValidated">
+                            {{ itemValidated }} will be added to the build.
+                        </p>
+                        <button
+                            class="delete"
+                            @click="resetErrors()"
+                            aria-label="delete"
+                        ></button>
+                    </div>
+                </article>
+                <div class="modal-body">
+                    <div class="step-body" v-if="activeStep === 1">
+                        <div class="field build-name">
+                            <label class="label">Name</label>
+                            <div class="control has-icons-right">
+                                <input
+                                    class="input name is-marginless"
+                                    :class="{ 'is-danger': emptyBuildName }"
+                                    v-model="name"
+                                    type="text"
+                                    placeholder="Build name"
+                                    @input="resetErrors()"
+                                />
+                                <span
+                                    class="icon is-small is-right has-text-danger"
+                                    v-if="emptyBuildName"
+                                >
+                                    <i class="material-icons">error</i>
+                                </span>
                             </div>
                         </div>
-                        <div class="column build-details">
-                            <div class="modal-heading">
-                                <p class="modal-title">Create Build</p>
-                                <i class="material-icons close" @click="closeModal()">
-                                    close
-                                </i>
-                            </div>
-                            <div class="modal-body">
-                                <transition name="fade">
-                                    <div class="step-body" v-if="activeStep === 1">
-                                        <div class="field">
-                                            <label class="label">Name</label>
-                                            <div
-                                                class="control has-icons-right"
-                                            >
-                                                <input
-                                                    class="input name is-marginless"
-                                                    :class="{
-                                                        'is-danger': errors.name,
-                                                    }"
-                                                    v-model="name"
-                                                    type="text"
-                                                    placeholder="Give your build a name"
-                                                />
-                                                <span
-                                                    class="icon is-small is-right has-text-danger"
-                                                    v-if="errors.name"
-                                                >
-                                                    <i class="material-icons">
-                                                        error
-                                                    </i>
-                                                </span>
-                                            </div>
-                                            <p
-                                                class="error has-text-danger is-size-6"
-                                                v-if="errors.name"
-                                                style="padding-top: 5px;"
-                                            >
-                                                This field is required.
-                                            </p>
-                                        </div>
-                                        <div class="field">
-                                            <label class="label">
-                                                Description
-                                            </label>
-                                            <textarea
-                                                class="textarea has-fixed-size"
-                                                name="description"
-                                                maxlength="165"
-                                                v-model="description"
-                                                placeholder="Add a helpful description of your build"
-                                            ></textarea>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="step-body"
-                                        v-else-if="activeStep === 2"
-                                    >
-                                        <div class="item-table">
-                                            <table class="table is-fullwidth">
-                                                <tbody>
-                                                    <tr class="row search">
-                                                        <td colspan="3">
-                                                            <p
-                                                                class="control has-icons-left"
-                                                            >
-                                                                <input
-                                                                    class="input search is-marginless"
-                                                                    v-model="
-                                                                        searchText
-                                                                    "
-                                                                    placeholder="Search users"
-                                                                    type="text"
-                                                                />
-                                                                <span
-                                                                    class="icon is-left"
-                                                                >
-                                                                    <i
-                                                                        class="material-icons"
-                                                                    >
-                                                                        search
-                                                                    </i>
-                                                                </span>
-                                                            </p>
-                                                        </td>
-                                                    </tr>
-                                                    <template
-                                                        v-if="filteredItems('members').length > 0"
-                                                    >
-                                                        <tr
-                                                            class="row item"
-                                                            :class="{
-                                                                'is-selected': isItemSelected(
-                                                                    user.id,
-                                                                    'members'
-                                                                ),
-                                                            }"
-                                                            v-for="user in filteredItems(
-                                                                'members'
-                                                            )"
-                                                            :key="user.id"
-                                                        >
-                                                            <template
-                                                                v-if="isItemSelected(user.id, 'members')"
-                                                            >
-                                                                <td class="item-name">
-                                                                    <span
-                                                                        class="name has-text-grey-light"
-                                                                    >
-                                                                        {{ user.name }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="role-select">
-                                                                    <div
-                                                                        class="select role"
-                                                                    >
-                                                                        <select
-                                                                            @change="
-                                                                                updateRole(
-                                                                                    user.id,
-                                                                                    $event
-                                                                                )
-                                                                            "
-                                                                        >
-                                                                            <option
-                                                                                value="admin"
-                                                                                :selected="user.role === 'admin'"
-                                                                            >
-                                                                                Admin
-                                                                            </option>
-                                                                            <option
-                                                                                value="rw"
-                                                                                :selected="user.role === 'rw'"
-                                                                            >
-                                                                                Read / Write
-                                                                            </option>
-                                                                            <option
-                                                                                value="ro"
-                                                                                :selected="user.role === 'ro'"
-                                                                            >
-                                                                                Read Only
-                                                                            </option>
-                                                                        </select>
-                                                                    </div>
-                                                                </td>
-                                                                <td class="action">
-                                                                    <i
-                                                                        class="material-icons has-text-success add-item"
-                                                                        v-if="
-                                                                            showRemoveIcon !==
-                                                                                user.id
-                                                                        "
-                                                                        @mouseover="
-                                                                            showRemoveIcon =
-                                                                                user.id
-                                                                        "
-                                                                    >
-                                                                        check
-                                                                    </i>
-                                                                    <i
-                                                                        class="material-icons has-text-danger remove-item"
-                                                                        v-if="
-                                                                            showRemoveIcon ===
-                                                                                user.id
-                                                                        "
-                                                                        @click="removeItem(user.id, 'members')"
-                                                                        @mouseleave="
-                                                                            showRemoveIcon =
-                                                                                ''
-                                                                        "
-                                                                    >
-                                                                        close
-                                                                    </i>
-                                                                </td>
-                                                            </template>
-                                                            <template v-else>
-                                                                <td class="item-name">
-                                                                    <span>
-                                                                        {{ user.name }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="action">
-                                                                    <i
-                                                                        class="material-icons has-text-success add-item"
-                                                                        @click="addItem(user, 'members')"
-                                                                    >
-                                                                        add
-                                                                    </i>
-                                                                </td>
-                                                            </template>
-                                                        </tr>
-                                                    </template>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="step-body"
-                                        v-else-if="activeStep === 3"
-                                    >
-                                        <div class="item-table racks">
-                                            <table class="table is-fullwidth">
-                                                <tbody>
-                                                    <tr class="row search">
-                                                        <td colspan="3">
-                                                            <p
-                                                                class="control has-icons-left"
-                                                            >
-                                                                <input
-                                                                    class="input search is-marginless"
-                                                                    v-model="searchText"
-                                                                    placeholder="Search..."
-                                                                    type="text"
-                                                                />
-                                                                <span class="icon is-left">
-                                                                    <i class="material-icons">
-                                                                        search
-                                                                    </i>
-                                                                </span>
-                                                            </p>
-                                                        </td>
-                                                    </tr>
-                                                    <template
-                                                        v-if="filteredItems('racks').length > 0"
-                                                    >
-                                                        <tr
-                                                            class="row item"
-                                                            :class="{
-                                                                'is-selected': isItemSelected(
-                                                                    rack.id,
-                                                                    'racks'
-                                                                ),
-                                                            }"
-                                                            v-for="rack in filteredItems(
-                                                                'racks'
-                                                            )"
-                                                            :key="rack.id"
-                                                        >
-                                                            <template
-                                                                v-if="isItemSelected(rack.id, 'racks')"
-                                                            >
-                                                                <td class="item-name">
-                                                                    <span class="name has-text-grey-light">
-                                                                        {{ rack.name }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="datacenter-room has-text-grey-light">
-                                                                    <span>
-                                                                        {{ getDatacenterRoom(rack.datacenter_room_id) }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="action">
-                                                                    <i
-                                                                        class="material-icons has-text-success add-item"
-                                                                        v-if="showRemoveIcon !== rack.id"
-                                                                        @mouseover="showRemoveIcon = rack.id"
-                                                                    >
-                                                                        check
-                                                                    </i>
-                                                                    <i
-                                                                        class="material-icons has-text-danger remove-item"
-                                                                        v-if="showRemoveIcon === rack.id"
-                                                                        @click="removeItem(rack.id, 'racks')"
-                                                                        @mouseleave="showRemoveIcon = ''"
-                                                                    >
-                                                                        close
-                                                                    </i>
-                                                                </td>
-                                                            </template>
-                                                            <template v-else>
-                                                                <td class="item-name">
-                                                                    <span>
-                                                                        {{ rack.name }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="datacenter-room has-text-grey-light">
-                                                                    <span>
-                                                                        {{ getDatacenterRoom(rack.datacenter_room_id) }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="action">
-                                                                    <i
-                                                                        class="material-icons has-text-success add-item"
-                                                                        @click="addItem(rack, 'racks')"
-                                                                    >
-                                                                        add
-                                                                    </i>
-                                                                </td>
-                                                            </template>
-                                                        </tr>
-                                                    </template>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="step-body"
-                                        v-else-if="activeStep === 4"
-                                    >
-                                        <div class="item-table">
-                                            <table class="table is-fullwidth">
-                                                <tbody>
-                                                    <tr class="row search">
-                                                        <td colspan="3">
-                                                            <p
-                                                                class="control has-icons-left"
-                                                            >
-                                                                <input
-                                                                    class="input search is-marginless"
-                                                                    v-model="searchText"
-                                                                    placeholder="Search..."
-                                                                    type="text"
-                                                                />
-                                                                <span class="icon is-left">
-                                                                    <i class="material-icons">
-                                                                        search
-                                                                    </i>
-                                                                </span>
-                                                            </p>
-                                                        </td>
-                                                    </tr>
-                                                    <template
-                                                        v-if="filteredItems('devices').length > 0"
-                                                    >
-                                                        <tr
-                                                            class="row item"
-                                                            :class="{
-                                                                'is-selected': isItemSelected(
-                                                                    device.id,
-                                                                    'devices'
-                                                                ),
-                                                            }"
-                                                            v-for="device in filteredItems(
-                                                                'devices'
-                                                            )"
-                                                            :key="device.id"
-                                                        >
-                                                            <template v-if="isItemSelected(device.id, 'devices')">
-                                                                <td class="item-name">
-                                                                    <span class="name has-text-grey-light">
-                                                                        {{ device.serial_number }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="action">
-                                                                    <i
-                                                                        class="material-icons has-text-success add-item"
-                                                                        v-if="showRemoveIcon !== device.id"
-                                                                        @mouseover="showRemoveIcon = device.id"
-                                                                    >
-                                                                        check
-                                                                    </i>
-                                                                    <i
-                                                                        class="material-icons has-text-danger remove-item"
-                                                                        v-if="showRemoveIcon === device.id"
-                                                                        @click="removeItem(device.id, 'devices')"
-                                                                        @mouseleave="showRemoveIcon = ''"
-                                                                    >
-                                                                        close
-                                                                    </i>
-                                                                </td>
-                                                            </template>
-                                                            <template v-else>
-                                                                <td class="item-name">
-                                                                    <span>
-                                                                        {{ device.serial_number }}
-                                                                    </span>
-                                                                </td>
-                                                                <td class="action">
-                                                                    <i
-                                                                        class="material-icons has-text-success add-item"
-                                                                        @click="addItem(device, 'devices')"
-                                                                    >
-                                                                        add
-                                                                    </i>
-                                                                </td>
-                                                            </template>
-                                                        </tr>
-                                                    </template>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="step-body review"
-                                        v-else-if="activeStep === 5"
-                                    >
-                                        <div class="review-item details">
-                                            <div
-                                                class="review-item-title"
-                                                :class="{
-                                                    'is-expanded': isExpandedDetails,
-                                                }"
-                                                @click="
-                                                    isExpandedDetails = !isExpandedDetails
-                                                "
-                                            >
-                                                <i
-                                                    class="material-icons details"
-                                                >
-                                                    subject
-                                                </i>
-                                                <p class="item-title">
-                                                    Details
-                                                </p>
-                                                <i
-                                                    class="material-icons chevron"
-                                                >
-                                                    chevron_right
-                                                </i>
-                                            </div>
-                                            <div
-                                                class="review-item-content"
-                                                v-if="isExpandedDetails"
-                                            >
-                                                <div class="item-content-row">
-                                                    {{ name }}
-                                                </div>
-                                                <div
-                                                    class="item-content-row"
-                                                    v-if="description"
-                                                >
-                                                    {{ description }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="review-item members">
-                                            <div
-                                                class="review-item-title"
-                                                :class="{
-                                                    'is-expanded': isExpandedMembers,
-                                                }"
-                                                @click="
-                                                    isExpandedMembers = !isExpandedMembers
-                                                "
-                                            >
-                                                <i
-                                                    class="material-icons members"
-                                                >
-                                                    group
-                                                </i>
-                                                <p class="item-title">
-                                                    Members
-                                                </p>
-                                                <i
-                                                    class="material-icons chevron"
-                                                >
-                                                    chevron_right
-                                                </i>
-                                            </div>
-                                            <div
-                                                class="review-item-content"
-                                                v-if="
-                                                    isExpandedMembers &&
-                                                        selectedMembers.length
-                                                "
-                                            >
-                                                <div
-                                                    class="item-content-row"
-                                                    v-for="user in selectedMembers"
-                                                    :key="user.id"
-                                                >
-                                                    {{ user.email }}
-                                                </div>
-                                            </div>
-                                            <div
-                                                class="review-item-content"
-                                                v-else-if="
-                                                    isExpandedMembers &&
-                                                        !selectedMembers.length
-                                                "
-                                            >
-                                                <div
-                                                    class="item-content-row empty"
-                                                >
-                                                    No members selected
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="review-item racks">
-                                            <div
-                                                class="review-item-title"
-                                                :class="{
-                                                    'is-expanded': isExpandedRacks,
-                                                }"
-                                                @click="
-                                                    isExpandedRacks = !isExpandedRacks
-                                                "
-                                            >
-                                                <i
-                                                    class="material-icons racks"
-                                                >
-                                                    storage
-                                                </i>
-                                                <p class="item-title">
-                                                    Racks
-                                                </p>
-                                                <i
-                                                    class="material-icons chevron"
-                                                >
-                                                    chevron_right
-                                                </i>
-                                            </div>
-                                            <div
-                                                class="review-item-content"
-                                                v-if="
-                                                    isExpandedRacks &&
-                                                        selectedRacks.length
-                                                "
-                                            >
-                                                <div
-                                                    class="item-content-row"
-                                                    v-for="rack in selectedRacks"
-                                                    :key="rack.id"
-                                                >
-                                                    {{ rack.name }}
-                                                </div>
-                                            </div>
-                                            <div
-                                                class="review-item-content"
-                                                v-else-if="
-                                                    isExpandedRacks &&
-                                                        !selectedRacks.length
-                                                "
-                                            >
-                                                <div
-                                                    class="item-content-row empty"
-                                                >
-                                                    No racks selected
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="review-item devices">
-                                            <div
-                                                class="review-item-title"
-                                                :class="{
-                                                    'is-expanded': isExpandedDevices,
-                                                }"
-                                                @click="
-                                                    isExpandedDevices = !isExpandedDevices
-                                                "
-                                            >
-                                                <i
-                                                    class="material-icons devices"
-                                                >
-                                                    dns
-                                                </i>
-                                                <p class="item-title">
-                                                    Devices
-                                                </p>
-                                                <i
-                                                    class="material-icons chevron"
-                                                >
-                                                    chevron_right
-                                                </i>
-                                            </div>
-                                            <div
-                                                class="review-item-content"
-                                                v-if="
-                                                    isExpandedDevices &&
-                                                        selectedDevices.length
-                                                "
-                                            >
-                                                <div
-                                                    class="item-content-row"
-                                                    v-for="device in selectedDevices"
-                                                    :key="device.id"
-                                                >
-                                                    {{ device.serial_number }}
-                                                </div>
-                                            </div>
-                                            <div
-                                                class="review-item-content"
-                                                v-else-if="
-                                                    isExpandedDevices &&
-                                                        !selectedDevices.length
-                                                "
-                                            >
-                                                <div
-                                                    class="item-content-row empty"
-                                                >
-                                                    No devices selected
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </transition>
-                            </div>
-                            <div class="modal-footer" v-if="hasStepDataLoaded">
-                                <div
-                                    class="buttons"
-                                    :class="{ 'first-step': activeStep === 1 }"
-                                    v-if="activeStep < 5"
-                                >
-                                    <a
-                                        class="button previous is-link"
-                                        @click="activeStep--"
-                                        v-if="activeStep !== 1"
-                                    >
-                                        Previous
-                                    </a>
-                                    <a
-                                        class="button next is-info"
-                                        @click="nextStep()"
-                                    >
-                                        Next
-                                    </a>
-                                </div>
+                        <div class="field build-description">
+                            <label class="label">Description</label>
+                            <textarea
+                                class="textarea has-fixed-size"
+                                name="description"
+                                maxlength="165"
+                                v-model="description"
+                                placeholder="Build description"
+                            ></textarea>
+                        </div>
+                        <div class="start-date">
+                            <label class="label">Start Date</label>
+                            <div class="field has-addons">
+                                <v-date-picker
+                                    is-dark
+                                    v-model="startDate"
+                                    :attributes="startDatePickerAttrs"
+                                    :input-props="{
+                                        class: 'input',
+                                        placeholder: 'Set start date later',
+                                        readonly: true,
+                                    }"
+                                    :locale="{
+                                        masks: {
+                                            dayPopover: 'WWWW, MMMM DD, YYYY',
+                                            L: 'YYYY/MM/DD',
+                                        },
+                                    }"
+                                    :popover="{
+                                        placement: 'top-start',
+                                        visibility: 'click',
+                                    }"
+                                />
                                 <a
-                                    class="button is-fullwidth is-success has-text-weight-bold create-build"
-                                    :class="{ 'is-loading': isLoading }"
-                                    @click="createBuild()"
-                                    style="border-radius: 3px; font-weight: bold;"
-                                    :disabled="getAdminUserCount() === 0"
-                                    v-else
+                                    class="button is-info clear"
+                                    @click="startDate = null"
                                 >
-                                    Create Build
+                                    Clear
                                 </a>
                             </div>
                         </div>
                     </div>
+                    <div class="step-body" v-else-if="activeStep === 2">
+                        <p class="control has-icons-left search">
+                            <input
+                                class="input is-marginless"
+                                v-model="searchText"
+                                placeholder="Search..."
+                                type="text"
+                            />
+                            <span class="icon is-left">
+                                <i class="material-icons">search</i>
+                            </span>
+                        </p>
+                        <div class="item-table">
+                            <table class="table is-fullwidth">
+                                <tbody>
+                                    <template
+                                        v-if="
+                                            filteredItems('member').length > 0
+                                        "
+                                    >
+                                        <tr
+                                            class="row item"
+                                            :class="{
+                                                'is-selected': isItemSelected(
+                                                    user.id,
+                                                    'member'
+                                                ),
+                                            }"
+                                            v-for="user in filteredItems(
+                                                'member'
+                                            )"
+                                            :key="user.id"
+                                        >
+                                            <template
+                                                v-if="
+                                                    isItemSelected(
+                                                        user.id,
+                                                        'member'
+                                                    )
+                                                "
+                                            >
+                                                <td class="item-name">
+                                                    <span
+                                                        class="name has-text-grey-light"
+                                                    >
+                                                        {{ user.name }}
+                                                    </span>
+                                                </td>
+                                                <td class="role-select">
+                                                    <div class="select role">
+                                                        <select
+                                                            @change="
+                                                                updateRole(
+                                                                    'member',
+                                                                    user.id,
+                                                                    $event
+                                                                )
+                                                            "
+                                                        >
+                                                            <option
+                                                                value="admin"
+                                                                :selected="
+                                                                    user.role ===
+                                                                        'admin'
+                                                                "
+                                                            >
+                                                                Admin
+                                                            </option>
+                                                            <option
+                                                                value="rw"
+                                                                :selected="
+                                                                    user.role ===
+                                                                        'rw'
+                                                                "
+                                                            >
+                                                                Read / Write
+                                                            </option>
+                                                            <option
+                                                                value="ro"
+                                                                :selected="
+                                                                    user.role ===
+                                                                        'ro'
+                                                                "
+                                                            >
+                                                                Read Only
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                                <td class="action">
+                                                    <i
+                                                        class="material-icons has-text-success add-item"
+                                                        v-if="
+                                                            showRemoveIcon !==
+                                                                user.id
+                                                        "
+                                                        @mouseover="
+                                                            showRemoveIcon =
+                                                                user.id
+                                                        "
+                                                    >
+                                                        check
+                                                    </i>
+                                                    <i
+                                                        class="material-icons has-text-danger remove-item"
+                                                        v-if="
+                                                            showRemoveIcon ===
+                                                                user.id
+                                                        "
+                                                        @click="
+                                                            removeItem(user.id, 'member')
+                                                        "
+                                                        @mouseleave="
+                                                            showRemoveIcon = ''
+                                                        "
+                                                    >
+                                                        close
+                                                    </i>
+                                                </td>
+                                            </template>
+                                            <template v-else>
+                                                <td class="item-name">
+                                                    <span>{{ user.name }}</span>
+                                                </td>
+                                                <td class="action">
+                                                    <i
+                                                        class="material-icons has-text-success add-item"
+                                                        @click="addItem(user, 'member')"
+                                                    >
+                                                        add
+                                                    </i>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                    <tr
+                                        class="row item no-results"
+                                        v-else-if="
+                                            filteredItems('member').length ===
+                                                0 && searchText
+                                        "
+                                    >
+                                        <td class="has-text-centered">
+                                            No search results
+                                        </td>
+                                    </tr>
+                                    <Spinner v-else />
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="step-body" v-if="activeStep === 3">
+                        <p class="control has-icons-left search">
+                            <input
+                                class="input is-marginless"
+                                v-model="searchText"
+                                placeholder="Search..."
+                                type="text"
+                            />
+                            <span class="icon is-left">
+                                <i class="material-icons">search</i>
+                            </span>
+                        </p>
+                        <div class="item-table">
+                            <table class="table is-fullwidth">
+                                <tbody>
+                                    <template
+                                        v-if="
+                                            filteredItems('organization')
+                                                .length > 0
+                                        "
+                                    >
+                                        <tr
+                                            class="row item"
+                                            :class="{
+                                                'is-selected': isItemSelected(
+                                                    organization.id,
+                                                    'organization'
+                                                ),
+                                            }"
+                                            v-for="organization in filteredItems(
+                                                'organization'
+                                            )"
+                                            :key="organization.id"
+                                        >
+                                            <template
+                                                v-if="
+                                                    isItemSelected(
+                                                        organization.id,
+                                                        'organization'
+                                                    )
+                                                "
+                                            >
+                                                <td class="item-name">
+                                                    <span
+                                                        class="name has-text-grey-light"
+                                                    >
+                                                        {{ organization.name }}
+                                                    </span>
+                                                </td>
+                                                <td class="role-select">
+                                                    <div class="select role">
+                                                        <select
+                                                            @change="
+                                                                updateRole(
+                                                                    'organization',
+                                                                    organization.id,
+                                                                    $event
+                                                                )
+                                                            "
+                                                        >
+                                                            <option
+                                                                value="admin"
+                                                                :selected="
+                                                                    organization.role ===
+                                                                        'admin'
+                                                                "
+                                                            >
+                                                                Admin
+                                                            </option>
+                                                            <option
+                                                                value="rw"
+                                                                :selected="
+                                                                    organization.role ===
+                                                                        'rw'
+                                                                "
+                                                            >
+                                                                Read &#47; Write
+                                                            </option>
+                                                            <option
+                                                                value="ro"
+                                                                :selected="
+                                                                    organization.role ===
+                                                                        'ro'
+                                                                "
+                                                            >
+                                                                Read Only
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                                <td class="action">
+                                                    <i
+                                                        class="material-icons has-text-success add-item"
+                                                        v-if="
+                                                            showRemoveIcon !==
+                                                                organization.id
+                                                        "
+                                                        @mouseover="
+                                                            showRemoveIcon =
+                                                                organization.id
+                                                        "
+                                                    >
+                                                        check
+                                                    </i>
+                                                    <i
+                                                        class="material-icons has-text-danger remove-item"
+                                                        v-if="
+                                                            showRemoveIcon ===
+                                                                organization.id
+                                                        "
+                                                        @click="
+                                                            removeItem(organization.id, 'organization')
+                                                        "
+                                                        @mouseleave="
+                                                            showRemoveIcon = ''
+                                                        "
+                                                    >
+                                                        close
+                                                    </i>
+                                                </td>
+                                            </template>
+                                            <template v-else>
+                                                <td class="item-name">
+                                                    <span>
+                                                        {{ organization.name }}
+                                                    </span>
+                                                </td>
+                                                <td class="action">
+                                                    <i
+                                                        class="material-icons has-text-success add-item"
+                                                        @click="addItem(organization, 'organization')"
+                                                    >
+                                                        add
+                                                    </i>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                    <tr
+                                        class="row item no-results"
+                                        v-else-if="
+                                            filteredItems('organization')
+                                                .length === 0 && searchText
+                                        "
+                                    >
+                                        <td class="has-text-centered">
+                                            No search results
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="step-body" v-if="activeStep === 4">
+                        <div class="rack-data">
+                            <div class="rack-name-input">
+                                <label class="label">Rack Name</label>
+                                <div
+                                    class="control"
+                                    :class="{
+                                        'has-icons-right': hasItemError,
+                                    }"
+                                >
+                                    <input
+                                        type="text"
+                                        class="input rack-name"
+                                        :class="{ 'is-danger': hasItemError }"
+                                        placeholder="Enter Rack Name"
+                                        v-model.trim="rackName"
+                                        :readonly="
+                                            setInputReadOnly ? true : false
+                                        "
+                                        @blur="inputBlurred()"
+                                        @input="
+                                            !rackName ? resetErrors() : null
+                                        "
+                                    />
+                                    <span
+                                        class="icon is-small is-right"
+                                        v-if="hasItemError"
+                                    >
+                                        <i
+                                            class="material-icons error has-text-danger"
+                                        >
+                                            error
+                                        </i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="datacenter-room-input">
+                                <label class="label">Datacenter Room</label>
+                                <div class="select">
+                                    <select v-model="datacenterRoom">
+                                        <option disabled selected :value="''">
+                                            Select a Datacenter Room
+                                        </option>
+                                        <option
+                                            v-for="room in sortedDatacenterRooms"
+                                            :key="room.id"
+                                            :value="room.az"
+                                        >
+                                            {{ room.az }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <a
+                            class="button is-success validate-rack"
+                            :class="{ 'is-loading': isLoading }"
+                            @click="validateRack()"
+                        >
+                            Validate Rack
+                        </a>
+                        <div class="review-item racks">
+                            <div class="review-item-title">
+                                <i class="material-icons details">storage</i>
+                                <p class="item-title">Validated Racks</p>
+                            </div>
+                            <div class="review-item-content">
+                                <template v-if="selectedRacks.length">
+                                    <div
+                                        class="item-content-row"
+                                        v-for="rack in selectedRacks"
+                                        :key="rack.id"
+                                    >
+                                        <p class="rack-name">
+                                            {{ rack.name }}
+                                        </p>
+                                        <p
+                                            class="datacenter-room has-text-grey"
+                                        >
+                                            {{
+                                                getDatacenterRoom(
+                                                    rack.datacenter_room_id
+                                                )
+                                            }}
+                                        </p>
+                                    </div>
+                                </template>
+                                <div
+                                    class="item-content-row empty-selection"
+                                    v-else
+                                >
+                                    <p>
+                                        Validated Racks will be displayed here.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-body" v-if="activeStep === 5">
+                        <div class="device-data">
+                            <label class="label">
+                                Device Serial Number
+                            </label>
+                            <div
+                                class="control"
+                                :class="{
+                                    'has-icons-right': hasItemError,
+                                }"
+                            >
+                                <input
+                                    type="text"
+                                    class="input device-serial-number"
+                                    :class="{ 'is-danger': hasItemError }"
+                                    placeholder="Enter Device Serial Number"
+                                    v-model.trim="serialNumber"
+                                    :readonly="setInputReadOnly ? true : false"
+                                    @blur="inputBlurred()"
+                                    @input="
+                                        !serialNumber ? resetErrors() : null
+                                    "
+                                />
+                                <span
+                                    class="icon is-small is-right"
+                                    v-if="hasItemError"
+                                >
+                                    <i
+                                        class="material-icons error has-text-danger"
+                                    >
+                                        error
+                                    </i>
+                                </span>
+                            </div>
+                        </div>
+                        <a
+                            class="button is-success validate-device"
+                            :class="{ 'is-loading': isLoading }"
+                            @click="validateDevice()"
+                        >
+                            Validate Device
+                        </a>
+                        <div class="review-item devices">
+                            <div class="review-item-title">
+                                <i class="material-icons details">dns</i>
+                                <p class="item-title">Validated Devices</p>
+                            </div>
+                            <div class="review-item-content">
+                                <template v-if="selectedDevices.length">
+                                    <div
+                                        class="item-content-row"
+                                        v-for="device in selectedDevices"
+                                        :key="device.id"
+                                    >
+                                        <p class="rack-name">
+                                            {{ device.serial_number }}
+                                        </p>
+                                    </div>
+                                </template>
+                                <div
+                                    class="item-content-row empty-selection"
+                                    v-else
+                                >
+                                    <p>
+                                        Validated Devices will be displayed
+                                        here.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-body review" v-else-if="activeStep === 6">
+                        <div class="review-item details">
+                            <div
+                                class="review-item-title"
+                                :class="{ 'is-expanded': isExpandedDetails }"
+                                @click="isExpandedDetails = !isExpandedDetails"
+                            >
+                                <i class="material-icons details">subject</i>
+                                <p class="item-title">Details</p>
+                                <i class="material-icons chevron">
+                                    chevron_right
+                                </i>
+                            </div>
+                            <div
+                                class="review-item-content"
+                                v-if="isExpandedDetails"
+                            >
+                                <div class="item-content-row">
+                                    {{ name }}
+                                </div>
+                                <div class="item-content-row">
+                                    <span v-if="description">
+                                        {{ description }}
+                                    </span>
+                                    <span class="has-text-grey" v-else>
+                                        No description provided
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-item members">
+                            <div
+                                class="review-item-title"
+                                :class="{ 'is-expanded': isExpandedMembers }"
+                                @click="isExpandedMembers = !isExpandedMembers"
+                            >
+                                <i class="material-icons members">group</i>
+                                <p class="item-title">Members</p>
+                                <i class="material-icons chevron">
+                                    chevron_right
+                                </i>
+                            </div>
+                            <div
+                                class="review-item-content"
+                                v-if="
+                                    isExpandedMembers && selectedMembers.length
+                                "
+                            >
+                                <div
+                                    class="item-content-row"
+                                    v-for="member in selectedMembers"
+                                    :key="member.id"
+                                >
+                                    {{ member.email }}
+                                </div>
+                            </div>
+                            <div
+                                class="review-item-content"
+                                v-else-if="
+                                    isExpandedMembers && !selectedMembers.length
+                                "
+                            >
+                                <div class="item-content-row empty-review">
+                                    No members selected
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-item organizations">
+                            <div
+                                class="review-item-title"
+                                :class="{
+                                    'is-expanded': isExpandedOrganizations,
+                                }"
+                                @click="
+                                    isExpandedOrganizations = !isExpandedOrganizations
+                                "
+                            >
+                                <i class="material-icons members">
+                                    recent_actors
+                                </i>
+                                <p class="item-title">Organizations</p>
+                                <i class="material-icons chevron">
+                                    chevron_right
+                                </i>
+                            </div>
+                            <div
+                                class="review-item-content"
+                                v-if="
+                                    isExpandedOrganizations &&
+                                        selectedOrganizations.length
+                                "
+                            >
+                                <div
+                                    class="item-content-row"
+                                    v-for="organization in selectedOrganizations"
+                                    :key="organization.id"
+                                >
+                                    {{ organization.name }}
+                                </div>
+                            </div>
+                            <div
+                                class="review-item-content"
+                                v-else-if="
+                                    isExpandedOrganizations &&
+                                        !isExpandedOrganizations.length
+                                "
+                            >
+                                <div class="item-content-row empty-review">
+                                    No organizations selected
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-item racks">
+                            <div
+                                class="review-item-title"
+                                :class="{ 'is-expanded': isExpandedRacks }"
+                                @click="isExpandedRacks = !isExpandedRacks"
+                            >
+                                <i class="material-icons members">storage</i>
+                                <p class="item-title">Racks</p>
+                                <i class="material-icons chevron">
+                                    chevron_right
+                                </i>
+                            </div>
+                            <div
+                                class="review-item-content"
+                                v-if="isExpandedRacks && selectedRacks.length"
+                            >
+                                <div
+                                    class="item-content-row"
+                                    v-for="rack in selectedRacks"
+                                    :key="rack.id"
+                                >
+                                    <p class="rack-name">
+                                        {{ rack.name }}
+                                    </p>
+                                    <p class="datacenter-room has-text-grey">
+                                        {{
+                                            getDatacenterRoom(
+                                                rack.datacenter_room_id
+                                            )
+                                        }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                class="review-item-content"
+                                v-else-if="
+                                    isExpandedRacks && !selectedRacks.length
+                                "
+                            >
+                                <div class="item-content-row empty-review">
+                                    No racks selected
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-item devices">
+                            <div
+                                class="review-item-title"
+                                :class="{ 'is-expanded': isExpandedDevices }"
+                                @click="isExpandedDevices = !isExpandedDevices"
+                            >
+                                <i class="material-icons members">dns</i>
+                                <p class="item-title">Devices</p>
+                                <i class="material-icons chevron">
+                                    chevron_right
+                                </i>
+                            </div>
+                            <div
+                                class="review-item-content"
+                                v-if="
+                                    isExpandedDevices && selectedDevices.length
+                                "
+                            >
+                                <div
+                                    class="item-content-row"
+                                    v-for="device in selectedDevices"
+                                    :key="device.id"
+                                >
+                                    {{ device.serial_number }}
+                                </div>
+                            </div>
+                            <div
+                                class="review-item-content"
+                                v-else-if="
+                                    isExpandedDevices &&
+                                        !isExpandedDevices.length
+                                "
+                            >
+                                <div class="item-content-row empty-review">
+                                    No devices selected
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" v-if="hasStepDataLoaded">
+                    <div
+                        class="buttons"
+                        :class="{ 'first-step': activeStep === 1 }"
+                        v-if="activeStep < 6"
+                    >
+                        <a
+                            class="button previous is-link is-marginless"
+                            @click="previousStep()"
+                            v-if="activeStep !== 1"
+                        >
+                            <i class="material-icons">arrow_back</i>
+                            Previous
+                        </a>
+                        <a
+                            class="button next is-info is-marginless"
+                            @click="nextStep()"
+                        >
+                            Next
+                            <i class="material-icons">arrow_forward</i>
+                        </a>
+                    </div>
+                    <a
+                        class="button is-fullwidth is-success create-build"
+                        :class="{ 'is-loading': isLoading }"
+                        @click="createBuild()"
+                        :disabled="getAdminUserCount() === 0"
+                        v-else
+                    >
+                        Create Build
+                    </a>
                 </div>
             </div>
         </div>
@@ -726,53 +847,78 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import moment from 'moment';
 import search from 'fuzzysearch';
-import SuccessModal from '../components/SuccessModal.vue';
+import sortBy from 'lodash/sortBy';
+import SuccessModal from '@src/views/components/SuccessModal.vue';
+import Spinner from '@src/views/components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
-import * as DatacenterRooms from '@api/datacenterRooms.js';
-import * as Organizations from '@api/organizations.js';
-import * as Racks from '@api/racks.js';
-import * as Users from '@api/users.js';
+import { getDatacenterRooms } from '@api/datacenterRooms.js';
+import { getOrganizations } from '@api/organizations.js';
+import { getUsers } from '@api/users.js';
+import { getRack } from '@api/racks.js';
+import { getDeviceDetails } from '@api/device.js';
+
+import { setupCalendar, DatePicker } from 'v-calendar';
+setupCalendar(Vue);
 
 export default {
     components: {
+        Spinner,
         SuccessModal,
+        'v-date-picker': DatePicker,
     },
     data() {
         return {
             activeStep: 1,
             buildId: '',
             creatingBuild: true,
+            datacenterRoom: '',
             description: '',
-            errors: {
-                adminUserCount: false,
-                name: false,
-            },
+            emptyAdminUsers: false,
+            emptyBuildName: false,
+            errorItemType: '',
             isExpandedDetails: true,
             isExpandedDevices: true,
-            isExpandedRacks: true,
             isExpandedMembers: true,
+            isExpandedOrganizations: true,
+            isExpandedRacks: true,
+            isItemValidated: false,
             isLoading: false,
+            itemDuplicated: false,
+            itemUnknown: false,
+            itemValidated: '',
             name: '',
+            rackName: '',
             searchText: '',
             selectedDevices: [],
             selectedMembers: [],
             selectedOrganizations: [],
             selectedRacks: [],
+            serialNumber: '',
+            setInputReadOnly: false,
             showRemoveIcon: '',
             showSuccessModal: false,
+            startDate: new Date(),
+            startDatePickerAttrs: [
+                {
+                    key: 'today',
+                    highlight: true,
+                    dates: new Date(),
+                    popover: {
+                        label: `Today's date`,
+                        dot: true,
+                        hideIndicator: false,
+                    },
+                },
+            ],
         };
     },
     methods: {
-        ...mapActions([
-            'setDatacenterRooms',
-            'setDevices',
-            'setOrganizations',
-            'setRacks',
-            'setUsers',
-        ]),
+        ...mapActions(['setDatacenterRooms', 'setOrganizations', 'setUsers']),
         activateStep(step) {
             this.searchText = '';
             this.resetErrors();
@@ -782,11 +928,11 @@ export default {
                 if (this.name) {
                     this.activeStep = step;
                 } else {
-                    this.errors.name = true;
+                    this.emptyBuildName = true;
                 }
             } else if (activeStep === 2) {
                 if (this.getAdminUserCount() === 0) {
-                    this.errors.adminUserCount = true;
+                    this.emptyAdminUsers = true;
                 } else {
                     this.activeStep = step;
                 }
@@ -794,36 +940,19 @@ export default {
                 this.activeStep = step;
             }
         },
-        addItem(item, itemType) {
-            if (itemType === 'members') {
-                const role = { role: 'ro' };
-                const member = Object.assign(item, role);
-
-                this.selectedMembers.push(member);
-            } else if (itemType === 'racks') {
-                this.selectedRacks.push(item);
-            } else if (itemType === 'devices') {
-                this.selectedDevices.push(item);
-            }
-        },
-        closeModal() {
-            this.creatingBuild = false;
-
-            EventBus.$emit('close-modal:create-build');
-        },
         addBuildData() {
             const buildId = this.buildId;
+
+            this.selectedMembers.forEach(member => {
+                Builds.addUserToBuild(buildId, member.id, member.role);
+            });
 
             this.selectedOrganizations.forEach(organization => {
                 Builds.addOrganizationToBuild(
                     buildId,
                     organization.id,
-                    organization.role,
+                    organization.role
                 );
-            });
-
-            this.selectedMembers.forEach(member => {
-                Builds.addUserToBuild(buildId, member.id, member.role);
             });
 
             this.selectedRacks.forEach(rack => {
@@ -834,6 +963,20 @@ export default {
                 Builds.addDeviceToBuild(buildId, device.id);
             });
         },
+        addItem(item, itemType) {
+            const itemWithPermissions = Object.assign(item, { role: 'ro' });
+
+            if (itemType === 'member') {
+                this.selectedMembers.push(itemWithPermissions);
+            } else if (itemType === 'organization') {
+                this.selectedOrganizations.push(itemWithPermissions);
+            }
+        },
+        closeModal() {
+            this.creatingBuild = false;
+
+            EventBus.$emit('close-modal:create-build');
+        },
         async createBuild() {
             this.isLoading = true;
 
@@ -841,13 +984,16 @@ export default {
                 .filter(member => member.role === 'admin')
                 .map(user => ({ user_id: user.id }));
 
-            await Builds.createBuild(this.name, this.description, admins).then(
-                response => {
-                    this.buildId = response.data.id;
-                }
-            );
+            await Builds.createBuild(
+                this.name,
+                this.description,
+                admins,
+                this.startDate
+            ).then(response => {
+                this.buildId = response.data.id;
+            });
 
-            await this.addBuildData();
+            this.addBuildData();
 
             EventBus.$emit('build-created');
 
@@ -858,23 +1004,15 @@ export default {
             const searchText = this.searchText.toLowerCase();
             let items;
 
-            if (itemType === 'members') {
+            if (itemType === 'member') {
                 items = this.users;
-            } else if (itemType === 'racks') {
-                items = this.racks;
-            } else if (itemType === 'devices') {
-                items = this.devices;
+            } else if (itemType === 'organization') {
+                items = this.organizations;
             }
 
             if (searchText) {
                 return items.reduce((acc, item) => {
-                    let name;
-
-                    if (itemType === 'devices') {
-                        name = item.serial_number.toLowerCase();
-                    } else {
-                        name = item.name.toLowerCase();
-                    }
+                    const name = item.name.toLowerCase();
 
                     if (search(searchText, name)) {
                         acc.push(item);
@@ -896,78 +1034,54 @@ export default {
                 return datacenterRoom.id === datacenterRoomId;
             }).az;
         },
-        getDatacenterRooms() {
-            if (this.datacenterRooms && !this.datacenterRooms.length) {
-                return new Promise((resolve, reject) => {
-                    resolve(
-                        DatacenterRooms.getDatacenterRooms().then(response => {
-                            this.setDatacenterRooms(response.data);
-                        })
-                    );
+        getDate(date) {
+            return moment(date).format('YYYY/MM/DD');
+        },
+        initializeData() {
+            if (!this.organizations.length) {
+                getOrganizations().then(response => {
+                    this.setOrganizations(response.data);
+                });
+            }
+
+            if (!this.users.length) {
+                getUsers().then(response => {
+                    this.setUsers(response.data);
+                });
+            }
+
+            if (!this.datacenterRooms.length) {
+                getDatacenterRooms().then(response => {
+                    this.setDatacenterRooms(response.data);
                 });
             }
         },
-        getOrganizations() {
-            if (this.organizations && !this.organizations.length) {
-                return new Promise((resolve, reject) => {
-                    resolve(
-                        Organizations.getOrganizations().then(response => {
-                            this.setOrganizations(response.data);
-                        })
-                    );
-                });
+        inputBlurred() {
+            if (!this.rackName) {
+                this.resetErrors();
             }
-        },
-        getRacks() {
-            if (this.racks && !this.racks.length) {
-                // Should reject promise errors?
-                return new Promise((resolve, reject) => {
-                    resolve(
-                        Racks.getRacks().then(response => {
-                            this.setRacks(response.data);
-                        })
-                    );
-                });
-            }
-        },
-        getUsers() {
-            if (this.users && !this.users.length) {
-                return new Promise((resolve, reject) => {
-                    resolve(
-                        Users.getUsers().then(response => {
-                            this.setUsers(response.data);
-                        })
-                    );
-                });
-            }
-        },
-        async initializeData() {
-            await Promise.all([
-                this.getUsers(),
-                this.getRacks(),
-                this.getDatacenterRooms(),
-            ]);
         },
         isItemSelected(itemId, itemType) {
-            const selectedMembers = this.selectedMembers;
-            const selectedRacks = this.selectedRacks;
-            const selectedDevices = this.selectedDevices;
+            if (itemType === 'organization') {
+                const selectedOrganizations = this.selectedOrganizations;
 
-            if (itemType === 'members' && selectedMembers.length) {
-                return selectedMembers.map(user => user.id).indexOf(itemId) !==
-                    -1
-                    ? true
-                    : false;
-            } else if (itemType === 'racks' && selectedRacks.length) {
-                return selectedRacks.map(rack => rack.id).indexOf(itemId) !== -1
-                    ? true
-                    : false;
-            } else if (itemType === 'devices' && selectedDevices.length) {
-                return selectedDevices
-                    .map(device => device.id)
-                    .indexOf(itemId) !== -1
-                    ? true
-                    : false;
+                if (selectedOrganizations.length) {
+                    return selectedOrganizations
+                        .map(organization => organization.id)
+                        .indexOf(itemId) !== -1
+                        ? true
+                        : false;
+                }
+            } else if (itemType === 'member') {
+                const selectedMembers = this.selectedMembers;
+
+                if (selectedMembers.length) {
+                    return selectedMembers
+                        .map(member => member.id)
+                        .indexOf(itemId) !== -1
+                        ? true
+                        : false;
+                }
             }
 
             return false;
@@ -981,11 +1095,11 @@ export default {
                 if (this.name) {
                     this.activeStep++;
                 } else {
-                    this.errors.name = true;
+                    this.emptyBuildName = true;
                 }
             } else if (activeStep === 2) {
                 if (this.getAdminUserCount() === 0) {
-                    this.errors.adminUserCount = true;
+                    this.emptyAdminUsers = true;
                 } else {
                     this.activeStep++;
                 }
@@ -993,85 +1107,173 @@ export default {
                 this.activeStep++;
             }
         },
+        previousStep() {
+            this.resetErrors();
+            this.activeStep--;
+        },
         removeItem(itemId, itemType) {
             let index;
 
-            if (itemType === 'members') {
+            if (itemType === 'organization') {
+                index = this.selectedOrganizations
+                    .map(organization => organization.id)
+                    .indexOf(itemId);
+
+                this.selectedOrganizations.splice(index, 1);
+            } else if (itemType === 'member') {
                 index = this.selectedMembers
                     .map(member => member.id)
                     .indexOf(itemId);
 
                 this.selectedMembers.splice(index, 1);
-            } else if (itemType === 'racks') {
-                index = this.selectedRacks.map(rack => rack.id).indexOf(itemId);
-
-                this.selectedRacks.splice(index, 1);
-            } else if (itemType === 'devices') {
-                index = this.selectedDevices
-                    .map(device => device.id)
-                    .indexOf(itemId);
-
-                this.selectedDevices.splice(index, 1);
             }
         },
         resetErrors() {
-            this.errors = {
-                adminUserCount: false,
-                name: false,
-            };
+            this.emptyAdminUsers = false;
+            this.emptyBuildName = false;
+            this.errorItemType = '';
+            this.itemDuplicated = false;
+            this.itemUnknown = false;
         },
-        updateRole(itemId, event) {
+        updateRole(itemType, itemId, event) {
             if (event && event.target && event.target.value) {
-                const selectedMembers = this.selectedMembers;
+                if (itemType === 'organization') {
+                    const selectedOrganizations = this.selectedOrganizations;
 
-                for (let i = 0; i < selectedMembers.length; i++) {
-                    const modifiedUser = selectedMembers[i];
+                    for (let i = 0; i < selectedOrganizations.length; i++) {
+                        const modifiedOrganization = selectedOrganizations[i];
 
-                    if (modifiedUser.id === itemId) {
-                        this.selectedMembers[i].role = event.target.value;
+                        if (modifiedOrganization.id === itemId) {
+                            this.selectedOrganizations[i].role =
+                                event.target.value;
 
-                        break;
+                            break;
+                        }
+                    }
+                } else if (itemType === 'member') {
+                    const selectedMembers = this.selectedMembers;
+
+                    for (let i = 0; i < selectedMembers.length; i++) {
+                        const modifiedUser = selectedMembers[i];
+
+                        if (modifiedUser.id === itemId) {
+                            this.selectedMembers[i].role = event.target.value;
+
+                            break;
+                        }
                     }
                 }
             }
         },
+        validateDevice() {
+            const serialNumber = this.serialNumber;
+
+            if (serialNumber) {
+                this.isLoading = true;
+
+                this.resetErrors();
+
+                const duplicateDevice =
+                    this.selectedDevices
+                        .map(device => device.serial_number)
+                        .indexOf(serialNumber) !== -1;
+
+                if (duplicateDevice) {
+                    this.isLoading = false;
+                    this.errorItemType = 'device';
+                    this.itemDuplicated = true;
+
+                    return;
+                }
+
+                getDeviceDetails(serialNumber)
+                    .then(response => {
+                        this.selectedDevices.push(response.data);
+                        this.isLoading = false;
+                        this.itemValidated = this.serialNumber;
+                        this.serialNumber = '';
+                        this.isItemValidated = true;
+
+                        setTimeout(() => {
+                            this.isItemValidated = false;
+                            this.itemValidated = '';
+                        }, 2500);
+                    })
+                    .catch(error => {
+                        if (error.status === 404) {
+                            this.isLoading = false;
+                            this.errorItemType = 'device';
+                            this.itemUnknown = true;
+                        }
+                    });
+            }
+        },
+        validateRack() {
+            const rackName = this.rackName;
+
+            if (rackName) {
+                this.isLoading = true;
+
+                this.resetErrors();
+
+                const duplicateDevice =
+                    this.selectedRacks
+                        .map(rack => rack.id)
+                        .indexOf(rackName) !== -1;
+
+                if (duplicateDevice) {
+                    this.isLoading = false;
+                    this.errorItemType = 'rack';
+                    this.itemDuplicated = true;
+
+                    return;
+                }
+
+                getRack(rackName)
+                    .then(response => {
+                        this.selectedRacks.push(response.data);
+                        this.isLoading = false;
+                        this.itemValidated = response.data.name;
+                        this.rackName = '';
+                        this.isItemValidated = true;
+
+                        setTimeout(() => {
+                            this.isItemValidated = false;
+                            this.itemValidated = '';
+                        }, 2500);
+                    })
+                    .catch(error => {
+                        if (error.status === 404) {
+                            this.isLoading = false;
+                            this.errorItemType = 'rack';
+                            this.itemUnknown = true;
+                        }
+                    });
+            }
+        },
     },
     computed: {
-        ...mapState([
-            'currentWorkspace',
-            'datacenterRooms',
-            'devices',
-            'organizations',
-            'racks',
-            'users',
-        ]),
-        currentStepTitle() {
-            const activeStep = this.activeStep;
-
-            if (activeStep === 1) {
-                return 'Add Details';
-            } else if (activeStep === 2) {
-                return 'Add Members';
-            } else if (activeStep === 3) {
-                return 'Add Racks';
-            } else if (activeStep === 4) {
-                return 'Add Devices';
-            }
-
-            return 'Final Review';
+        ...mapState(['datacenterRooms', 'organizations', 'users']),
+        hasItemError() {
+            return this.itemDuplicated || this.itemUnknown;
         },
         hasStepDataLoaded() {
             const activeStep = this.activeStep;
 
             if (activeStep === 2 && this.users) {
                 return this.users.length > 0;
-            } else if (activeStep === 3 && this.racks) {
-                return this.racks.length > 0;
-            } else if (activeStep === 4 && this.devices) {
-                return this.devices.length > 0;
             }
 
             return true;
+        },
+        sortedDatacenterRooms() {
+            if (this.datacenterRooms && this.datacenterRooms.length) {
+                const rooms = this.datacenterRooms;
+
+                return sortBy(rooms, room => room.az);
+            }
+
+            return [];
         },
     },
     created() {
