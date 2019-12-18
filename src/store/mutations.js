@@ -130,10 +130,6 @@ export const setRackRoomsByWorkspace = (state, rackRooms) => {
     state.rackRoomsByWorkspace.push(rackRooms);
 };
 
-export const setRacks = (state, racks) => {
-    state.racks = racks;
-};
-
 export const setShowDeviceInRack = (state, showDeviceInRack) => {
     state.showDeviceInRack = showDeviceInRack;
 };
@@ -188,7 +184,6 @@ export default {
     setRackLayout,
     setRackRooms,
     setRackRoomsByWorkspace,
-    setRacks,
     setShowDeviceInRack,
     setUserAuthTokens,
     setUsers,

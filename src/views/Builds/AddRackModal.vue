@@ -98,9 +98,11 @@ import sortBy from 'lodash/sortBy';
 import SuccessModal from '@src/views/components/SuccessModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
-import { getRacks } from '@api/racks.js';
 import { addRackToBuild } from '@api/builds.js';
-import { getDatacenterRooms } from '@api/datacenterRooms.js';
+import {
+    getDatacenterRoomRack,
+    getDatacenterRooms,
+} from '@api/datacenterRooms.js';
 
 export default {
     components: {
@@ -120,20 +122,16 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setDatacenterRooms', 'setRacks']),
+        ...mapActions(['setDatacenterRooms']),
         addRack() {
             if (this.hasRequiredInput) {
                 this.isLoading = true;
 
-                for (let i = 0; i < this.racks.length; i++) {
-                    const rack = this.racks[i];
-                    this.submittedName = this.name;
+                getDatacenterRoomRack(this.datacenterRoom.id, name)
+                    .then(response => {
+                        const rackId = response.data.id;
 
-                    if (
-                        rack.name === this.name &&
-                        rack.datacenter_room_id === this.datacenterRoom.id
-                    ) {
-                        addRackToBuild(this.currentBuild.id, rack.id).then(
+                        addRackToBuild(this.currentBuild.id, rackId).then(
                             () => {
                                 this.isSuccess = true;
                                 this.isLoading = false;
@@ -141,12 +139,12 @@ export default {
                                 EventBus.$emit('rack-added');
                             }
                         );
-                    } else {
+                    })
+                    .catch(() => {
                         this.showError = true;
                         this.rackUnknown = true;
                         this.isLoading = false;
-                    }
-                }
+                    });
             }
         },
         closeModal() {
@@ -161,7 +159,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentBuild', 'datacenterRooms', 'racks']),
+        ...mapState(['currentBuild', 'datacenterRooms']),
         hasRequiredInput() {
             return this.name && !isEmpty(this.datacenterRoom);
         },
@@ -182,12 +180,6 @@ export default {
         if (!this.datacenterRooms.length) {
             getDatacenterRooms().then(response => {
                 this.setDatacenterRooms(response.data);
-            });
-        }
-
-        if (!this.racks.length) {
-            getRacks().then(response => {
-                this.setRacks(response.data);
             });
         }
     },
