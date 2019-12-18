@@ -14,7 +14,6 @@ import BuildsList from './views/Builds/BuildsList.vue';
 import Build from './views/Builds/Build.vue';
 import Organizations from './views/Organizations/Organizations.vue';
 import Organization from './views/Organizations/Organization.vue';
-import CreateBuild from './views/Builds/CreateBuild.vue';
 import Dashboard from './views/Dashboard/Dashboard.vue';
 
 Vue.use(Router);
@@ -101,15 +100,6 @@ export default new Router({
                     component: Build,
                 },
             ],
-        },
-        {
-            path: '/admins/create-build',
-            name: 'createBuild',
-            components: {
-                default: CreateBuild,
-                sidebar: Sidebar,
-                navbar: Navbar,
-            },
         },
         {
             path: '/user',
