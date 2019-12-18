@@ -4,7 +4,6 @@ import * as workspace from '@api/workspaces.js';
 
 // Fixtures
 import devices from '@src/__fixtures__/devices.js';
-import { rack, rackLayout } from '@src/__fixtures__/rackLayout.js';
 import workspaceRacks from '@src/__fixtures__/workspaceRacks.js';
 import workspaces from '@src/__fixtures__/workspaces.js';
 
@@ -12,7 +11,6 @@ sessionStorage.setItem('token', 'my-token');
 
 describe('workspaces.js API', () => {
     let response;
-    const rackId = rackLayout.id;
     const workspaceId = workspaces[0].id;
 
     beforeEach(() => {

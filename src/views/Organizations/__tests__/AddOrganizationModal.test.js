@@ -1,8 +1,6 @@
 import AddOrganizationModal from '../AddOrganizationModal.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import buildsApi from '@api/builds.js';
-import organizationsApi from '@api/organizations.js';
 
 // Fixtures
 import { builds } from '@src/__fixtures__/builds.js';
@@ -203,13 +201,19 @@ describe('AddOrganizationModal.vue', () => {
             wrapper.find('a.next').trigger('click');
 
             // step 2
-            wrapper.findAll('i.add-item').at(0).trigger('click');
+            wrapper
+                .findAll('i.add-item')
+                .at(0)
+                .trigger('click');
             wrapper
                 .find('select')
                 .findAll('option')
                 .at(0)
                 .setSelected();
-            wrapper.findAll('i.add-item').at(0).trigger('click');
+            wrapper
+                .findAll('i.add-item')
+                .at(0)
+                .trigger('click');
 
             // step 3
             wrapper.find('a.next').trigger('click');
