@@ -147,7 +147,6 @@ export default {
             'setCurrentBuildUsers',
             'setDevices',
             'setOrganizations',
-            'setRacks',
             'setUsers',
         ]),
         changeTab(tab) {

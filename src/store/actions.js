@@ -129,10 +129,6 @@ export const setRackRooms = ({ commit }, rackRooms) => {
     commit('setRackRooms', rackRooms);
 };
 
-export const setRacks = ({ commit }, racks) => {
-    commit('setRacks', racks);
-};
-
 export const setRackRoomsByWorkspace = ({ commit }, rackRooms) => {
     commit('setRackRoomsByWorkspace', rackRooms);
 };
@@ -191,7 +187,6 @@ export default {
     setRackLayout,
     setRackRooms,
     setRackRoomsByWorkspace,
-    setRacks,
     setShowDeviceInRack,
     setUserAuthTokens,
     setUsers,
