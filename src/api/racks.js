@@ -28,19 +28,6 @@ export const getRackAssignment = rackId => {
     });
 };
 
-/**
- * Get all racks
- *
- * @type   {GET}
- * @return {Response Object}
- */
-export const getRacks = () => {
-    return requestWithToken({
-        method: 'GET',
-        url: '/rack',
-    });
-};
-
 export const setRackPhase = (rackId, data, params) => {
     return requestWithToken({
         method: 'POST',
@@ -61,7 +48,6 @@ export const updateRackAssignment = (rackId, data) => {
 export default {
     getRack,
     getRackAssignment,
-    getRacks,
     setRackPhase,
     updateRackAssignment,
 };
