@@ -860,7 +860,7 @@ import { getDatacenterRooms } from '@api/datacenterRooms.js';
 import { getOrganizations } from '@api/organizations.js';
 import { getUsers } from '@api/users.js';
 import { getRack } from '@api/racks.js';
-import { getDeviceDetails } from '@api/device.js';
+import { getDeviceDetails } from '@api/devices.js';
 
 import { setupCalendar, DatePicker } from 'v-calendar';
 setupCalendar(Vue);
