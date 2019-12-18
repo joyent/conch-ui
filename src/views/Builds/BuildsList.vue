@@ -35,18 +35,20 @@
         </div>
         <div class="cards grid-view" v-if="activeView === 'grid'">
             <div class="card" v-for="build in filteredBuilds" :key="build.id">
-                <a @click="viewBuild(build.id)">
+                <router-link
+                    :to="{ name: 'build', params: { buildId: build.id } }"
+                >
                     <div class="card-content">
                         <div class="build-progress">
                             <RadialProgressBar
-                                :color="graphColor(build.progress)"
+                                :color="graphColor(20)"
                                 :id="build.id"
-                                :value="build.progress"
+                                :value="20"
                             />
                         </div>
                         <p class="build-name">{{ build.name }}</p>
                     </div>
-                </a>
+                </router-link>
             </div>
         </div>
         <div class="columns list-view" v-else-if="activeView === 'list'">
@@ -69,15 +71,18 @@
                                     <p class="name is-size-5">
                                         {{ build.name }}
                                     </p>
-                                    <p class="status" :class="`${buildStatusClass(build)}`">
+                                    <p
+                                        class="status"
+                                        :class="`${buildStatusClass(build)}`"
+                                    >
                                         {{ buildStatusText(build) }}
                                     </p>
                                 </div>
                                 <div class="build-progress">
                                     <RadialProgressBar
-                                        :color="graphColor(build.progress)"
+                                        :color="graphColor(20)"
                                         :id="build.id"
-                                        :value="build.progress"
+                                        :value="20"
                                     />
                                 </div>
                             </div>
@@ -176,15 +181,6 @@ export default {
                 this.selectedBuild = {};
             } else {
                 this.selectedBuild = build;
-
-                if (this.activeView === 'grid') {
-                    this.$router.push({
-                        name: 'adminBuildDetails',
-                        params: {
-                            buildId: build.id,
-                        },
-                    });
-                }
             }
 
             localStorage.setItem('mostRecentBuildId', build.id);
@@ -195,9 +191,6 @@ export default {
             } else {
                 this.activeView = 'list';
             }
-        },
-        viewBuild(buildId) {
-            this.$router.push({ name: 'build', params: { buildId } });
         },
     },
     computed: {
