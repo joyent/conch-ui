@@ -23,7 +23,7 @@ import {
     getDeviceDetails,
     getDeviceSettings,
     getDeviceValidations,
-} from '@api/device.js';
+} from '@api/devices.js';
 import { getValidations } from '@api/validations.js';
 import { getRackRooms, getWorkspaceRacks } from '@views/shared/utils.js';
 
