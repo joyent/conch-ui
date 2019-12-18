@@ -65,7 +65,7 @@ import search from 'fuzzysearch';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
 import { mapActions, mapState } from 'vuex';
 import { getRack, getRackAssignment } from '@api/racks';
-import { getDeviceDetails } from '@api/device.js';
+import { getDeviceDetails } from '@api/devices.js';
 import { EventBus } from '@src/eventBus.js';
 
 export default {

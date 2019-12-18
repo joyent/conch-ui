@@ -176,7 +176,7 @@
 <script>
 import { EventBus } from '@src/eventBus.js';
 import { addDeviceToBuild, createDeviceAddToBuild } from '@api/builds.js';
-import { getDeviceDetails } from '@api/device.js';
+import { getDeviceDetails } from '@api/devices.js';
 import { mapState } from 'vuex';
 
 export default {

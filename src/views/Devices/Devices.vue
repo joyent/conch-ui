@@ -60,7 +60,7 @@ import DeviceInspector from '@views/DeviceInspector/DeviceInspector.vue';
 import isEmpty from 'lodash/isEmpty';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
-import { getDeviceDetails } from '@api/device.js';
+import { getDeviceDetails } from '@api/devices.js';
 
 export default {
     components: { DeviceInspector },
