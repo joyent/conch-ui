@@ -1,6 +1,6 @@
 import nock from 'nock';
 import { conchApi } from '@src/config.js';
-import * as device from '@api/device.js';
+import * as device from '@api/devices.js';
 
 // Fixtures
 import deviceDetails from '@src/__fixtures__/deviceDetails.js';
@@ -12,7 +12,7 @@ localStorage.setItem('token', 'my-token');
 
 const id = 'JCNWLD2';
 
-describe('device.js API', () => {
+describe('devices.js API', () => {
     let response;
 
     beforeEach(() => {

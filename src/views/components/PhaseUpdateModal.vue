@@ -159,7 +159,7 @@
 <script>
 import BaseModal from '@src/views/components/BaseModal.vue';
 import { EventBus } from '@src/eventBus.js';
-import { setDevicePhase } from '@api/device.js';
+import { setDevicePhase } from '@api/devices.js';
 import { setRackPhase } from '@api/racks.js';
 import { getRack } from '@api/racks.js';
 import { mapActions, mapState } from 'vuex';

@@ -1,7 +1,7 @@
 import Devices from '../Devices.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import * as devicesApi from '@api/device.js';
+import * as devicesApi from '@api/devices.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
