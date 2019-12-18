@@ -92,14 +92,6 @@ export default new Router({
                 sidebar: Sidebar,
                 navbar: Navbar,
             },
-            children: [
-                {
-                    // when /admin/builds/:buildId is matched
-                    path: 'build/:buildId',
-                    name: 'adminBuildDetails',
-                    component: Build,
-                },
-            ],
         },
         {
             path: '/user',

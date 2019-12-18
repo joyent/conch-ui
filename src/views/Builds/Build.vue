@@ -215,6 +215,21 @@ export default {
             });
         },
     },
+    watch: {
+        buildId: {
+            immediate: true,
+            handler(buildId) {
+                if (!buildId) {
+                    if (this.$route.params && this.$route.params.buildId) {
+                        buildId = this.$route.params.buildId;
+                    }
+                }
+
+                localStorage.setItem('mostRecentBuildId', buildId);
+                this.getBuildData(buildId);
+            },
+        },
+    },
     computed: {
         ...mapState([
             'currentBuild',
@@ -240,24 +255,6 @@ export default {
         },
     },
     created() {
-        let buildId = this.buildId;
-
-        if (!buildId) {
-            if (
-                this.$route &&
-                this.$route.params &&
-                this.$route.params.buildId
-            ) {
-                buildId = this.$route.params.buildId;
-            }
-        }
-
-        if (buildId) {
-            this.getBuildData(buildId);
-
-            localStorage.setItem('mostRecentBuildId', buildId);
-        }
-
         this.preFetchData();
     },
 };
