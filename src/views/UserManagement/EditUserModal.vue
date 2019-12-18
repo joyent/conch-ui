@@ -464,8 +464,8 @@ export default {
             } else if (
                 (updatedWorkspaceIndex === undefined ||
                     updatedWorkspaceIndex === -1) &&
-                (selectedWorkspacesIndex !== undefined &&
-                    selectedWorkspacesIndex > -1)
+                selectedWorkspacesIndex !== undefined &&
+                selectedWorkspacesIndex > -1
             ) {
                 this.updatedWorkspaces.push({
                     action: 'remove',

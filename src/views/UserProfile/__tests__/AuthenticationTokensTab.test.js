@@ -150,7 +150,6 @@ describe('AuthenticationTokensTab.vue', () => {
         expect(wrapper.find('input.search').exists()).toBeTruthy();
     });
 
-
     test('should filter token results when text is entered in the search input field', () => {
         expect(wrapper.text()).toContain('Banana Token');
 

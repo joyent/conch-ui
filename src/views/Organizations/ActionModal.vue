@@ -154,12 +154,14 @@
                                                     action === 'remove' &&
                                                         (itemType !==
                                                             'members' ||
-                                                            (item.role !==
+                                                            item.role !==
                                                                 'admin' ||
-                                                                adminUsersRemaining >
-                                                                    1))
+                                                            adminUsersRemaining >
+                                                                1)
                                                 "
-                                                @click="modifyItem(item, 'remove')"
+                                                @click="
+                                                    modifyItem(item, 'remove')
+                                                "
                                             >
                                                 close
                                             </i>

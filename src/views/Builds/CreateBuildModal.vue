@@ -243,7 +243,10 @@
                                                                 user.id
                                                         "
                                                         @click="
-                                                            removeItem(user.id, 'member')
+                                                            removeItem(
+                                                                user.id,
+                                                                'member'
+                                                            )
                                                         "
                                                         @mouseleave="
                                                             showRemoveIcon = ''
@@ -260,7 +263,12 @@
                                                 <td class="action">
                                                     <i
                                                         class="material-icons has-text-success add-item"
-                                                        @click="addItem(user, 'member')"
+                                                        @click="
+                                                            addItem(
+                                                                user,
+                                                                'member'
+                                                            )
+                                                        "
                                                     >
                                                         add
                                                     </i>
@@ -395,7 +403,10 @@
                                                                 organization.id
                                                         "
                                                         @click="
-                                                            removeItem(organization.id, 'organization')
+                                                            removeItem(
+                                                                organization.id,
+                                                                'organization'
+                                                            )
                                                         "
                                                         @mouseleave="
                                                             showRemoveIcon = ''
@@ -414,7 +425,12 @@
                                                 <td class="action">
                                                     <i
                                                         class="material-icons has-text-success add-item"
-                                                        @click="addItem(organization, 'organization')"
+                                                        @click="
+                                                            addItem(
+                                                                organization,
+                                                                'organization'
+                                                            )
+                                                        "
                                                     >
                                                         add
                                                     </i>
@@ -858,7 +874,7 @@ import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
 import {
     getDatacenterRoomRack,
-    getDatacenterRooms
+    getDatacenterRooms,
 } from '@api/datacenterRooms.js';
 import { getOrganizations } from '@api/organizations.js';
 import { getUsers } from '@api/users.js';

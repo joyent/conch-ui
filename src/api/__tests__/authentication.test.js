@@ -84,7 +84,9 @@ describe('authentication API', () => {
             data = { user: 'validuser@joyent.com', password: 'goodPassword' };
             const login = await authentication.login(data);
 
-            expect(authentication.isLoggedIn(login)).resolves.toBeTruthy();
+            await expect(
+                authentication.isLoggedIn(login)
+            ).resolves.toBeTruthy();
         });
 
         test('should return rejected promise if user is not logged in', () => {

@@ -2,7 +2,6 @@ import SignIn from '../SignIn.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import * as authentication from '@api/authentication.js';
-import * as users from '@api/users.js';
 import * as conchApiVersion from '@api/conchApiVersion.js';
 
 const localVue = createLocalVue();
