@@ -517,7 +517,7 @@
                                             class="datacenter-room has-text-grey"
                                         >
                                             {{
-                                                getDatacenterRoom(
+                                                getDatacenterRoomById(
                                                     rack.datacenter_room_id
                                                 )
                                             }}
@@ -744,7 +744,7 @@
                                     </p>
                                     <p class="datacenter-room has-text-grey">
                                         {{
-                                            getDatacenterRoom(
+                                            getDatacenterRoomById(
                                                 rack.datacenter_room_id
                                             )
                                         }}
@@ -856,10 +856,12 @@ import Spinner from '@src/views/components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
-import { getDatacenterRooms } from '@api/datacenterRooms.js';
+import {
+    getDatacenterRoomRack,
+    getDatacenterRooms
+} from '@api/datacenterRooms.js';
 import { getOrganizations } from '@api/organizations.js';
 import { getUsers } from '@api/users.js';
-import { getRack } from '@api/racks.js';
 import { getDeviceDetails } from '@api/devices.js';
 
 import { setupCalendar, DatePicker } from 'v-calendar';
@@ -1029,10 +1031,15 @@ export default {
                 member => member.role === 'admin'
             ).length;
         },
-        getDatacenterRoom(datacenterRoomId) {
+        getDatacenterRoomById(datacenterRoomId) {
             return this.datacenterRooms.find(datacenterRoom => {
                 return datacenterRoom.id === datacenterRoomId;
             }).az;
+        },
+        getDatacenterRoomByAz(datacenterRoomAz) {
+            return this.datacenterRooms.find(datacenterRoom => {
+                return datacenterRoom.az === datacenterRoomAz;
+            }).id;
         },
         getDate(date) {
             return moment(date).format('YYYY/MM/DD');
@@ -1229,7 +1236,11 @@ export default {
                     return;
                 }
 
-                getRack(rackName)
+                const datacenterRoomId = this.getDatacenterRoomById(
+                    this.datacenterRoom
+                );
+
+                getDatacenterRoomRack(datacenterRoomId, rackName)
                     .then(response => {
                         this.selectedRacks.push(response.data);
                         this.isLoading = false;
