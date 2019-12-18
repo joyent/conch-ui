@@ -57,13 +57,17 @@
                                         <div class="select role">
                                             <select
                                                 @change="
-                                                    updateRole(organization.id, $event)
+                                                    updateRole(
+                                                        organization.id,
+                                                        $event
+                                                    )
                                                 "
                                             >
                                                 <option
                                                     value="admin"
                                                     :selected="
-                                                        organization.role === 'admin'
+                                                        organization.role ===
+                                                            'admin'
                                                     "
                                                 >
                                                     Admin
@@ -71,7 +75,8 @@
                                                 <option
                                                     value="rw"
                                                     :selected="
-                                                        organization.role === 'rw'
+                                                        organization.role ===
+                                                            'rw'
                                                     "
                                                 >
                                                     Read &#47; Write
@@ -79,7 +84,8 @@
                                                 <option
                                                     value="ro"
                                                     :selected="
-                                                        organization.role === 'ro'
+                                                        organization.role ===
+                                                            'ro'
                                                     "
                                                 >
                                                     Read Only
@@ -90,7 +96,10 @@
                                     <td class="action">
                                         <i
                                             class="material-icons has-text-success add-item"
-                                            v-if="showRemoveIcon !== organization.id"
+                                            v-if="
+                                                showRemoveIcon !==
+                                                    organization.id
+                                            "
                                             @mouseover="
                                                 showRemoveIcon = organization.id
                                             "
@@ -99,8 +108,15 @@
                                         </i>
                                         <i
                                             class="material-icons has-text-danger remove-item"
-                                            v-if="showRemoveIcon === organization.id"
-                                            @click="removeOrganization(organization.id)"
+                                            v-if="
+                                                showRemoveIcon ===
+                                                    organization.id
+                                            "
+                                            @click="
+                                                removeOrganization(
+                                                    organization.id
+                                                )
+                                            "
                                             @mouseleave="showRemoveIcon = ''"
                                         >
                                             close
@@ -116,7 +132,9 @@
                                     <td class="action">
                                         <i
                                             class="material-icons has-text-success add-item"
-                                            @click="addOrganization(organization)"
+                                            @click="
+                                                addOrganization(organization)
+                                            "
                                         >
                                             add
                                         </i>
