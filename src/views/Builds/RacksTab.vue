@@ -234,9 +234,7 @@ export default {
                 }
             );
         },
-        sort() {
-
-        },
+        sort() {},
     },
     computed: {
         ...mapState(['currentBuildRacks', 'datacenterRooms']),
