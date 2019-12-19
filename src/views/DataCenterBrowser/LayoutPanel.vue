@@ -37,7 +37,6 @@
                 </p>
                 <a
                     class="button update-phase is-small is-primary"
-                    v-if="userHasPermissions"
                     @click="updatingPhase = true"
                     style="position: absolute; right: 12px;"
                 >
@@ -220,7 +219,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentWorkspace', 'highlightDeviceId', 'rackLayout']),
+        ...mapState(['highlightDeviceId', 'rackLayout']),
         availableDeviceProgress() {
             return Array.from(
                 Object.keys(this.rackLayout.slots || {}).reduce(
@@ -288,12 +287,6 @@ export default {
             }
 
             return [];
-        },
-        userHasPermissions() {
-            return (
-                this.currentWorkspace.role === 'admin' ||
-                this.currentWorkspace.role === 'rw'
-            );
         },
     },
     mounted() {

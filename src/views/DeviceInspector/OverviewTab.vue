@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="level-right">
-                <div class="level-item" v-if="userHasPermissions">
+                <div class="level-item">
                     <button
                         class="button update-phase is-info"
                         @click="updatingPhase = true"
@@ -135,11 +135,7 @@ export default {
     },
     computed: {
         ...mapGetters(['activeDeviceId']),
-        ...mapState([
-            'activeDeviceDetails',
-            'activeDeviceSettings',
-            'currentWorkspace',
-        ]),
+        ...mapState(['activeDeviceDetails', 'activeDeviceSettings']),
         deviceTags() {
             const tags = [];
             let health;
@@ -209,12 +205,6 @@ export default {
         },
         uptimeSince() {
             return moment(this.activeDeviceDetails.uptime_since).fromNow(true);
-        },
-        userHasPermissions() {
-            return (
-                this.currentWorkspace.role === 'admin' ||
-                this.currentWorkspace.role === 'rw'
-            );
         },
     },
     mounted() {

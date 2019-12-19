@@ -75,26 +75,20 @@ describe('App.vue', () => {
             });
         });
 
-        describe('path contains currentWorkspace', () => {
-            test('should display the navbar router-view component', () => {
-                const navbar = wrapper
-                    .findAll('router-view-stub')
-                    .filter(view => {
-                        return view.attributes('name') === 'navbar';
-                    });
-
-                expect(navbar.exists()).toBeTruthy();
+        test('should display the navbar router-view component', () => {
+            const navbar = wrapper.findAll('router-view-stub').filter(view => {
+                return view.attributes('name') === 'navbar';
             });
 
-            test('should display the sidebar router-view component', () => {
-                const navbar = wrapper
-                    .findAll('router-view-stub')
-                    .filter(view => {
-                        return view.attributes('name') === 'sidebar';
-                    });
+            expect(navbar.exists()).toBeTruthy();
+        });
 
-                expect(navbar.exists()).toBeTruthy();
+        test('should display the sidebar router-view component', () => {
+            const navbar = wrapper.findAll('router-view-stub').filter(view => {
+                return view.attributes('name') === 'sidebar';
             });
+
+            expect(navbar.exists()).toBeTruthy();
         });
     });
 

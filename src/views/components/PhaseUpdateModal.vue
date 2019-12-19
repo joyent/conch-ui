@@ -228,7 +228,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentWorkspace', 'rackLayout']),
+        ...mapState(['rackLayout']),
         samePhase() {
             return this.itemData.phase === this.selectedPhase;
         },

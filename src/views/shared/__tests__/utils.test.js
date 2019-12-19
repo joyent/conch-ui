@@ -63,20 +63,6 @@ describe('utils.js', () => {
         });
     });
 
-    describe('getWorkspaceDevices', () => {
-        const id = 123;
-
-        nock(conchApi)
-            .get(`/workspace/${id}/device`)
-            .reply(200, {});
-
-        test('should call the getDevices API when not available in store', async () => {
-            const spy = jest.spyOn(workspaces, 'getDevices');
-            await utils.getWorkspaceDevices(id);
-            expect(spy).toHaveBeenCalledWith(id);
-        });
-    });
-
     describe('getWorkspaceRacks', () => {
         const id = 123;
 

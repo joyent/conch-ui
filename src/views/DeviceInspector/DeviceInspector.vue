@@ -123,7 +123,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(['activeDeviceId', 'currentWorkspaceId']),
+        ...mapGetters(['activeDeviceId']),
         ...mapState(['activeDevice', 'showDeviceInRack', 'validations']),
         hasActiveDevice() {
             return !isEmpty(this.activeDevice);
