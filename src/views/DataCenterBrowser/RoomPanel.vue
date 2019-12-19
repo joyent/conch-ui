@@ -56,12 +56,6 @@ import ProgressIcon from '@views/components/ProgressIcon.vue';
 import { mapActions, mapState } from 'vuex';
 
 export default {
-    props: {
-        rackRooms: {
-            type: Array,
-            required: true,
-        },
-    },
     components: {
         ProgressIcon,
     },
@@ -70,32 +64,6 @@ export default {
             searchText: '',
             selectedProgress: 'all',
         };
-    },
-    computed: {
-        ...mapState(['activeRoomName', 'rackLayout']),
-        availableRoomProgress() {
-            return Array.from(
-                this.rackRooms.reduce((acc, room) => {
-                    if (!acc.has(room.progress)) {
-                        acc.add(room.progress);
-                    }
-
-                    return acc;
-                }, new Set(['all']))
-            ).sort();
-        },
-        filteredRackRooms() {
-            return this.rackRooms.reduce((acc, room) => {
-                if (
-                    this.roomNameFilter(room.name) &&
-                    this.roomProgressFilter(room.progress)
-                ) {
-                    acc.push(room);
-                }
-
-                return acc;
-            }, []);
-        },
     },
     methods: {
         ...mapActions(['clearRackLayout', 'setActiveRoomName']),
@@ -124,6 +92,40 @@ export default {
                 this.selectedProgress === 'all' ||
                 this.selectedProgress === progress
             );
+        },
+    },
+    computed: {
+        ...mapState(['activeRoomName', 'rackLayout', 'rackRooms']),
+        availableRoomProgress() {
+            if (this.rackRooms.length) {
+                return Array.from(
+                    this.rackRooms.reduce((acc, room) => {
+                        if (!acc.has(room.progress)) {
+                            acc.add(room.progress);
+                        }
+
+                        return acc;
+                    }, new Set(['all']))
+                ).sort();
+            }
+
+            return [];
+        },
+        filteredRackRooms() {
+            if (this.rackRooms.length) {
+                return this.rackRooms.reduce((acc, room) => {
+                    if (
+                        this.roomNameFilter(room.name) &&
+                        this.roomProgressFilter(room.progress)
+                    ) {
+                        acc.push(room);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            return [];
         },
     },
 };

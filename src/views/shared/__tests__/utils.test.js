@@ -84,8 +84,8 @@ describe('utils.js', () => {
             .get(`/workspace/${id}/rack`)
             .reply(200, {});
 
-        test('should call the getAllRacks API when not available in store', async () => {
-            const spy = jest.spyOn(workspaces, 'getAllRacks');
+        test('should call the getWorkspaceRacks API when not available in store', async () => {
+            const spy = jest.spyOn(workspaces, 'getWorkspaceRacks');
             await utils.getWorkspaceRacks(id);
             expect(spy).toHaveBeenCalledWith(id);
         });

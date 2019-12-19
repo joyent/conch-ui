@@ -273,15 +273,6 @@ describe('mutations', () => {
         });
     });
 
-    describe('setWorkspaces', () => {
-        test('it adds workspaces to the state', () => {
-            state = { workspaces: [] };
-
-            mutations.setWorkspaces(state, workspaces);
-            expect(state).toMatchObject({ workspaces });
-        });
-    });
-
     describe('setValidations', () => {
         test('it adds validations to the state', () => {
             state = { validations: [] };
