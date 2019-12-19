@@ -65,7 +65,7 @@ import search from 'fuzzysearch';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
 import { mapActions, mapState } from 'vuex';
 import { getRack, getRackAssignment } from '@api/racks';
-import { getDeviceDetails } from '@api/devices.js';
+import { getDeviceDetails, getDeviceSettings } from '@api/devices.js';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
@@ -105,6 +105,10 @@ export default {
                     assignment.occupant = await getDeviceDetails(deviceId).then(
                         response => response.data
                     );
+
+                    assignment.occupant.settings = await getDeviceSettings(
+                        deviceId
+                    ).then(response => response.data);
                 } else {
                     assignment.occupant = {};
                 }
