@@ -102,6 +102,10 @@ export const setForcePasswordChange = state => {
     state.forcePasswordChange = true;
 };
 
+export const setGlobalWorkspaceId = (state, globalWorkspaceId) => {
+    state.globalWorkspaceId = globalWorkspaceId;
+};
+
 export const setHardwareProducts = (state, hardwareProducts) => {
     state.hardwareProducts = hardwareProducts;
 };
@@ -142,10 +146,6 @@ export const setUsers = (state, users) => {
     state.users = users;
 };
 
-export const setWorkspaces = (state, workspaces) => {
-    state.workspaces = workspaces;
-};
-
 export const setValidations = (state, validations) => {
     state.validations = validations;
 };
@@ -177,6 +177,7 @@ export default {
     setDevices,
     setDevicesByWorkspace,
     setForcePasswordChange,
+    setGlobalWorkspaceId,
     setHardwareProducts,
     setHighlightDeviceId,
     setInvalidCredentials,
@@ -187,6 +188,5 @@ export default {
     setShowDeviceInRack,
     setUserAuthTokens,
     setUsers,
-    setWorkspaces,
     setValidations,
 };

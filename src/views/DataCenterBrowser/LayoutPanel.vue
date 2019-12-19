@@ -1,5 +1,5 @@
 <template>
-    <div class="layout-panel" v-if="!isEmpty(rackLayout)">
+    <div class="layout-panel">
         <nav class="panel">
             <div class="panel-heading has-text-centered">
                 Rack {{ rackLayout.name }}
@@ -215,7 +215,6 @@ export default {
 
             return 'in progress';
         },
-        isEmpty,
         openModal() {
             this.editLayout = true;
         },

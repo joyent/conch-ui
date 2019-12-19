@@ -105,6 +105,10 @@ export const setForcePasswordChange = ({ commit }) => {
     commit('setForcePasswordChange');
 };
 
+export const setGlobalWorkspaceId = ({ commit }, globalWorkspaceId) => {
+    commit('setGlobalWorkspaceId', globalWorkspaceId);
+};
+
 export const setHardwareProducts = ({ commit }, hardwareProducts) => {
     commit('setHardwareProducts', hardwareProducts);
 };
@@ -145,10 +149,6 @@ export const setUsers = ({ commit }, users) => {
     commit('setUsers', users);
 };
 
-export const setWorkspaces = ({ commit }, workspaces) => {
-    commit('setWorkspaces', workspaces);
-};
-
 export const setValidations = ({ commit }, validations) => {
     commit('setValidations', validations);
 };
@@ -180,6 +180,7 @@ export default {
     setDevices,
     setDevicesByWorkspace,
     setForcePasswordChange,
+    setGlobalWorkspaceId,
     setHardwareProducts,
     setHighlightDeviceId,
     setInvalidCredentials,
@@ -190,6 +191,5 @@ export default {
     setShowDeviceInRack,
     setUserAuthTokens,
     setUsers,
-    setWorkspaces,
     setValidations,
 };

@@ -69,12 +69,6 @@ import { getDeviceDetails, getDeviceSettings } from '@api/devices.js';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
-    props: {
-        activeRacks: {
-            type: Array,
-            required: true,
-        },
-    },
     components: { ProgressIcon },
     data() {
         return {
@@ -174,15 +168,38 @@ export default {
         },
     },
     computed: {
-        ...mapState(['activeRoomName', 'rackLayout']),
-        filteredActiveRacks() {
-            return this.activeRacks.reduce((acc, rack) => {
-                if (this.rackFilterMatch(rack)) {
-                    acc.push(rack);
-                }
+        ...mapState(['activeRoomName', 'rackLayout', 'rackRooms']),
+        activeRacks() {
+            if (this.rackRooms.length) {
+                let racks;
 
-                return acc;
-            }, []);
+                this.rackRooms.map(rackRoom => {
+                    if (rackRoom.name === this.activeRoomName) {
+                        racks = rackRoom.racks.sort((a, b) => {
+                            a.name > b.name ? 1 : -1;
+                        });
+
+                        return racks;
+                    }
+                });
+
+                return racks;
+            }
+
+            return [];
+        },
+        filteredActiveRacks() {
+            if (this.activeRacks && this.activeRacks.length) {
+                return this.activeRacks.reduce((acc, rack) => {
+                    if (this.rackFilterMatch(rack)) {
+                        acc.push(rack);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            return [];
         },
     },
     created() {
