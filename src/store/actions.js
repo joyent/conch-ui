@@ -81,20 +81,12 @@ export const setCurrentUser = ({ commit }, currentUser) => {
     commit('setCurrentUser', currentUser);
 };
 
-export const setCurrentWorkspace = ({ commit }, workspace) => {
-    commit('setCurrentWorkspace', workspace);
-};
-
 export const setDatacenterRooms = ({ commit }, datacenterRooms) => {
     commit('setDatacenterRooms', datacenterRooms);
 };
 
 export const setDevices = ({ commit }, devices) => {
     commit('setDevices', devices);
-};
-
-export const setDevicesByWorkspace = ({ commit }, devices) => {
-    commit('setDevicesByWorkspace', devices);
 };
 
 export const setForcePasswordChange = ({ commit }) => {
@@ -127,10 +119,6 @@ export const setRackLayout = ({ commit }, rackLayout) => {
 
 export const setRackRooms = ({ commit }, rackRooms) => {
     commit('setRackRooms', rackRooms);
-};
-
-export const setRackRoomsByWorkspace = ({ commit }, rackRooms) => {
-    commit('setRackRoomsByWorkspace', rackRooms);
 };
 
 export const setShowDeviceInRack = ({ commit }, showDeviceInRack) => {
@@ -170,10 +158,8 @@ export default {
     setCurrentBuildRacks,
     setCurrentBuildUsers,
     setCurrentUser,
-    setCurrentWorkspace,
     setDatacenterRooms,
     setDevices,
-    setDevicesByWorkspace,
     setForcePasswordChange,
     setGlobalWorkspaceId,
     setHardwareProducts,
@@ -182,7 +168,6 @@ export default {
     setOrganizations,
     setRackLayout,
     setRackRooms,
-    setRackRoomsByWorkspace,
     setShowDeviceInRack,
     setUserAuthTokens,
     setUsers,

@@ -256,7 +256,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(['currentWorkspace', 'devices', 'rackLayout']),
+        ...mapState(['devices', 'rackLayout']),
     },
     methods: {
         ...mapActions(['setDevices', 'setRackLayout']),
