@@ -4,7 +4,6 @@ export const state = {
     activeDeviceSettings: {},
     activeDeviceValidations: [],
     activeRoomName: '',
-    allRooms: [],
     builds: [],
     authTokens: [],
     currentBuild: {},

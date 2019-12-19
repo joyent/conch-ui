@@ -3,7 +3,6 @@ import mutations from '../mutations.js';
 // Fixtures
 import activeDevice from '@src/__fixtures__/activeDevice.js';
 import activeRoom from '@src/__fixtures__/activeRoom.js';
-import allRooms from '@src/__fixtures__/allRooms.js';
 import authTokens from '@src/__fixtures__/authTokens.js';
 import deviceDetails from '@src/__fixtures__/deviceDetails.js';
 import deviceSettings from '@src/__fixtures__/deviceSettings.js';
@@ -125,15 +124,6 @@ describe('mutations', () => {
 
             mutations.setActiveRoomName(state, activeRoom.name);
             expect(state).toMatchObject({ activeRoomName: activeRoom.name });
-        });
-    });
-
-    describe('setAllRooms', () => {
-        test('it adds all rackrooms from the specified workspace to the state', () => {
-            state = { allRooms: [] };
-
-            mutations.setAllRooms(state, allRooms);
-            expect(state).toMatchObject({ allRooms });
         });
     });
 

@@ -2,7 +2,6 @@ import getters from '../getters.js';
 
 // Fixtures
 import activeDevice from '@src/__fixtures__/activeDevice.js';
-import allRooms from '@src/__fixtures__/allRooms.js';
 import devicesByWorkspaceId from '@src/__fixtures__/devicesByWorkspace.js';
 import rackRoomsByWorkspaceId from '@src/__fixtures__/rackRoomsByWorkspace.js';
 import workspaces from '@src/__fixtures__/workspaces.js';
@@ -81,16 +80,6 @@ describe('getters', () => {
             );
 
             expect(rackRooms).toMatchObject(rackRoomsByWorkspaceId[0]);
-        });
-    });
-
-    describe('getRoomByName', () => {
-        test('it returns the room matching the name', () => {
-            const name = allRooms[0].name;
-            state = { allRooms };
-            const rackRoom = getters.getRoomByName(state)(name);
-
-            expect(rackRoom).toMatchObject(allRooms[0]);
         });
     });
 });
