@@ -233,7 +233,6 @@ export default {
         ...mapState([
             'currentBuild',
             'currentBuildDevices',
-            'currentWorkspace',
             'devices',
             'organizations',
             'racks',

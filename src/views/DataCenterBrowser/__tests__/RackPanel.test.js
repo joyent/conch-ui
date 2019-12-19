@@ -23,10 +23,7 @@ describe('RackPanel.vue', () => {
 
     beforeEach(() => {
         actions = { setRackLayout: jest.fn() };
-        getters = {
-            activeRoomName: jest.fn(),
-            currentWorkspaceId: jest.fn(),
-        };
+        getters = { activeRoomName: jest.fn() };
         mocks = { $router: [] };
         propsData = { activeRacks };
         state = { rackLayout };

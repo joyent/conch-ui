@@ -7,11 +7,9 @@ import authTokens from '@src/__fixtures__/authTokens.js';
 import deviceDetails from '@src/__fixtures__/deviceDetails.js';
 import deviceSettings from '@src/__fixtures__/deviceSettings.js';
 import deviceValidations from '@src/__fixtures__/deviceValidations.js';
-import devicesByWorkspaceId from '@src/__fixtures__/devicesByWorkspace.js';
 import hardwareProducts from '@src/__fixtures__/hardwareProducts.js';
 import rackLayout from '@src/__fixtures__/rackLayout.js';
 import rackRooms from '@src/__fixtures__/rackRooms.js';
-import rackRoomsByWorkspaceId from '@src/__fixtures__/rackRoomsByWorkspace.js';
 import userAuthTokens from '@src/__fixtures__/userAuthTokens.js';
 import users from '@src/__fixtures__/users.js';
 import validations from '@src/__fixtures__/validations.js';
@@ -146,31 +144,6 @@ describe('mutations', () => {
         });
     });
 
-    describe('setCurrentWorkspace', () => {
-        test('it adds the current workspace to the state', () => {
-            const currentWorkspace = workspaces[0];
-            state = { currentWorkspace: {} };
-
-            mutations.setCurrentWorkspace(state, currentWorkspace);
-            expect(state).toMatchObject({ currentWorkspace });
-        });
-    });
-
-    describe('setDevicesByWorkspace', () => {
-        test('it adds devices for a specified workspace to state', () => {
-            const workspaceId = workspaces[0].id;
-            const devicesByWorkspace = devicesByWorkspaceId.find(workspace => {
-                return Object.keys(workspace)[0] === workspaceId;
-            });
-            state = { devicesByWorkspace: [] };
-
-            mutations.setDevicesByWorkspace(state, devicesByWorkspace);
-            expect(state).toMatchObject({
-                devicesByWorkspace: [devicesByWorkspace],
-            });
-        });
-    });
-
     describe('setForcePasswordChange', () => {
         test('it sets forcePasswordChange by setting it to true', () => {
             const forcePasswordChange = true;
@@ -215,23 +188,6 @@ describe('mutations', () => {
 
             mutations.setRackRooms(state, rackRooms);
             expect(state).toMatchObject({ rackRooms });
-        });
-    });
-
-    describe('setRackRoomsByWorkspace', () => {
-        test('it adds rack rooms for a specified workspace to the state', () => {
-            const workspaceId = workspaces[0].id;
-            const rackRoomsByWorkspace = rackRoomsByWorkspaceId.find(
-                workspace => {
-                    return Object.keys(workspace)[0] === workspaceId;
-                }
-            );
-            state = { rackRoomsByWorkspace: [] };
-
-            mutations.setRackRoomsByWorkspace(state, rackRoomsByWorkspace);
-            expect(state).toMatchObject({
-                rackRoomsByWorkspace: [rackRoomsByWorkspace],
-            });
         });
     });
 
