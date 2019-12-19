@@ -21,9 +21,6 @@ export const getRackRoomsByWorkspace = state => workspaceId => {
     return workspaceRackRooms ? workspaceRackRooms : null;
 };
 
-export const getRoomByName = state => name =>
-    state.allRooms.find(room => room.name === name);
-
 export default {
     activeDeviceId,
     currentWorkspaceId,
@@ -32,5 +29,4 @@ export default {
     findWorkspaceByName,
     getDevicesByWorkspace,
     getRackRoomsByWorkspace,
-    getRoomByName,
 };

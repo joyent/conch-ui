@@ -30,7 +30,6 @@ describe('DeviceInspector.vue', () => {
         getters = {
             activeDeviceId: jest.fn(),
             currentWorkspaceId: jest.fn(),
-            getRoomByName: jest.fn(),
         };
         state = { activeDevice };
         store = new Vuex.Store({ actions, getters, state });

@@ -83,13 +83,6 @@ describe('actions', () => {
         });
     });
 
-    describe('setAllRooms', () => {
-        test('it sets all rooms', () => {
-            actions.setAllRooms({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setAllRooms', {});
-        });
-    });
-
     describe('setCurrentUser', () => {
         test('it sets the current user', () => {
             actions.setCurrentUser({ commit }, {});

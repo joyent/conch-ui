@@ -46,10 +46,6 @@ export const setActiveRoomName = (state, activeRoomName) => {
     state.activeRoomName = activeRoomName;
 };
 
-export const setAllRooms = (state, allRooms) => {
-    state.allRooms = allRooms;
-};
-
 export const setAuthTokens = (state, authTokens) => {
     state.authTokens = authTokens;
 };
@@ -163,7 +159,6 @@ export default {
     setActiveDeviceSettings,
     setActiveDeviceValidations,
     setActiveRoomName,
-    setAllRooms,
     setAuthTokens,
     setBuilds,
     setCurrentBuild,
