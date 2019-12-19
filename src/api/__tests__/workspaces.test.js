@@ -17,7 +17,7 @@ describe('workspaces.js API', () => {
         response = {};
     });
 
-    describe('getAllRacks', () => {
+    describe('getWorkspaceRacks', () => {
         beforeEach(() => {
             nock(conchApi)
                 .get(`/workspace/${workspaceId}/rack`)
@@ -26,13 +26,13 @@ describe('workspaces.js API', () => {
 
         test('should return a status of 200', async () => {
             expect.assertions(1);
-            response = await workspace.getAllRacks(workspaceId);
+            response = await workspace.getWorkspaceRacks(workspaceId);
             expect(response.status).toEqual(200);
         });
 
         test('should return an object containing workspace racks', async () => {
             expect.assertions(1);
-            response = await workspace.getAllRacks(workspaceId);
+            response = await workspace.getWorkspaceRacks(workspaceId);
             expect(response.data).toMatchObject(workspaceRacks);
         });
     });
@@ -57,7 +57,7 @@ describe('workspaces.js API', () => {
         });
     });
 
-    describe('loadAllWorkspaces', () => {
+    describe('getWorkspaces', () => {
         beforeEach(() => {
             nock(conchApi)
                 .get(`/workspace`)
@@ -66,13 +66,13 @@ describe('workspaces.js API', () => {
 
         test('should return a status of 200', async () => {
             expect.assertions(1);
-            response = await workspace.loadAllWorkspaces();
+            response = await workspace.getWorkspaces();
             expect(response.status).toEqual(200);
         });
 
         test('should return an object containing workspaces', async () => {
             expect.assertions(1);
-            response = await workspace.loadAllWorkspaces();
+            response = await workspace.getWorkspaces();
             expect(response.data).toMatchObject(workspaces);
         });
     });

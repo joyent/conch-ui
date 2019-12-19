@@ -30,24 +30,22 @@
                         <a
                             class="is-size-7 help-link"
                             @click="showHelp = !showHelp"
+                            >How do I fix this problem?</a
                         >
-                            How do I fix this problem?
-                        </a>
                         <p class="api-version-help" v-if="showHelp">
                             You need to update Conch API to a compatible
                             version.
-                            <br />
-                            We recommend using the latest release preceding
-                            <strong class="has-text-white">
-                                v{{ breakingApiVersion }} </strong
+                            <br />We recommend using the latest release
+                            preceding
+                            <strong class="has-text-white"
+                                >v{{ breakingApiVersion }}</strong
                             >.
                             <a
                                 class="button is-info conch-releases"
                                 :href="conchReleaseUrl"
                                 target="_blank"
+                                >Latest Conch API Releases</a
                             >
-                                Latest Conch API Releases
-                            </a>
                         </p>
                     </div>
                 </div>
@@ -57,23 +55,21 @@
                             <div class="columns">
                                 <div class="column is-5 sign-in-content">
                                     <div class="sign-in-heading">
-                                        <p class="title has-text-left">
-                                            Welcome to Conch
-                                        </p>
+                                        <p class="title has-text-left"
+                                            >Welcome to Conch</p
+                                        >
                                         <p
                                             class="subtitle is-size-6 has-text-left"
+                                            >Sign in to get started</p
                                         >
-                                            Sign in to get started
-                                        </p>
                                     </div>
                                     <form>
                                         <div class="sign-in-input">
                                             <div class="field">
                                                 <label
                                                     class="label has-text-left"
+                                                    >Email Address</label
                                                 >
-                                                    Email Address
-                                                </label>
                                                 <div
                                                     class="control has-icons-left"
                                                 >
@@ -94,24 +90,21 @@
                                                             v-if="
                                                                 badEmailAddress
                                                             "
+                                                            >error</i
                                                         >
-                                                            error
-                                                        </i>
                                                         <i
                                                             class="material-icons has-text-grey"
                                                             v-else
+                                                            >email</i
                                                         >
-                                                            email
-                                                        </i>
                                                     </span>
                                                 </div>
                                             </div>
                                             <div class="field">
                                                 <label
                                                     class="label has-text-left"
+                                                    >Password</label
                                                 >
-                                                    Password
-                                                </label>
                                                 <div
                                                     class="control has-icons-left"
                                                 >
@@ -130,15 +123,13 @@
                                                         <i
                                                             class="material-icons has-text-danger"
                                                             v-if="badPassword"
+                                                            >error</i
                                                         >
-                                                            error
-                                                        </i>
                                                         <i
                                                             class="material-icons has-text-grey"
                                                             v-else
+                                                            >lock</i
                                                         >
-                                                            lock
-                                                        </i>
                                                     </span>
                                                 </div>
                                             </div>
@@ -151,9 +142,8 @@
                                                 :disabled="
                                                     incompatibleApiVersion
                                                 "
+                                                >Sign In</a
                                             >
-                                                Sign In
-                                            </a>
                                         </div>
                                     </form>
                                 </div>
@@ -174,17 +164,17 @@
 </template>
 
 <script>
-import isEmpty from 'lodash/isEmpty';
 import semver from 'semver';
+import { getApiVersion } from '@api/conchApiVersion.js';
+import { mapActions, mapState } from 'vuex';
+import { login } from '@api/authentication.js';
+import { setGlobalWorkspaceId } from '@src/views/shared/utils.js';
+
 import {
     breakingApiVersion,
     conchReleaseUrl,
     minimumApiVersion,
 } from '@src/config.js';
-import { getApiVersion } from '@api/conchApiVersion.js';
-import { mapActions, mapGetters, mapState } from 'vuex';
-import { login } from '@api/authentication.js';
-import { loadAllWorkspaces } from '@api/workspaces.js';
 
 export default {
     data() {
@@ -194,7 +184,6 @@ export default {
             badPassword: false,
             breakingApiVersion: '',
             conchReleaseUrl: '',
-            currentWorkspaceId: '',
             emailAddress: '',
             incompatibleApiVersion: false,
             isLoading: false,
@@ -205,27 +194,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setCurrentWorkspace',
-            'setForcePasswordChange',
-            'setWorkspaces',
-        ]),
-        initWorkspaceData() {
-            return loadAllWorkspaces().then(response => {
-                const workspaces = response.data;
-
-                this.setWorkspaces(workspaces);
-                this.setCurrentWorkspace(this.loadCurrentWorkspace());
-
-                this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
-                localStorage.setItem(
-                    'currentWorkspace',
-                    this.currentWorkspaceId
-                );
-
-                return Promise.resolve();
-            });
-        },
+        ...mapActions(['setForcePasswordChange']),
         signIn() {
             if (this.emailAddress && this.password) {
                 this.isLoading = true;
@@ -240,20 +209,11 @@ export default {
                             this.setForcePasswordChange();
                             this.$router.push({ name: 'passwordReset' });
                         } else {
-                            if (isEmpty(this.workspaces)) {
-                                this.initWorkspaceData().then(() => {
-                                    this.$router.push({
-                                        name: 'dashboard',
-                                    });
-                                });
-                            } else {
-                                this.setCurrentWorkspace(
-                                    this.loadCurrentWorkspace()
-                                );
-                                this.$router.push({
-                                    name: 'dashboard',
-                                });
+                            if (!this.globalWorkspaceId) {
+                                setGlobalWorkspaceId();
                             }
+
+                            this.$router.push({ name: 'dashboard' });
                         }
                     })
                     .catch(() => {
@@ -273,8 +233,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(['loadCurrentWorkspace']),
-        ...mapState(['invalidCredentials', 'workspaces']),
+        ...mapState(['invalidCredentials']),
     },
     created() {
         this.breakingApiVersion = breakingApiVersion;

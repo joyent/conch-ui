@@ -93,43 +93,4 @@ describe('getters', () => {
             expect(rackRoom).toMatchObject(allRooms[0]);
         });
     });
-
-    describe('loadCurrentWorkspace', () => {
-        beforeEach(() => {
-            state = { workspaces };
-        });
-
-        test('it returns the workspace matching the workspaceId provided', () => {
-            const workspaceId = workspaces[1].id;
-            const workspace = getters.loadCurrentWorkspace(state)(workspaceId);
-
-            expect(workspace).toMatchObject(workspaces[1]);
-        });
-
-        test('it returns the workspace from session storage', () => {
-            const workspaceId = workspaces[1].id;
-            localStorage.setItem('currentWorkspace', workspaceId);
-            const workspace = getters.loadCurrentWorkspace(state)();
-
-            localStorage.removeItem('currentWorkspace');
-
-            expect(workspace).toMatchObject(workspaces[1]);
-        });
-
-        test('it returns the global workspace when no current workspace exists', () => {
-            const workspace = getters.loadCurrentWorkspace(state)();
-
-            expect(workspace).toMatchObject(workspaces[0]);
-        });
-
-        test('it returns the first workspace in state when no current or global workspace exists', () => {
-            const firstWorkspace = workspaces[2];
-            const secondWorkspace = workspaces[3];
-            const nonGlobalWorkspaces = [firstWorkspace, secondWorkspace];
-            state = { workspaces: nonGlobalWorkspaces };
-            const workspace = getters.loadCurrentWorkspace(state)();
-
-            expect(workspace).toMatchObject(firstWorkspace);
-        });
-    });
 });

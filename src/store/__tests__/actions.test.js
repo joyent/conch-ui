@@ -181,13 +181,6 @@ describe('actions', () => {
         });
     });
 
-    describe('setWorkspaces', () => {
-        test('it sets the workspaces', () => {
-            actions.setWorkspaces({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setWorkspaces', {});
-        });
-    });
-
     describe('setValidations', () => {
         test('it sets the validations', () => {
             actions.setValidations({ commit }, {});
