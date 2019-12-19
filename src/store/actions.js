@@ -49,10 +49,6 @@ export const setActiveRoomName = ({ commit }, activeRoomName) => {
     commit('setActiveRoomName', activeRoomName);
 };
 
-export const setAllRooms = ({ commit }, allRooms) => {
-    commit('setAllRooms', allRooms);
-};
-
 export const setAuthTokens = ({ commit }, authTokens) => {
     commit('setAuthTokens', authTokens);
 };
@@ -166,7 +162,6 @@ export default {
     setActiveDeviceSettings,
     setActiveDeviceValidations,
     setActiveRoomName,
-    setAllRooms,
     setAuthTokens,
     setBuilds,
     setCurrentBuild,
