@@ -97,20 +97,6 @@ describe('actions', () => {
         });
     });
 
-    describe('setCurrentWorkspace', () => {
-        test('it sets the current workspace', () => {
-            actions.setCurrentWorkspace({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setCurrentWorkspace', {});
-        });
-    });
-
-    describe('setDevicesByWorkspace', () => {
-        test('it sets devices by workspace', () => {
-            actions.setDevicesByWorkspace({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setDevicesByWorkspace', {});
-        });
-    });
-
     describe('setForcePasswordChange', () => {
         test('it sets forcePasswordChange', () => {
             actions.setForcePasswordChange({ commit }, {});
@@ -143,13 +129,6 @@ describe('actions', () => {
         test('it sets the rack rooms', () => {
             actions.setRackRooms({ commit }, {});
             expect(commit).toHaveBeenCalledWith('setRackRooms', {});
-        });
-    });
-
-    describe('setRackRoomsByWorkspace', () => {
-        test('it sets the rack rooms by workspace', () => {
-            actions.setRackRoomsByWorkspace({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setRackRoomsByWorkspace', {});
         });
     });
 

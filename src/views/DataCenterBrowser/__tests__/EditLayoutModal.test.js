@@ -5,7 +5,6 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 // Fixtures
 import devices from '@src/__fixtures__/devices.js';
 import { rack } from '@src/__fixtures__/rackLayout.js';
-import workspaces from '@src/__fixtures__/workspaces.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -25,11 +24,7 @@ describe('EditLayoutModal.vue', () => {
             saveModifiedAssignments: jest.fn(),
         };
         propsData = { deviceSlots: rack.slots };
-        state = {
-            currentWorkspace: workspaces[0],
-            devices: devices,
-            rackLayout: {},
-        };
+        state = { devices, rackLayout: {} };
         store = new Vuex.Store({ state });
         wrapper = shallowMount(EditLayoutModal, {
             localVue,
