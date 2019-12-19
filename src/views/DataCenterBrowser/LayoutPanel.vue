@@ -63,6 +63,7 @@
                         <th>Product Name</th>
                         <th class="has-text-right">Assigned Device</th>
                         <th class="has-text-right">Asset Tag</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,6 +108,20 @@
                                 N/A
                             </span>
                         </td>
+                        <td>
+                            <span
+                                v-if="
+                                    slot.occupant &&
+                                        slot.occupant.settings &&
+                                        slot.occupant.settings.firmware &&
+                                        slot.occupant.settings.firmware ===
+                                            'updating'
+                                "
+                                class="tag is-info"
+                            >
+                                Firmware Updating
+                            </span>
+                        </td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -116,6 +131,7 @@
                         <th>Product Name</th>
                         <th class="has-text-right">Assigned Device</th>
                         <th class="has-text-right">Asset Tag</th>
+                        <th></th>
                     </tr>
                 </tfoot>
             </table>
