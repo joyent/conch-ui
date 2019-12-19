@@ -18,6 +18,7 @@ export const state = {
     devices: [],
     devicesByWorkspace: [],
     forcePasswordChange: false,
+    globalWorkspaceId: '',
     hardwareProducts: [],
     highlightDeviceId: '',
     invalidCredentials: false,
@@ -30,7 +31,6 @@ export const state = {
     userAuthTokens: [],
     userOrganizations: [],
     users: [],
-    workspaces: [],
     validations: [],
 };
 

@@ -35,7 +35,7 @@ export default new Router({
             },
         },
         {
-            path: '/:currentWorkspace/device',
+            path: '/devices',
             name: 'devices',
             components: {
                 default: Devices,
@@ -52,7 +52,7 @@ export default new Router({
             ],
         },
         {
-            path: '/:currentWorkspace/datacenter',
+            path: '/datacenter',
             name: 'datacenter',
             components: {
                 default: DataCenterBrowser,

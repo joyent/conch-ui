@@ -24,30 +24,6 @@ export const getRackRoomsByWorkspace = state => workspaceId => {
 export const getRoomByName = state => name =>
     state.allRooms.find(room => room.name === name);
 
-export const loadCurrentWorkspace = state => id => {
-    let currentWorkspace = null;
-
-    if (id) {
-        currentWorkspace = findWorkspaceById(state)(id);
-    }
-
-    if (!currentWorkspace) {
-        currentWorkspace = findWorkspaceById(state)(
-            localStorage.getItem('currentWorkspace')
-        );
-    }
-
-    if (!currentWorkspace) {
-        currentWorkspace = findWorkspaceByName(state)('GLOBAL');
-    }
-
-    if (!currentWorkspace) {
-        currentWorkspace = state.workspaces[0];
-    }
-
-    return currentWorkspace;
-};
-
 export default {
     activeDeviceId,
     currentWorkspaceId,
@@ -57,5 +33,4 @@ export default {
     getDevicesByWorkspace,
     getRackRoomsByWorkspace,
     getRoomByName,
-    loadCurrentWorkspace,
 };
