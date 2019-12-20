@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "./node_modules/.bin/vue-cli-service build",
-    "lint": "./node_modules/.bin/vue-cli-service lint",
-    "jest": "./node_modules/.bin/vue-cli-service test:unit -c=./jest.config.js --passWithNoTests",
-    "jest:coverage": "./node_modules/.bin/vue-cli-service test:unit -c=./jest.config.js --coverage --passWithNoTests",
-    "jest:local": "./node_modules/.bin/vue-cli-service test:unit -c=./jest.config.js -o --passWithNoTests",
-    "jest:watch": "./node_modules/.bin/vue-cli-service test:unit -c=./jest.config.js --watch --passWithNoTests",
-    "jest:watch:all": "./node_modules/.bin/vue-cli-service test:unit -c=./jest.config.js --watchAll --passWithNoTests",
-    "start": "./node_modules/.bin/vue-cli-service serve"
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "jest": "vue-cli-service test:unit -c=./jest.config.js --passWithNoTests",
+    "jest:coverage": "vue-cli-service test:unit -c=./jest.config.js --coverage --passWithNoTests",
+    "jest:local": "vue-cli-service test:unit -c=./jest.config.js -o --passWithNoTests",
+    "jest:watch": "vue-cli-service test:unit -c=./jest.config.js --watch --passWithNoTests",
+    "jest:watch:all": "vue-cli-service test:unit -c=./jest.config.js --watchAll --passWithNoTests",
+    "start": "vue-cli-service serve"
   },
   "dependencies": {
     "axios": "^0.18.0",
