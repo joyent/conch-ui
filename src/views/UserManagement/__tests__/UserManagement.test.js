@@ -66,29 +66,18 @@ describe('UserManagement.vue', () => {
         expect(wrapper.vm.filteredUsers[0].name).toContain('Another');
     });
 
-    test('should not display CreateUserModal component on initial render', () => {
-        expect(wrapper.find('createusermodal-stub').exists()).toBeFalsy();
-    });
-
-    test('should not display EditUserModal component on initial render', () => {
-        expect(wrapper.find('editusermodal-stub').exists()).toBeFalsy();
+    test('should not display UserModal component on initial render', () => {
+        expect(wrapper.find('usermodal-stub').exists()).toBeFalsy();
     });
 
     test('should not display UserActionModal component on initial render', () => {
         expect(wrapper.find('useractionmodal-stub').exists()).toBeFalsy();
     });
 
-    test('should display EditUserModal component when "Edit User" button is clicked', () => {
-        clickDropdownTrigger();
-        wrapper.find('.dropdown-item.edit').trigger('click');
-
-        expect(wrapper.find('.edit-user-modal').exists()).toBeTruthy();
-    });
-
-    test('should display CreateUserModal when "Create User" button is clicked', () => {
+    test('should display UserModal when "Create User" button is clicked', () => {
         wrapper.find('button.create').trigger('click');
 
-        expect(wrapper.find('.create-user-modal').exists()).toBeTruthy();
+        expect(wrapper.find('usermodal-stub').exists()).toBeTruthy();
     });
 
     test('should display a tag with "None" for users with no issues', () => {
