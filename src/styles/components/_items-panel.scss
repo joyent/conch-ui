@@ -1,0 +1,109 @@
+.items-panel {
+    table {
+        background-color: $grey-darker;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    .row.search {
+        td {
+            padding: 0;
+        }
+
+        input.search {
+            background-color: darken($grey-darker, 1%);
+            border: none;
+            border-top-right-radius: 4px;
+            border-top-left-radius: 4px;
+            box-shadow: none;
+            color: #bdcbdb;
+            height: 48px;
+            font-size: 1rem;
+
+            &::placeholder {
+                color: $grey-light;
+            }
+
+            &:active,
+            &:focus {
+                box-shadow: none;
+                border: none;
+                background-color: darken($grey-darker, 3%);
+            }
+        }
+
+        span.icon {
+            top: 6px;
+
+            i.material-icons {
+                font-size: 24px;
+            }
+        }
+    }
+
+    .row {
+        &.item {
+            align-items: stretch;
+            display: flex;
+            max-width: 494px;
+
+            td {
+                background-color: $dark;
+                border: none;
+                display: flex;
+                min-height: 66px;
+                align-items: center;
+
+                select {
+                    background-color: $grey-darker;
+                    border-color: $grey;
+                    border-radius: 4px;
+                    color: #bdcbdb;
+                }
+
+                &.item-name {
+                    flex-grow: 1;
+                    overflow: hidden;
+
+                    span {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                }
+
+                &.action {
+                    justify-content: center;
+                    width: 52px;
+
+                    i.material-icons {
+                        cursor: pointer;
+                    }
+                }
+
+                &.no-results {
+                    background-color: darken($grey-darker, 3%);
+                    justify-content: center;
+                    margin-top: 0;
+                    width: 100%;
+                }
+            }
+
+            &.is-selected {
+                border-width: 0 0 0 6px;
+                border-color: $green;
+                border-style: solid;
+
+                td {
+                    background-color: darken($grey-darker, 1%);
+                }
+            }
+
+            &:hover {
+                td {
+                    background-color: lighten($dark, 1%);
+                }
+            }
+        }
+    }
+}

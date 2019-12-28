@@ -201,13 +201,6 @@
                                     </a>
                                     <hr class="dropdown-divider" />
                                     <a
-                                        class="dropdown-item workspaces"
-                                        @click="openModal('edit', user, 2)"
-                                    >
-                                        Edit Workspaces
-                                    </a>
-                                    <hr class="dropdown-divider" />
-                                    <a
                                         class="dropdown-item tokens"
                                         @click="viewTokens(user)"
                                     >
