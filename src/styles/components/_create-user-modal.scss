@@ -1,138 +1,149 @@
-.create-user-modal,
-.edit-user-modal {
-    .modal-content,
-    .notification {
-        overflow: scroll;
-        width: auto;
+.user-modal {
+    .modal-card {
+        border-bottom-right-radius: 4px;
+        border-bottom-left-radius: 4px;
+        width: 500px;
     }
 
-    .modal-content {
-        max-width: 497;
-        min-width: 497px;
-    }
+    .modal-card-head {
+        display: flex;
+        background-color: $green;
+        align-items: center;
+        border-bottom: none;
+        padding: 12px;
 
-    input {
-        background-color: $grey-darker;
-        border-color: $grey;
-        border-radius: 4px;
-        color: #bdcbdb;
+        .modal-card-title {
+            color: white;
+            font-weight: bold;
+        }
 
-        &::placeholder {
-            color: #bdcbdb;
+        &.is-success {
+            background-color: $green;
         }
     }
 
-    table {
-        tr {
-            &:hover {
-                td {
-                    background-color: lighten($dark, 3%);
-                }
-            }
-            &:first-of-type {
-                td {
-
-                    &:first-of-type {
-                        border-top-left-radius: 4px;
-
-                    }
-
-                    &:last-of-type {
-                        border-top-right-radius: 4px;
-                    }
-                }
-            }
-
-            &:last-of-type {
-                td {
-                    &:first-of-type {
-                        border-bottom-left-radius: 4px;
-                    }
-
-                    &:last-of-type {
-                        border-bottom-right-radius: 4px;
-                    }
-                }
-            }
-
-            &.is-selected {
-                border-width: 0 0 0 8px;
-                border-color: $green;
-                border-style: solid;
-            }
-        }
-        td {
+    .modal-card-body {
+        input.input {
             background-color: $dark;
-            border: none;
-            height: 66px;
-            white-space: nowrap;
+            border-color: $grey;
+            border-radius: 3px;
+            color: #bdcbdb;
+            height: 42px;
+            padding-bottom: 6px;
 
-            &.workspace-permissions-select {
-                width: 195px;
-                text-align: center;
+            &::placeholder {
+                color: $grey-light;
             }
 
-            &.workspace-checkbox {
-                text-align: center;
+
+            &:focus {
+                border: 1px solid $blue;
+                box-shadow: none;
             }
 
-            &.search-input {
-                padding: 0;
-
-                p {
-                    &.control {
-                        input {
-                            height: 66px;
-                            border: none;
-                            background-color: $dark;
-                            padding-left: 3em;
-
-                            &:focus {
-                                box-shadow: none;
-                            }
-                        }
-
-                        span.icon {
-                            left: 7px;
-                            top: 15px;
-
-                            i.material-icons {
-                                font-size: 32px;
-                            }
-                        }
-                    }
-                }
+            &.is-danger {
+                border: 1px solid $red;
+                box-shadow: none;
             }
 
-            .checkbox-round {
-                width: 25px;
-                height: 25px;
-                border: 2px solid $green;
-                border-radius: 50%;
-                cursor: pointer;
-                margin: 0 auto;
-
-                &.is-selected {
-                    background-color: $green;
-                    border: none;
-                }
+            &.search {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
             }
         }
     }
 
-    .button {
+    i.material-icons {
+        &.close {
+            cursor: pointer;
+            color: $white;
+            font-size: 24px;
+        }
+
+        &.search {
+            height: 100%;
+        }
+    }
+
+    .buttons-group {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        justify-content: space-between;
+
+        &.single-button {
+            justify-content: flex-end;
+        }
+    }
+
+    a.button {
         font-weight: bold;
-        font-size: 18px;
+        height: 42px;
+        padding-left: 20px;
+        padding-right: 20px;
+
+        i {
+            margin-left: 5px;
+        }
+
+        &.close {
+            min-width: 106px;
+        }
     }
 
-    .workspace-icon {
-        font-size: 72px;
+    hr {
+        height: 1px;
+        margin: 0;
+
+        &.edit-user {
+            margin-top: 20px;
+        }
     }
 
-    .workspaces-table {
-        border-radius: 4px;
-        min-height: 443px;
-        max-height: 443px;
-        overflow: scroll;
+    .field {
+        &.password-confirmation {
+            margin-bottom: 20px;
+        }
+
+        &.has-switch {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+
+            label.label {
+                flex-grow: 1;
+            }
+
+            .slider-text {
+                margin-left: 15px;
+                width: 26px;
+            }
+        }
+    }
+
+    .build {
+        display: flex;
+        align-items: center;
+        height: 66px;
+        padding: 10px;
+        background-color: $dark;
+
+        &:hover {
+            background-color: darken($dark, 3%);
+        }
+    }
+
+    .options {
+        p {
+            color: $white;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        hr {
+            &:first-of-type {
+                margin-top: 15px;
+            }
+        }
     }
 }
