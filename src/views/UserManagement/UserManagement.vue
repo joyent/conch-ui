@@ -144,7 +144,7 @@
                 <UserModal
                     v-if="action === 'create' || action === 'edit'"
                     :action="action"
-                    :edit-user="user"
+                    :edit-user="action === 'create' ? {} : user"
                 />
                 <UserActionModal
                     v-else-if="action"

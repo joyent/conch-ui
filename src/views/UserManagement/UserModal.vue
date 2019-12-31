@@ -9,6 +9,10 @@
                 </i>
             </header>
             <section class="modal-card-body">
+                <article class="notification is-danger" v-if="hasErrors">
+                    <i class="material-icons">error</i>
+                    <p>Missing required field</p>
+                </article>
                 <div class="user-details" v-if="step === 1">
                     <form autocomplete="off">
                         <div class="field">
@@ -16,6 +20,7 @@
                             <div class="control">
                                 <input
                                     class="input"
+                                    :class="{ 'is-danger': errors.name }"
                                     type="text"
                                     placeholder="User Name"
                                     v-model="name"
@@ -28,6 +33,9 @@
                             <div class="control">
                                 <input
                                     class="input"
+                                    :class="{
+                                        'is-danger': errors.invalidEmail,
+                                    }"
                                     type="email"
                                     placeholder="Email Address"
                                     autocomplete="off"
@@ -409,7 +417,7 @@ export default {
             ) {
                 if (this.validateForm()) {
                     const editedUser = {
-                        id: this.user.id,
+                        id: this.editUser.id,
                         email: this.email,
                         is_admin: this.isAdmin,
                         name: this.name,
@@ -454,14 +462,10 @@ export default {
 
             if (!this.name) {
                 this.errors.name = true;
-
-                return false;
             }
 
             if (!this.email || !this.validEmail()) {
                 this.errors.invalidEmail = true;
-
-                return false;
             }
 
             if (this.action !== 'edit') {
@@ -472,8 +476,6 @@ export default {
                     this.errors.passwordLength = true;
                     this.isLoading = false;
                     this.showError = true;
-
-                    return false;
                 }
 
                 if (
@@ -483,14 +485,10 @@ export default {
                     this.errors.passwordMismatch = true;
                     this.isLoading = false;
                     this.showError = true;
-
-                    return false;
                 }
             }
 
-            return Object.values(this.errors).some(error => error === true)
-                ? false
-                : true;
+            return !this.hasErrors;
         },
         validatePasswordConfirmation() {
             this.validPasswordConfirmation = false;
@@ -525,6 +523,11 @@ export default {
     },
     computed: {
         ...mapState(['builds', 'organizations']),
+        hasErrors() {
+            return Object.values(this.errors).some(error => error === true)
+                ? true
+                : false;
+        },
     },
     created() {
         if (!this.builds.length) {
