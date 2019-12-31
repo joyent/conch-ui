@@ -133,6 +133,18 @@
         }
     }
 
+    .notification {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: 2px;
+
+        i {
+            margin-right: 10px;
+        }
+    }
+
     .options {
         p {
             color: $white;
