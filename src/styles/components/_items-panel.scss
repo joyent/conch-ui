@@ -95,13 +95,13 @@
                 border-style: solid;
 
                 td {
-                    background-color: darken($grey-darker, 1%);
+                    background-color: darken($dark, 1%);
                 }
             }
 
             &:hover {
                 td {
-                    background-color: lighten($dark, 1%);
+                    background-color: darken($dark, 3%);
                 }
             }
         }

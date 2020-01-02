@@ -1,22 +1,18 @@
 <template>
     <div class="items-panel">
+        <p class="control has-icons-left">
+            <input
+                class="input search"
+                v-model="searchText"
+                placeholder="Search..."
+                type="text"
+            />
+            <span class="icon is-left">
+                <i class="material-icons">search</i>
+            </span>
+        </p>
         <table class="table is-fullwidth">
             <tbody>
-                <tr class="row search">
-                    <td colspan="3">
-                        <p class="control has-icons-left">
-                            <input
-                                class="input search"
-                                v-model="searchText"
-                                placeholder="Search..."
-                                type="text"
-                            />
-                            <span class="icon is-left">
-                                <i class="material-icons">search</i>
-                            </span>
-                        </p>
-                    </td>
-                </tr>
                 <template v-if="filteredItems.length > 0">
                     <tr
                         class="row item"

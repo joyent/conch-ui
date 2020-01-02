@@ -2,6 +2,7 @@
     .modal-card {
         border-bottom-right-radius: 4px;
         border-bottom-left-radius: 4px;
+        height: 556px;
         width: 500px;
     }
 
@@ -23,33 +24,57 @@
     }
 
     .modal-card-body {
-        input.input {
-            background-color: $dark;
-            border-color: $grey;
-            border-radius: 3px;
-            color: #bdcbdb;
-            height: 42px;
-            padding-bottom: 6px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
 
-            &::placeholder {
-                color: $grey-light;
+        .control {
+            input.input {
+                background-color: $dark;
+                border-color: $grey;
+                border-radius: 3px;
+                box-shadow: none;;
+                color: #bdcbdb;
+                height: 42px;
+                padding-bottom: 6px;
+
+                &::placeholder {
+                    color: $grey-light;
+                }
+
+
+                &:focus {
+                    border: 1px solid $blue;
+                }
+
+                &.is-danger {
+                    border: 1px solid $red;
+                }
+
+                &.search {
+                    border-bottom-left-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-style: solid;
+                    border-color: $grey-dark;
+                    border-width: 0 0 1px;
+                    position: sticky;
+                    top: 0;
+
+                    &:focus {
+                        background-color: darken($dark, 3%);
+                    }
+                }
             }
 
-
-            &:focus {
-                border: 1px solid $blue;
-                box-shadow: none;
+            .icon {
+                height: 100%;
             }
+        }
 
-            &.is-danger {
-                border: 1px solid $red;
-                box-shadow: none;
-            }
-
-            &.search {
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-            }
+        .modal-panel {
+            flex-grow: 1;
+            height: 420px;
+            overflow: scroll;
         }
     }
 
