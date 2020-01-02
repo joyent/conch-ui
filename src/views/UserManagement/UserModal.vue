@@ -13,7 +13,7 @@
                     <i class="material-icons">error</i>
                     <p>Missing required field</p>
                 </article>
-                <div class="user-details" v-if="step === 1">
+                <div class="user-details modal-panel" v-if="step === 1">
                     <form autocomplete="off">
                         <div class="field">
                             <label class="label">Name</label>
@@ -129,7 +129,7 @@
                     </div>
                     <hr />
                 </div>
-                <div class="options" v-else-if="step === 2">
+                <div class="options modal-panel" v-else-if="step === 2">
                     <p>
                         Do you want to add this user to any builds or
                         organizations?
@@ -175,10 +175,10 @@
                     </div>
                     <hr />
                 </div>
-                <div class="builds" v-else-if="step === 3">
+                <div class="builds modal-panel" v-else-if="step === 3">
                     <ItemsPanel :item-type="'builds'" :items="builds" />
                 </div>
-                <div class="organizations" v-else-if="step === 4">
+                <div class="organizations modal-panel" v-else-if="step === 4">
                     <ItemsPanel
                         :item-type="'organizations'"
                         :items="organizations"
