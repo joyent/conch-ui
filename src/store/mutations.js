@@ -46,10 +46,6 @@ export const setActiveRoomName = (state, activeRoomName) => {
     state.activeRoomName = activeRoomName;
 };
 
-export const setAllRooms = (state, allRooms) => {
-    state.allRooms = allRooms;
-};
-
 export const setAuthTokens = (state, authTokens) => {
     state.authTokens = authTokens;
 };
@@ -82,10 +78,6 @@ export const setCurrentUser = (state, currentUser) => {
     state.currentUser = currentUser;
 };
 
-export const setCurrentWorkspace = (state, workspace) => {
-    state.currentWorkspace = workspace;
-};
-
 export const setDatacenterRooms = (state, datacenterRooms) => {
     state.datacenterRooms = datacenterRooms;
 };
@@ -94,12 +86,12 @@ export const setDevices = (state, devices) => {
     state.devices = devices;
 };
 
-export const setDevicesByWorkspace = (state, devices) => {
-    state.devicesByWorkspace.push(devices);
-};
-
 export const setForcePasswordChange = state => {
     state.forcePasswordChange = true;
+};
+
+export const setGlobalWorkspaceId = (state, globalWorkspaceId) => {
+    state.globalWorkspaceId = globalWorkspaceId;
 };
 
 export const setHardwareProducts = (state, hardwareProducts) => {
@@ -126,10 +118,6 @@ export const setRackRooms = (state, rackRooms) => {
     state.rackRooms = rackRooms;
 };
 
-export const setRackRoomsByWorkspace = (state, rackRooms) => {
-    state.rackRoomsByWorkspace.push(rackRooms);
-};
-
 export const setShowDeviceInRack = (state, showDeviceInRack) => {
     state.showDeviceInRack = showDeviceInRack;
 };
@@ -140,10 +128,6 @@ export const setUserAuthTokens = (state, userAuthTokens) => {
 
 export const setUsers = (state, users) => {
     state.users = users;
-};
-
-export const setWorkspaces = (state, workspaces) => {
-    state.workspaces = workspaces;
 };
 
 export const setValidations = (state, validations) => {
@@ -163,7 +147,6 @@ export default {
     setActiveDeviceSettings,
     setActiveDeviceValidations,
     setActiveRoomName,
-    setAllRooms,
     setAuthTokens,
     setBuilds,
     setCurrentBuild,
@@ -172,21 +155,18 @@ export default {
     setCurrentBuildRacks,
     setCurrentBuildUsers,
     setCurrentUser,
-    setCurrentWorkspace,
     setDatacenterRooms,
     setDevices,
-    setDevicesByWorkspace,
     setForcePasswordChange,
+    setGlobalWorkspaceId,
     setHardwareProducts,
     setHighlightDeviceId,
     setInvalidCredentials,
     setOrganizations,
     setRackLayout,
     setRackRooms,
-    setRackRoomsByWorkspace,
     setShowDeviceInRack,
     setUserAuthTokens,
     setUsers,
-    setWorkspaces,
     setValidations,
 };

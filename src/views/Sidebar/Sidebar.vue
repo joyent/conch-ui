@@ -1,9 +1,6 @@
 <template>
-    <aside
-        class="menu"
-        :class="{ loading: !this.workspaceId || isEmpty(this.currentUser) }"
-    >
-        <Spinner v-if="!this.workspaceId || isEmpty(this.currentUser)" />
+    <aside class="menu" :class="{ loading: isEmpty(this.currentUser) }">
+        <Spinner v-if="isEmpty(this.currentUser)" />
         <div class="sidebar" v-else>
             <div class="brand">
                 <img
@@ -28,10 +25,7 @@
                 </li>
                 <li class="nav-item">
                     <router-link
-                        :to="{
-                            name: 'datacenter',
-                            params: { currentWorkspace: this.workspaceId },
-                        }"
+                        :to="{ name: 'datacenter' }"
                         active-class="is-active"
                     >
                         <i class="material-icons">search</i>
@@ -40,10 +34,7 @@
                 </li>
                 <li class="nav-item">
                     <router-link
-                        :to="{
-                            name: 'devices',
-                            params: { currentWorkspace: this.workspaceId },
-                        }"
+                        :to="{ name: 'devices' }"
                         active-class="is-active"
                     >
                         <i class="material-icons">dns</i>
@@ -194,7 +185,7 @@ import Spinner from '@src/views/components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
 import { logout } from '@api/authentication.js';
 import * as Users from '@api/users.js';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
@@ -224,8 +215,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(['currentWorkspaceId']),
-        ...mapState(['currentUser', 'currentWorkspace']),
+        ...mapState(['currentUser']),
         userHasBuilds() {
             const currentUser = this.currentUser;
 
@@ -251,25 +241,6 @@ export default {
             }
 
             return false;
-        },
-        workspaceId() {
-            let workspaceId = this.currentWorkspaceId;
-
-            if (!workspaceId && !isEmpty(this.currentWorkspace)) {
-                workspaceId = this.currentWorkspace.id;
-            }
-
-            if (!workspaceId) {
-                if (
-                    this.$route &&
-                    this.$route.params &&
-                    this.$route.params.currentWorkspace
-                ) {
-                    workspaceId = this.$route.params.currentWorkspace;
-                }
-            }
-
-            return workspaceId;
         },
     },
     created() {

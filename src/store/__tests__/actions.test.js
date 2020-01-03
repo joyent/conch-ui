@@ -83,13 +83,6 @@ describe('actions', () => {
         });
     });
 
-    describe('setAllRooms', () => {
-        test('it sets all rooms', () => {
-            actions.setAllRooms({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setAllRooms', {});
-        });
-    });
-
     describe('setCurrentUser', () => {
         test('it sets the current user', () => {
             actions.setCurrentUser({ commit }, {});
@@ -101,20 +94,6 @@ describe('actions', () => {
         test('it sets authentication tokens', () => {
             actions.setAuthTokens({ commit }, []);
             expect(commit).toHaveBeenCalledWith('setAuthTokens', []);
-        });
-    });
-
-    describe('setCurrentWorkspace', () => {
-        test('it sets the current workspace', () => {
-            actions.setCurrentWorkspace({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setCurrentWorkspace', {});
-        });
-    });
-
-    describe('setDevicesByWorkspace', () => {
-        test('it sets devices by workspace', () => {
-            actions.setDevicesByWorkspace({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setDevicesByWorkspace', {});
         });
     });
 
@@ -153,13 +132,6 @@ describe('actions', () => {
         });
     });
 
-    describe('setRackRoomsByWorkspace', () => {
-        test('it sets the rack rooms by workspace', () => {
-            actions.setRackRoomsByWorkspace({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setRackRoomsByWorkspace', {});
-        });
-    });
-
     describe('setShowDeviceInRack', () => {
         test('it sets the boolean showDeviceInRack to true', () => {
             actions.setShowDeviceInRack({ commit }, {});
@@ -178,13 +150,6 @@ describe('actions', () => {
         test('it sets the users', () => {
             actions.setUsers({ commit }, []);
             expect(commit).toHaveBeenCalledWith('setUsers', []);
-        });
-    });
-
-    describe('setWorkspaces', () => {
-        test('it sets the workspaces', () => {
-            actions.setWorkspaces({ commit }, {});
-            expect(commit).toHaveBeenCalledWith('setWorkspaces', {});
         });
     });
 

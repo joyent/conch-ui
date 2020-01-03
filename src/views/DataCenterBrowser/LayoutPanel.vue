@@ -1,5 +1,5 @@
 <template>
-    <div class="layout-panel" v-if="!isEmpty(rackLayout)">
+    <div class="layout-panel">
         <nav class="panel">
             <div class="panel-heading has-text-centered">
                 Rack {{ rackLayout.name }}
@@ -37,7 +37,6 @@
                 </p>
                 <a
                     class="button update-phase is-small is-primary"
-                    v-if="userHasPermissions"
                     @click="updatingPhase = true"
                     style="position: absolute; right: 12px;"
                 >
@@ -215,13 +214,12 @@ export default {
 
             return 'in progress';
         },
-        isEmpty,
         openModal() {
             this.editLayout = true;
         },
     },
     computed: {
-        ...mapState(['currentWorkspace', 'highlightDeviceId', 'rackLayout']),
+        ...mapState(['highlightDeviceId', 'rackLayout']),
         availableDeviceProgress() {
             return Array.from(
                 Object.keys(this.rackLayout.slots || {}).reduce(
@@ -289,12 +287,6 @@ export default {
             }
 
             return [];
-        },
-        userHasPermissions() {
-            return (
-                this.currentWorkspace.role === 'admin' ||
-                this.currentWorkspace.role === 'rw'
-            );
         },
     },
     mounted() {

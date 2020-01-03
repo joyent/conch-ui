@@ -174,17 +174,17 @@
 </template>
 
 <script>
-import isEmpty from 'lodash/isEmpty';
 import semver from 'semver';
+import { getApiVersion } from '@api/conchApiVersion.js';
+import { mapActions, mapState } from 'vuex';
+import { login } from '@api/authentication.js';
+import { setGlobalWorkspaceId } from '@src/views/shared/utils.js';
+
 import {
     breakingApiVersion,
     conchReleaseUrl,
     minimumApiVersion,
 } from '@src/config.js';
-import { getApiVersion } from '@api/conchApiVersion.js';
-import { mapActions, mapGetters, mapState } from 'vuex';
-import { login } from '@api/authentication.js';
-import { loadAllWorkspaces } from '@api/workspaces.js';
 
 export default {
     data() {
@@ -194,7 +194,6 @@ export default {
             badPassword: false,
             breakingApiVersion: '',
             conchReleaseUrl: '',
-            currentWorkspaceId: '',
             emailAddress: '',
             incompatibleApiVersion: false,
             isLoading: false,
@@ -205,27 +204,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setCurrentWorkspace',
-            'setForcePasswordChange',
-            'setWorkspaces',
-        ]),
-        initWorkspaceData() {
-            return loadAllWorkspaces().then(response => {
-                const workspaces = response.data;
-
-                this.setWorkspaces(workspaces);
-                this.setCurrentWorkspace(this.loadCurrentWorkspace());
-
-                this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
-                sessionStorage.setItem(
-                    'currentWorkspace',
-                    this.currentWorkspaceId
-                );
-
-                return Promise.resolve();
-            });
-        },
+        ...mapActions(['setForcePasswordChange']),
         signIn() {
             if (this.emailAddress && this.password) {
                 this.isLoading = true;
@@ -240,20 +219,11 @@ export default {
                             this.setForcePasswordChange();
                             this.$router.push({ name: 'passwordReset' });
                         } else {
-                            if (isEmpty(this.workspaces)) {
-                                this.initWorkspaceData().then(() => {
-                                    this.$router.push({
-                                        name: 'dashboard',
-                                    });
-                                });
-                            } else {
-                                this.setCurrentWorkspace(
-                                    this.loadCurrentWorkspace()
-                                );
-                                this.$router.push({
-                                    name: 'dashboard',
-                                });
+                            if (!this.globalWorkspaceId) {
+                                setGlobalWorkspaceId();
                             }
+
+                            this.$router.push({ name: 'dashboard' });
                         }
                     })
                     .catch(() => {
@@ -273,8 +243,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(['loadCurrentWorkspace']),
-        ...mapState(['invalidCredentials', 'workspaces']),
+        ...mapState(['invalidCredentials']),
     },
     created() {
         this.breakingApiVersion = breakingApiVersion;

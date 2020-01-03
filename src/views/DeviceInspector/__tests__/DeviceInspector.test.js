@@ -27,11 +27,7 @@ describe('DeviceInspector.vue', () => {
             setRackLayout: jest.fn(),
             setValidations: jest.fn(),
         };
-        getters = {
-            activeDeviceId: jest.fn(),
-            currentWorkspaceId: jest.fn(),
-            getRoomByName: jest.fn(),
-        };
+        getters = { activeDeviceId: jest.fn() };
         state = { activeDevice };
         store = new Vuex.Store({ actions, getters, state });
         wrapper = shallowMount(DeviceInspector, { localVue, store });

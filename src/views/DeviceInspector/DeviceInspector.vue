@@ -123,11 +123,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'activeDeviceId',
-            'currentWorkspaceId',
-            'getRoomByName',
-        ]),
+        ...mapGetters(['activeDeviceId']),
         ...mapState(['activeDevice', 'showDeviceInRack', 'validations']),
         hasActiveDevice() {
             return !isEmpty(this.activeDevice);

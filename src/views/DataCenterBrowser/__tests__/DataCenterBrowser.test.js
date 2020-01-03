@@ -4,10 +4,7 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 
 // Fixtures
 import activeRoom from '@src/__fixtures__/activeRoom.js';
-import devices from '@src/__fixtures__/devices.js';
-import devicesByWorkspaceId from '@src/__fixtures__/devicesByWorkspace.js';
 import datacenterRackRooms from '@src/__fixtures__/datacenterRackRooms.js';
-import workspaces from '@src/__fixtures__/workspaces.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -18,7 +15,6 @@ jest.mock('../../../api/request.js');
 
 describe('DataCenterBrowser.vue', () => {
     let actions;
-    let getters;
     let state;
     let store;
     let wrapper;
@@ -31,12 +27,7 @@ describe('DataCenterBrowser.vue', () => {
             setActiveRoomName: jest.fn(),
             setHighlightDeviceId: jest.fn(),
         };
-        getters = {
-            currentWorkspaceId: jest.fn(() => workspaces[3].id),
-            currentWorkspaceName: jest.fn(),
-        };
-        state = { devicesByWorkspace: devicesByWorkspaceId };
-        store = new Vuex.Store({ actions, getters, state });
+        store = new Vuex.Store({ actions, state });
         wrapper = shallowMount(DataCenterBrowser, { localVue, store });
     });
 
@@ -73,27 +64,5 @@ describe('DataCenterBrowser.vue', () => {
         expect(actions.clearActiveDevice).toHaveBeenCalled();
         expect(actions.clearActiveRoomName).toHaveBeenCalled();
         expect(actions.clearRackLayout).toHaveBeenCalled();
-    });
-
-    test('should display search results dropdown when valid search terms are entered', async () => {
-        const searchInput = wrapper.find('input');
-        wrapper.setData({ workspaceDevices: devices });
-        searchInput.trigger('focus');
-        searchInput.setValue(devices[0].id);
-
-        expect(wrapper.find('.dropdown-content').exists()).toBeTruthy();
-    });
-
-    test('should close search results dropdown when a search result is clicked', async () => {
-        const searchInput = wrapper.find('input');
-        wrapper.setData({ workspaceDevices: devices });
-        searchInput.trigger('focus');
-        searchInput.setValue(devices[0].id);
-
-        wrapper
-            .findAll('.dropdown-item')
-            .at(0)
-            .trigger('click');
-        expect(wrapper.find('.dropdown-content').exists()).toBeFalsy();
     });
 });

@@ -6,7 +6,6 @@ import * as conchApi from '@api/conchApiVersion.js';
 
 // Fixture
 import users from '@src/__fixtures__/users.js';
-import workspaces from '@src/__fixtures__/workspaces.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -16,7 +15,6 @@ jest.spyOn(auth, 'logout');
 jest.spyOn(conchApi, 'getApiVersion');
 
 describe('Sidebar.vue', () => {
-    let getters;
     let mocks;
     let state;
     let store;
@@ -24,10 +22,9 @@ describe('Sidebar.vue', () => {
     let wrapper;
 
     beforeEach(() => {
-        getters = { currentWorkspaceId: jest.fn() };
         mocks = { $router: [] };
-        state = { currentUser: users[0], currentWorkspace: workspaces[0] };
-        store = new Vuex.Store({ state, getters });
+        state = { currentUser: users[0] };
+        store = new Vuex.Store({ state });
         stubs = ['router-link'];
         wrapper = shallowMount(Sidebar, { localVue, mocks, store, stubs });
     });
@@ -44,13 +41,5 @@ describe('Sidebar.vue', () => {
         wrapper.find('.sign-out').trigger('click');
 
         return expect(auth.logout).toHaveBeenCalled();
-    });
-
-    test('should display a loading indicator when the currentWorkspace is being loaded', () => {
-        state.currentWorkspace = {};
-        store = new Vuex.Store({ state, getters });
-        wrapper = shallowMount(Sidebar, { localVue, mocks, store, stubs });
-
-        expect(wrapper.find('spinner-stub').exists()).toBeTruthy();
     });
 });
