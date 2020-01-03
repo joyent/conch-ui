@@ -116,8 +116,6 @@ export default {
         },
         showDeviceInRack() {
             const { datacenter_room, rack } = this.activeDeviceDetails.location;
-            const route = this.$route.path;
-            const workspaceRoute = route.substring(0, route.indexOf('/', 1));
             const datacenterRoomName = datacenter_room.az;
 
             this.setHighlightDeviceId(this.activeDeviceId);
@@ -129,7 +127,7 @@ export default {
             this.setShowDeviceInRack(true);
 
             this.$router.push({
-                path: `${workspaceRoute}/datacenter/${datacenterRoomName}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}`,
+                path: `/datacenter/${datacenterRoomName}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}`,
             });
         },
     },
