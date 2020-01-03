@@ -13,7 +13,6 @@ import rackRooms from '@src/__fixtures__/rackRooms.js';
 import userAuthTokens from '@src/__fixtures__/userAuthTokens.js';
 import users from '@src/__fixtures__/users.js';
 import validations from '@src/__fixtures__/validations.js';
-import workspaces from '@src/__fixtures__/workspaces.js';
 
 describe('mutations', () => {
     let state;
