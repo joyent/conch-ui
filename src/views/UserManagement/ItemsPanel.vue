@@ -103,6 +103,7 @@
 
 <script>
 import search from 'fuzzysearch';
+import Spinner from '@src/views/components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
@@ -115,6 +116,14 @@ export default {
             type: Array,
             required: true,
         },
+        userItems: {
+            type: Array,
+            required: false,
+            default: () => [],
+        },
+    },
+    components: {
+        Spinner,
     },
     data() {
         return {
@@ -180,8 +189,14 @@ export default {
         },
     },
     mounted() {
-        EventBus.$on('next-step', () => {
-            EventBus.$emit('items-selected', {
+        if (this.userItems.length) {
+            this.userItems.forEach(item => {
+                this.selectedItems.push(item);
+            });
+        }
+
+        EventBus.$on('get-selected-items', () => {
+            EventBus.$emit('send-selected-items', {
                 itemType: this.itemType,
                 items: this.selectedItems,
             });
