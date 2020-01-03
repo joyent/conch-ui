@@ -201,6 +201,19 @@
                                     </a>
                                     <hr class="dropdown-divider" />
                                     <a
+                                        class="dropdown-item edit-builds"
+                                        @click="openModal('edit', user, 3)"
+                                    >
+                                        Edit Builds
+                                    </a>
+                                    <a
+                                        class="dropdown-item edit-organizations"
+                                        @click="openModal('edit', user, 4)"
+                                    >
+                                        Edit Organizations
+                                    </a>
+                                    <hr class="dropdown-divider" />
+                                    <a
                                         class="dropdown-item tokens"
                                         @click="viewTokens(user)"
                                     >
