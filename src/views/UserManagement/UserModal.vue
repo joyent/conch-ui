@@ -13,6 +13,12 @@
                     <i class="material-icons">error</i>
                     <p>Missing required field</p>
                 </article>
+                <article
+                    class="notification is-info"
+                    v-else-if="noChangesExist"
+                >
+                    <p>No changes have been made</p>
+                </article>
                 <div class="user-details modal-panel" v-if="step === 1">
                     <form autocomplete="off">
                         <div class="field">
@@ -130,14 +136,23 @@
                     <hr />
                 </div>
                 <div class="options modal-panel" v-else-if="step === 2">
-                    <p>
+                    <p v-if="action === 'create'">
                         Do you want to add this user to any builds or
                         organizations?
                     </p>
+                    <p v-else>
+                        Do you want to edit memberships for this user?
+                    </p>
                     <hr />
                     <div class="field has-switch builds">
-                        <label class="label is-marginless">
+                        <label
+                            class="label is-marginless"
+                            v-if="action === 'create'"
+                        >
                             Add user to builds
+                        </label>
+                        <label class="label is-marginless" v-else>
+                            Edit user build memberships
                         </label>
                         <label class="switch">
                             <input
@@ -155,8 +170,14 @@
                         </span>
                     </div>
                     <div class="field has-switch organizations">
-                        <label class="label is-marginless">
+                        <label
+                            class="label is-marginless"
+                            v-if="action === 'create'"
+                        >
                             Add user to organizations
+                        </label>
+                        <label class="label is-marginless" v-else>
+                            Edit user organization memberships
                         </label>
                         <label class="switch">
                             <input
@@ -176,12 +197,29 @@
                     <hr />
                 </div>
                 <div class="builds modal-panel" v-else-if="step === 3">
-                    <ItemsPanel :item-type="'builds'" :items="builds" />
+                    <ItemsPanel
+                        v-if="action === 'create'"
+                        :item-type="'builds'"
+                        :items="builds"
+                    />
+                    <ItemsPanel
+                        v-else
+                        :item-type="'builds'"
+                        :items="builds"
+                        :user-items="editingUser.builds"
+                    />
                 </div>
                 <div class="organizations modal-panel" v-else-if="step === 4">
                     <ItemsPanel
+                        v-if="action === 'create'"
                         :item-type="'organizations'"
                         :items="organizations"
+                    />
+                    <ItemsPanel
+                        v-else
+                        :item-type="'organizations'"
+                        :items="organizations"
+                        :user-items="editingUser.organizations"
                     />
                 </div>
                 <div
@@ -234,17 +272,21 @@
                         class="button is-success add-builds"
                         :class="{ 'is-loading': isLoading }"
                         v-if="step === 3"
-                        @click="addUserToBuilds()"
+                        @click="updateUserItems('builds')"
                     >
-                        Add Builds
+                        <span v-if="action === 'create'">Add Builds</span>
+                        <span v-else>Edit Builds</span>
                     </a>
                     <a
                         class="button is-success add-organizations"
                         :class="{ 'is-loading': isLoading }"
                         v-if="step === 4"
-                        @click="addUserToOrganizations()"
+                        @click="updateUserItems('organizations')"
                     >
-                        Add Organizations
+                        <span v-if="action === 'create'">
+                            Add Organizations
+                        </span>
+                        <span v-else>Edit Organizations</span>
                     </a>
                 </div>
             </section>
@@ -253,12 +295,17 @@
 </template>
 
 <script>
+import isEmpty from 'lodash/isEmpty';
 import ItemsPanel from './ItemsPanel.vue';
 import { mapActions, mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
 import { createUser, editUser } from '@api/users.js';
-import { addUserToBuild, getBuilds } from '@api/builds.js';
-import { addUserToOrganization, getOrganizations } from '@api/organizations.js';
+import { addUserToBuild, getBuilds, removeUserFromBuild } from '@api/builds.js';
+import {
+    addUserToOrganization,
+    getOrganizations,
+    removeUserFromOrganization,
+} from '@api/organizations.js';
 
 export default {
     components: {
@@ -270,10 +317,15 @@ export default {
             required: false,
             default: '',
         },
-        editUser: {
+        editingUser: {
             type: Object,
             required: false,
             default: () => {},
+        },
+        modalStep: {
+            type: Number,
+            required: false,
+            default: 1,
         },
     },
     data() {
@@ -294,6 +346,7 @@ export default {
             isAdmin: false,
             isLoading: false,
             name: '',
+            noChangesExist: false,
             password: '',
             passwordConfirmation: '',
             searchText: '',
@@ -314,54 +367,105 @@ export default {
             if (this.step === 1 && this.validateForm()) {
                 if (this.validateForm()) {
                     this.step++;
-
-                    EventBus.$emit('next-step');
                 }
             } else if (this.step === 2) {
                 if (this.addToBuilds) {
                     this.step = 3;
-                } else {
+                } else if (this.addToOrganizations) {
                     this.step = 4;
                 }
             }
         },
-        async addUserToBuilds() {
-            EventBus.$emit('next-step');
+        async updateUserItems(itemType) {
+            // Only fire this on non-one-off edits
+            EventBus.$emit('get-selected-items');
+            this.isLoading = true;
 
-            if (this.selectedBuilds.length) {
-                this.isLoading = true;
+            const userId = this.user.id;
 
-                for (let i = 0; i < this.selectedBuilds.length; i++) {
-                    const build = this.selectedBuilds[i];
-                    await addUserToBuild(build.id, this.user.id, build.role);
+            if (itemType === 'builds') {
+                const selectedBuilds = this.selectedBuilds;
+
+                if (selectedBuilds.length) {
+                    for (let i = 0; i < selectedBuilds.length; i++) {
+                        const build = selectedBuilds[i];
+                        await addUserToBuild(build.id, userId, build.role);
+                    }
                 }
 
-                this.isLoading = false;
-            }
-
-            if (this.addToOrganizations) {
-                this.step++;
-            } else {
-                this.closeModal();
-            }
-        },
-        async addUserToOrganizations() {
-            EventBus.$emit('next-step');
-
-            if (this.selectedOrganizations.length) {
-                this.isLoading = true;
-
-                for (let i = 0; i < this.selectedOrganizations.length; i++) {
-                    const organization = this.selectedOrganizations[i];
-                    await addUserToOrganization(
-                        organization.id,
-                        organization.role,
-                        this.user.id
+                if (this.user && this.user.builds && this.user.builds.length) {
+                    const userBuilds = this.user.builds;
+                    const selectedBuildIds = selectedBuilds.map(
+                        build => build.id
                     );
+
+                    for (let i = 0; i < userBuilds.length; i++) {
+                        const build = userBuilds[i];
+
+                        if (selectedBuildIds.indexOf(build.id) === -1) {
+                            await removeUserFromBuild(build.id, userId);
+                        }
+                    }
                 }
+
+                if (this.addToOrganizations) {
+                    this.step++;
+                } else {
+                    EventBus.$emit('action-success', {
+                        userId: this.user.id,
+                        action: this.action,
+                    });
+
+                    this.closeModal();
+                }
+            } else {
+                const selectedOrganizations = this.selectedOrganizations;
+
+                if (selectedOrganizations.length) {
+                    for (let i = 0; i < selectedOrganizations.length; i++) {
+                        const organization = selectedOrganizations[i];
+                        await addUserToOrganization(
+                            organization.id,
+                            organization.role,
+                            userId
+                        );
+                    }
+                }
+
+                if (
+                    this.user &&
+                    this.user.organizations &&
+                    this.user.organizations.length
+                ) {
+                    const userOrganizations = this.user.organizations;
+                    const selectedOrganizationIds = selectedOrganizations.map(
+                        organization => organization.id
+                    );
+
+                    for (let i = 0; i < userOrganizations.length; i++) {
+                        const organization = userOrganizations[i];
+
+                        if (
+                            selectedOrganizationIds.indexOf(organization.id) ===
+                            -1
+                        ) {
+                            await removeUserFromOrganization(
+                                organization.id,
+                                userId
+                            );
+                        }
+                    }
+                }
+
+                EventBus.$emit('action-success', {
+                    userId: this.user.id,
+                    action: this.action,
+                });
 
                 this.closeModal();
             }
+
+            this.isLoading = false;
         },
         closeModal() {
             this.isActive = false;
@@ -402,22 +506,25 @@ export default {
         },
         editExistingUser() {
             if (
-                this.name === this.editUser.name &&
-                this.email === this.editUser.email &&
-                this.isAdmin === this.editUser.is_admin
+                this.name === this.editingUser.name &&
+                this.email === this.editingUser.email &&
+                this.isAdmin === this.editingUser.is_admin
             ) {
-                this.actionComplete = true;
+                this.noChangesExist = true;
                 this.isLoading = false;
 
                 return;
             } else if (
-                this.name !== this.editUser.name ||
-                this.email !== this.editUser.email ||
-                this.isAdmin !== this.editUser.is_admin
+                this.name !== this.editingUser.name ||
+                this.email !== this.editingUser.email ||
+                this.isAdmin !== this.editingUser.is_admin
             ) {
+                this.noChangesExist = false;
+                this.isLoading = true;
+
                 if (this.validateForm()) {
                     const editedUser = {
-                        id: this.editUser.id,
+                        id: this.editingUser.id,
                         email: this.email,
                         is_admin: this.isAdmin,
                         name: this.name,
@@ -440,6 +547,8 @@ export default {
                                 this.isLoading = false;
                             }
                         });
+                } else {
+                    this.isLoading = false;
                 }
             }
         },
@@ -543,19 +652,23 @@ export default {
         }
     },
     mounted() {
-        if (this.editUser) {
-            const user = this.editUser;
+        if (!isEmpty(this.editingUser)) {
+            this.user = this.editingUser;
 
-            this.name = user.name;
-            this.email = user.email;
-            this.isAdmin = user.is_admin;
+            this.name = this.user.name;
+            this.email = this.user.email;
+            this.isAdmin = this.user.is_admin;
+        }
+
+        if (this.modalStep) {
+            this.step = this.modalStep;
         }
 
         EventBus.$on('close-modal', () => {
             this.closeModal();
         });
 
-        EventBus.$on('items-selected', data => {
+        EventBus.$on('send-selected-items', data => {
             if (data.itemType === 'builds') {
                 this.selectedBuilds = data.items;
             } else if (data.itemType === 'organizations') {
