@@ -4,7 +4,6 @@ import { createLocalVue, mount } from '@vue/test-utils';
 
 // Fixture
 import users from '@src/__fixtures__/users.js';
-import workspaces from '@src/__fixtures__/workspaces.js';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -107,47 +106,6 @@ describe('UserManagement.vue', () => {
         clickDropdownTrigger();
 
         expect(wrapper.find('.dropdown-menu').exists()).toBeFalsy();
-    });
-
-    test('should not diplay workspace name search input on user list view', () => {
-        expect(wrapper.find('.input.search.workspaces').exists()).toBeFalsy();
-    });
-
-    test('should display workspace name search input on workspaces view', () => {
-        wrapper
-            .findAll('.tabs .tab')
-            .at(1)
-            .trigger('click');
-
-        expect(wrapper.find('.input.search.workspaces').exists()).toBeTruthy();
-    });
-
-    test('should filter table rows based on workspace name search input', () => {
-        state.workspaces = workspaces;
-        store = new Vuex.Store({ actions, state });
-        wrapper = mount(UserManagement, { localVue, mocks, store });
-
-        wrapper.find('.workspaces-tab').trigger('click');
-        wrapper.find('.input.search.workspaces').setValue('staging');
-
-        expect(wrapper.find('.workspace-name').text()).toEqual(
-            workspaces[3].name
-        );
-    });
-
-    describe('tabs', () => {
-        test('should switch to the workspaces table view when the workspace tab is clicked', () => {
-            wrapper.find('.workspaces-tab').trigger('click');
-
-            expect(wrapper.find('.workspace-view').exists()).toBeTruthy();
-        });
-
-        test('should switch to the users list table when the users tab is clicked', () => {
-            wrapper.find('.workspaces-tab').trigger('click');
-            wrapper.find('.users-tab').trigger('click');
-
-            expect(wrapper.find('.users-table').exists()).toBeTruthy();
-        });
     });
 
     describe('statistic filters', () => {
