@@ -299,7 +299,7 @@ import isEmpty from 'lodash/isEmpty';
 import ItemsPanel from './ItemsPanel.vue';
 import { mapActions, mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
-import { createUser, editUser } from '@api/users.js';
+import { createUser, editUser, getUsers } from '@api/users.js';
 import { addUserToBuild, getBuilds, removeUserFromBuild } from '@api/builds.js';
 import {
     addUserToOrganization,
@@ -362,7 +362,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setBuilds', 'setOrganizations']),
+        ...mapActions(['setBuilds', 'setOrganizations', 'setUsers']),
         async advanceStep() {
             if (this.step === 1 && this.validateForm()) {
                 if (this.validateForm()) {
@@ -376,100 +376,15 @@ export default {
                 }
             }
         },
-        async updateUserItems(itemType) {
-            // Only fire this on non-one-off edits
-            EventBus.$emit('get-selected-items');
-            this.isLoading = true;
-
-            const userId = this.user.id;
-
-            if (itemType === 'builds') {
-                const selectedBuilds = this.selectedBuilds;
-
-                if (selectedBuilds.length) {
-                    for (let i = 0; i < selectedBuilds.length; i++) {
-                        const build = selectedBuilds[i];
-                        await addUserToBuild(build.id, userId, build.role);
-                    }
-                }
-
-                if (this.user && this.user.builds && this.user.builds.length) {
-                    const userBuilds = this.user.builds;
-                    const selectedBuildIds = selectedBuilds.map(
-                        build => build.id
-                    );
-
-                    for (let i = 0; i < userBuilds.length; i++) {
-                        const build = userBuilds[i];
-
-                        if (selectedBuildIds.indexOf(build.id) === -1) {
-                            await removeUserFromBuild(build.id, userId);
-                        }
-                    }
-                }
-
-                if (this.addToOrganizations) {
-                    this.step++;
-                } else {
-                    EventBus.$emit('action-success', {
-                        userId: this.user.id,
-                        action: this.action,
-                    });
-
-                    this.closeModal();
-                }
-            } else {
-                const selectedOrganizations = this.selectedOrganizations;
-
-                if (selectedOrganizations.length) {
-                    for (let i = 0; i < selectedOrganizations.length; i++) {
-                        const organization = selectedOrganizations[i];
-                        await addUserToOrganization(
-                            organization.id,
-                            organization.role,
-                            userId
-                        );
-                    }
-                }
-
-                if (
-                    this.user &&
-                    this.user.organizations &&
-                    this.user.organizations.length
-                ) {
-                    const userOrganizations = this.user.organizations;
-                    const selectedOrganizationIds = selectedOrganizations.map(
-                        organization => organization.id
-                    );
-
-                    for (let i = 0; i < userOrganizations.length; i++) {
-                        const organization = userOrganizations[i];
-
-                        if (
-                            selectedOrganizationIds.indexOf(organization.id) ===
-                            -1
-                        ) {
-                            await removeUserFromOrganization(
-                                organization.id,
-                                userId
-                            );
-                        }
-                    }
-                }
-
-                EventBus.$emit('action-success', {
-                    userId: this.user.id,
-                    action: this.action,
+        closeModal() {
+            if (this.reloadUserList) {
+                getUsers().then(response => {
+                    this.setUsers(response.data);
                 });
-
-                this.closeModal();
             }
 
-            this.isLoading = false;
-        },
-        closeModal() {
-            this.isActive = false;
             EventBus.$emit('close-user-modal');
+            this.isActive = false;
         },
         createNewUser() {
             this.isLoading = true;
@@ -486,13 +401,9 @@ export default {
                 createUser(user)
                     .then(response => {
                         this.user = response.data;
+                        this.reloadUserList = true;
                         this.isLoading = false;
                         this.step = 2;
-
-                        EventBus.$emit('action-success', {
-                            userId: this.user.id,
-                            action: 'create',
-                        });
                     })
                     .catch(error => {
                         if (error.status === 409) {
@@ -533,13 +444,9 @@ export default {
                     editUser(editedUser)
                         .then(response => {
                             this.user = response.data;
+                            this.reloadUserList = true;
                             this.isLoading = false;
                             this.step = 2;
-
-                            EventBus.$emit('action-success', {
-                                userId: this.user.id,
-                                action: 'edit',
-                            });
                         })
                         .catch(error => {
                             if (error.status === 500) {
@@ -561,6 +468,96 @@ export default {
                 passwordLength: false,
                 passwordMismatch: false,
             };
+        },
+        async updateUserItems(itemType) {
+            EventBus.$emit('get-selected-items');
+            this.isLoading = true;
+
+            const userId = this.user.id;
+
+            if (itemType === 'builds') {
+                const selectedBuilds = this.selectedBuilds;
+
+                if (selectedBuilds.length) {
+                    for (let i = 0; i < selectedBuilds.length; i++) {
+                        const build = selectedBuilds[i];
+                        await addUserToBuild(build.id, userId, build.role);
+                    }
+
+                    if (
+                        this.user &&
+                        this.user.builds &&
+                        this.user.builds.length
+                    ) {
+                        const userBuilds = this.user.builds;
+                        const selectedBuildIds = selectedBuilds.map(
+                            build => build.id
+                        );
+
+                        for (let i = 0; i < userBuilds.length; i++) {
+                            const build = userBuilds[i];
+
+                            if (selectedBuildIds.indexOf(build.id) === -1) {
+                                await removeUserFromBuild(build.id, userId);
+                            }
+                        }
+                    }
+
+                    this.reloadUserList = true;
+                }
+
+                if (this.addToOrganizations) {
+                    this.isLoading = false;
+                    this.step++;
+
+                    return;
+                }
+            } else {
+                const selectedOrganizations = this.selectedOrganizations;
+
+                if (selectedOrganizations.length) {
+                    for (let i = 0; i < selectedOrganizations.length; i++) {
+                        const organization = selectedOrganizations[i];
+                        await addUserToOrganization(
+                            organization.id,
+                            organization.role,
+                            userId
+                        );
+                    }
+
+                    if (
+                        this.user &&
+                        this.user.organizations &&
+                        this.user.organizations.length
+                    ) {
+                        const userOrganizations = this.user.organizations;
+                        const selectedOrganizationIds = selectedOrganizations.map(
+                            organization => organization.id
+                        );
+
+                        for (let i = 0; i < userOrganizations.length; i++) {
+                            const organization = userOrganizations[i];
+
+                            if (
+                                selectedOrganizationIds.indexOf(
+                                    organization.id
+                                ) === -1
+                            ) {
+                                await removeUserFromOrganization(
+                                    organization.id,
+                                    userId
+                                );
+                            }
+                        }
+                    }
+
+                    this.reloadUserList = true;
+                }
+            }
+
+            this.closeModal();
+
+            this.isLoading = false;
         },
         validEmail() {
             const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
