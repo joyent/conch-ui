@@ -178,6 +178,7 @@ import {
     demoteUser,
     forcePasswordChange,
     getUserTokens,
+    getUsers,
     promoteUser,
 } from '@api/users.js';
 import { mapActions, mapState } from 'vuex';
@@ -207,7 +208,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['clearUserAuthTokens']),
+        ...mapActions(['clearUserAuthTokens', 'setUsers']),
         closeModal() {
             this.hasNoTokens = false;
 
@@ -225,15 +226,15 @@ export default {
 
             if (action === 'reset-pwd') {
                 forcePasswordChange(userId).then(() => {
-                    this.triggerSuccess(userId);
+                    this.triggerSuccess();
                 });
             } else if (action === 'promote') {
                 promoteUser(userId).then(() => {
-                    this.triggerSuccess(userId);
+                    this.triggerSuccess();
                 });
             } else if (action === 'demote') {
                 demoteUser(userId).then(() => {
-                    this.triggerSuccess(userId);
+                    this.triggerSuccess();
                 });
             } else if (action === 'deactivate') {
                 const params = {};
@@ -246,7 +247,7 @@ export default {
 
                 deactivateUser(userId, params).then(() => {
                     this.deactivateConfirmed = false;
-                    this.triggerSuccess(userId, true);
+                    this.triggerSuccess();
                 });
             } else if (action === 'delete-auth-tokens') {
                 const params = { api_only: 1 };
@@ -256,29 +257,24 @@ export default {
                         this.clearUserAuthTokens();
                     }
 
-                    this.triggerSuccess(userId);
+                    this.triggerSuccess();
                 });
             } else if (action === 'delete-login-tokens') {
                 const params = { login_only: 1 };
 
                 deleteUserTokens(userId, params).then(() => {
-                    this.triggerSuccess(userId);
+                    this.triggerSuccess();
                 });
             }
         },
-        triggerSuccess(userId, deactivate = false) {
+        triggerSuccess() {
             this.$nextTick(() => {
                 this.success = true;
             });
 
-            if (deactivate) {
-                EventBus.$emit('action-success', {
-                    userId,
-                    action: 'deactivate',
-                });
-            } else {
-                EventBus.$emit('action-success', { userId });
-            }
+            getUsers().then(response => {
+                this.setUsers(response.data);
+            });
         },
     },
     computed: {
