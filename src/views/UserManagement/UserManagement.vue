@@ -163,7 +163,7 @@ import UserModal from './UserModal.vue';
 import UserActionModal from './UserActionModal.vue';
 import Spinner from '@src/views/components/Spinner.vue';
 import UsersTable from './UsersTable.vue';
-import { getUser, getUsers } from '@api/users.js';
+import { getUsers } from '@api/users.js';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 
@@ -311,30 +311,6 @@ export default {
                 this.action = '';
             }
         );
-
-        EventBus.$on('action-success', actionData => {
-            const userId = actionData.userId;
-            const users = this.users;
-
-            if (actionData.action !== 'deactivate') {
-                getUser(userId).then(response => {
-                    const newUser = response.data;
-
-                    if (actionData.action && actionData.action === 'create') {
-                        users.push(newUser);
-                        this.setUsers(users);
-                    } else {
-                        const index = this.getIndex(users, userId);
-                        users.splice(index, 1, newUser);
-                        this.setUsers(users);
-                    }
-                });
-            } else if (actionData && actionData.action === 'deactivate') {
-                const index = this.getIndex(users, userId);
-                users.splice(index, 1);
-                this.setUsers(users);
-            }
-        });
     },
 };
 </script>
