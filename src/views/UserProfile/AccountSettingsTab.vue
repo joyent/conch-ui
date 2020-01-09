@@ -204,7 +204,7 @@ export default {
                         params.clear_tokens = 'login_only';
                     }
                 } else {
-                    params.clear_tokens = 0;
+                    params.clear_tokens = 'none';
                 }
 
                 updatePassword(password, params).then(() => {
