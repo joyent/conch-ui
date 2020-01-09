@@ -213,7 +213,16 @@ export default {
                                 setGlobalWorkspaceId();
                             }
 
-                            this.$router.push({ name: 'dashboard' });
+                            if (
+                                this.$route.query &&
+                                this.$route.query.redirect
+                            ) {
+                                this.$router.push({
+                                    path: this.$route.query.redirect,
+                                });
+                            } else {
+                                this.$router.push({ name: 'dashboard' });
+                            }
                         }
                     })
                     .catch(() => {
