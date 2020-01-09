@@ -25,24 +25,6 @@ export const getDevices = workspaceId => {
     });
 };
 
-export const getRackById = (workspaceId, rackId) => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/workspace/${workspaceId}/rack/${rackId}`,
-    }).then(response => {
-        const data = response.data;
-
-        if (data.slots) {
-            data.slots = data.slots.reduce((obj, curr) => {
-                obj[curr.rack_unit_start] = curr;
-                return obj;
-            }, {});
-        }
-
-        return Promise.resolve(data);
-    });
-};
-
 export const getWorkspaces = () => {
     return requestWithToken({
         method: 'GET',
@@ -64,7 +46,6 @@ export default {
     addUserToWorkspace,
     getWorkspaceRacks,
     getDevices,
-    getRackById,
     getWorkspaces,
     removeUserFromWorkspace,
 };
