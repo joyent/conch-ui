@@ -86,7 +86,7 @@ export const forcePasswordChange = userId => {
 };
 
 export const getCurrentUser = () => {
-    return request({
+    return requestWithToken({
         method: 'GET',
         url: '/user/me',
     });
@@ -107,7 +107,7 @@ export const getTokens = () => {
 };
 
 export const getUser = userId => {
-    return request({
+    return requestWithToken({
         method: 'GET',
         url: `/user/${userId}`,
     });
