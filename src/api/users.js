@@ -1,4 +1,4 @@
-import { clearToken, request, requestWithToken } from './request.js';
+import { clearToken, requestWithToken } from './request.js';
 
 export const createToken = name => {
     return requestWithToken({
