@@ -2,10 +2,7 @@
     <div class="racks-tab">
         <div class="columns">
             <div class="column">
-                <div
-                    class="members-table is-paddingless"
-                    v-if="filteredRacks && filteredRacks.length > 0"
-                >
+                <div class="members-table is-paddingless">
                     <div class="datatable-header">
                         <span class="heading is-size-6 is-marginless">
                             Racks
@@ -58,7 +55,10 @@
                             add_circle
                         </i>
                     </div>
-                    <table class="table is-hoverable is-fullwidth">
+                    <table
+                        class="table is-hoverable is-fullwidth"
+                        v-if="filteredRacks.length"
+                    >
                         <thead>
                             <th v-for="header in headers" :key="header">
                                 <a
@@ -121,22 +121,11 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div
-                    class="no-results"
-                    v-else-if="filteredRacks.length === 0 && searchText"
-                >
-                    <p class="subtitle has-text-centered">
-                        No Results to Display
-                    </p>
-                </div>
-                <div class="no-items" style="margin-top: 40px;" v-else>
-                    <p class="subtitle has-text-centered">
-                        No racks in this build
-                    </p>
-                    <a class="button is-success" @click="showAddRackModal()">
-                        Add a Rack
-                    </a>
+                    <div class="no-results" v-else>
+                        <p class="subtitle has-text-centered">
+                            No Results to Display
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
