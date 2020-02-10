@@ -2,13 +2,7 @@
     <div class="organizations-tab">
         <div class="columns">
             <div class="column">
-                <div
-                    class="organizations-table is-paddingless"
-                    v-if="
-                        filteredOrganizations &&
-                            filteredOrganizations.length > 0
-                    "
-                >
+                <div class="organizations-table is-paddingless">
                     <div class="datatable-header">
                         <span class="heading is-size-6 is-marginless">
                             Organizations
@@ -45,10 +39,7 @@
                     </div>
                     <table
                         class="table is-hoverable is-fullwidth"
-                        v-if="
-                            filteredOrganizations &&
-                                filteredOrganizations.length > 0
-                        "
+                        v-if="filteredOrganizations.length"
                     >
                         <thead>
                             <th v-for="header in headers" :key="header">
@@ -116,29 +107,11 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div
-                    class="no-results"
-                    v-else-if="
-                        filteredOrganizations &&
-                            filteredOrganizations.length &&
-                            searchText
-                    "
-                >
-                    <p class="subtitle has-text-centered">
-                        No Results to Display
-                    </p>
-                </div>
-                <div class="no-items" style="margin-top: 40px;" v-else>
-                    <p class="subtitle has-text-centered">
-                        No organizations in this build
-                    </p>
-                    <a
-                        class="button is-success"
-                        @click="showAddOrganizationModal()"
-                    >
-                        Add an Organization
-                    </a>
+                    <div class="no-results" v-else>
+                        <p class="subtitle has-text-centered">
+                            No Results to Display
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
