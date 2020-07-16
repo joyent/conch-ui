@@ -23,7 +23,7 @@
     "d3": "^4.10.2",
     "d3-relationshipgraph": "^3.0.2",
     "fuzzysearch": "^1.0.3",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.19",
     "moment": "^2.22.1",
     "semver": "^6.1.1",
     "vue": "^2.6.10",
