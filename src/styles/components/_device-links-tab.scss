@@ -1,0 +1,46 @@
+.device-links-tab {
+    .modal {
+        &.confirm-action {
+            .buttons-group {
+                display: flex;
+                justify-content: center;
+                margin-top: 0;
+                justify-content: space-between;
+
+                &.action-button {
+                    justify-content: flex-end;
+                }
+
+                .button {
+                    width: 124px;
+                }
+            }
+        }
+
+        .modal-card {
+            height: 190px;
+            width: 400px;
+
+            .modal-card-head {
+                padding: 14px;
+
+                .modal-card-title {
+                    font-size: 1.25rem;
+                }
+            }
+
+            .modal-card-body {
+                display: flex;
+                flex-direction: column;
+            }
+
+            i.material-icons {
+                &.close {
+                    cursor: pointer;
+                    color: $white;
+                    font-size: 24px;
+                }
+            }
+        }
+    }
+}
