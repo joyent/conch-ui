@@ -1,5 +1,13 @@
 import { requestWithToken } from './request.js';
 
+export const addDeviceLinks = (id, links) => {
+    return requestWithToken({
+        method: 'POST',
+        url: `/device/${id}/links`,
+        data: { links },
+    });
+};
+
 export const getDeviceDetails = id => {
     return requestWithToken({
         method: 'GET',
@@ -35,6 +43,14 @@ export const getLocation = id => {
     });
 };
 
+export const removeDeviceLinks = (id, data) => {
+    return requestWithToken({
+        method: 'DELETE',
+        url: `/device/${id}/links`,
+        data,
+    });
+};
+
 export const setDevicePhase = (id, data) => {
     return requestWithToken({
         method: 'POST',
@@ -44,10 +60,12 @@ export const setDevicePhase = (id, data) => {
 };
 
 export default {
+    addDeviceLinks,
     getDeviceDetails,
     getDevicePhase,
     getDeviceSettings,
     getDeviceValidations,
     getLocation,
+    removeDeviceLinks,
     setDevicePhase,
 };

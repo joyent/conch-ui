@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import DeviceLinksTab from './DeviceLinksTab.vue';
 import NetworkingTab from './NetworkingTab.vue';
 import OverviewTab from './OverviewTab.vue';
 import ReportTab from './ReportTab.vue';
@@ -41,6 +42,7 @@ import { getValidations } from '@api/validations.js';
 
 export default {
     components: {
+        DeviceLinksTab,
         NetworkingTab,
         OverviewTab,
         ReportTab,
@@ -76,6 +78,10 @@ export default {
                 {
                     component: 'ReportTab',
                     title: 'Latest Report',
+                },
+                {
+                    component: 'DeviceLinksTab',
+                    title: 'Links',
                 },
             ],
         };
