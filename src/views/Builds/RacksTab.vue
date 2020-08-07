@@ -89,7 +89,7 @@
                         </thead>
                         <tfoot v-if="filteredRacks.length > 10">
                             <th v-for="header in headers" :key="header">
-                                {{ header }}
+                                <span class="is-capitalized">{{ header }}</span>
                             </th>
                             <th></th>
                         </tfoot>

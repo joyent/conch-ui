@@ -41,7 +41,7 @@
                                     <option
                                         v-for="state in healthStates"
                                         :key="state"
-                                        value="state"
+                                        :value="state"
                                     >
                                         {{ state }}
                                     </option>
