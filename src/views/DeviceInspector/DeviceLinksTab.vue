@@ -215,7 +215,10 @@ export default {
                 await this.refetchDevice();
                 this.isLoadingRemoveLinks = false;
             } catch (e) {
-                console.log(e);
+                const errorMessage = e && e.data && e.data.error;
+                this.errorMessage = errorMessage;
+                this.showErrorMessage = true;
+                this.isLoadingRemoveLinks = false;
             }
         },
     },
