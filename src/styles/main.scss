@@ -2,7 +2,7 @@
 @import 'bulmaswatch/superhero/bulmaswatch.scss';
 
 // Bulma Extensions
-@import "bulma-checkradio/dist/css/bulma-checkradio.sass";
+@import 'bulma-checkradio/dist/css/bulma-checkradio.sass';
 @import 'bulma-tooltip/dist/css/bulma-tooltip.sass';
 
 // Config
@@ -16,6 +16,7 @@
 @import './partials/panel';
 @import './partials/progress';
 @import './partials/select-with-label';
+@import './partials/spacer';
 @import './partials/spinner';
 @import './partials/table';
 @import './partials/toggle-switch';
@@ -39,6 +40,7 @@
 @import './components/data-center-browser';
 @import './components/device-modal';
 @import './components/device-browser';
+@import './components/device-links-tab';
 @import './components/edit-layout-modal';
 @import './components/items-panel';
 @import './components/navbar';

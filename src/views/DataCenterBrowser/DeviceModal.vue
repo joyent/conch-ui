@@ -6,16 +6,14 @@
         v-if="activeDevice && activeDevice.id"
     >
         <div class="modal-background" @click="closeModal()"></div>
-        <div class="modal-card">
+        <div class="modal-card device-modal">
             <header class="modal-card-head">
                 <p class="modal-card-title has-text-left">
                     {{ activeDevice.serial_number }}
                 </p>
-                <button
-                    class="delete"
-                    aria-label="close"
-                    @click="closeModal()"
-                ></button>
+                <i class="material-icons close" @click="closeModal()">
+                    close
+                </i>
             </header>
             <section class="modal-card-body">
                 <DeviceInspector />
