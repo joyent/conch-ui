@@ -32,6 +32,20 @@
                 </div>
             </div>
         </div>
+        <div class="columns" v-if="errorMessage">
+            <div class="column is-12">
+                <article class="message is-danger">
+                    <div class="message-header">
+                        <p class="">Error: {{ errorMessage }}</p>
+                        <button
+                            class="delete"
+                            aria-label="delete"
+                            @click="errorMessage = ''"
+                        ></button>
+                    </div>
+                </article>
+            </div>
+        </div>
         <section class="info-tiles">
             <div class="tile is-ancestor has-text-centered">
                 <div class="tile is-parent">
@@ -40,6 +54,27 @@
                         <p class="title device-phase is-capitalized">
                             {{ activeDeviceDetails.phase }}
                         </p>
+                    </article>
+                </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <p class="subtitle" style="margin-bottom: 10px"
+                            >Hardware Product</p
+                        >
+                        <a
+                            class="is-size-5 device-phase has-text-white"
+                            @click="
+                                navigateToHardwareProduct(
+                                    activeDeviceDetails.hardware_product_id
+                                )
+                            "
+                        >
+                            {{
+                                getHardwareProductName(
+                                    activeDeviceDetails.hardware_product_id
+                                )
+                            }}
+                        </a>
                     </article>
                 </div>
             </div>
@@ -94,6 +129,7 @@ import TimeToBurnin from './TimeToBurnin.vue';
 import PhaseUpdateModal from '@src/views/components/PhaseUpdateModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { getHardwareProducts } from '@api/hardwareProduct.js';
 
 export default {
     components: {
@@ -102,6 +138,8 @@ export default {
     },
     data() {
         return {
+            errorMessage: '',
+            hardwareProducts: [],
             updatingPhase: false,
         };
     },
@@ -113,6 +151,27 @@ export default {
         ]),
         closeModal() {
             this.updatingPhase = false;
+        },
+        getHardwareProductName(id) {
+            const product = this.hardwareProducts.find(
+                product => product.id === id
+            );
+
+            if (product) {
+                return product.name;
+            } else {
+                return 'Unknown';
+            }
+        },
+        navigateToHardwareProduct(id) {
+            this.$router.push({ name: 'hardware-product', params: { id } });
+        },
+        setError(error) {
+            this.errorMessage =
+                (error && error.data && error.data.error) ||
+                'An error occurred';
+            this.editProduct = false;
+            this.isLoading = false;
         },
         showDeviceInRack() {
             const { datacenter_room, rack } = this.activeDeviceDetails.location;
@@ -205,7 +264,16 @@ export default {
             return moment(this.activeDeviceDetails.uptime_since).fromNow(true);
         },
     },
-    mounted() {
+    async mounted() {
+        let response;
+
+        try {
+            response = await getHardwareProducts();
+            this.hardwareProducts = response.data;
+        } catch (error) {
+            this.setError(error);
+        }
+
         EventBus.$on('closeModal:baseModal', () => {
             this.closeModal();
         });

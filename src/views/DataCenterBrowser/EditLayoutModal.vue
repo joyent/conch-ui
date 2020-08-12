@@ -41,6 +41,20 @@
                 </button>
             </header>
             <section class="modal-card-body">
+                <div
+                    class="notification is-danger"
+                    v-if="errorMessage"
+                    style="display: flex; align-items: center; padding: 20px 24px; margin-bottom: 0;"
+                >
+                    <p class="has-text-left" style="flex-grow: 1"
+                        >Error: {{ errorMessage }}</p
+                    >
+                    <button
+                        class="delete"
+                        @click="errorMessage = ''"
+                        style="position: relative; top: 0; right: 0;"
+                    ></button>
+                </div>
                 <table class="table is-fullwidth is-hoverable is-marginless">
                     <thead>
                         <th>Slot</th>
@@ -70,7 +84,18 @@
                             }"
                         >
                             <td>{{ assignment.slot }}</td>
-                            <td>{{ assignment.hardware_product_name }}</td>
+                            <td>
+                                <a
+                                    class="has-text-white"
+                                    @click="
+                                        navigateToHardwareProduct(
+                                            assignment.hardware_product_name
+                                        )
+                                    "
+                                >
+                                    {{ assignment.hardware_product_name }}
+                                </a>
+                            </td>
                             <template
                                 v-if="isEditingAssignment(assignment.slot)"
                             >
@@ -233,6 +258,7 @@ import { mapActions, mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
 import { updateRackAssignment } from '@api/racks.js';
 import { getRack } from '@api/racks';
+import { getHardwareProducts } from '@api/hardwareProduct';
 
 export default {
     props: {
@@ -247,6 +273,8 @@ export default {
             duplicateAssetTag: false,
             duplicateSerialNumber: false,
             editingAssignments: false,
+            errorMessage: '',
+            hardwareProducts: [],
             invalidSerialNumber: false,
             isActive: true,
             isLoading: false,
@@ -366,6 +394,21 @@ export default {
                 return assignment.slot === slot;
             });
         },
+        navigateToHardwareProduct(productName) {
+            const products = this.hardwareProducts;
+            const product = products.find(
+                product => product.name === productName
+            );
+
+            if (product) {
+                this.$router.push({
+                    name: 'hardware-product',
+                    params: {
+                        id: product.id,
+                    },
+                });
+            }
+        },
         async saveModifiedAssignments() {
             this.isLoading = true;
             this.clearErrors();
@@ -404,6 +447,12 @@ export default {
             } else {
                 this.isLoading = false;
             }
+        },
+        setError(error) {
+            this.errorMessage =
+                (error && error.data && error.data.error) ||
+                'An error occurred';
+            this.isLoading = false;
         },
         validateInput() {
             const modifiedAssignments = this.modifiedAssignments;
@@ -492,6 +541,16 @@ export default {
                 }
             }
         },
+    },
+    async mounted() {
+        let response;
+
+        try {
+            const response = await getHardwareProducts();
+            this.hardwareProducts = response.data;
+        } catch (error) {
+            this.setError(error);
+        }
     },
     created() {
         this.deviceSlots.map(slot => {
