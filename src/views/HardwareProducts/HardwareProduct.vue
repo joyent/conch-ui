@@ -16,7 +16,7 @@
                     </h1>
                 </div>
             </div>
-            <div class="navbar-menu">
+            <div class="navbar-menu" v-if="currentUser && currentUser.is_admin">
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
@@ -138,6 +138,7 @@ import {
     editHardwareProduct,
     getHardwareProduct,
 } from '@api/hardwareProduct.js';
+import { mapState } from 'vuex';
 import ConfirmationModal from '../HardwareProducts/ConfirmationModal';
 import Spinner from '@src/views/components/Spinner.vue';
 
@@ -444,6 +445,7 @@ export default {
         }
     },
     computed: {
+        ...mapState(['currentUser']),
         isProductModified() {
             const values = this.fields.map(field => {
                 let value = field.value;

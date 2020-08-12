@@ -14,6 +14,20 @@
                     Hardware Products
                 </h1>
             </div>
+            <div class="columns" v-if="errorMessage">
+                <div class="column is-12">
+                    <article class="message is-danger">
+                        <div class="message-header">
+                            <p class="">Error: {{ errorMessage }}</p>
+                            <button
+                                class="delete"
+                                aria-label="delete"
+                                @click="errorMessage = ''"
+                            ></button>
+                        </div>
+                    </article>
+                </div>
+            </div>
             <div style="display: flex">
                 <div
                     class="control has-icons-left"
@@ -47,7 +61,7 @@
                     <th>Generation Name</th>
                     <th>Created</th>
                     <th>Updated</th>
-                    <th></th>
+                    <th v-if="currentUser && currentUser.is_admin"></th>
                 </thead>
                 <tfoot>
                     <th>Name</th>
@@ -56,7 +70,7 @@
                     <th>Generation Name</th>
                     <th>Created</th>
                     <th>Updated</th>
-                    <th></th>
+                    <th v-if="currentUser && currentUser.is_admin"></th>
                 </tfoot>
                 <tbody>
                     <tr
@@ -72,7 +86,7 @@
                         <td>{{ product.generation_name }}</td>
                         <td>{{ getFormattedDate(product.created) }}</td>
                         <td>{{ getFormattedDate(product.updated) }}</td>
-                        <td>
+                        <td v-if="currentUser && currentUser.is_admin">
                             <div
                                 class="dropdown is-right"
                                 :class="{
@@ -142,6 +156,7 @@ import {
     deleteHardwareProduct,
     getHardwareProducts,
 } from '@api/hardwareProduct';
+import { mapState } from 'vuex';
 import ConfirmationModal from '../HardwareProducts/ConfirmationModal';
 import Spinner from '@src/views/components/Spinner.vue';
 import HardwareProductModal from '../HardwareProducts/HardwareProductModal';
@@ -155,6 +170,7 @@ export default {
     data() {
         return {
             activeButton: '',
+            errorMessage: '',
             hardwareProduct: '',
             hardwareProducts: [],
             isLoading: false,
@@ -178,7 +194,7 @@ export default {
                 this.isLoading = false;
                 this.modalConfirmAction = false;
             } catch (error) {
-                // handle error
+                this.setError(error);
             }
         },
         editProduct(product) {
@@ -199,7 +215,7 @@ export default {
                 const response = await getHardwareProducts();
                 this.hardwareProducts = response.data;
             } catch (error) {
-                // handle error
+                this.setError(error);
             }
 
             this.isLoading = false;
@@ -215,6 +231,12 @@ export default {
                 },
             });
         },
+        setError(error) {
+            this.errorMessage =
+                (error && error.data && error.data.error) ||
+                'An error occurred';
+            this.isLoading = false;
+        },
         showConfirmActionModal(product) {
             this.hardwareProduct = product.id;
             this.modalConfirmAction = true;
@@ -228,6 +250,7 @@ export default {
         },
     },
     computed: {
+        ...mapState(['currentUser']),
         filteredHardwareProducts() {
             const searchText = this.searchText.toLowerCase();
             let products = this.hardwareProducts;

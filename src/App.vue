@@ -5,7 +5,6 @@
         <div class="signed-in" v-else-if="isLoggedIn()">
             <router-view name="sidebar" />
             <div class="page">
-                <router-view name="navbar" />
                 <router-view class="page-content" :key="$route.fullPath" />
             </div>
         </div>
