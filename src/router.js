@@ -6,7 +6,6 @@ import SignIn from './views/SignIn/SignIn.vue';
 import UserProfile from './views/UserProfile/UserProfile.vue';
 import UserManagement from './views/UserManagement/UserManagement.vue';
 import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTokens.vue';
-import Navbar from './views/Navbar/Navbar.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import PasswordReset from './views/PasswordReset/PasswordReset.vue';
@@ -15,6 +14,8 @@ import Build from './views/Builds/Build.vue';
 import Organizations from './views/Organizations/Organizations.vue';
 import Organization from './views/Organizations/Organization.vue';
 import Dashboard from './views/Dashboard/Dashboard.vue';
+import HardwareProduct from './views/HardwareProducts/HardwareProduct.vue';
+import HardwareProducts from './views/HardwareProducts/HardwareProducts.vue';
 
 Vue.use(Router);
 
@@ -31,7 +32,6 @@ export default new Router({
             components: {
                 default: Dashboard,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
         },
         {
@@ -40,7 +40,6 @@ export default new Router({
             components: {
                 default: Devices,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
             children: [
                 {
@@ -52,12 +51,29 @@ export default new Router({
             ],
         },
         {
+            path: '/hardware-products',
+            name: 'hardware-products',
+            components: {
+                default: HardwareProducts,
+                sidebar: Sidebar,
+            },
+            children: [
+                {
+                    path: ':id',
+                    name: 'hardware-product',
+                    components: {
+                        default: HardwareProduct,
+                        sidebar: Sidebar,
+                    },
+                },
+            ],
+        },
+        {
             path: '/datacenter',
             name: 'datacenter',
             components: {
                 default: DataCenterBrowser,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
             children: [
                 {
@@ -90,7 +106,6 @@ export default new Router({
             components: {
                 default: BuildsList,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
         },
         {
@@ -99,7 +114,6 @@ export default new Router({
             components: {
                 default: UserProfile,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
         },
         {
@@ -108,7 +122,6 @@ export default new Router({
             components: {
                 default: AuthenticationTokens,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
             children: [
                 {
@@ -125,7 +138,6 @@ export default new Router({
             components: {
                 default: UserManagement,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
         },
         {
@@ -141,7 +153,6 @@ export default new Router({
             components: {
                 default: Organizations,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
         },
         {
@@ -150,7 +161,6 @@ export default new Router({
             components: {
                 default: Organization,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
         },
         {
@@ -159,7 +169,6 @@ export default new Router({
             components: {
                 default: Build,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
         },
         {

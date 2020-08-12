@@ -1,0 +1,45 @@
+.hardware-products {
+    input {
+        background-color: $dark;
+        border-color: $grey;
+        border-radius: 4px;
+        color: #bdcbdb;
+        height: 42px;
+        margin-bottom: 0;
+        min-width: 350px;
+
+        &::placeholder {
+            color: #bdcbdb;
+        }
+    }
+
+    .control {
+        .icon {
+            left: 2px;
+            top: 3px;
+        }
+    }
+
+    .create-new {
+        height: 42px;
+    }
+
+    .dropdown {
+        .dropdown-content {
+            background-color: lighten($grey-dark, 8%);
+            border-radius: 5px;
+        }
+
+        .dropdown-item {
+            padding: 6px 16px;
+
+            &:hover {
+                color: $white;
+            }
+        }
+
+        hr.dropdown-divider {
+            background-color: $grey-light;
+        }
+    }
+}
