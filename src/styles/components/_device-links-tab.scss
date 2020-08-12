@@ -1,4 +1,31 @@
 .device-links-tab {
+    .control {
+        input {
+            background-color: $grey-dark;
+            border: 1px solid $grey;
+            box-shadow: none;
+            color: $grey-lighter;
+            height: 46px;
+            margin-bottom: 0;
+            padding-left: 10px;
+
+            &::placeholder {
+                color: $grey-light;
+            }
+
+            &:focus {
+                border-color: #209cee;
+                box-shadow: none;
+            }
+        }
+
+        span.icon {
+            left: 0px;
+            margin: 5px 10px 5px 2px;
+            top: 0px;
+        }
+    }
+
     .modal {
         &.confirm-action {
             .buttons-group {
