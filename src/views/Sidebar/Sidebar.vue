@@ -41,6 +41,15 @@
                         <span>Devices</span>
                     </router-link>
                 </li>
+                <li class="nav-item">
+                    <router-link
+                        :to="{ name: 'hardware-products' }"
+                        active-class="is-active"
+                    >
+                        <i class="material-icons">memory</i>
+                        <span>Hardware Products</span>
+                    </router-link>
+                </li>
             </ul>
             <p class="menu-label" v-if="userHasBuilds || userHasOrganizations">
                 Pages
