@@ -546,7 +546,7 @@ export default {
         let response;
 
         try {
-            const response = await getHardwareProducts();
+            response = await getHardwareProducts();
             this.hardwareProducts = response.data;
         } catch (error) {
             this.setError(error);
