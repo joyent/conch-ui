@@ -37,17 +37,55 @@
             <div class="card" v-for="build in filteredBuilds" :key="build.id">
                 <router-link
                     :to="{ name: 'build', params: { buildId: build.id } }"
+                    style="display: flex; flex-direction: column; height: 100%;"
                 >
-                    <div class="card-content">
+                    <div class="card-content" style="flex-grow: 1;">
                         <div class="build-progress">
-                            <RadialProgressBar
-                                :color="graphColor(20)"
-                                :id="build.id"
-                                :value="20"
-                            />
+                            <span
+                                class="icon is-large"
+                                :class="{
+                                    'has-text-success': build.completed,
+                                }"
+                            >
+                                <i
+                                    v-if="build.completed"
+                                    class="material-icons"
+                                    style="font-size: 36px;"
+                                    >check_circle</i
+                                >
+                                <i
+                                    v-else-if="build.started"
+                                    class="fa fa-circle-notch fa-spin fa-2x"
+                                ></i>
+                                <i
+                                    v-else
+                                    class="material-icons"
+                                    style="font-size: 36px;"
+                                >
+                                    more_horiz
+                                </i>
+                            </span>
                         </div>
                         <p class="build-name">{{ build.name }}</p>
                     </div>
+                    <footer
+                        class="card-footer"
+                        style="
+                            justify-content: center;
+                            border-bottom-right-radius: 4px;
+                            border-bottom-left-radius: 4px;
+                            background-color: #243340;
+                            border-top: none;
+                        "
+                    >
+                        <p
+                            class="status has-text-weight-bold is-capitalized"
+                            :class="`${buildStatusClass(build)}`"
+                            style="padding: 8px; font-size: 18px;"
+                        >
+                            {{ buildStatusText(build) }}
+                        </p>
+                    </footer>
                 </router-link>
             </div>
         </div>
@@ -68,22 +106,44 @@
                                 }"
                             >
                                 <div class="build-details">
-                                    <p class="name is-size-5">
+                                    <p
+                                        class="name is-size-5"
+                                        style="margin-bottom: 4px;"
+                                    >
                                         {{ build.name }}
                                     </p>
                                     <p
-                                        class="status"
+                                        class="status is-capitalized"
                                         :class="`${buildStatusClass(build)}`"
                                     >
                                         {{ buildStatusText(build) }}
                                     </p>
                                 </div>
                                 <div class="build-progress">
-                                    <RadialProgressBar
-                                        :color="graphColor(20)"
-                                        :id="build.id"
-                                        :value="20"
-                                    />
+                                    <span
+                                        class="icon is-large"
+                                        :class="{
+                                            'has-text-success': build.completed,
+                                        }"
+                                    >
+                                        <i
+                                            v-if="build.completed"
+                                            class="material-icons"
+                                            style="font-size: 36px;"
+                                            >check_circle</i
+                                        >
+                                        <i
+                                            v-else-if="build.started"
+                                            class="fa fa-circle-notch fa-spin fa-2x"
+                                        ></i>
+                                        <i
+                                            v-else
+                                            class="material-icons"
+                                            style="font-size: 36px;"
+                                        >
+                                            more_horiz
+                                        </i>
+                                    </span>
                                 </div>
                             </div>
                         </a>
@@ -105,7 +165,6 @@
 <script>
 import isEmpty from 'lodash/isEmpty';
 import search from 'fuzzysearch';
-import RadialProgressBar from '@views/components/RadialProgressBar.vue';
 import CreateBuildModal from './CreateBuildModal.vue';
 import Spinner from '../components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
@@ -117,7 +176,6 @@ export default {
     components: {
         Build,
         CreateBuildModal,
-        RadialProgressBar,
         Spinner,
     },
     data() {
@@ -144,7 +202,7 @@ export default {
             this.creatingBuild = true;
         },
         getBuilds() {
-            Builds.getBuilds().then(response => {
+            Builds.getBuilds().then((response) => {
                 const builds = response.data;
 
                 if (builds.length) {
