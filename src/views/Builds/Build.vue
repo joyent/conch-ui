@@ -9,7 +9,15 @@
             </article>
         </transition>
         <div class="build-header">
-            <p class="build-name title has-text-white">
+            <router-link
+                v-if="$route.name === 'builds'"
+                :to="{ name: 'build', params: { buildId: currentBuild.id } }"
+                class="build-name title has-text-white"
+                tag="a"
+            >
+                {{ currentBuild.name }}
+            </router-link>
+            <p v-else class="build-name title has-text-white">
                 {{ currentBuild.name }}
             </p>
             <div class="field is-grouped">
@@ -19,22 +27,25 @@
                     </a>
                 </p>
                 <p
-                    class="control"
                     v-if="currentBuild.started && !currentBuild.completed"
+                    class="control"
+                    :class="{
+                        'tooltip is-tooltip-left is-tooltip-info': !isBuildCompletable,
+                    }"
+                    :data-tooltip="
+                        `${
+                            isBuildCompletable
+                                ? ''
+                                : 'Cannot complete a build with unhealthy devices'
+                        }`
+                    "
                 >
                     <a
                         class="button is-success"
-                        :class="{
-                            'tooltip is-tooltip-left is-tooltip-info': !isBuildCompletable,
-                        }"
-                        @click="updateBuild('complete')"
-                        :data-tooltip="
-                            `${
-                                isBuildCompletable
-                                    ? ''
-                                    : 'Cannot complete a build with unhealthy devices'
-                            }`
+                        @click="
+                            isBuildCompletable ? updateBuild('complete') : null
                         "
+                        :disabled="!isBuildCompletable"
                     >
                         Complete Build
                     </a>

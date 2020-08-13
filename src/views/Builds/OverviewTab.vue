@@ -2,28 +2,6 @@
     <div class="overview-tab">
         <div class="columns">
             <div class="column">
-                <div class="box">
-                    <div class="total-build-progress">
-                        <div class="box-header">
-                            <i class="material-icons">cloud_done</i>
-                            <p class="heading is-size-6">
-                                Overall Build Progress
-                            </p>
-                        </div>
-                        <div class="progress-overall">
-                            <progress
-                                class="progress is-success"
-                                :value="80"
-                                max="100"
-                            ></progress>
-                            <span class="amount is-size-5">80%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="columns">
-            <div class="column">
                 <div class="box build-dates">
                     <div class="box-header">
                         <i class="material-icons">schedule</i>
