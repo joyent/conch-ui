@@ -3,16 +3,16 @@
         <table class="table is-hoverable is-fullwidth" v-if="hasOrganizations">
             <thead>
                 <th>Name</th>
-                <th class="has-text-centered">Admin Users</th>
-                <th class="has-text-centered">Regular Users</th>
-                <th class="has-text-centered">Total Build Count</th>
+                <th>Admin Users</th>
+                <th>Regular Users</th>
+                <th>Total Build Count</th>
                 <th></th>
             </thead>
             <tfoot v-if="hasOrganizations && organizations.length >= 10">
                 <th>Name</th>
-                <th class="has-text-centered">Admin Users</th>
-                <th class="has-text-centered">Regular Users</th>
-                <th class="has-text-centered">Total Build Count</th>
+                <th>Admin Users</th>
+                <th>Regular Users</th>
+                <th>Total Build Count</th>
                 <th></th>
             </tfoot>
             <tbody>
@@ -23,13 +23,13 @@
                     @click="viewOrganizationPage(organization.id)"
                 >
                     <td>{{ organization.name }}</td>
-                    <td class="has-text-centered">
+                    <td>
                         {{ getAdminUserCount(organization) }}
                     </td>
-                    <td class="has-text-centered">
+                    <td>
                         {{ getRegularUserCount(organization) }}
                     </td>
-                    <td class="has-text-centered">
+                    <td>
                         <span v-if="organizationBuildCount(organization) > 0">
                             {{ organizationBuildCount(organization) }}
                         </span>
