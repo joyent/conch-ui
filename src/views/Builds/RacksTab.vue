@@ -214,15 +214,6 @@ export default {
                 this.setCurrentBuildRacks(response.data);
             });
         },
-        removeRackFromBuild() {
-            Builds.removeRackFromBuild(this.buildId, this.removingRack.id).then(
-                () => {
-                    EventBus.$emit('item-removed');
-
-                    this.refetchCurrentBuildRacks();
-                }
-            );
-        },
         sort() {},
     },
     computed: {
@@ -297,10 +288,6 @@ export default {
                 this.closeModal();
             }
         );
-
-        EventBus.$on('remove-item:rack', () => {
-            this.removeRackFromBuild();
-        });
 
         EventBus.$on('rack-added', () => {
             this.refetchCurrentBuildRacks();

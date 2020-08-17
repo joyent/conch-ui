@@ -266,21 +266,6 @@ export const removeOrganizationFromBuild = (buildId, organizationId) => {
 };
 
 /**
- * Remove a rack from a build
- *
- * @type {DELETE}
- * @param {String} buildId                  The ID of the build being updated
- * @param {String} rackId                   The ID of the rack being removed
- * @return {Response Object}
- */
-export const removeRackFromBuild = (buildId, rackId) => {
-    return requestWithToken({
-        method: 'DELETE',
-        url: `/build/${buildId}/rack/${rackId}`,
-    });
-};
-
-/**
  * Remove a user from a build
  *
  * @type {DELETE}
@@ -312,7 +297,6 @@ export default {
     getBuilds,
     removeDeviceFromBuild,
     removeOrganizationFromBuild,
-    removeRackFromBuild,
     removeUserFromBuild,
     updateBuild,
 };
