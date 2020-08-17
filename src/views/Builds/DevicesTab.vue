@@ -102,6 +102,13 @@
                                 class="row"
                                 v-for="device in filteredDevices"
                                 :key="device.name"
+                                @click="
+                                    $router.push({
+                                        name: 'device',
+                                        params: { deviceId: device.id },
+                                    })
+                                "
+                                style="cursor: pointer;"
                             >
                                 <td class="name">
                                     <span>{{ device.serial_number }}</span>

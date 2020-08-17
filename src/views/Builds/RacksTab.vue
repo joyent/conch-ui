@@ -98,6 +98,18 @@
                                 class="row"
                                 v-for="rack in filteredRacks"
                                 :key="rack.id"
+                                @click="
+                                    $router.push({
+                                        name: 'datacenterRack',
+                                        params: {
+                                            rackId: rack.id,
+                                            roomName: getDatacenterRoom(
+                                                rack.datacenter_room_id
+                                            ),
+                                        },
+                                    })
+                                "
+                                style="cursor: pointer;"
                             >
                                 <td class="name">
                                     <span>{{ rack.name }}</span>

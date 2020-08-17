@@ -84,6 +84,13 @@
                                 class="row"
                                 v-for="user in filteredUsers"
                                 :key="user.name"
+                                @click="
+                                    $router.push({
+                                        name: 'user',
+                                        params: { id: user.id },
+                                    })
+                                "
+                                style="cursor: pointer;"
                             >
                                 <td class="name">
                                     <span>{{ user.name }}</span>
