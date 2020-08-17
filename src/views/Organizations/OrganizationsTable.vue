@@ -107,12 +107,10 @@ export default {
 
             return 0;
         },
-        viewOrganizationPage(organizationId) {
+        viewOrganizationPage(id) {
             this.$router.push({
                 name: 'organization',
-                params: {
-                    organizationId,
-                },
+                params: { id },
             });
         },
     },

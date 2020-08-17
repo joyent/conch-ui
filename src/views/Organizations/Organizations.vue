@@ -203,7 +203,7 @@ export default {
         viewOrganization(organizationId) {
             this.$router.push({
                 name: 'organization',
-                params: { organizationId },
+                params: { id: organizationId },
             });
         },
     },

@@ -156,7 +156,7 @@ export default new Router({
             },
         },
         {
-            path: '/organization/:organizationId',
+            path: '/organization/:id',
             name: 'organization',
             components: {
                 default: Organization,
@@ -164,7 +164,7 @@ export default new Router({
             },
         },
         {
-            path: '/build/:buildId',
+            path: '/build/:id',
             name: 'build',
             components: {
                 default: Build,

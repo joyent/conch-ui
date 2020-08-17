@@ -11,7 +11,7 @@
         <div class="build-header">
             <router-link
                 v-if="$route.name === 'builds'"
-                :to="{ name: 'build', params: { buildId: currentBuild.id } }"
+                :to="{ name: 'build', params: { id: currentBuild.id } }"
                 class="build-name title has-text-white"
                 tag="a"
             >
@@ -230,8 +230,8 @@ export default {
             immediate: true,
             handler(buildId) {
                 if (!buildId) {
-                    if (this.$route.params && this.$route.params.buildId) {
-                        buildId = this.$route.params.buildId;
+                    if (this.$route.params && this.$route.params.id) {
+                        buildId = this.$route.params.id;
                     }
                 }
 
