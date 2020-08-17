@@ -76,7 +76,7 @@
                                 @click="
                                     $router.push({
                                         name: 'build',
-                                        params: { buildId: build.id },
+                                        params: { id: build.id },
                                     })
                                 "
                                 style="cursor: pointer;"
@@ -662,12 +662,8 @@ export default {
         },
     },
     created() {
-        if (
-            this.$route &&
-            this.$route.params &&
-            this.$route.params.organizationId
-        ) {
-            this.getOrganization(this.$route.params.organizationId);
+        if (this.$route && this.$route.params && this.$route.params.id) {
+            this.getOrganization(this.$route.params.id);
         }
 
         if (this.builds && !this.builds.length) {
