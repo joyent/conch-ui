@@ -82,6 +82,7 @@ export default {
     methods: {
         ...mapActions(['setRackLayout']),
         async activateRack(rackId, pushRoute = true) {
+            this.$emit('rack-activated');
             let rack = await getRack(rackId).then(response => response.data);
 
             const rackAssignment = await getRackAssignment(rackId).then(

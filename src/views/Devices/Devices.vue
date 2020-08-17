@@ -85,6 +85,25 @@ export default {
             this.clearRackLayout();
         },
         isEmpty,
+        async getDevice(identifier) {
+            try {
+                await getDeviceDetails(identifier)
+                    .then(response => {
+                        const device = response.data;
+                        this.setActiveDevice(device);
+                        this.isLoading = false;
+                    })
+                    .catch(error => {
+                        this.isLoading = false;
+
+                        if (error.status === 404) {
+                            this.showError = true;
+                        }
+                    });
+            } catch (error) {
+                this.showError = true;
+            }
+        },
         searchDevice() {
             const serialNumber = this.serialNumber;
 
@@ -93,7 +112,16 @@ export default {
 
                 getDeviceDetails(serialNumber)
                     .then(response => {
-                        this.setActiveDevice(response.data);
+                        const device = response.data;
+                        this.setActiveDevice(device);
+
+                        this.$router.push({
+                            name: 'device',
+                            params: {
+                                deviceId: device.id,
+                            },
+                        });
+
                         this.isLoading = false;
                     })
                     .catch(error => {
@@ -112,6 +140,12 @@ export default {
         ...mapState(['activeDevice']),
     },
     mounted() {
+        if (this.$route.params && this.$route.params.deviceId) {
+            if (!this.activeDevice || !this.activeDevice.id) {
+                this.getDevice(this.$route.params.deviceId);
+            }
+        }
+
         EventBus.$on('showDeviceInRack', () => {
             this.showDeviceInRack = true;
         });
