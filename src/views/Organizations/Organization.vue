@@ -223,6 +223,13 @@
                                 }"
                                 v-for="member in organization.users"
                                 :key="member.name"
+                                @click="
+                                    $router.push({
+                                        name: 'user',
+                                        params: { id: member.id },
+                                    })
+                                "
+                                style="cursor: pointer;"
                             >
                                 <td>
                                     {{ member.name }}
