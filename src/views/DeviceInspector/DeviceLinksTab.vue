@@ -58,7 +58,7 @@
                                     <a :href="deviceLink" target="_blank">{{
                                         deviceLink
                                     }}</a>
-                                    <div class="v-spacer"></div>
+                                    <div class="spacer"></div>
                                     <a
                                         :disabled="isLoadingRemoveLinks"
                                         class="button"
@@ -74,7 +74,6 @@
                     </table>
                 </div>
             </div>
-            <div class="v-spacer"></div>
             <div class="columns">
                 <div class="column is-6 is-offset-3">
                     <a

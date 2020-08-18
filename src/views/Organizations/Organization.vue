@@ -18,8 +18,9 @@
                 <div class="datatable-header">
                     <p class="datatable-header-title is-size-5 has-text-white">
                         {{
-                            `Builds (${organization.builds &&
-                                organization.builds.length})`
+                            `Builds (${(organization.builds &&
+                                organization.builds.length) ||
+                                0})`
                         }}
                     </p>
                     <div
@@ -151,8 +152,9 @@
                 <div class="datatable-header">
                     <p class="datatable-header-title is-size-5 has-text-white">
                         {{
-                            `Members (${organization.users &&
-                                organization.users.length})`
+                            `Members (${(organization.users &&
+                                organization.users.length) ||
+                                0})`
                         }}
                     </p>
                     <div
