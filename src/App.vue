@@ -1,8 +1,8 @@
 <template>
     <div id="app">
-        <SignIn v-if="this.$route.path === '/' || this.$route.query.redirect" />
+        <SignIn v-if="this.$route.path === '/' || isLoggedIn() === false" />
         <PasswordReset v-else-if="this.$route.path === '/password-reset'" />
-        <div class="signed-in" v-else-if="isLoggedIn()">
+        <div class="signed-in" v-else>
             <router-view name="sidebar" />
             <div class="page">
                 <router-view class="page-content" :key="$route.fullPath" />
