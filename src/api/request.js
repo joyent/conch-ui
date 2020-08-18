@@ -1,18 +1,19 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import router from '@src/router.js';
 import store from '@src/store/store.js';
 import { logout } from '@api/authentication.js';
 
 export const clearToken = () => {
-    return localStorage.removeItem('token');
+    return Cookies.remove('token');
 };
 
 export const getToken = () => {
-    return localStorage.getItem('token');
+    return Cookies.get('token');
 };
 
 export const setToken = token => {
-    localStorage.setItem('token', token);
+    Cookies.set('token', token);
 };
 
 export const request = args => {
