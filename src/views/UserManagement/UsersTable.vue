@@ -47,25 +47,6 @@
                 </th>
                 <th>
                     <a
-                        class="table-header-filter auth-issues"
-                        :class="{ 'has-text-white': sortFilter === 'issues' }"
-                        @click="sortBy('issues')"
-                    >
-                        Authentication Issues
-                        <i
-                            class="fas fa-angle-down"
-                            v-if="sortFilter === 'issues' && !reversedSort"
-                            style="margin-left: 10px;"
-                        ></i>
-                        <i
-                            class="fas fa-angle-up"
-                            v-else-if="sortFilter === 'issues' && reversedSort"
-                            style="margin-left: 10px;"
-                        ></i>
-                    </a>
-                </th>
-                <th>
-                    <a
                         class="table-header-filter last-active"
                         :class="{
                             'has-text-white': sortFilter === 'last_active',
@@ -93,7 +74,6 @@
                 <th></th>
                 <th>User Name</th>
                 <th>Role</th>
-                <th>Authentication Issues</th>
                 <th>Last Active</th>
                 <th>Actions</th>
             </tfoot>
@@ -122,32 +102,6 @@
                     <td>
                         <span v-if="user.is_admin">Admin</span>
                         <span v-else>User</span>
-                    </td>
-                    <td>
-                        <span
-                            v-if="
-                                user.force_password_change ||
-                                    user.refuse_session_auth
-                            "
-                        >
-                            <span
-                                class="tag pwd-change is-danger"
-                                v-if="user.force_password_change"
-                            >
-                                Password Change Required
-                            </span>
-                            <span
-                                class="tag sess-auth is-danger"
-                                v-if="user.refuse_session_auth"
-                            >
-                                Session Auth Refused
-                            </span>
-                        </span>
-                        <span v-else>
-                            <span class="tag none is-success">
-                                None
-                            </span>
-                        </span>
                     </td>
                     <td>
                         <span v-if="user.last_login">
@@ -326,16 +280,6 @@ export default {
                     this.sortedUsers = orderBy(
                         users,
                         [user => user.is_admin],
-                        ['desc']
-                    );
-                } else if (field === 'issues') {
-                    this.sortedUsers = orderBy(
-                        users,
-                        [
-                            user =>
-                                user.force_password_change ||
-                                user.refuse_session_auth,
-                        ],
                         ['desc']
                     );
                 } else if (field === 'last_active') {

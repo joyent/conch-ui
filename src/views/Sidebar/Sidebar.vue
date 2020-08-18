@@ -1,7 +1,11 @@
 <template>
     <aside class="menu" :class="{ loading: isEmpty(this.currentUser) }">
         <Spinner v-if="isEmpty(this.currentUser)" />
-        <div class="sidebar" v-else>
+        <div
+            v-else
+            class="sidebar"
+            style="display: flex; flex-direction: column; height: 100%"
+        >
             <div class="brand">
                 <img
                     class="brand-icon"
@@ -10,8 +14,10 @@
                     @click="navigateDashboard()"
                 />
             </div>
-            <p class="menu-label">Datacenter Builds</p>
-            <ul class="menu-list">
+            <ul
+                class="menu-list"
+                style="display: flex; flex-direction: column; flex-grow: 1"
+            >
                 <li class="nav-item">
                     <router-link
                         :to="{
@@ -67,10 +73,7 @@
                         <span>Hardware</span>
                     </router-link>
                 </li>
-            </ul>
-            <p v-if="currentUser.is_admin" class="menu-label">Conch Admin</p>
-            <ul class="menu-list" v-if="currentUser.is_admin">
-                <li class="nav-item">
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
                         :to="{ name: 'tokens' }"
                         active-class="is-active"
@@ -79,7 +82,7 @@
                         <span>Tokens</span>
                     </router-link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
                         :to="{ name: 'user-management' }"
                         active-class="is-active"
@@ -88,9 +91,6 @@
                         <span>Users</span>
                     </router-link>
                 </li>
-            </ul>
-            <p class="menu-label">Conch</p>
-            <ul class="menu-list">
                 <li class="nav-item">
                     <router-link
                         :to="{
@@ -103,6 +103,7 @@
                         <span>Profile</span>
                     </router-link>
                 </li>
+                <div style="flex-grow: 1"></div>
                 <li class="nav-item">
                     <a class="sign-out" @click="signOut()">
                         <i class="material-icons">exit_to_app</i>
