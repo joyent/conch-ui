@@ -58,14 +58,13 @@
                         <i class="material-icons">recent_actors</i>
                         <span>Organizations</span>
                     </router-link> </li
-
                 ><li class="nav-item">
                     <router-link
                         :to="{ name: 'hardware-products' }"
                         active-class="is-active"
                     >
                         <i class="material-icons">memory</i>
-                        <span>Hardware Products</span>
+                        <span>Hardware</span>
                     </router-link>
                 </li>
             </ul>
@@ -94,7 +93,10 @@
             <ul class="menu-list">
                 <li class="nav-item">
                     <router-link
-                        :to="{ name: 'user' }"
+                        :to="{
+                            name: 'profile',
+                            params: { id: currentUser.id },
+                        }"
                         active-class="is-active"
                     >
                         <i class="material-icons">account_circle</i>
@@ -127,7 +129,7 @@ export default {
     methods: {
         ...mapActions(['setCurrentUser']),
         getCurrentUser() {
-            Users.getCurrentUser().then((response) => {
+            Users.getCurrentUser().then(response => {
                 this.setCurrentUser(response.data);
             });
         },
