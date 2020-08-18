@@ -1,7 +1,7 @@
 <template>
     <div class="user-management">
         <Spinner v-if="users.length < 1" />
-        <div class="users" v-else>
+        <div class="users" v-else-if="users.length && !$route.params.id">
             <div class="columns is-vcentered">
                 <div class="column">
                     <a class="filter-all" @click="setFilters('all')">
@@ -154,6 +154,7 @@
                 />
             </transition>
         </div>
+        <router-view v-else></router-view>
     </div>
 </template>
 

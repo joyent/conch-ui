@@ -102,6 +102,18 @@
                     class="row"
                     v-for="(user, index) in paginatedResults"
                     :key="user.id"
+                    @click="
+                        currentUser.id === user.id
+                            ? $router.push({
+                                  name: 'profile',
+                                  params: { id: user.id },
+                              })
+                            : $router.push({
+                                  name: 'user',
+                                  params: { id: user.id },
+                              })
+                    "
+                    style="cursor: pointer"
                 >
                     <td class="has-text-centered">
                         <span>{{ userIndex(user) }}</span>
@@ -263,6 +275,7 @@
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
 import TablePagination from '@src/views/components/TablePagination.vue';
+import { mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
@@ -375,6 +388,7 @@ export default {
         },
     },
     computed: {
+        ...mapState(['currentUser']),
         paginatedResults() {
             let resultSetStartIndex;
             let resultSetEndIndex;
