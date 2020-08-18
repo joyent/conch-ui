@@ -131,7 +131,6 @@
 <script>
 import ClipboardJS from 'clipboard';
 import { createToken } from '@api/users.js';
-import { EventBus } from '@src/eventBus.js';
 
 export default {
     data() {
@@ -149,7 +148,7 @@ export default {
     methods: {
         closeModal() {
             this.isActive = false;
-            EventBus.$emit('close-modal');
+            this.$emit('close-modal');
         },
         copyToken() {
             this.tokenCopied = true;
@@ -175,7 +174,7 @@ export default {
                         this.success = true;
                         this.isLoading = false;
 
-                        EventBus.$emit('create-token', token);
+                        this.$emit('create-token', token);
                     })
                     .catch(error => {
                         if (error.status === 400) {

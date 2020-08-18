@@ -1,7 +1,7 @@
 <template>
     <div class="organization">
         <div class="columns">
-            <div class="column is-6" v-if="!isEmpty(organization)">
+            <div class="column" v-if="!isEmpty(organization)">
                 <h1 class="title is-2 organization-name">
                     {{ organization.name }}
                 </h1>
@@ -12,97 +12,94 @@
             <div class="column is-6 spinner-column" v-else>
                 <Spinner />
             </div>
-            <div class="column">
-                <div class="box stats">
-                    <h2 class="is-6">Builds</h2>
-                    <span
-                        class="is-size-3 has-text-info"
-                        v-if="organizationHasBuilds"
-                    >
-                        {{ organization.builds.length }}
-                    </span>
-                    <span class="is-size-3 has-text-info" v-else>0</span>
-                </div>
-            </div>
-            <div class="column">
-                <div class="box stats">
-                    <h2 class="is-6">Members</h2>
-                    <span
-                        class="is-size-3 has-text-info"
-                        v-if="organizationHasMembers"
-                    >
-                        {{ organization.users.length }}
-                    </span>
-                    <span class="is-size-3 has-text-info" v-else>0</span>
-                </div>
-            </div>
         </div>
         <div class="columns">
             <div class="column">
-                <div class="datatable-simple">
-                    <div class="datatable-header">
-                        <p
-                            class="datatable-header-title is-size-5 has-text-white"
+                <div class="datatable-header">
+                    <p class="datatable-header-title is-size-5 has-text-white">
+                        {{
+                            `Builds (${
+                                (organization.builds &&
+                                    organization.builds.length) ||
+                                0
+                            })`
+                        }}
+                    </p>
+                    <div
+                        class="dropdown dropdown-builds is-right"
+                        :class="{ 'is-active': showBuildsDropdown }"
+                    >
+                        <a
+                            class="datatable-header-icon dropdown-trigger"
+                            @click="showBuildsDropdown = !showBuildsDropdown"
                         >
-                            Builds
-                        </p>
-                        <div
-                            class="dropdown dropdown-builds is-right"
-                            :class="{ 'is-active': showBuildsDropdown }"
-                        >
-                            <a
-                                class="datatable-header-icon dropdown-trigger"
-                                @click="
-                                    showBuildsDropdown = !showBuildsDropdown
-                                "
-                            >
-                                <span class="icon">
-                                    <i class="material-icons">more_vert</i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-content">
-                                    <a
-                                        class="dropdown-item add"
-                                        @click="
-                                            openActionModal('add', 'builds')
-                                        "
-                                    >
-                                        <i class="material-icons">add</i>
-                                        <p>Add Builds</p>
-                                    </a>
-                                    <a
-                                        class="dropdown-item remove"
-                                        @click="
-                                            openActionModal('remove', 'builds')
-                                        "
-                                        v-if="organizationHasBuilds"
-                                    >
-                                        <i class="material-icons">delete</i>
-                                        <p>Remove Builds</p>
-                                    </a>
-                                </div>
+                            <span class="icon">
+                                <i class="material-icons">more_vert</i>
+                            </span>
+                        </a>
+                        <div class="dropdown-menu" style="z-index: 10;">
+                            <div class="dropdown-content">
+                                <a
+                                    class="dropdown-item add"
+                                    @click="openActionModal('add', 'builds')"
+                                >
+                                    <i class="material-icons">add</i>
+                                    <p>Add Builds</p>
+                                </a>
+                                <a
+                                    class="dropdown-item remove"
+                                    @click="openActionModal('remove', 'builds')"
+                                    v-if="organizationHasBuilds"
+                                >
+                                    <i class="material-icons">delete</i>
+                                    <p>Remove Builds</p>
+                                </a>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="datatable-simple">
                     <table
                         class="table is-fullwidth is-hoverable is-marginless"
                         v-if="organizationHasBuilds"
                     >
                         <thead>
-                            <th>Name</th>
-                            <th class="has-text-centered">Started</th>
-                            <th class="has-text-centered">Completed</th>
-                            <th></th>
+                            <tr>
+                                <th>Name</th>
+                                <th>Started</th>
+                                <th>Completed</th>
+                                <th></th>
+                            </tr>
                         </thead>
+                        <tfoot
+                            v-if="
+                                organization.builds &&
+                                organization.builds.length &&
+                                organization.builds.length > 10
+                            "
+                        >
+                            <tr>
+                                <th>Name</th>
+                                <th>Started</th>
+                                <th>Completed</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
                         <tbody>
                             <tr
                                 class="row"
                                 v-for="build in organization.builds"
                                 :key="build.id"
+                                @click="
+                                    $router.push({
+                                        name: 'build',
+                                        params: { id: build.id },
+                                    })
+                                "
+                                style="cursor: pointer;"
                             >
                                 <td>{{ build.name }}</td>
-                                <td class="has-text-centered">
+                                <td>
                                     <span v-if="build.started">
                                         {{ getDate(build.started) }}
                                     </span>
@@ -110,7 +107,7 @@
                                         Not Started
                                     </span>
                                 </td>
-                                <td class="has-text-centered">
+                                <td>
                                     <span v-if="build.completed">
                                         {{ getDate(build.completed) }}
                                     </span>
@@ -154,79 +151,78 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="datatable-footer add">
-                        <a
-                            class="datatable-footer-item"
-                            @click="openActionModal('add', 'builds')"
-                        >
-                            <i class="material-icons">add</i>
-                            <span class="heading is-size-6 is-marginless">
-                                Add Builds
-                            </span>
-                        </a>
-                    </div>
+                </div>
+                <div class="datatable-footer add">
+                    <a
+                        class="datatable-footer-item"
+                        @click="openActionModal('add', 'builds')"
+                    >
+                        <i class="material-icons">add</i>
+                        <span class="heading is-size-6 is-marginless">
+                            Add Builds
+                        </span>
+                    </a>
                 </div>
             </div>
             <div class="column">
-                <div class="datatable-simple">
-                    <div class="datatable-header">
-                        <p
-                            class="datatable-header-title is-size-5 has-text-white"
+                <div class="datatable-header">
+                    <p class="datatable-header-title is-size-5 has-text-white">
+                        {{
+                            `Members (${
+                                (organization.users &&
+                                    organization.users.length) ||
+                                0
+                            })`
+                        }}
+                    </p>
+                    <div
+                        class="dropdown dropdown-members is-right"
+                        :class="{ 'is-active': showMembersDropdown }"
+                    >
+                        <a
+                            class="datatable-header-icon dropdown-trigger"
+                            @click="showMembersDropdown = !showMembersDropdown"
                         >
-                            Members
-                        </p>
-                        <div
-                            class="dropdown dropdown-members is-right"
-                            :class="{ 'is-active': showMembersDropdown }"
-                        >
-                            <a
-                                class="datatable-header-icon dropdown-trigger"
-                                @click="
-                                    showMembersDropdown = !showMembersDropdown
-                                "
-                            >
-                                <span class="icon">
-                                    <i class="material-icons">more_vert</i>
-                                </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-content">
-                                    <a
-                                        class="dropdown-item add"
-                                        v-if="!editMembers"
-                                        @click="
-                                            openActionModal('add', 'members')
-                                        "
-                                    >
-                                        <i class="material-icons">add</i>
-                                        <p>Add Members</p>
-                                    </a>
-                                    <a
-                                        class="dropdown-item edit"
-                                        @click="toggleEditMembers()"
-                                        v-if="organizationHasMembers"
-                                    >
-                                        <i class="material-icons">edit</i>
-                                        <p v-if="!editMembers">Edit Members</p>
-                                        <p v-else>Cancel Editing</p>
-                                    </a>
-                                    <a
-                                        class="dropdown-item remove"
-                                        v-if="
-                                            !editMembers &&
-                                                organizationHasMembers
-                                        "
-                                        @click="
-                                            openActionModal('remove', 'members')
-                                        "
-                                    >
-                                        <i class="material-icons">delete</i>
-                                        <p>Remove Members</p>
-                                    </a>
-                                </div>
+                            <span class="icon">
+                                <i class="material-icons">more_vert</i>
+                            </span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-content">
+                                <a
+                                    class="dropdown-item add"
+                                    v-if="!editMembers"
+                                    @click="openActionModal('add', 'members')"
+                                >
+                                    <i class="material-icons">add</i>
+                                    <p>Add Members</p>
+                                </a>
+                                <a
+                                    class="dropdown-item edit"
+                                    @click="toggleEditMembers()"
+                                    v-if="organizationHasMembers"
+                                >
+                                    <i class="material-icons">edit</i>
+                                    <p v-if="!editMembers">Edit Members</p>
+                                    <p v-else>Cancel Editing</p>
+                                </a>
+                                <a
+                                    class="dropdown-item remove"
+                                    v-if="
+                                        !editMembers && organizationHasMembers
+                                    "
+                                    @click="
+                                        openActionModal('remove', 'members')
+                                    "
+                                >
+                                    <i class="material-icons">delete</i>
+                                    <p>Remove Members</p>
+                                </a>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="datatable-simple">
                     <table
                         class="table is-fullwidth is-hoverable is-marginless"
                         v-if="organizationHasMembers"
@@ -237,6 +233,18 @@
                             <th>Permissions</th>
                             <th></th>
                         </thead>
+                        <tfoot
+                            v-if="
+                                organization.users &&
+                                organization.users.length &&
+                                organization.users.length > 10
+                            "
+                        >
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Permissions</th>
+                            <th></th>
+                        </tfoot>
                         <tbody>
                             <tr
                                 class="row"
@@ -247,6 +255,13 @@
                                 }"
                                 v-for="member in organization.users"
                                 :key="member.name"
+                                @click="
+                                    $router.push({
+                                        name: 'user',
+                                        params: { id: member.id },
+                                    })
+                                "
+                                style="cursor: pointer;"
                             >
                                 <td>
                                     {{ member.name }}
@@ -270,7 +285,7 @@
                                                 <option
                                                     :selected="
                                                         member.role === 'ro' ||
-                                                            member.role === 'rw'
+                                                        member.role === 'rw'
                                                     "
                                                     value="regular_user"
                                                 >
@@ -336,7 +351,7 @@
                                         "
                                         v-if="
                                             member.role !== 'admin' ||
-                                                adminMembersCount > 1
+                                            adminMembersCount > 1
                                         "
                                     >
                                         <i class="material-icons">delete</i>
@@ -354,34 +369,34 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="datatable-footer" v-if="!editMembers">
-                        <a
-                            class="datatable-footer-item add"
-                            @click="openActionModal('add', 'members')"
-                        >
-                            <i class="material-icons">add</i>
-                            <span class="heading is-size-6 is-marginless">
-                                Add Members
-                            </span>
-                        </a>
-                    </div>
-                    <div
-                        class="datatable-footer "
-                        v-else-if="editMembers && organizationHasMembers"
+                </div>
+                <div class="datatable-footer" v-if="!editMembers">
+                    <a
+                        class="datatable-footer-item add"
+                        @click="openActionModal('add', 'members')"
                     >
-                        <a
-                            class="datatable-footer-item save"
-                            @click="saveChanges()"
-                            :disabled="
-                                modifiedMembers && modifiedMembers.length === 0
-                            "
-                        >
-                            <i class="material-icons">save</i>
-                            <span class="heading is-size-6 is-marginless">
-                                Save Changes
-                            </span>
-                        </a>
-                    </div>
+                        <i class="material-icons">add</i>
+                        <span class="heading is-size-6 is-marginless">
+                            Add Members
+                        </span>
+                    </a>
+                </div>
+                <div
+                    class="datatable-footer"
+                    v-else-if="editMembers && organizationHasMembers"
+                >
+                    <a
+                        class="datatable-footer-item save"
+                        @click="saveChanges()"
+                        :disabled="
+                            modifiedMembers && modifiedMembers.length === 0
+                        "
+                    >
+                        <i class="material-icons">save</i>
+                        <span class="heading is-size-6 is-marginless">
+                            Save Changes
+                        </span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -523,7 +538,7 @@ export default {
                 organizationId = this.organization.id;
             }
 
-            Organizations.getOrganization(organizationId).then(response => {
+            Organizations.getOrganization(organizationId).then((response) => {
                 this.organization = response.data;
                 this.loadingOrganization = false;
             });
@@ -531,8 +546,8 @@ export default {
         isEmpty,
         isMemberModified(memberName) {
             return this.modifiedMembers
-                .map(member => member.name)
-                .some(name => name === memberName);
+                .map((member) => member.name)
+                .some((name) => name === memberName);
         },
         openActionModal(action, item) {
             this.action = action;
@@ -638,7 +653,7 @@ export default {
         ...mapState(['builds', 'users']),
         adminMembersCount() {
             if (this.organizationHasMembers) {
-                return this.organization.users.filter(user => {
+                return this.organization.users.filter((user) => {
                     return user.role === 'admin';
                 }).length;
             }
@@ -648,7 +663,7 @@ export default {
         buildsActive() {
             if (this.organizationHasBuilds) {
                 return this.organization.builds.filter(
-                    build => build.status === 'active'
+                    (build) => build.status === 'active'
                 ).length;
             }
 
@@ -657,7 +672,7 @@ export default {
         buildsComplete() {
             if (this.organizationHasBuilds) {
                 return this.organization.builds.filter(
-                    build => build.status === 'complete'
+                    (build) => build.status === 'complete'
                 ).length;
             }
 
@@ -679,22 +694,18 @@ export default {
         },
     },
     created() {
-        if (
-            this.$route &&
-            this.$route.params &&
-            this.$route.params.organizationId
-        ) {
-            this.getOrganization(this.$route.params.organizationId);
+        if (this.$route && this.$route.params && this.$route.params.id) {
+            this.getOrganization(this.$route.params.id);
         }
 
         if (this.builds && !this.builds.length) {
-            Builds.getBuilds().then(response => {
+            Builds.getBuilds().then((response) => {
                 this.setBuilds(response.data);
             });
         }
 
         if (this.users && !this.users.length) {
-            getUsers().then(response => {
+            getUsers().then((response) => {
                 this.setUsers(response.data);
             });
         }
@@ -707,7 +718,7 @@ export default {
             }
         );
 
-        EventBus.$on(['build-added', 'member-added'], async data => {
+        EventBus.$on(['build-added', 'member-added'], async (data) => {
             await this.getOrganization();
 
             this.action = 'add';
@@ -722,7 +733,7 @@ export default {
             this.showSuccessModal = true;
         });
 
-        EventBus.$on(['build-removed', 'member-removed'], async data => {
+        EventBus.$on(['build-removed', 'member-removed'], async (data) => {
             await this.getOrganization();
 
             this.action = 'remove';

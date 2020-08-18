@@ -3,8 +3,8 @@ import Router from 'vue-router';
 import Devices from './views/Devices/Devices.vue';
 import DataCenterBrowser from './views/DataCenterBrowser/DataCenterBrowser.vue';
 import SignIn from './views/SignIn/SignIn.vue';
-import UserProfile from './views/UserProfile/UserProfile.vue';
 import UserManagement from './views/UserManagement/UserManagement.vue';
+import User from './views/UserManagement/User.vue';
 import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTokens.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
@@ -109,14 +109,6 @@ export default new Router({
             },
         },
         {
-            path: '/user',
-            name: 'user',
-            components: {
-                default: UserProfile,
-                sidebar: Sidebar,
-            },
-        },
-        {
             path: '/admin/tokens',
             name: 'tokens',
             components: {
@@ -139,6 +131,24 @@ export default new Router({
                 default: UserManagement,
                 sidebar: Sidebar,
             },
+            children: [
+                {
+                    path: ':id',
+                    name: 'user',
+                    components: {
+                        default: User,
+                        sidebar: Sidebar,
+                    },
+                },
+            ],
+        },
+        {
+            path: '/profile/:id',
+            name: 'profile',
+            components: {
+                default: User,
+                sidebar: Sidebar,
+            },
         },
         {
             path: '/password-reset',
@@ -156,7 +166,7 @@ export default new Router({
             },
         },
         {
-            path: '/organization/:organizationId',
+            path: '/organization/:id',
             name: 'organization',
             components: {
                 default: Organization,
@@ -164,7 +174,7 @@ export default new Router({
             },
         },
         {
-            path: '/build/:buildId',
+            path: '/build/:id',
             name: 'build',
             components: {
                 default: Build,

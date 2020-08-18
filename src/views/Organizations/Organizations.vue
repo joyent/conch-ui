@@ -12,9 +12,25 @@
             </a>
         </div>
         <template v-else>
-            <div class="page-heading">
-                <h1 class="title is-3 has-text-weight-bold">Organizations</h1>
-                <div class="control has-icons-left">
+            <div
+                class="page-heading"
+                style="display: flex; align-items: center; margin-bottom: 20px"
+            >
+                <span class="icon">
+                    <i class="material-icons">recent_actors</i>
+                </span>
+                <h1
+                    class="title is-4 has-text-weight-bold"
+                    style="margin-left: 8px;"
+                >
+                    Organizations
+                </h1>
+            </div>
+            <div style="display: flex">
+                <div
+                    class="control has-icons-left"
+                    style="margin-bottom: 20px; margin-right: 20px; flex-grow: 1"
+                >
                     <input
                         type="text"
                         class="input search"
@@ -25,25 +41,14 @@
                         <i class="material-icons">search</i>
                     </span>
                 </div>
-                <div class="views">
-                    <a class="button is-text" @click="toggleView()">
-                        <template v-if="activeView === 'grid'">
-                            <i class="material-icons view-list">
-                                view_headline
-                            </i>
-                            <span>Table View</span>
-                        </template>
-                        <template v-else-if="activeView === 'list'">
-                            <i class="material-icons view-grid">apps</i>
-                            <span>Grid View</span>
-                        </template>
-                    </a>
-                </div>
                 <a
-                    class="button is-success create-organization"
+                    class="button is-success create-new"
                     @click="createOrganization()"
                 >
-                    Create Organization
+                    <span class="icon">
+                        <i class="material-icons">add</i>
+                    </span>
+                    <span>Create New</span>
                 </a>
             </div>
             <div
@@ -52,34 +57,9 @@
             >
                 <p>No results found.</p>
             </div>
-            <div class="cards" v-if="activeView === 'grid'">
-                <div
-                    class="card"
-                    v-for="organization in filteredOrganizations"
-                    :key="organization.id"
-                >
-                    <div class="card-content">
-                        <i
-                            class="material-icons close"
-                            @click="showConfirmationModal(organization)"
-                        >
-                            close
-                        </i>
-                        <i class="material-icons">recent_actors</i>
-                        <p class="organization-name">{{ organization.name }}</p>
-                        <a
-                            class="button"
-                            @click="viewOrganization(organization.id)"
-                        >
-                            View Organization
-                        </a>
-                    </div>
-                </div>
-            </div>
             <OrganizationsTable
                 :organizations="filteredOrganizations"
                 :has-search-text="searchText.length > 0"
-                v-else
             />
         </template>
         <transition name="fade">
@@ -161,7 +141,6 @@ export default {
     data() {
         return {
             action: '',
-            activeView: 'grid',
             creatingOrganization: false,
             deletingOrganization: false,
             isLoading: false,
@@ -221,17 +200,10 @@ export default {
             this.organizationBeingEdited = organization;
             this.deletingOrganization = true;
         },
-        toggleView() {
-            if (this.activeView === 'list') {
-                this.activeView = 'grid';
-            } else {
-                this.activeView = 'list';
-            }
-        },
         viewOrganization(organizationId) {
             this.$router.push({
                 name: 'organization',
-                params: { organizationId },
+                params: { id: organizationId },
             });
         },
     },

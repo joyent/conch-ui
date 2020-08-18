@@ -1,7 +1,11 @@
 <template>
     <aside class="menu" :class="{ loading: isEmpty(this.currentUser) }">
         <Spinner v-if="isEmpty(this.currentUser)" />
-        <div class="sidebar" v-else>
+        <div
+            v-else
+            class="sidebar"
+            style="display: flex; flex-direction: column; height: 100%"
+        >
             <div class="brand">
                 <img
                     class="brand-icon"
@@ -10,8 +14,10 @@
                     @click="navigateDashboard()"
                 />
             </div>
-            <p class="menu-label">Datacenter Builds</p>
-            <ul class="menu-list">
+            <ul
+                class="menu-list"
+                style="display: flex; flex-direction: column; flex-grow: 1"
+            >
                 <li class="nav-item">
                     <router-link
                         :to="{
@@ -43,94 +49,6 @@
                 </li>
                 <li class="nav-item">
                     <router-link
-                        :to="{ name: 'hardware-products' }"
-                        active-class="is-active"
-                    >
-                        <i class="material-icons">memory</i>
-                        <span>Hardware Products</span>
-                    </router-link>
-                </li>
-            </ul>
-            <p class="menu-label" v-if="userHasBuilds || userHasOrganizations">
-                Pages
-            </p>
-            <template v-if="userHasBuilds">
-                <ul
-                    class="sidenav-dropdown menu-list"
-                    :class="{ 'is-expanded': isBuildsExpanded }"
-                    @click="isBuildsExpanded = !isBuildsExpanded"
-                >
-                    <li class="nav-item">
-                        <a>
-                            <i class="material-icons">layers</i>
-                            <span class="name">Builds</span>
-                            <span class="icon chevron">
-                                <i class="fas fa-chevron-right"></i>
-                            </span>
-                        </a>
-                    </li>
-                </ul>
-                <ul class="menu-list child-pages" v-if="isBuildsExpanded">
-                    <li
-                        class="nav-item"
-                        v-for="build in currentUser.builds"
-                        :key="build.id"
-                    >
-                        <router-link
-                            :to="{
-                                name: 'build',
-                                params: { buildId: build.id },
-                            }"
-                            active-class="is-active"
-                            :key="`$route.path_${build.id}`"
-                        >
-                            <span>{{ build.name }}</span>
-                        </router-link>
-                    </li>
-                </ul>
-            </template>
-            <template v-if="userHasOrganizations">
-                <ul
-                    class="sidenav-dropdown menu-list"
-                    :class="{ 'is-expanded': isOrganizationsExpanded }"
-                    @click="isOrganizationsExpanded = !isOrganizationsExpanded"
-                >
-                    <li class="nav-item">
-                        <a>
-                            <i class="material-icons">recent_actors</i>
-                            <span class="name">Organizations</span>
-                            <span class="icon chevron">
-                                <i class="fas fa-chevron-right"></i>
-                            </span>
-                        </a>
-                    </li>
-                </ul>
-                <ul
-                    class="menu-list child-pages"
-                    v-if="isOrganizationsExpanded"
-                >
-                    <li
-                        class="nav-item"
-                        v-for="organization in currentUser.organizations"
-                        :key="organization.id"
-                    >
-                        <router-link
-                            :to="{
-                                name: 'organization',
-                                params: { organizationId: organization.id },
-                            }"
-                            active-class="is-active"
-                            :key="`$route.path_${organization.id}`"
-                        >
-                            <span>{{ organization.name }}</span>
-                        </router-link>
-                    </li>
-                </ul>
-            </template>
-            <p v-if="currentUser.is_admin" class="menu-label">Conch Admin</p>
-            <ul class="menu-list" v-if="currentUser.is_admin">
-                <li class="nav-item">
-                    <router-link
                         :to="{ name: 'builds' }"
                         active-class="is-active"
                     >
@@ -145,9 +63,17 @@
                     >
                         <i class="material-icons">recent_actors</i>
                         <span>Organizations</span>
+                    </router-link> </li
+                ><li class="nav-item">
+                    <router-link
+                        :to="{ name: 'hardware-products' }"
+                        active-class="is-active"
+                    >
+                        <i class="material-icons">memory</i>
+                        <span>Hardware</span>
                     </router-link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
                         :to="{ name: 'tokens' }"
                         active-class="is-active"
@@ -156,7 +82,7 @@
                         <span>Tokens</span>
                     </router-link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
                         :to="{ name: 'user-management' }"
                         active-class="is-active"
@@ -165,18 +91,19 @@
                         <span>Users</span>
                     </router-link>
                 </li>
-            </ul>
-            <p class="menu-label">Conch</p>
-            <ul class="menu-list">
                 <li class="nav-item">
                     <router-link
-                        :to="{ name: 'user' }"
+                        :to="{
+                            name: 'profile',
+                            params: { id: currentUser.id },
+                        }"
                         active-class="is-active"
                     >
                         <i class="material-icons">account_circle</i>
                         <span>Profile</span>
                     </router-link>
                 </li>
+                <div style="flex-grow: 1"></div>
                 <li class="nav-item">
                     <a class="sign-out" @click="signOut()">
                         <i class="material-icons">exit_to_app</i>
@@ -200,12 +127,6 @@ export default {
     components: {
         Spinner,
     },
-    data() {
-        return {
-            isBuildsExpanded: false,
-            isOrganizationsExpanded: false,
-        };
-    },
     methods: {
         ...mapActions(['setCurrentUser']),
         getCurrentUser() {
@@ -225,32 +146,6 @@ export default {
     },
     computed: {
         ...mapState(['currentUser']),
-        userHasBuilds() {
-            const currentUser = this.currentUser;
-
-            if (
-                !isEmpty(currentUser) &&
-                currentUser.builds &&
-                currentUser.builds.length > 0
-            ) {
-                return true;
-            }
-
-            return false;
-        },
-        userHasOrganizations() {
-            const currentUser = this.currentUser;
-
-            if (
-                !isEmpty(currentUser) &&
-                currentUser.organizations &&
-                currentUser.organizations.length > 0
-            ) {
-                return true;
-            }
-
-            return false;
-        },
     },
     created() {
         if (isEmpty(this.currentUser)) {

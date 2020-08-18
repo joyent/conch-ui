@@ -14,10 +14,20 @@
                                 <RoomPanel />
                             </div>
                             <div class="column is-3">
-                                <RackPanel v-if="activeRoomName" />
+                                <RackPanel
+                                    v-if="activeRoomName"
+                                    @rack-activated="rackActivated = true"
+                                />
                             </div>
                             <div class="column is-6">
-                                <LayoutPanel v-if="!isEmpty(rackLayout)" />
+                                <spinner
+                                    v-if="
+                                        activeRoomName &&
+                                            rackActivated &&
+                                            isEmpty(rackLayout)
+                                    "
+                                ></spinner>
+                                <LayoutPanel v-else-if="!isEmpty(rackLayout)" />
                             </div>
                         </div>
                     </article>
@@ -47,6 +57,11 @@ export default {
         RackPanel,
         RoomPanel,
         Spinner,
+    },
+    data() {
+        return {
+            rackActivated: false,
+        };
     },
     methods: {
         ...mapActions([

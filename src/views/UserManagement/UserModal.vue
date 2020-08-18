@@ -49,91 +49,31 @@
                                 />
                             </div>
                         </div>
-                        <div class="field password" v-if="action !== 'edit'">
-                            <label class="label">New Password</label>
-                            <div class="control has-icons-right">
-                                <input
-                                    class="input password"
-                                    :class="{
-                                        'is-danger': errors.passwordLength,
-                                        'is-success': validPassword,
-                                    }"
-                                    type="password"
-                                    placeholder="New Password"
-                                    v-model="password"
-                                    ref="passwordInput"
-                                    @blur="validatePassword()"
-                                    autocomplete="off"
-                                />
-                                <span
-                                    class="icon is-small is-right has-text-danger"
-                                    v-if="errors.passwordLength"
-                                >
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                </span>
-                                <span
-                                    class="icon is-small is-right has-text-success"
-                                    v-if="validPassword"
-                                >
-                                    <i class="fas fa-check"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div
-                            class="field password-confirmation"
-                            v-if="action !== 'edit'"
-                        >
-                            <label class="label">Confirm Password</label>
-                            <div class="control has-icons-right">
-                                <input
-                                    class="input confirmation"
-                                    :class="{
-                                        'is-danger': errors.passwordMismatch,
-                                        'is-success': validPasswordConfirmation,
-                                    }"
-                                    type="password"
-                                    placeholder="Confirm Password"
-                                    v-model="passwordConfirmation"
-                                    ref="passwordConfirmation"
-                                    @blur="validatePasswordConfirmation()"
-                                    autocomplete="off"
-                                />
-                                <span
-                                    class="icon is-small is-right has-text-danger"
-                                    v-if="errors.passwordMismatch"
-                                >
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                </span>
-                                <span
-                                    class="icon is-small is-right has-text-success"
-                                    v-if="validPasswordConfirmation"
-                                >
-                                    <i class="fas fa-check"></i>
-                                </span>
-                            </div>
-                        </div>
                     </form>
-                    <hr :class="{ 'edit-user': action === 'edit' }" />
-                    <div class="field has-switch role">
-                        <label class="label is-marginless">
+                    <div
+                        class="field has-switch role"
+                        style="margin-top: 20px;"
+                    >
+                        <label class="label">
                             Is this user an Admin?
                         </label>
-                        <label class="switch">
-                            <input
-                                type="checkbox"
-                                :checked="isAdmin"
-                                v-model="isAdmin"
-                                :true-value="true"
-                                :false-value="false"
-                            />
-                            <span class="slider round is-success"></span>
-                        </label>
-                        <span class="slider-text" style="margin-left: 8px;">
-                            <strong v-if="isAdmin">Yes</strong>
-                            <strong v-else>No</strong>
-                        </span>
+                        <div>
+                            <label class="switch">
+                                <input
+                                    type="checkbox"
+                                    :checked="isAdmin"
+                                    v-model="isAdmin"
+                                    :true-value="true"
+                                    :false-value="false"
+                                />
+                                <span class="slider round is-success"></span>
+                            </label>
+                            <span class="slider-text" style="margin-left: 8px;">
+                                <strong v-if="isAdmin">Yes</strong>
+                                <strong v-else>No</strong>
+                            </span>
+                        </div>
                     </div>
-                    <hr />
                 </div>
                 <div class="options modal-panel" v-else-if="step === 2">
                     <p v-if="action === 'create'">
@@ -338,17 +278,12 @@ export default {
                 duplicateEmail: false,
                 invalidEmail: false,
                 name: false,
-                password: false,
-                passwordLength: false,
-                passwordMismatch: false,
             },
             isActive: true,
             isAdmin: false,
             isLoading: false,
             name: '',
             noChangesExist: false,
-            password: '',
-            passwordConfirmation: '',
             searchText: '',
             selectedBuilds: [],
             selectedOrganizations: [],
@@ -357,8 +292,6 @@ export default {
             success: false,
             user: {},
             userCreated: false,
-            validPassword: false,
-            validPasswordConfirmation: false,
         };
     },
     methods: {
@@ -378,7 +311,7 @@ export default {
         },
         closeModal() {
             if (this.reloadUserList) {
-                getUsers().then(response => {
+                getUsers().then((response) => {
                     this.setUsers(response.data);
                 });
             }
@@ -395,17 +328,16 @@ export default {
                     email: this.email,
                     is_admin: this.isAdmin,
                     name: this.name,
-                    password: this.password,
                 };
 
                 createUser(user)
-                    .then(response => {
+                    .then((response) => {
                         this.user = response.data;
                         this.reloadUserList = true;
                         this.isLoading = false;
                         this.step = 2;
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         if (error.status === 409) {
                             this.errors.duplicateEmail = true;
                             this.isLoading = false;
@@ -442,13 +374,13 @@ export default {
                     };
 
                     editUser(editedUser)
-                        .then(response => {
+                        .then((response) => {
                             this.user = response.data;
                             this.reloadUserList = true;
                             this.isLoading = false;
                             this.step = 2;
                         })
-                        .catch(error => {
+                        .catch((error) => {
                             if (error.status === 500) {
                                 this.errors.duplicateEmail = true;
                                 this.isLoading = false;
@@ -464,9 +396,6 @@ export default {
                 duplicateEmail: false,
                 invalidEmail: false,
                 name: false,
-                password: false,
-                passwordLength: false,
-                passwordMismatch: false,
             };
         },
         async updateUserItems(itemType) {
@@ -491,7 +420,7 @@ export default {
                     ) {
                         const userBuilds = this.user.builds;
                         const selectedBuildIds = selectedBuilds.map(
-                            build => build.id
+                            (build) => build.id
                         );
 
                         for (let i = 0; i < userBuilds.length; i++) {
@@ -532,7 +461,7 @@ export default {
                     ) {
                         const userOrganizations = this.user.organizations;
                         const selectedOrganizationIds = selectedOrganizations.map(
-                            organization => organization.id
+                            (organization) => organization.id
                         );
 
                         for (let i = 0; i < userOrganizations.length; i++) {
@@ -574,76 +503,26 @@ export default {
                 this.errors.invalidEmail = true;
             }
 
-            if (this.action !== 'edit') {
-                const password = this.password;
-                const passwordConfirmation = this.passwordConfirmation;
-
-                if (!password || password.length < 5) {
-                    this.errors.passwordLength = true;
-                    this.isLoading = false;
-                    this.showError = true;
-                }
-
-                if (
-                    !passwordConfirmation ||
-                    password !== passwordConfirmation
-                ) {
-                    this.errors.passwordMismatch = true;
-                    this.isLoading = false;
-                    this.showError = true;
-                }
-            }
-
             return !this.hasErrors;
-        },
-        validatePasswordConfirmation() {
-            this.validPasswordConfirmation = false;
-            const passwordConfirmation = this.passwordConfirmation;
-
-            if (!passwordConfirmation && !this.password) {
-                this.errors.passwordMismatch = false;
-            } else if (
-                passwordConfirmation &&
-                passwordConfirmation === this.password
-            ) {
-                this.validPasswordConfirmation = true;
-                this.errors.passwordMismatch = false;
-            } else {
-                this.errors.passwordMismatch = true;
-            }
-        },
-        validatePassword() {
-            this.resetErrors();
-            this.showError = false;
-            this.validPassword = false;
-            const password = this.password;
-
-            if (password && password.length >= 5) {
-                this.validPassword = true;
-            }
-
-            if (this.passwordConfirmation) {
-                this.validatePasswordConfirmation();
-            }
         },
     },
     computed: {
         ...mapState(['builds', 'organizations']),
         hasErrors() {
-            return Object.values(this.errors).some(error => error === true)
+            return Object.values(this.errors).some((error) => error === true)
                 ? true
                 : false;
         },
     },
     created() {
         if (!this.builds.length) {
-            getBuilds().then(response => {
+            getBuilds().then((response) => {
                 this.setBuilds(response.data);
             });
         }
 
         if (!this.organizations.length) {
-            getOrganizations().then(response => {
+            getOrganizations().then((response) => {
                 this.setOrganizations(response.data);
             });
         }
@@ -665,7 +544,7 @@ export default {
             this.closeModal();
         });
 
-        EventBus.$on('send-selected-items', data => {
+        EventBus.$on('send-selected-items', (data) => {
             if (data.itemType === 'builds') {
                 this.selectedBuilds = data.items;
             } else if (data.itemType === 'organizations') {

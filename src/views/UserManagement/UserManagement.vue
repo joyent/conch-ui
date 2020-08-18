@@ -1,7 +1,7 @@
 <template>
     <div class="user-management">
         <Spinner v-if="users.length < 1" />
-        <div class="users" v-else>
+        <div class="users" v-else-if="users.length && !$route.params.id">
             <div class="columns is-vcentered">
                 <div class="column">
                     <a class="filter-all" @click="setFilters('all')">
@@ -59,25 +59,6 @@
                             <h2 class="is-6">Inactive Users</h2>
                             <span class="is-size-3 has-text-info">
                                 {{ inactiveUsersCount }}
-                            </span>
-                        </div>
-                    </a>
-                </div>
-                <div class="column">
-                    <a
-                        class="filter-auth-issues"
-                        @click="setFilters('auth_issues')"
-                    >
-                        <div
-                            class="box users-stats"
-                            :class="{
-                                'is-selected':
-                                    statisticFilter === 'auth_issues',
-                            }"
-                        >
-                            <h2 class="is-6">Authentication Issues</h2>
-                            <span class="is-size-3 has-text-info">
-                                {{ authenticationIssuesCount }}
                             </span>
                         </div>
                     </a>
@@ -154,6 +135,7 @@
                 />
             </transition>
         </div>
+        <router-view v-else></router-view>
     </div>
 </template>
 
@@ -219,8 +201,7 @@ export default {
             if (
                 filter === this.userFilter ||
                 filter === 'all' ||
-                filter === 'inactive' ||
-                filter === 'auth_issues'
+                filter === 'inactive'
             ) {
                 this.userFilter = 'all';
             } else if (filter === 'admins') {
@@ -274,14 +255,6 @@ export default {
                     users = users.filter(user => user.is_admin === false);
                 } else if (statisticFilter === 'inactive') {
                     users = users.filter(user => user.last_login == null);
-                } else if (statisticFilter === 'auth_issues') {
-                    users = users.filter(user => {
-                        if (
-                            user.force_password_change === true ||
-                            user.refuse_session_auth === true
-                        )
-                            return user;
-                    });
                 }
             }
 
