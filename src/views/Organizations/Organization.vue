@@ -18,9 +18,11 @@
                 <div class="datatable-header">
                     <p class="datatable-header-title is-size-5 has-text-white">
                         {{
-                            `Builds (${(organization.builds &&
-                                organization.builds.length) ||
-                                0})`
+                            `Builds (${
+                                (organization.builds &&
+                                    organization.builds.length) ||
+                                0
+                            })`
                         }}
                     </p>
                     <div
@@ -35,7 +37,7 @@
                                 <i class="material-icons">more_vert</i>
                             </span>
                         </a>
-                        <div class="dropdown-menu" style="z-index: 10">
+                        <div class="dropdown-menu" style="z-index: 10;">
                             <div class="dropdown-content">
                                 <a
                                     class="dropdown-item add"
@@ -69,6 +71,20 @@
                                 <th></th>
                             </tr>
                         </thead>
+                        <tfoot
+                            v-if="
+                                organization.builds &&
+                                organization.builds.length &&
+                                organization.builds.length > 10
+                            "
+                        >
+                            <tr>
+                                <th>Name</th>
+                                <th>Started</th>
+                                <th>Completed</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
                         <tbody>
                             <tr
                                 class="row"
@@ -152,9 +168,11 @@
                 <div class="datatable-header">
                     <p class="datatable-header-title is-size-5 has-text-white">
                         {{
-                            `Members (${(organization.users &&
-                                organization.users.length) ||
-                                0})`
+                            `Members (${
+                                (organization.users &&
+                                    organization.users.length) ||
+                                0
+                            })`
                         }}
                     </p>
                     <div
@@ -215,6 +233,18 @@
                             <th>Permissions</th>
                             <th></th>
                         </thead>
+                        <tfoot
+                            v-if="
+                                organization.users &&
+                                organization.users.length &&
+                                organization.users.length > 10
+                            "
+                        >
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Permissions</th>
+                            <th></th>
+                        </tfoot>
                         <tbody>
                             <tr
                                 class="row"
@@ -255,7 +285,7 @@
                                                 <option
                                                     :selected="
                                                         member.role === 'ro' ||
-                                                            member.role === 'rw'
+                                                        member.role === 'rw'
                                                     "
                                                     value="regular_user"
                                                 >
@@ -321,7 +351,7 @@
                                         "
                                         v-if="
                                             member.role !== 'admin' ||
-                                                adminMembersCount > 1
+                                            adminMembersCount > 1
                                         "
                                     >
                                         <i class="material-icons">delete</i>
@@ -352,7 +382,7 @@
                     </a>
                 </div>
                 <div
-                    class="datatable-footer "
+                    class="datatable-footer"
                     v-else-if="editMembers && organizationHasMembers"
                 >
                     <a
@@ -508,7 +538,7 @@ export default {
                 organizationId = this.organization.id;
             }
 
-            Organizations.getOrganization(organizationId).then(response => {
+            Organizations.getOrganization(organizationId).then((response) => {
                 this.organization = response.data;
                 this.loadingOrganization = false;
             });
@@ -516,8 +546,8 @@ export default {
         isEmpty,
         isMemberModified(memberName) {
             return this.modifiedMembers
-                .map(member => member.name)
-                .some(name => name === memberName);
+                .map((member) => member.name)
+                .some((name) => name === memberName);
         },
         openActionModal(action, item) {
             this.action = action;
@@ -623,7 +653,7 @@ export default {
         ...mapState(['builds', 'users']),
         adminMembersCount() {
             if (this.organizationHasMembers) {
-                return this.organization.users.filter(user => {
+                return this.organization.users.filter((user) => {
                     return user.role === 'admin';
                 }).length;
             }
@@ -633,7 +663,7 @@ export default {
         buildsActive() {
             if (this.organizationHasBuilds) {
                 return this.organization.builds.filter(
-                    build => build.status === 'active'
+                    (build) => build.status === 'active'
                 ).length;
             }
 
@@ -642,7 +672,7 @@ export default {
         buildsComplete() {
             if (this.organizationHasBuilds) {
                 return this.organization.builds.filter(
-                    build => build.status === 'complete'
+                    (build) => build.status === 'complete'
                 ).length;
             }
 
@@ -669,13 +699,13 @@ export default {
         }
 
         if (this.builds && !this.builds.length) {
-            Builds.getBuilds().then(response => {
+            Builds.getBuilds().then((response) => {
                 this.setBuilds(response.data);
             });
         }
 
         if (this.users && !this.users.length) {
-            getUsers().then(response => {
+            getUsers().then((response) => {
                 this.setUsers(response.data);
             });
         }
@@ -688,7 +718,7 @@ export default {
             }
         );
 
-        EventBus.$on(['build-added', 'member-added'], async data => {
+        EventBus.$on(['build-added', 'member-added'], async (data) => {
             await this.getOrganization();
 
             this.action = 'add';
@@ -703,7 +733,7 @@ export default {
             this.showSuccessModal = true;
         });
 
-        EventBus.$on(['build-removed', 'member-removed'], async data => {
+        EventBus.$on(['build-removed', 'member-removed'], async (data) => {
             await this.getOrganization();
 
             this.action = 'remove';

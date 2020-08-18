@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="columns">
-            <div class="column">
+            <div class="column is-12">
                 <div class="device-details" v-if="!isEmpty(activeDevice)">
                     <div class="box has-text-centered serial-number">
                         <div class="subtitle has-text-white">
