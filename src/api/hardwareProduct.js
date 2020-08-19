@@ -1,5 +1,6 @@
 import { requestWithToken } from './request.js';
 
+// system admin endpoint
 export const createHardwareProduct = data => {
     return requestWithToken({
         method: 'POST',
@@ -8,6 +9,7 @@ export const createHardwareProduct = data => {
     });
 };
 
+// system admin endpoint
 export const deleteHardwareProduct = id => {
     return requestWithToken({
         method: 'DELETE',
@@ -15,6 +17,7 @@ export const deleteHardwareProduct = id => {
     });
 };
 
+// system admin endpoint
 export const editHardwareProduct = (id, data) => {
     return requestWithToken({
         method: 'POST',

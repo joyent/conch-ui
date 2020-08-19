@@ -44,6 +44,7 @@
                     </span>
                 </div>
                 <a
+                    v-if="currentUser && currentUser.is_admin"
                     class="button is-success create-new"
                     @click="showHardwareProductModal = true"
                 >

@@ -27,6 +27,7 @@
                 </a>
             </div>
             <a
+                v-if="currentUser && currentUser.is_admin"
                 class="button is-success create-organization"
                 @click="createBuild()"
             >
@@ -252,7 +253,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['builds']),
+        ...mapState(['builds', 'currentUser']),
         filteredBuilds() {
             const searchText = this.searchText.toLowerCase();
             let builds = this.builds;
