@@ -98,7 +98,6 @@ import OrganizationsTab from './OrganizationsTab.vue';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
 import { getOrganizations } from '@api/organizations.js';
-import { getUsers } from '@api/users.js';
 
 export default {
     components: {
@@ -158,7 +157,6 @@ export default {
             'setCurrentBuildUsers',
             'setDevices',
             'setOrganizations',
-            'setUsers',
         ]),
         changeTab(tab) {
             this.currentTab = tab;
@@ -185,12 +183,6 @@ export default {
             });
         },
         preFetchData() {
-            if (!this.users.length) {
-                getUsers().then(response => {
-                    this.setUsers(response.data);
-                });
-            }
-
             if (!this.organizations.length) {
                 getOrganizations().then(response => {
                     this.setOrganizations(response.data);
@@ -247,7 +239,6 @@ export default {
             'devices',
             'organizations',
             'racks',
-            'users',
         ]),
         isBuildCompletable() {
             if (this.currentBuildDevices.length) {
