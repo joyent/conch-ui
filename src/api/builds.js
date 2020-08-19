@@ -101,14 +101,12 @@ export const createDeviceAddToBuild = (buildId, serial_number, sku, links) => {
 };
 
 /**
- * Create a new build
- *
  * @type  {POST}
+ * @description Create a new build (system admin endpoint)
  * @param {String} name                     The name of the build
  * @param {String} description              The description of the build
  * @param {Array} admins                    An array of admin users for the build
  * @param {String} started                  A string containing the start date of the build
- * @description Create a new build (system admin endpoint)
  * @return {Response Object}
  */
 export const createBuild = (name, description, admins, started) => {

@@ -21,13 +21,11 @@ export const addUserToOrganization = (organizationId, role, userId) => {
 };
 
 /**
- * Create a new organization
- *
  * @type   {POST}
+ * @description Create a new organization (system admin endpoint)
  * @param  {String} name                    The name of the new organization
  * @param  {String} description             The description of the new organization
  * @param  {Array} admins                   An array of admin users for the new organization
- * @description System admin endpoint
  * @return {Response Object}
  */
 export const createOrganization = (name, description, admins) => {
