@@ -62,6 +62,7 @@
             <OrganizationsTable
                 :organizations="filteredOrganizations"
                 :has-search-text="searchText.length > 0"
+                @delete-organization="confirmDeleteOrganization"
             />
         </template>
         <transition name="fade">
@@ -166,6 +167,10 @@ export default {
         },
         closeCreateOrganizationModal() {
             this.creatingOrganization = false;
+        },
+        confirmDeleteOrganization(data) {
+            this.organizationBeingEdited = data.organization;
+            this.deletingOrganization = true;
         },
         async deleteOrganization() {
             this.isLoading = true;
