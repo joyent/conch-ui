@@ -8,6 +8,7 @@ export const createToken = name => {
     });
 };
 
+// system admin endpoint
 export const createUser = user => {
     return requestWithToken({
         method: 'POST',
@@ -120,6 +121,7 @@ export const getUserTokens = userId => {
     });
 };
 
+// system admin endpoint
 export const getUsers = () => {
     return requestWithToken({
         method: 'GET',
