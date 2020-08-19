@@ -18,14 +18,13 @@
                 <div class="datatable-header">
                     <p class="datatable-header-title is-size-5 has-text-white">
                         {{
-                            `Builds (${
-                                (organization.builds &&
-                                    organization.builds.length) ||
-                                0
-                            })`
+                            `Builds (${(organization.builds &&
+                                organization.builds.length) ||
+                                0})`
                         }}
                     </p>
                     <div
+                        v-if="hasPermissions"
                         class="dropdown dropdown-builds is-right"
                         :class="{ 'is-active': showBuildsDropdown }"
                     >
@@ -74,8 +73,8 @@
                         <tfoot
                             v-if="
                                 organization.builds &&
-                                organization.builds.length &&
-                                organization.builds.length > 10
+                                    organization.builds.length &&
+                                    organization.builds.length > 10
                             "
                         >
                             <tr>
@@ -117,6 +116,7 @@
                                 </td>
                                 <td class="row-action-button">
                                     <a
+                                        v-if="hasPermissions"
                                         class="button-delete"
                                         @click="
                                             showRemoveItemModal(build, 'build')
@@ -152,7 +152,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="datatable-footer add">
+                <div v-if="hasPermissions" class="datatable-footer add">
                     <a
                         class="datatable-footer-item"
                         @click="openActionModal('add', 'builds')"
@@ -168,14 +168,13 @@
                 <div class="datatable-header">
                     <p class="datatable-header-title is-size-5 has-text-white">
                         {{
-                            `Members (${
-                                (organization.users &&
-                                    organization.users.length) ||
-                                0
-                            })`
+                            `Members (${(organization.users &&
+                                organization.users.length) ||
+                                0})`
                         }}
                     </p>
                     <div
+                        v-if="hasPermissions"
                         class="dropdown dropdown-members is-right"
                         :class="{ 'is-active': showMembersDropdown }"
                     >
@@ -183,7 +182,11 @@
                             class="datatable-header-icon dropdown-trigger"
                             @click="showMembersDropdown = !showMembersDropdown"
                         >
-                            <span class="icon">
+                            <a
+                                v-if="loadingUsers"
+                                class="button is-loading is-text is-small"
+                            ></a>
+                            <span class="icon" v-else>
                                 <i class="material-icons">more_vert</i>
                             </span>
                         </a>
@@ -209,7 +212,9 @@
                                 <a
                                     class="dropdown-item remove"
                                     v-if="
-                                        !editMembers && organizationHasMembers
+                                        hasPermissions &&
+                                            !editMembers &&
+                                            organizationHasMembers
                                     "
                                     @click="
                                         openActionModal('remove', 'members')
@@ -236,8 +241,8 @@
                         <tfoot
                             v-if="
                                 organization.users &&
-                                organization.users.length &&
-                                organization.users.length > 10
+                                    organization.users.length &&
+                                    organization.users.length > 10
                             "
                         >
                             <th>Name</th>
@@ -285,7 +290,7 @@
                                                 <option
                                                     :selected="
                                                         member.role === 'ro' ||
-                                                        member.role === 'rw'
+                                                            member.role === 'rw'
                                                     "
                                                     value="regular_user"
                                                 >
@@ -350,8 +355,9 @@
                                             )
                                         "
                                         v-if="
-                                            member.role !== 'admin' ||
-                                            adminMembersCount > 1
+                                            hasPermissions &&
+                                                (member.role !== 'admin' ||
+                                                    adminMembersCount > 1)
                                         "
                                     >
                                         <i class="material-icons">delete</i>
@@ -370,7 +376,10 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="datatable-footer" v-if="!editMembers">
+                <div
+                    class="datatable-footer"
+                    v-if="hasPermissions && !editMembers"
+                >
                     <a
                         class="datatable-footer-item add"
                         @click="openActionModal('add', 'members')"
@@ -495,6 +504,7 @@ export default {
             itemCount: 0,
             itemType: '',
             loadingOrganization: false,
+            loadingUsers: false,
             organization: {},
             modifiedMembers: [],
             removingItem: false,
@@ -538,7 +548,7 @@ export default {
                 organizationId = this.organization.id;
             }
 
-            Organizations.getOrganization(organizationId).then((response) => {
+            Organizations.getOrganization(organizationId).then(response => {
                 this.organization = response.data;
                 this.loadingOrganization = false;
             });
@@ -546,10 +556,10 @@ export default {
         isEmpty,
         isMemberModified(memberName) {
             return this.modifiedMembers
-                .map((member) => member.name)
-                .some((name) => name === memberName);
+                .map(member => member.name)
+                .some(name => name === memberName);
         },
-        openActionModal(action, item) {
+        async openActionModal(action, item) {
             this.action = action;
             this.item = item;
 
@@ -561,6 +571,17 @@ export default {
                 this.showMembersDropdown = false;
                 this.availableData = this.users;
                 this.unavailableData = this.organization.users;
+
+                if (this.users && this.users.length) {
+                    this.availableData = this.users;
+                } else {
+                    this.loadingUsers = true;
+                    const usersResponse = await getUsers();
+                    const users = usersResponse.data;
+                    this.availableData = users;
+                    this.setUsers(users);
+                    this.loadingUsers = false;
+                }
             }
 
             this.showActionModal = true;
@@ -650,10 +671,10 @@ export default {
         },
     },
     computed: {
-        ...mapState(['builds', 'users']),
+        ...mapState(['builds', 'currentUser', 'users']),
         adminMembersCount() {
             if (this.organizationHasMembers) {
-                return this.organization.users.filter((user) => {
+                return this.organization.users.filter(user => {
                     return user.role === 'admin';
                 }).length;
             }
@@ -663,7 +684,7 @@ export default {
         buildsActive() {
             if (this.organizationHasBuilds) {
                 return this.organization.builds.filter(
-                    (build) => build.status === 'active'
+                    build => build.status === 'active'
                 ).length;
             }
 
@@ -672,11 +693,31 @@ export default {
         buildsComplete() {
             if (this.organizationHasBuilds) {
                 return this.organization.builds.filter(
-                    (build) => build.status === 'complete'
+                    build => build.status === 'complete'
                 ).length;
             }
 
             return 0;
+        },
+        hasPermissions() {
+            const currentUser = this.currentUser;
+
+            if (currentUser && currentUser.is_admin === true) {
+                return true;
+            }
+
+            if (
+                this.organization &&
+                this.organization.users &&
+                this.organization.users.length
+            ) {
+                return this.organization.users
+                    .filter(user => user.role === 'admin')
+                    .map(user => user.id)
+                    .some(id => id === currentUser.id);
+            }
+
+            return false;
         },
         organizationHasBuilds() {
             return (
@@ -699,14 +740,8 @@ export default {
         }
 
         if (this.builds && !this.builds.length) {
-            Builds.getBuilds().then((response) => {
+            Builds.getBuilds().then(response => {
                 this.setBuilds(response.data);
-            });
-        }
-
-        if (this.users && !this.users.length) {
-            getUsers().then((response) => {
-                this.setUsers(response.data);
             });
         }
     },
@@ -718,7 +753,7 @@ export default {
             }
         );
 
-        EventBus.$on(['build-added', 'member-added'], async (data) => {
+        EventBus.$on(['build-added', 'member-added'], async data => {
             await this.getOrganization();
 
             this.action = 'add';
@@ -733,7 +768,7 @@ export default {
             this.showSuccessModal = true;
         });
 
-        EventBus.$on(['build-removed', 'member-removed'], async (data) => {
+        EventBus.$on(['build-removed', 'member-removed'], async data => {
             await this.getOrganization();
 
             this.action = 'remove';

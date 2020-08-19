@@ -5,6 +5,7 @@
             <img src="../../assets/organization.svg" width="500" />
             <p class="empty-state-heading">No Organizations exist.</p>
             <a
+                v-if="currentUser && currentUser.is_admin"
                 class="button is-info create-organization"
                 @click="createOrganization()"
             >
@@ -42,6 +43,7 @@
                     </span>
                 </div>
                 <a
+                    v-if="currentUser && currentUser.is_admin"
                     class="button is-success create-new"
                     @click="createOrganization()"
                 >
@@ -60,6 +62,7 @@
             <OrganizationsTable
                 :organizations="filteredOrganizations"
                 :has-search-text="searchText.length > 0"
+                @delete-organization="confirmDeleteOrganization"
             />
         </template>
         <transition name="fade">
@@ -165,6 +168,10 @@ export default {
         closeCreateOrganizationModal() {
             this.creatingOrganization = false;
         },
+        confirmDeleteOrganization(data) {
+            this.organizationBeingEdited = data.organization;
+            this.deletingOrganization = true;
+        },
         async deleteOrganization() {
             this.isLoading = true;
             this.action = 'delete';
@@ -208,7 +215,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['organizations']),
+        ...mapState(['currentUser', 'organizations']),
         filteredOrganizations() {
             const searchText = this.searchText.toLowerCase();
             let organizations = this.organizations;
