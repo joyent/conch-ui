@@ -36,7 +36,14 @@
                         <span v-else>0</span>
                     </td>
                     <td class="has-text-right">
-                        <a class="button">View Organization</a>
+                        <span
+                            v-if="currentUser && currentUser.is_admin"
+                            class="icon"
+                            @click.stop="showConfirmDeleteModal(organization)"
+                        >
+                            <i class="material-icons has-text-danger">delete</i>
+                        </span>
+                        <a v-else class="button">View Organization</a>
                     </td>
                 </tr>
             </tbody>
@@ -55,6 +62,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Spinner from '@src/views/components/Spinner.vue';
 
 export default {
@@ -70,6 +78,11 @@ export default {
     },
     components: {
         Spinner,
+    },
+    data() {
+        return {
+            organization: {},
+        };
     },
     methods: {
         getAdminUserCount(organization) {
@@ -107,6 +120,9 @@ export default {
 
             return 0;
         },
+        showConfirmDeleteModal(organization) {
+            this.$emit('delete-organization', { organization });
+        },
         viewOrganizationPage(id) {
             this.$router.push({
                 name: 'organization',
@@ -115,6 +131,7 @@ export default {
         },
     },
     computed: {
+        ...mapState(['currentUser']),
         hasOrganizations() {
             return this.organizations && this.organizations.length;
         },
