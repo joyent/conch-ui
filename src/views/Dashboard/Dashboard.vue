@@ -3,7 +3,7 @@
         <Build :build-id="buildId" v-if="showRecentBuild" />
         <div class="empty-state" v-else-if="noRecentBuild">
             <img src="../../assets/data-points.svg" width="500" />
-            <p class="empty-state-heading">No Recent Builds to Display</p>
+            <p class="empty-state-heading">No recent builds to display.</p>
         </div>
         <Spinner v-else />
     </div>

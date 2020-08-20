@@ -93,7 +93,7 @@
                                         readonly
                                         :value="
                                             field.type === 'datetime'
-                                                ? getFormattedValue(field.value)
+                                                ? getFormattedDate(field.value)
                                                 : field.value
                                         "
                                     />
@@ -215,10 +215,16 @@
                                     :key="index"
                                 >
                                     <td>{{ token.name }}</td>
-                                    <td>{{ token.last_used }}</td>
-                                    <td>{{ token.last_ipaddr }}</td>
-                                    <td>{{ token.created }}</td>
-                                    <td>{{ token.expires }}</td>
+                                    <td>{{
+                                        getFormattedDate(token.last_used)
+                                    }}</td>
+                                    <td>{{ token.last_ipaddr || 'None' }}</td>
+                                    <td>{{
+                                        getFormattedDate(token.created)
+                                    }}</td>
+                                    <td>{{
+                                        getFormattedDate(token.expires)
+                                    }}</td>
                                     <td>
                                         <span
                                             class="icon"
@@ -364,8 +370,20 @@ export default {
     },
     async mounted() {
         this.loadingTokens = true;
-        await this.getUser();
-        await this.getTokens();
+        const currentUser = this.currentUser;
+
+        if (currentUser) {
+            if (currentUser.is_admin) {
+                await this.getUser();
+                await this.getTokens();
+            } else if (this.$route.params && this.$route.params.id) {
+                this.user = currentUser;
+                this.builds = currentUser.builds;
+                this.organizations = currentUser.organizations;
+                this.setFields(currentUser);
+            }
+        }
+
         this.loadingTokens = false;
     },
     computed: {
@@ -388,9 +406,9 @@ export default {
                 this.setError(error);
             }
         },
-        getFormattedValue(fieldValue) {
-            if (fieldValue) {
-                return moment.utc(fieldValue).format('DD-MMM-YYYY HH:mm:ss');
+        getFormattedDate(date) {
+            if (date) {
+                return moment.utc(date).format('DD-MMM-YYYY HH:mm:ss');
             } else {
                 return 'None';
             }

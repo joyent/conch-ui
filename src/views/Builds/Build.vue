@@ -72,11 +72,11 @@
         <OverviewTab v-if="currentTab === 'OverviewTab'" />
         <OrganizationsTab
             :build-id="currentBuild.id"
-            v-if="currentTab === 'OrganizationsTab'"
+            v-if="userIsAdmin && currentTab === 'OrganizationsTab'"
         />
         <MembersTab
             :build-id="currentBuild.id"
-            v-if="currentTab === 'MembersTab'"
+            v-if="userIsAdmin && currentTab === 'MembersTab'"
         />
         <RacksTab
             :build-id="currentBuild.id"
@@ -119,33 +119,6 @@ export default {
             action: '',
             buildUpdated: false,
             currentTab: 'OverviewTab',
-            tabs: [
-                {
-                    class: 'overview-tab',
-                    component: 'OverviewTab',
-                    name: 'Overview',
-                },
-                {
-                    class: 'members-tab',
-                    component: 'MembersTab',
-                    name: 'Members',
-                },
-                {
-                    class: 'organizations-tab',
-                    component: 'OrganizationsTab',
-                    name: 'Organizations',
-                },
-                {
-                    class: 'racks-tab',
-                    component: 'RacksTab',
-                    name: 'Racks',
-                },
-                {
-                    class: 'devices-tab',
-                    component: 'DevicesTab',
-                    name: 'Devices',
-                },
-            ],
         };
     },
     methods: {
@@ -166,10 +139,6 @@ export default {
                 this.setCurrentBuild(response.data);
             });
 
-            Builds.getBuildOrganizations(buildId).then(response => {
-                this.setCurrentBuildOrganizations(response.data);
-            });
-
             Builds.getBuildDevices(buildId).then(response => {
                 this.setCurrentBuildDevices(response.data);
             });
@@ -178,9 +147,15 @@ export default {
                 this.setCurrentBuildRacks(response.data);
             });
 
-            Builds.getBuildUsers(buildId).then(response => {
-                this.setCurrentBuildUsers(response.data);
-            });
+            if (this.userIsAdmin) {
+                Builds.getBuildOrganizations(buildId).then(response => {
+                    this.setCurrentBuildOrganizations(response.data);
+                });
+
+                Builds.getBuildUsers(buildId).then(response => {
+                    this.setCurrentBuildUsers(response.data);
+                });
+            }
         },
         preFetchData() {
             if (!this.organizations.length) {
@@ -236,6 +211,7 @@ export default {
         ...mapState([
             'currentBuild',
             'currentBuildDevices',
+            'currentUser',
             'devices',
             'organizations',
             'racks',
@@ -247,6 +223,58 @@ export default {
                 ).length;
 
                 if (healthyDevicesCount === this.currentBuildDevices.length) {
+                    return true;
+                }
+            }
+
+            return false;
+        },
+        tabs() {
+            const tabs = [
+                {
+                    class: 'overview-tab',
+                    component: 'OverviewTab',
+                    name: 'Overview',
+                },
+                {
+                    class: 'racks-tab',
+                    component: 'RacksTab',
+                    name: 'Racks',
+                },
+                {
+                    class: 'devices-tab',
+                    component: 'DevicesTab',
+                    name: 'Devices',
+                },
+            ];
+            const adminTabs = [
+                {
+                    class: 'members-tab',
+                    component: 'MembersTab',
+                    name: 'Members',
+                },
+                {
+                    class: 'organizations-tab',
+                    component: 'OrganizationsTab',
+                    name: 'Organizations',
+                },
+            ];
+
+            return this.userIsAdmin ? tabs.concat(adminTabs) : tabs;
+        },
+        userIsAdmin() {
+            const user = this.currentUser;
+
+            if (user && user.is_admin) {
+                return true;
+            }
+
+            if (user && user.builds && user.builds.length) {
+                const build = user.builds.find(
+                    build => build.id === this.buildId
+                );
+
+                if (build && build.role === 'admin') {
                     return true;
                 }
             }

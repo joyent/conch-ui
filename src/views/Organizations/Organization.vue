@@ -118,7 +118,7 @@
                                     <a
                                         v-if="hasPermissions"
                                         class="button-delete"
-                                        @click="
+                                        @click.stop="
                                             showRemoveItemModal(build, 'build')
                                         "
                                     >
@@ -348,7 +348,7 @@
                                 <td class="row-action-button">
                                     <a
                                         class="button-delete"
-                                        @click="
+                                        @click.stop="
                                             showRemoveItemModal(
                                                 member,
                                                 'member'
