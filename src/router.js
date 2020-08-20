@@ -101,12 +101,22 @@ export default new Router({
             ],
         },
         {
-            path: '/admin/builds',
+            path: '/builds',
             name: 'builds',
             components: {
                 default: BuildsList,
                 sidebar: Sidebar,
             },
+            children: [
+                {
+                    path: ':id',
+                    name: 'build',
+                    components: {
+                        default: Build,
+                        sidebar: Sidebar,
+                    },
+                },
+            ],
         },
         {
             path: '/admin/tokens',
@@ -158,28 +168,22 @@ export default new Router({
             },
         },
         {
-            path: '/admin/organizations',
+            path: '/organizations',
             name: 'organizations',
             components: {
                 default: Organizations,
                 sidebar: Sidebar,
             },
-        },
-        {
-            path: '/organization/:id',
-            name: 'organization',
-            components: {
-                default: Organization,
-                sidebar: Sidebar,
-            },
-        },
-        {
-            path: '/build/:id',
-            name: 'build',
-            components: {
-                default: Build,
-                sidebar: Sidebar,
-            },
+            children: [
+                {
+                    path: ':id',
+                    name: 'organization',
+                    components: {
+                        default: Organization,
+                        sidebar: Sidebar,
+                    },
+                }
+            ]
         },
         {
             path: '/*',

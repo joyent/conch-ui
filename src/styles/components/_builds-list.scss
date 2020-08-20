@@ -186,4 +186,28 @@
 			}
 		}
 	}
+
+	.empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		img {
+				margin: 30px auto;
+		}
+
+		.empty-state-heading {
+				color: $white;
+				font-size: 24px;
+				margin-bottom: 30px;
+		}
+
+		.button {
+				font-weight: bold;
+				padding: 5px 20px;
+				height: 42px;
+				min-width: 180px;
+		}
+}
 }

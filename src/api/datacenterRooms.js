@@ -16,6 +16,20 @@ export const getDatacenterRoomRack = (datacenterRoomId, rackId) => {
 };
 
 /**
+ * Get a datacenter room using datacenter room ID
+ *
+ * @type   {GET}
+ * @param id
+ * @return {Response Object}
+ */
+export const getDatacenterRoom = (id) => {
+    return requestWithToken({
+        method: 'GET',
+        url: `/room/${id}`,
+    });
+};
+
+/**
  * Get all datacenter rooms
  *
  * @type   {GET}

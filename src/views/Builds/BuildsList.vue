@@ -1,7 +1,23 @@
 <template>
     <Spinner v-if="builds.length < 1 && !noBuildsExist" />
+    <router-view v-else-if="$route.params && $route.params.id"></router-view>
     <div class="builds-list" v-else>
-        <div class="page-heading">
+        <div class="empty-state" v-if="noBuildsExist">
+            <img src="../../assets/rack.svg" width="500" />
+            <template v-if="currentUser && currentUser.is_admin">
+                <p class="empty-state-heading">No organizations exist.</p>
+                <a
+                    class="button is-info create-organization"
+                    @click="createOrganization()"
+                >
+                    Create an Organization
+                </a>
+            </template>
+            <p v-else class="empty-state-heading">
+                You don't have access to any builds.
+            </p>
+        </div>
+        <div v-else class="page-heading">
             <h1 class="title is-3 has-text-weight-bold">Builds</h1>
             <div class="control has-icons-left">
                 <input
@@ -203,7 +219,7 @@ export default {
             this.creatingBuild = true;
         },
         getBuilds() {
-            Builds.getBuilds().then((response) => {
+            Builds.getBuilds().then(response => {
                 const builds = response.data;
 
                 if (builds.length) {

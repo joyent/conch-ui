@@ -29,7 +29,7 @@
                         <span>Dashboard</span>
                     </router-link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
                         :to="{ name: 'datacenter' }"
                         active-class="is-active"
@@ -38,7 +38,7 @@
                         <span>Browse</span>
                     </router-link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
                         :to="{ name: 'devices' }"
                         active-class="is-active"
