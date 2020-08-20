@@ -34,16 +34,19 @@
                             </div>
                         </div>
                         <div class="select-with-label phase">
-                            <label class="select-label">Datacenter Room</label>
+                            <label class="select-label"
+                                >Datacenter Room Alias</label
+                            >
                             <div class="select device-phase">
                                 <select v-model="datacenterRoomFilter">
                                     <option value="all" selected>All</option>
                                     <option
-                                        v-for="datacenterRoom in availableDatacenterRooms"
-                                        :key="datacenterRoom"
-                                        :value="datacenterRoom"
+                                        v-for="(alias,
+                                        index) in availableDatacenterRooms"
+                                        :key="index"
+                                        :value="alias"
                                     >
-                                        {{ datacenterRoom }}
+                                        {{ alias }}
                                     </option>
                                 </select>
                             </div>
@@ -99,28 +102,18 @@
                                 v-for="rack in filteredRacks"
                                 :key="rack.id"
                                 @click="
-                                    $router.push({
-                                        name: 'datacenterRack',
-                                        params: {
-                                            rackId: rack.id,
-                                            roomName: getDatacenterRoom(
-                                                rack.datacenter_room_id
-                                            ),
-                                        },
-                                    })
+                                    userIsAdmin ? navigateToRack(rack) : null
                                 "
-                                style="cursor: pointer;"
+                                :style="{
+                                    cursor: userIsAdmin ? 'pointer' : 'default',
+                                }"
                             >
                                 <td class="name">
                                     <span>{{ rack.name }}</span>
                                 </td>
                                 <td class="datacenterRoom">
                                     <span>
-                                        {{
-                                            getDatacenterRoom(
-                                                rack.datacenter_room_id
-                                            )
-                                        }}
+                                        {{ rack.datacenter_room_alias }}
                                     </span>
                                 </td>
                                 <td class="phase">{{ rack.phase }}</td>
@@ -173,8 +166,9 @@ export default {
     data() {
         return {
             addingRack: false,
+            datacenterRoomAliases: [],
             datacenterRoomFilter: 'all',
-            headers: ['name', 'datacenter room', 'phase'],
+            headers: ['name', 'datacenter room alias', 'phase'],
             phaseFilter: 'all',
             phases: [
                 'Installation',
@@ -190,29 +184,26 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setDatacenterRooms', 'setCurrentBuildRacks']),
+        ...mapActions(['setCurrentBuildRacks']),
         closeModal() {
             this.addingRack = false;
             this.removeRack = false;
             this.removingRack = {};
         },
-        getDatacenterRoom(datacenterRoomId) {
-            if (this.datacenterRooms) {
-                const datacenterRoom = this.datacenterRooms.find(room => {
-                    return room.id === datacenterRoomId;
-                });
+        async navigateToRack(rack) {
+            const response = await DatacenterRooms.getDatacenterRoom(
+                rack.datacenter_room_id
+            );
 
-                if (datacenterRoom && datacenterRoom.az) {
-                    return datacenterRoom.az;
-                } else {
-                    return '';
-                }
+            if (response && response.data && response.data.az) {
+                this.$router.push({
+                    name: 'datacenterRack',
+                    params: {
+                        rackId: rack.id,
+                        roomName: response.data.az,
+                    },
+                });
             }
-        },
-        async getDatacenterRooms() {
-            await DatacenterRooms.getDatacenterRooms().then(response => {
-                this.setDatacenterRooms(response.data);
-            });
         },
         showAddRackModal() {
             this.addingRack = true;
@@ -226,22 +217,23 @@ export default {
                 this.setCurrentBuildRacks(response.data);
             });
         },
-        sort() {},
     },
     computed: {
-        ...mapState(['currentBuildRacks', 'datacenterRooms']),
+        ...mapState(['currentBuildRacks', 'currentUser']),
         availableDatacenterRooms() {
             if (!this.currentBuildRacks.length) {
                 return [];
             }
 
-            return Array.from(
-                new Set(
-                    this.currentBuildRacks.map(rack =>
-                        this.getDatacenterRoom(rack.datacenter_room_id)
-                    )
-                )
-            ).sort();
+            let rooms = [];
+
+            this.datacenterRoomAliases.forEach(room => {
+                if (rooms.includes(room) === false) {
+                    rooms.push(room);
+                }
+            });
+
+            return rooms;
         },
         filteredRacks() {
             if (!this.currentBuildRacks.length) {
@@ -271,24 +263,38 @@ export default {
             }
 
             if (this.datacenterRoomFilter !== 'all') {
-                racks = racks.filter(rack => {
-                    const datacenterRoom = this.getDatacenterRoom(
-                        rack.datacenter_room_id
-                    );
-
-                    if (datacenterRoom === this.datacenterRoomFilter) {
-                        return rack;
-                    }
-                });
+                racks = racks.filter(
+                    rack =>
+                        rack.datacenter_room_alias === this.datacenterRoomFilter
+                );
             }
 
             return racks;
         },
+        userIsAdmin() {
+            const user = this.currentUser;
+
+            if (user && user.is_admin) {
+                return true;
+            }
+
+            if (user && user.builds && user.builds.length) {
+                const build = user.builds.find(
+                    build => build.id === this.buildId
+                );
+
+                if (build && build.role === 'admin') {
+                    return true;
+                }
+            }
+
+            return false;
+        },
     },
     created() {
-        if (!this.datacenterRooms.length) {
-            this.getDatacenterRooms();
-        }
+        this.datacenterRoomAliases = this.currentBuildRacks.map(
+            rack => rack.datacenter_room_alias
+        );
 
         EventBus.$on(
             [

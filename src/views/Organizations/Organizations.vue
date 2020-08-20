@@ -1,16 +1,21 @@
 <template>
     <Spinner v-if="organizations.length < 1 && !noOrganizationsExist" />
+    <router-view v-else-if="$route.params && $route.params.id"></router-view>
     <div class="organizations" v-else>
         <div class="empty-state" v-if="noOrganizationsExist">
             <img src="../../assets/organization.svg" width="500" />
-            <p class="empty-state-heading">No Organizations exist.</p>
-            <a
-                v-if="currentUser && currentUser.is_admin"
-                class="button is-info create-organization"
-                @click="createOrganization()"
-            >
-                Create an Organization
-            </a>
+            <template v-if="currentUser && currentUser.is_admin">
+                <p class="empty-state-heading">No organizations exist.</p>
+                <a
+                    class="button is-info create-organization"
+                    @click="createOrganization()"
+                >
+                    Create an Organization
+                </a>
+            </template>
+            <p v-else class="empty-state-heading">
+                You don't have access to any organizations.
+            </p>
         </div>
         <template v-else>
             <div

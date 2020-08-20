@@ -372,18 +372,6 @@
             border-radius: 4px;
         }
 
-        tr {
-            &.view-organization {
-                cursor: pointer;
-            }
-
-            &:hover {
-                .button {
-                    background-color: #4a5dbd;
-                }
-            }
-        }
-
         .button {
             border: none;
         }
