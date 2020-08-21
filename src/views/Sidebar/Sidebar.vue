@@ -128,7 +128,7 @@ export default {
         Spinner,
     },
     methods: {
-        ...mapActions(['setCurrentUser']),
+        ...mapActions(['resetState', 'setCurrentUser']),
         getCurrentUser() {
             Users.getCurrentUser().then(response => {
                 this.setCurrentUser(response.data);
@@ -139,6 +139,7 @@ export default {
             this.$router.push({ name: 'dashboard' });
         },
         signOut() {
+            this.resetState();
             logout().then(() => {
                 this.$router.push({ name: 'signIn' });
             });

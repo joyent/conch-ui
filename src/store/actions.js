@@ -26,6 +26,10 @@ export const clearUserAuthTokens = ({ commit }) => {
     commit('clearUserAuthTokens');
 };
 
+export const resetState = ({ commit }) => {
+    commit('resetState');
+};
+
 export const setActiveDevice = ({ commit }, activeDevice) => {
     commit('setActiveDevice', activeDevice);
 };
@@ -145,6 +149,7 @@ export default {
     clearRackLayout,
     clearShowDeviceInRack,
     clearUserAuthTokens,
+    resetState,
     setActiveDevice,
     setActiveDeviceDetails,
     setActiveDeviceSettings,

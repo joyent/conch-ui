@@ -1,3 +1,5 @@
+import { initialState } from './state';
+
 export const clearActiveDevice = state => {
     state.activeDevice = {};
 };
@@ -24,6 +26,13 @@ export const clearShowDeviceInRack = state => {
 
 export const clearUserAuthTokens = state => {
     state.userAuthTokens = [];
+};
+
+export const resetState = state => {
+    const s = initialState();
+    Object.keys(s).forEach(key => {
+        state[key] = s[key];
+    });
 };
 
 export const setActiveDevice = (state, activeDevice) => {
@@ -142,6 +151,7 @@ export default {
     clearRackLayout,
     clearShowDeviceInRack,
     clearUserAuthTokens,
+    resetState,
     setActiveDevice,
     setActiveDeviceDetails,
     setActiveDeviceSettings,
