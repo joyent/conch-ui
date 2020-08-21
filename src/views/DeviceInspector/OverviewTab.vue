@@ -174,11 +174,11 @@ export default {
             this.isLoading = false;
         },
         showDeviceInRack() {
-            const { datacenter_room, rack } = this.activeDeviceDetails.location;
-            const datacenterRoomName = datacenter_room.az;
+            const { id } = this.activeDeviceDetails;
+            const { az, rack } = this.activeDeviceDetails.location;
 
-            this.setHighlightDeviceId(this.activeDeviceId);
-            this.setActiveRoomName(datacenterRoomName);
+            this.setHighlightDeviceId(id);
+            this.setActiveRoomName(az);
 
             EventBus.$emit('closeModal:deviceModal');
             EventBus.$emit('showDeviceInRack');
@@ -186,7 +186,7 @@ export default {
             this.setShowDeviceInRack(true);
 
             this.$router.push({
-                path: `/datacenter/${datacenterRoomName}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}`,
+                path: `/datacenter/${az}/rack/${rack}/device?highlightDeviceId=${id}`,
             });
         },
     },
