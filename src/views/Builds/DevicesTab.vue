@@ -102,12 +102,7 @@
                                 class="row"
                                 v-for="device in filteredDevices"
                                 :key="device.name"
-                                @click="
-                                    $router.push({
-                                        name: 'device',
-                                        params: { deviceId: device.id },
-                                    })
-                                "
+                                @click="navigateToDevice(device)"
                                 style="cursor: pointer;"
                             >
                                 <td class="name">
@@ -193,7 +188,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setCurrentBuildDevices']),
+        ...mapActions(['setActiveDeviceDetails', 'setCurrentBuildDevices']),
         closeModal() {
             this.addDevice = false;
             this.removeDevice = false;
@@ -201,6 +196,13 @@ export default {
         },
         isSortedBy(field) {
             return this.sortBy === field || this.previousSortBy === field;
+        },
+        navigateToDevice(device) {
+            this.setActiveDeviceDetails(device);
+            this.$router.push({
+                name: 'device',
+                params: { deviceId: device.id },
+            });
         },
         refetchCurrentBuildDevices() {
             Builds.getBuildDevices(this.buildId).then(response => {
