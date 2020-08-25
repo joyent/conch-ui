@@ -187,11 +187,11 @@ export default {
         activateDevice(slot) {
             const device = slot.occupant;
 
-            if (device) {
-                this.setActiveDevice(device);
-            }
-
-            EventBus.$emit('openModal:deviceModal');
+            this.setActiveDevice(device);
+            this.$router.push({
+                name: 'device',
+                params: { deviceId: device.id },
+            });
         },
         closeModal() {
             this.editLayout = false;

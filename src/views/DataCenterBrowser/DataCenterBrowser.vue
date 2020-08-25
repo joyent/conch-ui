@@ -5,7 +5,6 @@
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">
                     <article class="tile is-child">
-                        <DeviceModal />
                         <section class="section" v-if="!rackRooms.length">
                             <Spinner />
                         </section>
@@ -39,7 +38,6 @@
 
 <script>
 import isEmpty from 'lodash/isEmpty';
-import DeviceModal from './DeviceModal.vue';
 import LayoutPanel from './LayoutPanel.vue';
 import PageHeader from '@views/components/PageHeader.vue';
 import RackPanel from './RackPanel.vue';
@@ -51,7 +49,6 @@ import { setGlobalWorkspaceId } from '@src/views/shared/utils.js';
 
 export default {
     components: {
-        DeviceModal,
         LayoutPanel,
         PageHeader,
         RackPanel,
