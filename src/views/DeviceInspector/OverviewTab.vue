@@ -180,7 +180,6 @@ export default {
             this.setHighlightDeviceId(id);
             this.setActiveRoomName(az);
 
-            EventBus.$emit('closeModal:deviceModal');
             EventBus.$emit('showDeviceInRack');
 
             this.setShowDeviceInRack(true);
