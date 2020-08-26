@@ -5,7 +5,7 @@
                 <div class="members-table is-paddingless">
                     <div class="datatable-header">
                         <span class="heading is-size-6 is-marginless">
-                            Members
+                            {{ `Members (${filteredUsers.length})` }}
                         </span>
                         <div class="control has-icons-left has-icons-right">
                             <input
