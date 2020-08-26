@@ -64,22 +64,6 @@ describe('OverviewTab.vue', () => {
 
             clickButton();
         });
-
-        test('should emit closeModal:deviceModal using global EventBus', () => {
-            expect.assertions(1);
-
-            EventBus.$on('closeModal:deviceModal', () => {
-                wrapper.vm.$emit('closeModal:deviceModal');
-            });
-
-            wrapper.vm.$on('closeModal:deviceModal', () => {
-                expect(wrapper.emitted()).toHaveProperty(
-                    'closeModal:deviceModal'
-                );
-            });
-
-            clickButton();
-        });
     });
 
     describe('Show Device in Rack', () => {
