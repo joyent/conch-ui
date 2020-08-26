@@ -5,7 +5,7 @@
                 <div class="devices-table is-paddingless">
                     <div class="datatable-header">
                         <span class="heading is-size-6 is-marginless">
-                            Devices
+                            {{ `Devices (${filteredDevices.length})` }}
                         </span>
                         <div class="control has-icons-left has-icons-right">
                             <input
@@ -151,6 +151,7 @@ import RemoveItemModal from './RemoveItemModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import * as Builds from '@api/builds.js';
 import { mapState, mapActions } from 'vuex';
+import { getRackAssignment } from '@api/racks.js';
 
 export default {
     components: {
@@ -162,6 +163,11 @@ export default {
             type: String,
             required: true,
         },
+        rack: {
+            type: Object,
+            required: false,
+            default: () => null,
+        },
     },
     data() {
         return {
@@ -169,6 +175,7 @@ export default {
             deviceFilter: 'all',
             devicePhaseFilter: 'all',
             deviceHealthFilter: 'all',
+            devices: [],
             headers: ['name', 'health', 'phase', 'hardware product'],
             healthStates: ['Pass', 'Fail', 'Error', 'Unknown'],
             phases: [
@@ -183,6 +190,8 @@ export default {
             removingDevice: {},
             reversedSort: false,
             searchText: '',
+            showActionsDropdown: false,
+            showRackDevices: false,
             sortBy: '',
             sortedDevices: [],
         };
@@ -222,6 +231,10 @@ export default {
         showAddDeviceModal() {
             this.addDevice = true;
         },
+        showAllDevices() {
+            this.devices = this.currentBuildDevices;
+            this.showRackDevices = false;
+        },
         showRemoveDeviceModal(device) {
             this.removingDevice = device;
             this.removeDevice = true;
@@ -240,7 +253,7 @@ export default {
     computed: {
         ...mapState(['currentBuildDevices']),
         filteredDevices() {
-            let devices = this.currentBuildDevices;
+            let devices = this.devices;
 
             if (devices && devices.length) {
                 if (this.searchText) {
@@ -312,7 +325,27 @@ export default {
             return devices;
         },
     },
-    created() {
+    async created() {
+        if (this.rack.id) {
+            const response = await getRackAssignment(this.rack.id);
+            const rackDevices = response.data;
+
+            this.showRackDevices = true;
+
+            for (let i = 0; i < rackDevices.length; i++) {
+                const device = rackDevices[i];
+                const buildDevice = this.currentBuildDevices.find(
+                    buildDevice => buildDevice.id === device.device_id
+                );
+
+                if (buildDevice.id) {
+                    this.devices.push(buildDevice);
+                }
+            }
+        } else {
+            this.devices = this.currentBuildDevices;
+        }
+
         EventBus.$on(
             ['close-modal:remove-item', 'close-modal:add-item'],
             () => {
@@ -326,6 +359,10 @@ export default {
 
         EventBus.$on('device-added-to-build', () => {
             this.refetchCurrentBuildDevices();
+        });
+
+        EventBus.$on('device-tab-clicked', () => {
+            this.showAllDevices();
         });
     },
 };

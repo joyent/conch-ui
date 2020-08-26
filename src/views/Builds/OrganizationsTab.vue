@@ -4,9 +4,9 @@
             <div class="column">
                 <div class="organizations-table is-paddingless">
                     <div class="datatable-header">
-                        <span class="heading is-size-6 is-marginless">
-                            Organizations
-                        </span>
+                        <span class="heading is-size-6 is-marginless">{{
+                            `Organizations (${filteredOrganizations.length})`
+                        }}</span>
                         <div class="control has-icons-left has-icons-right">
                             <input
                                 type="text"

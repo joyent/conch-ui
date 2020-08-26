@@ -5,7 +5,7 @@
                 <div class="members-table is-paddingless">
                     <div class="datatable-header">
                         <span class="heading is-size-6 is-marginless">
-                            Racks
+                            {{ `Racks (${filteredRacks.length})` }}
                         </span>
                         <div class="control has-icons-left has-icons-right">
                             <input
@@ -101,9 +101,7 @@
                                 class="row"
                                 v-for="rack in filteredRacks"
                                 :key="rack.id"
-                                @click="
-                                    userIsAdmin ? navigateToRack(rack) : null
-                                "
+                                @click="selectRack(rack)"
                                 :style="{
                                     cursor: userIsAdmin ? 'pointer' : 'default',
                                 }"
@@ -189,6 +187,9 @@ export default {
             this.addingRack = false;
             this.removeRack = false;
             this.removingRack = {};
+        },
+        selectRack(rack) {
+            this.$emit('rack-selected', { rack });
         },
         async navigateToRack(rack) {
             const response = await DatacenterRooms.getDatacenterRoom(

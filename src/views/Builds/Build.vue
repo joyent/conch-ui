@@ -69,6 +69,22 @@
                 </li>
             </ul>
         </div>
+        <div
+            class="custom-tags"
+            v-if="rack && rack.name"
+            style="margin-bottom: 15px; margin-top: -10px;"
+        >
+            <label class="tag-label">Rack</label>
+            <div class="tag-value">
+                {{ rack.name }}
+            </div>
+            <a
+                class="button is-text"
+                style="margin-left: 5px"
+                @click="clearRack()"
+                >Clear Rack</a
+            >
+        </div>
         <OverviewTab v-if="currentTab === 'OverviewTab'" />
         <OrganizationsTab
             :build-id="currentBuild.id"
@@ -81,10 +97,12 @@
         <RacksTab
             :build-id="currentBuild.id"
             v-if="currentTab === 'RacksTab'"
+            @rack-selected="selectRack"
         />
         <DevicesTab
             :build-id="currentBuild.id"
             v-if="currentTab === 'DevicesTab'"
+            :rack="rack"
         />
     </div>
 </template>
@@ -95,6 +113,7 @@ import OverviewTab from './OverviewTab.vue';
 import RacksTab from './RacksTab.vue';
 import MembersTab from './MembersTab.vue';
 import OrganizationsTab from './OrganizationsTab.vue';
+import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
 import { getOrganizations } from '@api/organizations.js';
@@ -119,6 +138,7 @@ export default {
             action: '',
             buildUpdated: false,
             currentTab: 'OverviewTab',
+            rack: {},
         };
     },
     methods: {
@@ -133,6 +153,14 @@ export default {
         ]),
         changeTab(tab) {
             this.currentTab = tab;
+
+            if (this.currentTab === 'DevicesTab' && tab === 'DevicesTab') {
+                this.clearRack();
+            }
+        },
+        clearRack() {
+            this.rack = {};
+            EventBus.$emit('device-tab-clicked');
         },
         getBuildData(buildId) {
             Builds.getBuild(buildId).then(response => {
@@ -163,6 +191,10 @@ export default {
                     this.setOrganizations(response.data);
                 });
             }
+        },
+        selectRack(data) {
+            this.rack = data.rack;
+            this.currentTab = 'DevicesTab';
         },
         updateBuild(action) {
             const buildId = this.currentBuild.id;
@@ -202,8 +234,17 @@ export default {
                     }
                 }
 
+                this.currentTab = 'OverviewTab';
                 localStorage.setItem('mostRecentBuildId', buildId);
                 this.getBuildData(buildId);
+            },
+        },
+        currentTab: {
+            immediate: true,
+            handler(newTab, lastTab) {
+                if (lastTab === 'DevicesTab') {
+                    this.rack = {};
+                }
             },
         },
     },
