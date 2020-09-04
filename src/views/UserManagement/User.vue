@@ -161,13 +161,8 @@
                                 <tr
                                     v-for="item in tableItems"
                                     :key="item.id"
-                                    @click="
-                                        $router.push({
-                                            name: activeTab,
-                                            params: { id: item.id },
-                                        })
-                                    "
-                                    style="cursor: pointer;"
+                                    @click="navigateToItem(item.id)"
+                                    style="cursor: pointer"
                                 >
                                     <td>{{ item.name }}</td>
                                     <td>{{ item.description }}</td>
@@ -463,6 +458,12 @@ export default {
             }
 
             return isModified;
+        },
+        navigateToItem(itemId) {
+            const tab = this.activeTab;
+            const routeName = tab === 'builds' ? 'build' : 'organization';
+
+            this.$router.push({ name: routeName, params: { id: itemId } });
         },
         setError(error) {
             this.errorMessage =
