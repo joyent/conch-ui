@@ -10,7 +10,7 @@
                     <span class="icon material-icons">account_circle</span>
                     <h1
                         class="title is-4 has-text-weight-bold"
-                        style="margin-left: 8px;"
+                        style="margin-left: 8px"
                     >
                         {{ user.name }}
                     </h1>
@@ -63,10 +63,14 @@
                 </article>
             </div>
         </div>
-        <edit-user v-if="isEditUser" :user="user" @set-user="setUser"></edit-user>
+        <edit-user
+            v-if="isEditUser"
+            :user="user"
+            @set-user="setUser"
+        ></edit-user>
         <div v-else class="columns">
             <div class="column is-narrow">
-                <div class="card" style="border-radius: 4px;">
+                <div class="card" style="border-radius: 4px">
                     <div class="card-content">
                         <form>
                             <div
@@ -86,7 +90,7 @@
                                     <input
                                         v-if="
                                             field.type === 'datetime' ||
-                                                field.type === 'uuid'
+                                            field.type === 'uuid'
                                         "
                                         class="input"
                                         type="text"
@@ -111,7 +115,7 @@
                 </div>
             </div>
             <div class="column">
-                <div class="card" style="border-radius: 4px;">
+                <div class="card" style="border-radius: 4px">
                     <div class="card-content">
                         <div class="tabs">
                             <ul>
@@ -144,8 +148,8 @@
                             <tfoot
                                 v-if="
                                     tableItems &&
-                                        tableItems.length &&
-                                        tableItems.length > 18
+                                    tableItems.length &&
+                                    tableItems.length > 18
                                 "
                             >
                                 <tr>
@@ -191,8 +195,8 @@
                                 <tr
                                     v-if="
                                         tokens &&
-                                            tokens.length &&
-                                            tokens.length > 20
+                                        tokens.length &&
+                                        tokens.length > 20
                                     "
                                 >
                                     <th>Name</th>
@@ -237,9 +241,7 @@
                             </tbody>
                             <tbody v-else>
                                 <tr>
-                                    <td>
-                                        No tokens to display.
-                                    </td>
+                                    <td> No tokens to display. </td>
                                 </tr>
                             </tbody>
                         </table>
