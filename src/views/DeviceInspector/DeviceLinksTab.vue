@@ -166,6 +166,8 @@ export default {
             try {
                 await addDeviceLinks(this.activeDeviceDetails.id, [this.link]);
                 await this.refetchDevice();
+                this.showErrorMessage = false;
+                this.errorMessage = '';
                 this.isLoadingAddLinks = false;
                 this.link = '';
             } catch (e) {
