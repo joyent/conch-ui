@@ -14,6 +14,23 @@
                 </article>
             </div>
         </div>
+        <div class="columns" v-if="successMessage">
+            <div class="column is-3 is-offset-4">
+                <article class="message is-success" style="border-radius: 4px">
+                    <div class="message-header" style="border-radius: 4px">
+                        <span class="icon is-left">
+                            <i class="material-icons">check_circle_outline</i>
+                        </span>
+                        <p class="">{{ successMessage }}</p>
+                        <button
+                            class="delete"
+                            aria-label="delete"
+                            @click="successMessage = ''"
+                        ></button>
+                    </div>
+                </article>
+            </div>
+        </div>
         <div class="columns">
             <div class="column is-half">
                 <div class="card" style="border-radius: 4px;">
@@ -129,8 +146,8 @@
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import ResetPassword from '../UserManagement/ResetPassword.vue';
-import { mapState } from 'vuex';
-import { editUser } from '@api/users.js';
+import { mapActions, mapState } from 'vuex';
+import { updateUser } from '@api/users.js';
 
 export default {
     components: {
@@ -149,6 +166,7 @@ export default {
             isAdmin: false,
             isLoading: false,
             name: ',',
+            successMessage: '',
         };
     },
     mounted() {
@@ -169,16 +187,24 @@ export default {
         },
     },
     methods: {
+        ...mapActions(['setCurrentUser']),
         async editUser() {
             this.isLoading = true;
 
             try {
-                const response = await editUser();
+                const response = await updateUser(
+                    this.email,
+                    this.isAdmin,
+                    this.name
+                );
                 const user = response.data;
+                this.setCurrentUser(user);
+                this.$emit('set-user', { user });
 
                 this.email = user.email;
                 this.name = user.name;
                 this.isAdmin = user.is_admin;
+                this.successMessage = "User update successful";
                 this.isLoading = false;
             } catch (error) {
                 this.setError(error);

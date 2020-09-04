@@ -63,7 +63,7 @@
                 </article>
             </div>
         </div>
-        <edit-user v-if="isEditUser" :user="user"></edit-user>
+        <edit-user v-if="isEditUser" :user="user" @set-user="setUser"></edit-user>
         <div v-else class="columns">
             <div class="column is-narrow">
                 <div class="card" style="border-radius: 4px;">
@@ -487,6 +487,9 @@ export default {
             }
 
             this.defaultFields = cloneDeep(this.fields);
+        },
+        setUser(data) {
+            this.user = data.user;
         },
         showConfirmationModal(tokenName) {
             this.tokenName = tokenName;
