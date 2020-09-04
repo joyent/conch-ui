@@ -146,6 +146,21 @@ export const updatePassword = (password, params) => {
     }).then(clearToken());
 };
 
+export const updateUser = (email, isAdmin, name) => {
+    return requestWithToken({
+        method: 'POST',
+        url: '/user/me',
+        data: {
+            email,
+            is_admin: isAdmin,
+            name,
+        },
+        params: {
+            send_mail: 1,
+        },
+    });
+};
+
 export default {
     createToken,
     createUser,
@@ -163,4 +178,5 @@ export default {
     getUsers,
     promoteUser,
     updatePassword,
+    updateUser,
 };
