@@ -115,7 +115,7 @@
                         <div
                             class="dropdown is-right"
                             :class="{ 'is-active': activeDropdown === index }"
-                            @click="setActiveDropdown(index)"
+                            @click.stop="setActiveDropdown(index)"
                         >
                             <div class="dropdown-trigger">
                                 <button
