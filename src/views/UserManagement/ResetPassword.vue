@@ -3,11 +3,11 @@
         <div class="card-content">
             <transition name="fade">
                 <article
-                    class="message is-danger"
                     v-if="
                         showError &&
                             (errors.passwordLength || errors.passwordMismatch)
                     "
+                    class="message is-danger"
                 >
                     <div class="message-header">
                         <p>
@@ -27,66 +27,106 @@
                         ></button>
                     </div>
                 </article>
+                <article v-if="showSuccessMessage" class="message is-success">
+                    <div class="message-header">
+                        <p>
+                            <i
+                                class="fas fa-exclamation-circle"
+                                style="margin-right: 20px;"
+                            ></i>
+                            <span>Password reset successfully</span>
+                        </p>
+                        <button
+                            class="delete"
+                            aria-label="delete"
+                            @click="showSuccessMessage = false"
+                            type="button"
+                        ></button>
+                    </div>
+                </article>
+                <article
+                    v-if="showResetPasswordError"
+                    class="message is-success"
+                >
+                    <div class="message-header">
+                        <i
+                            class="fas fa-exclamation-circle"
+                            style="margin-right: 20px;"
+                        ></i>
+                        <span>{{ error }}</span>
+                        <button
+                            class="delete"
+                            aria-label="delete"
+                            @click="showResetPasswordError = false"
+                            type="button"
+                        ></button>
+                    </div>
+                </article>
             </transition>
             <form>
-                <div class="field">
-                    <label class="label">New Password</label>
-                    <div class="control has-icons-right">
-                        <input
-                            class="input password"
-                            :class="{
-                                'is-danger': errors.passwordLength,
-                                'is-success': validPassword,
-                            }"
-                            type="password"
-                            placeholder="New Password"
-                            v-model="password"
-                            @blur="validatePassword()"
-                        />
-                        <span
-                            class="icon is-small is-right has-text-danger"
-                            v-if="errors.passwordLength"
-                        >
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </span>
-                        <span
-                            class="icon is-small is-right has-text-success"
-                            v-if="validPassword"
-                        >
-                            <i class="fas fa-check"></i>
-                        </span>
+                <template v-if="isCurrentUser">
+                    <div class="field">
+                        <label class="label">New Password</label>
+                        <div class="control has-icons-right">
+                            <input
+                                class="input password"
+                                :class="{
+                                    'is-danger': errors.passwordLength,
+                                    'is-success': validPassword,
+                                }"
+                                type="password"
+                                placeholder="New Password"
+                                v-model="password"
+                                @blur="validatePassword()"
+                            />
+                            <span
+                                class="icon is-small is-right has-text-danger"
+                                v-if="errors.passwordLength"
+                            >
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span
+                                class="icon is-small is-right has-text-success"
+                                v-if="validPassword"
+                            >
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="field">
-                    <label class="label">Confirm Password</label>
-                    <div class="control has-icons-right">
-                        <input
-                            class="input confirmation"
-                            :class="{
-                                'is-danger': errors.passwordMismatch,
-                                'is-success': validConfirmPassword,
-                            }"
-                            type="password"
-                            placeholder="Confirm Password"
-                            v-model="confirmPassword"
-                            ref="confirmPassword"
-                            @blur="validateConfirmPassword()"
-                        />
-                        <span
-                            class="icon is-small is-right has-text-danger"
-                            v-if="errors.passwordMismatch"
-                        >
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </span>
-                        <span
-                            class="icon is-small is-right has-text-success"
-                            v-if="validConfirmPassword"
-                        >
-                            <i class="fas fa-check"></i>
-                        </span>
+                    <div class="field">
+                        <label class="label">Confirm Password</label>
+                        <div class="control has-icons-right">
+                            <input
+                                class="input confirmation"
+                                :class="{
+                                    'is-danger': errors.passwordMismatch,
+                                    'is-success': validConfirmPassword,
+                                }"
+                                type="password"
+                                placeholder="Confirm Password"
+                                v-model="confirmPassword"
+                                ref="confirmPassword"
+                                @blur="validateConfirmPassword()"
+                            />
+                            <span
+                                class="icon is-small is-right has-text-danger"
+                                v-if="errors.passwordMismatch"
+                            >
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                            <span
+                                class="icon is-small is-right has-text-success"
+                                v-if="validConfirmPassword"
+                            >
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
                     </div>
-                </div>
+                </template>
                 <div class="field">
+                    <h2 v-if="!isCurrentUser" class="title is-4">
+                        Reset Password
+                    </h2>
                     <label class="label">Clear tokens?</label>
                     <label class="switch">
                         <input
@@ -132,6 +172,7 @@
                     style="margin-top: 20px; justify-content: flex-end;"
                 >
                     <a
+                        v-if="isCurrentUser"
                         class="button is-success"
                         :class="{ 'is-loading': isLoading }"
                         :disabled="isLoading || !password || !confirmPassword"
@@ -141,8 +182,17 @@
                                 : null
                         "
                     >
-                        Update Password</a
+                        Update Password
+                    </a>
+                    <a
+                        v-else
+                        class="button is-success"
+                        :class="{ 'is-loading': isLoading }"
+                        :disabled="isLoading"
+                        @click="!isLoading ? resetPassword() : null"
                     >
+                        Reset Password
+                    </a>
                 </div>
             </form>
         </div>
@@ -150,8 +200,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { updatePassword } from '@api/users.js';
+import { mapActions, mapState } from 'vuex';
+import { forcePasswordChange, updatePassword } from '@api/users.js';
 
 export default {
     data() {
@@ -160,9 +210,12 @@ export default {
             clearTokens: true,
             confirmPassword: '',
             errors: {},
+            error: '',
             isLoading: false,
             password: '',
             showError: false,
+            showResetPasswordError: false,
+            showSuccessMessage: false,
             validConfirmPassword: false,
             validPassword: false,
         };
@@ -178,6 +231,28 @@ export default {
             this.validPassword = false;
             this.validConfirmPassword = false;
             this.resetErrors();
+        },
+        async resetPassword() {
+            this.isLoading = true;
+            this.resetErrors();
+            const userId = this.$route.params && this.$route.params.id;
+
+            try {
+                await forcePasswordChange(userId);
+                this.isLoading = false;
+                this.showSuccessMessage = true;
+
+                setTimeout(() => {
+                    this.showSuccessMessage = false;
+                }, 3000);
+            } catch (error) {
+                this.error = error;
+                this.showResetPasswordError = true;
+
+                setTimeout(() => {
+                    this.showResetPasswordError = false;
+                });
+            }
         },
         savePassword() {
             this.isLoading = true;
@@ -243,6 +318,18 @@ export default {
             if (this.confirmPassword) {
                 this.validateConfirmPassword();
             }
+        },
+    },
+    computed: {
+        ...mapState(['currentUser']),
+        isCurrentUser() {
+            return (
+                this.$route.params &&
+                this.$route.params.id &&
+                this.currentUser &&
+                this.currentUser.id &&
+                this.$route.params.id === this.currentUser.id
+            );
         },
     },
 };
