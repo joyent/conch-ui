@@ -44,6 +44,13 @@
                             >
                                 <strong>Create Token</strong>
                             </a>
+                            <a
+                                v-if="currentUser.id !== $route.params.id"
+                                class="button is-danger"
+                                @click="showConfirmationModal('user')"
+                            >
+                                Deactivate
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -90,7 +97,7 @@
                                     <input
                                         v-if="
                                             field.type === 'datetime' ||
-                                            field.type === 'uuid'
+                                                field.type === 'uuid'
                                         "
                                         class="input"
                                         type="text"
@@ -148,8 +155,8 @@
                             <tfoot
                                 v-if="
                                     tableItems &&
-                                    tableItems.length &&
-                                    tableItems.length > 18
+                                        tableItems.length &&
+                                        tableItems.length > 18
                                 "
                             >
                                 <tr>
@@ -195,8 +202,8 @@
                                 <tr
                                     v-if="
                                         tokens &&
-                                        tokens.length &&
-                                        tokens.length > 20
+                                            tokens.length &&
+                                            tokens.length > 20
                                     "
                                 >
                                     <th>Name</th>
@@ -229,6 +236,7 @@
                                             class="icon"
                                             @click="
                                                 showConfirmationModal(
+                                                    'token',
                                                     token.name
                                                 )
                                             "
@@ -255,10 +263,11 @@
             @create-token="getTokens"
         ></create-token-modal>
         <confirmation-modal
-            v-if="confirmDeleteToken"
-            message="Are you sure you want to delete this token?"
-            @close-modal="confirmDeleteToken = false"
-            @confirm-action="deleteToken"
+            v-if="showConfirmationModalDialog"
+            :item-type="actionItem"
+            :message="confirmationMessage"
+            @close-modal="showConfirmationModalDialog = false"
+            @confirm-action="executeAction"
         ></confirmation-modal>
     </section>
 </template>
@@ -268,7 +277,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import moment from 'moment';
 import Spinner from '@src/views/components/Spinner.vue';
 import { mapState } from 'vuex';
-import { getUser, getUserTokens } from '@api/users.js';
+import { deactivateUser, getUser, getUserTokens } from '@api/users.js';
 import { deleteToken } from '@api/users.js';
 import EditUser from '../UserManagement/EditUser.vue';
 import CreateTokenModal from '../UserManagement/CreateTokenModal.vue';
@@ -284,8 +293,9 @@ export default {
     data() {
         return {
             activeTab: 'builds',
+            actionItem: '',
             builds: [],
-            confirmDeleteToken: false,
+            confirmationMessage: '',
             createTokenModal: false,
             errorMessage: '',
             defaultFields: [],
@@ -358,6 +368,7 @@ export default {
             isLoading: false,
             loadingTokens: false,
             organizations: [],
+            showConfirmationModalDialog: false,
             tableHeaders: ['name', 'description', 'role', 'ID'],
             tabs: ['builds', 'organizations', 'tokens'],
             tokenName: '',
@@ -392,6 +403,11 @@ export default {
         },
     },
     methods: {
+        async deactivateUser(clearTokens) {
+            await deactivateUser(this.$route.params.id, {
+                clear_tokens: clearTokens === true ? 1 : 0,
+            });
+        },
         async deleteToken() {
             this.isLoading = true;
 
@@ -401,6 +417,15 @@ export default {
                 this.loading = false;
             } catch (error) {
                 this.setError(error);
+            }
+        },
+        executeAction() {
+            const actionItem = this.actionItem;
+
+            if (actionItem === 'token') {
+                this.deleteToken();
+            } else if (actionItem === 'user') {
+                this.deactivateUser();
             }
         },
         getFormattedDate(date) {
@@ -494,9 +519,19 @@ export default {
         setUser(data) {
             this.user = data.user;
         },
-        showConfirmationModal(tokenName) {
-            this.tokenName = tokenName;
-            this.confirmDeleteToken = true;
+        showConfirmationModal(type, tokenName) {
+            this.actionItem = type;
+
+            if (type === 'user') {
+                this.confirmationMessage =
+                    'Are you sure you want to deactivate this user?';
+            } else if (type === 'token') {
+                this.tokenName = tokenName;
+                this.confirmationMessage =
+                    'Are you sure you want to delete this token?';
+            }
+
+            this.showConfirmationModalDialog = true;
         },
     },
 };
