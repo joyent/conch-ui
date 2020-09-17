@@ -22,12 +22,16 @@
                         Update Phase
                     </button>
                 </div>
-                <div class="level-item" v-if="activeDeviceDetails.location">
+                <div class="level-item">
                     <button
                         class="button show-device-in-rack is-info"
                         @click="showDeviceInRack()"
+                        :disabled="!activeDeviceDetails.location"
                     >
-                        Show Device in Rack
+                        <span v-if="!activeDeviceDetails.location">
+                            Device Location Unknown
+                        </span>
+                        <span v-else>Show Device in Rack</span>
                     </button>
                 </div>
             </div>
