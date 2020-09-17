@@ -10,13 +10,30 @@
                     </i>
                 </header>
                 <section class="modal-card-body">
-                    <p>{{ message }}</p>
-                    <br />
-                    <article class="notification">
-                        <i class="material-icons">warning</i>
-                        <p>This action cannot be undone.</p>
-                    </article>
-                    <br />
+                    <p style="margin: 16px 0 20px;">{{ message }}</p>
+                    <div
+                        v-if="itemType === 'user'"
+                        class="field has-switch"
+                        style="margin-bottom: 20px; display: flex; justify-content: center;"
+                    >
+                        <p style="margin: 0 12px 10px 0;">
+                            Clear this user's tokens:
+                        </p>
+                        <label class="switch">
+                            <input
+                                type="checkbox"
+                                :checked="clearTokens"
+                                v-model="clearTokens"
+                                :true-value="true"
+                                :false-value="false"
+                            />
+                            <span class="slider round is-success"></span>
+                        </label>
+                        <p class="switch-text" style="margin: 0 12px 0;">
+                            <strong v-if="clearTokens">Yes</strong>
+                            <strong v-else>No</strong>
+                        </p>
+                    </div>
                     <div class="buttons-group">
                         <a class="button cancel" @click="closeModal()">
                             Cancel
@@ -42,16 +59,21 @@ export default {
             type: String,
             required: true,
         },
+        itemType: {
+            type: String,
+            required: true,
+        },
     },
     data() {
         return {
+            clearTokens: false,
             isActive: true,
             isLoading: false,
         };
     },
     methods: {
         closeModal() {
-            this.$emit('close-modal');
+            this.$emit('close-modal', { clearTokens: this.clearTokens });
             this.isActive = false;
         },
         confirmAction() {
