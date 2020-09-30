@@ -47,25 +47,6 @@
                 </th>
                 <th>
                     <a
-                        class="table-header-filter auth-issues"
-                        :class="{ 'has-text-white': sortFilter === 'issues' }"
-                        @click="sortBy('issues')"
-                    >
-                        Authentication Issues
-                        <i
-                            class="fas fa-angle-down"
-                            v-if="sortFilter === 'issues' && !reversedSort"
-                            style="margin-left: 10px;"
-                        ></i>
-                        <i
-                            class="fas fa-angle-up"
-                            v-else-if="sortFilter === 'issues' && reversedSort"
-                            style="margin-left: 10px;"
-                        ></i>
-                    </a>
-                </th>
-                <th>
-                    <a
                         class="table-header-filter last-active"
                         :class="{
                             'has-text-white': sortFilter === 'last_active',
@@ -93,7 +74,6 @@
                 <th></th>
                 <th>User Name</th>
                 <th>Role</th>
-                <th>Authentication Issues</th>
                 <th>Last Active</th>
                 <th>Actions</th>
             </tfoot>
@@ -102,6 +82,18 @@
                     class="row"
                     v-for="(user, index) in paginatedResults"
                     :key="user.id"
+                    @click="
+                        currentUser.id === user.id
+                            ? $router.push({
+                                  name: 'profile',
+                                  params: { id: user.id },
+                              })
+                            : $router.push({
+                                  name: 'user',
+                                  params: { id: user.id },
+                              })
+                    "
+                    style="cursor: pointer"
                 >
                     <td class="has-text-centered">
                         <span>{{ userIndex(user) }}</span>
@@ -110,32 +102,6 @@
                     <td>
                         <span v-if="user.is_admin">Admin</span>
                         <span v-else>User</span>
-                    </td>
-                    <td>
-                        <span
-                            v-if="
-                                user.force_password_change ||
-                                    user.refuse_session_auth
-                            "
-                        >
-                            <span
-                                class="tag pwd-change is-danger"
-                                v-if="user.force_password_change"
-                            >
-                                Password Change Required
-                            </span>
-                            <span
-                                class="tag sess-auth is-danger"
-                                v-if="user.refuse_session_auth"
-                            >
-                                Session Auth Refused
-                            </span>
-                        </span>
-                        <span v-else>
-                            <span class="tag none is-success">
-                                None
-                            </span>
-                        </span>
                     </td>
                     <td>
                         <span v-if="user.last_login">
@@ -149,7 +115,7 @@
                         <div
                             class="dropdown is-right"
                             :class="{ 'is-active': activeDropdown === index }"
-                            @click="setActiveDropdown(index)"
+                            @click.stop="setActiveDropdown(index)"
                         >
                             <div class="dropdown-trigger">
                                 <button
@@ -201,10 +167,16 @@
                                     </a>
                                     <hr class="dropdown-divider" />
                                     <a
-                                        class="dropdown-item workspaces"
-                                        @click="openModal('edit', user, 2)"
+                                        class="dropdown-item edit-builds"
+                                        @click="openModal('edit', user, 3)"
                                     >
-                                        Edit Workspaces
+                                        Edit Builds
+                                    </a>
+                                    <a
+                                        class="dropdown-item edit-organizations"
+                                        @click="openModal('edit', user, 4)"
+                                    >
+                                        Edit Organizations
                                     </a>
                                     <hr class="dropdown-divider" />
                                     <a
@@ -257,6 +229,7 @@
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
 import TablePagination from '@src/views/components/TablePagination.vue';
+import { mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
@@ -309,16 +282,6 @@ export default {
                         [user => user.is_admin],
                         ['desc']
                     );
-                } else if (field === 'issues') {
-                    this.sortedUsers = orderBy(
-                        users,
-                        [
-                            user =>
-                                user.force_password_change ||
-                                user.refuse_session_auth,
-                        ],
-                        ['desc']
-                    );
                 } else if (field === 'last_active') {
                     const inactiveUsers = users.filter(
                         user => user.last_login == null
@@ -369,6 +332,7 @@ export default {
         },
     },
     computed: {
+        ...mapState(['currentUser']),
         paginatedResults() {
             let resultSetStartIndex;
             let resultSetEndIndex;

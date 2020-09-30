@@ -23,10 +23,7 @@ describe('RackPanel.vue', () => {
 
     beforeEach(() => {
         actions = { setRackLayout: jest.fn() };
-        getters = {
-            activeRoomName: jest.fn(),
-            currentWorkspaceId: jest.fn(),
-        };
+        getters = { activeRoomName: jest.fn() };
         mocks = { $router: [] };
         propsData = { activeRacks };
         state = { rackLayout };
@@ -65,15 +62,7 @@ describe('RackPanel.vue', () => {
         expect(wrapperHtml).toContain(activeRacks[2].name);
     });
 
-    test('should update selectedProgress to the selected rack progress filtered', () => {
-        expect(wrapper.vm.selectedProgress).toEqual('all');
-
-        clickProgressFilter();
-
-        expect(wrapper.vm.selectedProgress).toEqual('failing');
-    });
-
-    test('should display only racks that match the selected rack progress filter', () => {
+    test('should display racks that match the selected rack progress filter', () => {
         const activeRacks = propsData.activeRacks;
 
         // Click the 'failing' filter
@@ -82,12 +71,9 @@ describe('RackPanel.vue', () => {
         wrapperHtml = wrapper.html();
 
         expect(wrapperHtml).toContain(activeRacks[1].name);
-        expect(wrapperHtml).not.toContain(activeRacks[0].name);
-        expect(wrapperHtml).not.toContain(activeRacks[2].name);
-        expect(wrapperHtml).not.toContain(activeRacks[3].name);
     });
 
-    test('should display only racks that match the selected rack role filter', () => {
+    test('should display racks that match the selected rack role filter', () => {
         const activeRacks = propsData.activeRacks;
         const rackRolesFilters = wrapper.findAll('.panel-tabs').at(1);
         const filter = rackRolesFilters.findAll('a').at(1);
@@ -98,9 +84,6 @@ describe('RackPanel.vue', () => {
         wrapperHtml = wrapper.html();
 
         expect(wrapperHtml).toContain(activeRacks[2].name);
-        expect(wrapperHtml).not.toContain(activeRacks[0].name);
-        expect(wrapperHtml).not.toContain(activeRacks[1].name);
-        expect(wrapperHtml).not.toContain(activeRacks[3].name);
     });
 
     test('should update panel with accurate search results when input is entered into search input field', () => {

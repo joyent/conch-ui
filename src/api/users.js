@@ -1,4 +1,4 @@
-import { clearToken, request, requestWithToken } from './request.js';
+import { clearToken, requestWithToken } from './request.js';
 
 export const createToken = name => {
     return requestWithToken({
@@ -8,6 +8,7 @@ export const createToken = name => {
     });
 };
 
+// system admin endpoint
 export const createUser = user => {
     return requestWithToken({
         method: 'POST',
@@ -86,7 +87,7 @@ export const forcePasswordChange = userId => {
 };
 
 export const getCurrentUser = () => {
-    return request({
+    return requestWithToken({
         method: 'GET',
         url: '/user/me',
     });
@@ -107,7 +108,7 @@ export const getTokens = () => {
 };
 
 export const getUser = userId => {
-    return request({
+    return requestWithToken({
         method: 'GET',
         url: `/user/${userId}`,
     });
@@ -120,6 +121,7 @@ export const getUserTokens = userId => {
     });
 };
 
+// system admin endpoint
 export const getUsers = () => {
     return requestWithToken({
         method: 'GET',
@@ -144,6 +146,21 @@ export const updatePassword = (password, params) => {
     }).then(clearToken());
 };
 
+export const updateUser = (email, isAdmin, name) => {
+    return requestWithToken({
+        method: 'POST',
+        url: '/user/me',
+        data: {
+            email,
+            is_admin: isAdmin,
+            name,
+        },
+        params: {
+            send_mail: 1,
+        },
+    });
+};
+
 export default {
     createToken,
     createUser,
@@ -161,4 +178,5 @@ export default {
     getUsers,
     promoteUser,
     updatePassword,
+    updateUser,
 };

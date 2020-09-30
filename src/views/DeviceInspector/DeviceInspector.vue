@@ -4,7 +4,7 @@
             <Spinner />
         </section>
         <div class="tabs-container" v-else>
-            <div class="tabs is-centered is-boxed is-small">
+            <div class="tabs is-toggle is-centered">
                 <ul>
                     <li
                         v-for="(tab, index) in tabs"
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import DeviceLinksTab from './DeviceLinksTab.vue';
 import NetworkingTab from './NetworkingTab.vue';
 import OverviewTab from './OverviewTab.vue';
 import ReportTab from './ReportTab.vue';
@@ -36,12 +37,12 @@ import {
     getDeviceDetails,
     getDeviceSettings,
     getDeviceValidations,
-} from '@api/device.js';
+} from '@api/devices.js';
 import { getValidations } from '@api/validations.js';
-import { getRackById } from '@api/workspaces';
 
 export default {
     components: {
+        DeviceLinksTab,
         NetworkingTab,
         OverviewTab,
         ReportTab,
@@ -78,6 +79,10 @@ export default {
                     component: 'ReportTab',
                     title: 'Latest Report',
                 },
+                {
+                    component: 'DeviceLinksTab',
+                    title: 'Links',
+                },
             ],
         };
     },
@@ -101,18 +106,10 @@ export default {
                 this.setActiveDeviceDetails(deviceDetails);
 
                 if (deviceDetails.location) {
-                    const { datacenter_room, rack } = deviceDetails.location;
+                    const { datacenter_room } = deviceDetails.location;
 
                     if (datacenter_room && datacenter_room.az) {
                         this.setActiveRoomName(datacenter_room.az);
-                    }
-
-                    if (rack && rack.id) {
-                        getRackById(this.currentWorkspaceId, rack.id).then(
-                            response => {
-                                this.setRackLayout(response);
-                            }
-                        );
                     }
                 }
             });
@@ -132,18 +129,8 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'activeDeviceId',
-            'currentWorkspaceId',
-            'getRoomByName',
-        ]),
-        ...mapState([
-            'activeDevice',
-            'activeRoom',
-            'rackLayout',
-            'showDeviceInRack',
-            'validations',
-        ]),
+        ...mapGetters(['activeDeviceId']),
+        ...mapState(['activeDevice', 'showDeviceInRack', 'validations']),
         hasActiveDevice() {
             return !isEmpty(this.activeDevice);
         },

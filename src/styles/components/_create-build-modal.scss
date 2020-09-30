@@ -1,0 +1,451 @@
+.create-build-modal {
+    .modal-heading {
+        display: flex;
+        align-items: center;
+
+        .modal-title {
+            flex-grow: 1;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    }
+
+    .modal-content {
+        border-radius: 4px;
+        max-width: 590px;
+        min-height: 482px;
+        min-width: 590px;
+
+        .message,
+        .message-header {
+            border-radius: 2px;
+        }
+
+        .start-date {
+            input {
+                background-color: $dark;
+                border: 1px solid transparent;
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+                color: #bdcbdb;
+                font-size: 1rem;
+                height: 42px;
+                margin-bottom: 0;
+
+                &::placeholder {
+                    color: $grey;
+                }
+
+                &:focus {
+                    border: 1px solid $blue;
+                    box-shadow: none;
+                }
+            }
+
+            .button.clear {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+                height: 42px;
+                font-weight: bold;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+    }
+
+    .build-details {
+        max-height: 500px;
+        padding: 20px;
+        overflow: hidden;
+    }
+
+    .modal-content,
+    .notification {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-body,
+    .modal-heading {
+        margin-bottom: 20px;
+    }
+
+    .modal-body {
+        flex-grow: 1;
+        max-height: 324px;
+        overflow: scroll;
+    }
+
+    .notification {
+        background-color: lighten($grey-darker, 2%);
+        padding: 20px;
+    }
+
+    i.close {
+        cursor: pointer;
+        font-size: 28px;
+        margin-left: 10px;
+    }
+
+    .modal-footer {
+        height: 42px;
+
+        .button.create-build {
+            border-radius: 3px;
+            font-weight: bold;
+            height: 42px;
+        }
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+
+        .button {
+            border-radius: 3px;
+            font-weight: bold;
+            height: 42px;
+            padding-left: 20px;
+            padding-right: 20px;
+
+            &.next i {
+                margin-left: 5px;
+            }
+
+            &.previous i {
+                margin-right: 5px;
+            }
+        }
+
+        &.first-step {
+            justify-content: flex-end;
+        }
+    }
+
+    input.device-serial-number,
+    input.name,
+    input.rack-name,
+    textarea {
+        background-color: $grey-darker;
+        border-color: $grey;
+        border-radius: 4px;
+        color: #bdcbdb;
+
+        &::placeholder {
+            color: $grey-light;
+        }
+    }
+
+    input {
+        height: 42px;
+        padding-bottom: 6px;
+    }
+
+    textarea {
+        &:hover {
+            border-color: $grey;
+        }
+    }
+
+    input, textarea {
+        &:focus {
+            border: 1px solid $blue;
+            box-shadow: none;
+        }
+
+        &.is-danger {
+            border: 1px solid $red;
+            box-shadow: none;
+        }
+    }
+
+    .select {
+        height: 42px;
+
+        select {
+            background-color: $grey-darker;
+            border-color: $grey;
+            border-radius: 4px;
+            color: #bdcbdb;
+            height: 42px;
+        }
+    }
+
+    .step-body {
+        input {
+           + span.icon {
+                height: 100%;
+            }
+        }
+
+        .rack-data {
+            display: flex;
+
+            .rack-name-input {
+                flex-grow: 1;
+                margin-right: 15px;
+            }
+
+            .datacenter-room-input {
+                .select &::after {
+                    top: 60%;
+                }
+            }
+        }
+
+        p.search {
+            position: sticky;
+            top: 0;
+
+            input {
+                background-color: darken($grey-darker, 2%);
+                border: none;
+                border-top-right-radius: 4px;
+                border-top-left-radius: 4px;
+                box-shadow: none;
+                color: #bdcbdb;
+                height: 48px;
+                font-size: 1rem;
+
+                &::placeholder {
+                    color: $grey-light;
+                }
+
+                &:active,
+                &:focus {
+                    box-shadow: none;
+                    background-color: darken($grey-darker, 3%);
+                }
+            }
+
+            span.icon {
+                top: 6px;
+
+                i.material-icons {
+                    font-size: 24px;
+                }
+            }
+        }
+
+        .table-title td {
+            border: none;
+            padding: 6px;
+        }
+
+        .user {
+            display: flex;
+            align-items: stretch;
+
+            td {
+                display: flex;
+                align-items: center;
+                flex-grow: 1;
+                background-color: $grey-darker;
+                border: none;
+
+                .username {
+                    flex-grow: 1;
+                }
+
+                &:hover {
+                    background-color: darken($grey, 1%);
+                }
+            }
+
+            .add-user,
+            .remove-user {
+                cursor: pointer;
+                font-size: 28px;
+                transition: color 0.1s ease-in-out;
+            }
+
+            .add-user {
+                &:hover {
+                    color: lighten($green, 3%);
+                    transition: color 0.1s ease-in-out;
+                }
+            }
+
+            .remove-user {
+                &:hover {
+                    color: $red;
+                    transition: color 0.1s ease-in-out;
+                }
+            }
+        }
+
+        &.review {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .review-item {
+            &:not(:last-of-type) {
+                margin-bottom: 10px;
+            }
+
+            .review-item-title {
+                background-color: $grey-dark;
+                cursor: pointer;
+                display: flex;
+                transition: transform 0.3s ease-in-out;
+
+                .item-title {
+                    color: $white;
+                    flex-grow: 1;
+                    font-weight: bold;
+                }
+
+                i.material-icons {
+                    &.chevron {
+                        transition: transform 0.2s ease-in-out;
+                    }
+
+                    &.builds,
+                    &.details,
+                    &.devices,
+                    &.members,
+                    &.racks {
+                        margin-right: 8px;
+                    }
+                }
+
+                &.is-expanded {
+                    i.material-icons.chevron {
+                        transform: rotate(90deg);
+                        transition: transform 0.2s ease-in-out;
+                    }
+                }
+            }
+
+            .review-item-title,
+            .item-content-row {
+                padding: 15px;
+
+                &.empty-review,
+                &.empty-selection {
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                &.empty-selection {
+                    height: 118px;
+                }
+            }
+
+            .review-item-content {
+                background-color: $grey-darker;
+
+                .row {
+                    &:hover {
+                        background-color: darken($grey-darker, 2%);
+                    }
+                }
+            }
+
+            &.devices,
+            &.members,
+            &.organizations,
+            &.racks {
+                margin-top: 20px;
+
+                &.review-item-title {
+                    cursor: default;
+                }
+
+                .item-content-row {
+                    display: flex;
+
+                    .rack-name {
+                        flex-grow: 1;
+                    }
+                }
+            }
+        }
+
+        .button.validate-rack,
+        .button.validate-device {
+            display: flex;
+            font-weight: bold;
+            height: 42px;
+            margin-top: 15px;
+        }
+    }
+
+    .item-table {
+        table {
+            background-color: $grey-darker;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .row {
+            &.item {
+                align-items: stretch;
+                display: flex;
+
+                td {
+                    background-color: $grey-darker;
+                    border: none;
+                    display: flex;
+                    min-height: 66px;
+                    align-items: center;
+
+                    &.item-name {
+                        flex-grow: 1;
+                        overflow: hidden;
+
+                        span {
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+
+                    &.action {
+                        justify-content: center;
+                        width: 52px;
+
+                        i.material-icons {
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                &.no-results {
+                    border-top: 1px solid $grey;
+
+                    td {
+                        background-color: darken($grey-darker, 3%);
+                        justify-content: center;
+                        width: 100%;
+                    }
+                }
+
+                &.is-selected {
+                    border-width: 0 0 0 6px;
+                    border-color: $green;
+                    border-style: solid;
+
+                    td {
+                        background-color: darken($grey-darker, 1%);
+                    }
+                }
+
+                &:hover {
+                    td {
+                        background-color: darken($grey-darker, 3%);
+                    }
+                }
+            }
+        }
+    }
+}

@@ -66,78 +66,96 @@
                                             Sign in to get started
                                         </p>
                                     </div>
-                                    <div class="sign-in-input">
-                                        <div class="field">
-                                            <label class="label has-text-left">
-                                                Email Address
-                                            </label>
-                                            <div class="control has-icons-left">
-                                                <input
-                                                    type="text"
-                                                    class="input"
-                                                    :class="{
-                                                        'has-error': badEmailAddress,
-                                                    }"
-                                                    placeholder="Email Address"
-                                                    v-model="emailAddress"
-                                                    @keyup.enter="signIn()"
-                                                />
-                                                <span class="icon is-left">
-                                                    <i
-                                                        class="material-icons has-text-danger"
-                                                        v-if="badEmailAddress"
-                                                    >
-                                                        error
-                                                    </i>
-                                                    <i
-                                                        class="material-icons has-text-grey"
-                                                        v-else
-                                                    >
-                                                        email
-                                                    </i>
-                                                </span>
+                                    <form>
+                                        <div class="sign-in-input">
+                                            <div class="field">
+                                                <label
+                                                    class="label has-text-left"
+                                                >
+                                                    Email Address
+                                                </label>
+                                                <div
+                                                    class="control has-icons-left"
+                                                >
+                                                    <input
+                                                        type="text"
+                                                        class="input"
+                                                        :class="{
+                                                            'has-error': badEmailAddress,
+                                                        }"
+                                                        placeholder="Email Address"
+                                                        v-model="emailAddress"
+                                                        @keyup.enter="signIn()"
+                                                        autocomplete="email"
+                                                    />
+                                                    <span class="icon is-left">
+                                                        <i
+                                                            class="material-icons has-text-danger"
+                                                            v-if="
+                                                                badEmailAddress
+                                                            "
+                                                        >
+                                                            error
+                                                        </i>
+                                                        <i
+                                                            class="material-icons has-text-grey"
+                                                            v-else
+                                                        >
+                                                            email
+                                                        </i>
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="field">
-                                            <label class="label has-text-left">
-                                                Password
-                                            </label>
-                                            <div class="control has-icons-left">
-                                                <input
-                                                    type="password"
-                                                    class="input"
-                                                    :class="{
-                                                        'has-error': badPassword,
-                                                    }"
-                                                    placeholder="Password"
-                                                    v-model="password"
-                                                    @keyup.enter="signIn()"
-                                                />
-                                                <span class="icon is-left">
-                                                    <i
-                                                        class="material-icons has-text-danger"
-                                                        v-if="badPassword"
-                                                    >
-                                                        error
-                                                    </i>
-                                                    <i
-                                                        class="material-icons has-text-grey"
-                                                        v-else
-                                                    >
-                                                        lock
-                                                    </i>
-                                                </span>
+                                            <div class="field">
+                                                <label
+                                                    class="label has-text-left"
+                                                >
+                                                    Password
+                                                </label>
+                                                <div
+                                                    class="control has-icons-left"
+                                                >
+                                                    <input
+                                                        type="password"
+                                                        class="input"
+                                                        :class="{
+                                                            'has-error': badPassword,
+                                                        }"
+                                                        placeholder="Password"
+                                                        v-model="password"
+                                                        @keyup.enter="signIn()"
+                                                        autocomplete="password"
+                                                    />
+                                                    <span class="icon is-left">
+                                                        <i
+                                                            class="material-icons has-text-danger"
+                                                            v-if="badPassword"
+                                                        >
+                                                            error
+                                                        </i>
+                                                        <i
+                                                            class="material-icons has-text-grey"
+                                                            v-else
+                                                        >
+                                                            lock
+                                                        </i>
+                                                    </span>
+                                                </div>
                                             </div>
+                                            <a
+                                                class="button button-sign-in is-info is-fullwidth"
+                                                :class="{
+                                                    'is-loading': isLoading,
+                                                }"
+                                                @click="signIn()"
+                                                :disabled="
+                                                    incompatibleApiVersion
+                                                "
+                                            >
+                                                Sign In
+                                            </a>
                                         </div>
-                                        <a
-                                            class="button button-sign-in is-info is-fullwidth"
-                                            :class="{ 'is-loading': isLoading }"
-                                            @click="signIn()"
-                                            :disabled="incompatibleApiVersion"
-                                        >
-                                            Sign In
-                                        </a>
-                                    </div>
+                                    </form>
                                 </div>
                                 <div class="column">
                                     <div class="sign-in-image">
@@ -156,17 +174,18 @@
 </template>
 
 <script>
-import isEmpty from 'lodash/isEmpty';
 import semver from 'semver';
+import { getApiVersion } from '@api/conchApiVersion.js';
+import { mapActions, mapState } from 'vuex';
+import { login } from '@api/authentication.js';
+import { setGlobalWorkspaceId } from '@src/views/shared/utils.js';
+import { getCurrentUser } from '@api/users.js';
+
 import {
     breakingApiVersion,
     conchReleaseUrl,
     minimumApiVersion,
 } from '@src/config.js';
-import { getApiVersion } from '@api/conchApiVersion.js';
-import { mapActions, mapGetters, mapState } from 'vuex';
-import { login } from '@api/authentication.js';
-import { loadAllWorkspaces } from '@api/workspaces.js';
 
 export default {
     data() {
@@ -176,7 +195,6 @@ export default {
             badPassword: false,
             breakingApiVersion: '',
             conchReleaseUrl: '',
-            currentWorkspaceId: '',
             emailAddress: '',
             incompatibleApiVersion: false,
             isLoading: false,
@@ -187,33 +205,13 @@ export default {
         };
     },
     methods: {
-        ...mapActions([
-            'setCurrentWorkspace',
-            'setForcePasswordChange',
-            'setWorkspaces',
-        ]),
-        initWorkspaceData() {
-            return loadAllWorkspaces().then(response => {
-                const workspaces = response.data;
-
-                this.setWorkspaces(workspaces);
-                this.setCurrentWorkspace(this.loadCurrentWorkspace());
-
-                this.currentWorkspaceId = this.$store.getters.currentWorkspaceId;
-                localStorage.setItem(
-                    'currentWorkspace',
-                    this.currentWorkspaceId
-                );
-
-                return Promise.resolve();
-            });
-        },
-        signIn() {
+        ...mapActions(['setCurrentUser', 'setForcePasswordChange']),
+        async signIn() {
             if (this.emailAddress && this.password) {
                 this.isLoading = true;
 
                 login(this.emailAddress, this.password)
-                    .then(response => {
+                    .then(async response => {
                         if (
                             response.headers &&
                             response.headers.location &&
@@ -222,27 +220,23 @@ export default {
                             this.setForcePasswordChange();
                             this.$router.push({ name: 'passwordReset' });
                         } else {
-                            if (isEmpty(this.workspaces)) {
-                                this.initWorkspaceData().then(() => {
-                                    this.$router.push({
-                                        name: 'status',
-                                        params: {
-                                            currentWorkspace: this
-                                                .currentWorkspaceId,
-                                        },
-                                    });
+                            await getCurrentUser().then(response => {
+                                this.setCurrentUser(response.data);
+                            });
+
+                            if (!this.globalWorkspaceId) {
+                                setGlobalWorkspaceId();
+                            }
+
+                            if (
+                                this.$route.query &&
+                                this.$route.query.redirect
+                            ) {
+                                this.$router.push({
+                                    path: this.$route.query.redirect,
                                 });
                             } else {
-                                this.setCurrentWorkspace(
-                                    this.loadCurrentWorkspace()
-                                );
-                                this.$router.push({
-                                    name: 'status',
-                                    params: {
-                                        currentWorkspace: this.$store.getters
-                                            .currentWorkspaceId,
-                                    },
-                                });
+                                this.$router.push({ name: 'dashboard' });
                             }
                         }
                     })
@@ -263,8 +257,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(['loadCurrentWorkspace']),
-        ...mapState(['invalidCredentials', 'workspaces']),
+        ...mapState(['invalidCredentials']),
     },
     created() {
         this.breakingApiVersion = breakingApiVersion;

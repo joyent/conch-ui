@@ -15,10 +15,10 @@
                     class="subtitle has-text-centered"
                     style="margin-bottom: 10px;"
                 >
-                    <span class="device-id" v-if="item === 'device'">
+                    <span class="device-serial-number" v-if="item === 'device'">
                         Device:
                         <strong class="has-text-white">{{
-                            itemData.id
+                            itemData.serial_number
                         }}</strong>
                     </span>
                     <span class="rack-name" v-else-if="item === 'rack'">
@@ -127,7 +127,7 @@
                     <span>
                         The phase for
                         <strong class="has-text-white" v-if="item === 'device'">
-                            {{ itemData.id }}
+                            {{ itemData.serial_number }}
                         </strong>
                         <strong
                             class="has-text-white"
@@ -159,9 +159,9 @@
 <script>
 import BaseModal from '@src/views/components/BaseModal.vue';
 import { EventBus } from '@src/eventBus.js';
-import { setDevicePhase } from '@api/device.js';
-import { setRackPhase } from '@api/rack.js';
-import { getRackById } from '@api/workspaces.js';
+import { setDevicePhase } from '@api/devices.js';
+import { setRackPhase } from '@api/racks.js';
+import { getRack } from '@api/racks.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
@@ -217,11 +217,8 @@ export default {
                 const params = { rack_only: this.updateRackDevices ? 0 : 1 };
 
                 setRackPhase(id, data, params).then(() => {
-                    getRackById(
-                        this.currentWorkspace.id,
-                        this.rackLayout.id
-                    ).then(response => {
-                        this.setRackLayout(response);
+                    getRack(this.rackLayout.id).then(response => {
+                        this.setRackLayout(response.data);
                         this.isLoading = false;
                         this.updatingPhase = false;
                         this.updateSuccess = true;
@@ -231,7 +228,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentWorkspace', 'rackLayout']),
+        ...mapState(['rackLayout']),
         samePhase() {
             return this.itemData.phase === this.selectedPhase;
         },

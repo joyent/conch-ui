@@ -83,8 +83,8 @@ describe('request API', () => {
             };
         });
 
-        test('should return a promise rejection when token is not set in session storage', () => {
-            expect(requestWithToken(args)).rejects.toEqual(false);
+        test('should return a promise rejection when token is not set in session storage', async () => {
+            await expect(requestWithToken(args)).rejects.toEqual(false);
         });
 
         test('should call the request method with the Authorization header set in args', async () => {

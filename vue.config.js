@@ -27,6 +27,11 @@ module.exports = {
             // responses without dynamically compressing files, saving time and CPU
             // Keeps original un-compressed files in output
             config.plugins.push(new CompressionPlugin());
+
+            Object.assign(config.output, {
+                chunkFilename: 'js/[name]-chunk.[contenthash:6].js',
+                filename: 'js/[name].[contenthash:6].js',
+            });
         } else {
             config.optimization = {
                 // use actual path names in debugging in browser
@@ -72,13 +77,24 @@ module.exports = {
         hot: true,
         open: true,
         overlay: {
-            errors: true,
+            errors: false,
+            warnings: false,
         },
         proxy: {
             '/': {
                 target: 'http://localhost:5001',
                 ws: false,
             },
+        },
+    },
+    filenameHashing: false,
+    pages: {
+        index: {
+            entry: 'src/main.js',
+            template: 'src/index.html',
+            filename: 'index.html',
+            title: 'Conch',
+            chunks: ['chunk-vendors', 'chunk-common', 'index'],
         },
     },
 };

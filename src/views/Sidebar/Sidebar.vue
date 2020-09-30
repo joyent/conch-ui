@@ -1,110 +1,116 @@
 <template>
-    <aside
-        class="menu"
-        :class="{ loading: !this.workspaceId || isEmpty(this.currentUser) }"
-    >
-        <Spinner v-if="!this.workspaceId || isEmpty(this.currentUser)" />
-        <div class="sidebar" v-else>
+    <aside class="menu" :class="{ loading: isEmpty(this.currentUser) }">
+        <Spinner v-if="isEmpty(this.currentUser)" />
+        <div
+            v-else
+            class="sidebar"
+            style="display: flex; flex-direction: column; height: 100%"
+        >
             <div class="brand">
                 <img
                     class="brand-icon"
                     src="../../assets/brand.png"
                     width="150px"
-                    @click="navigateHomepage()"
+                    @click="navigateDashboard()"
                 />
             </div>
-            <p class="menu-label">Datacenter Builds</p>
-            <ul class="menu-list">
+            <ul
+                class="menu-list"
+                style="display: flex; flex-direction: column; flex-grow: 1"
+            >
                 <li class="nav-item">
                     <router-link
                         :to="{
-                            name: 'status',
-                            params: { currentWorkspace: this.workspaceId },
+                            name: 'dashboard',
                         }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-satellite-dish"></i>
-                        <span>Status</span>
+                        <i class="material-icons">dashboard</i>
+                        <span>Dashboard</span>
                     </router-link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
-                        :to="{
-                            name: 'datacenter',
-                            params: { currentWorkspace: this.workspaceId },
-                        }"
+                        :to="{ name: 'datacenter' }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-search"></i>
+                        <i class="material-icons">search</i>
                         <span>Browse</span>
                     </router-link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
-                        :to="{
-                            name: 'devices',
-                            params: { currentWorkspace: this.workspaceId },
-                        }"
+                        :to="{ name: 'devices' }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-server"></i>
+                        <i class="material-icons">dns</i>
                         <span>Devices</span>
                     </router-link>
                 </li>
-            </ul>
-            <p v-if="currentUser.is_admin" class="menu-label">Conch Admin</p>
-            <ul class="menu-list" v-if="currentUser.is_admin">
                 <li class="nav-item">
+                    <router-link
+                        :to="{ name: 'builds' }"
+                        active-class="is-active"
+                    >
+                        <i class="material-icons">layers</i>
+                        <span>Builds</span>
+                    </router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link
+                        :to="{ name: 'organizations' }"
+                        active-class="is-active"
+                    >
+                        <i class="material-icons">recent_actors</i>
+                        <span>Organizations</span>
+                    </router-link> </li
+                ><li class="nav-item">
+                    <router-link
+                        :to="{ name: 'hardware-products' }"
+                        active-class="is-active"
+                    >
+                        <i class="material-icons">memory</i>
+                        <span>Hardware</span>
+                    </router-link>
+                </li>
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
                         :to="{ name: 'tokens' }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-key"></i>
+                        <i class="material-icons">vpn_key</i>
                         <span>Tokens</span>
                     </router-link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
                         :to="{ name: 'user-management' }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-users"></i>
+                        <i class="material-icons">group</i>
                         <span>Users</span>
                     </router-link>
                 </li>
-            </ul>
-            <p class="menu-label">Conch</p>
-            <ul class="menu-list">
                 <li class="nav-item">
                     <router-link
-                        :to="{ name: 'user' }"
+                        :to="{
+                            name: 'profile',
+                            params: { id: currentUser.id },
+                        }"
                         active-class="is-active"
                     >
-                        <i class="fas fa-lg fa-user"></i>
+                        <i class="material-icons">account_circle</i>
                         <span>Profile</span>
                     </router-link>
                 </li>
+                <div style="flex-grow: 1"></div>
                 <li class="nav-item">
                     <a class="sign-out" @click="signOut()">
-                        <i class="fas fa-lg fa-sign-out-alt"></i>
-                        <span>Log Out</span>
+                        <i class="material-icons">exit_to_app</i>
+                        <span>Sign Out</span>
                     </a>
                 </li>
             </ul>
-            <!-- <br />
-            <div class="box conch-versions">
-                <p class="heading">Conch Versions</p>
-                <div class="tags-container">
-                    <div class="tags has-addons">
-                        <div class="tag is-primary">API</div>
-                        <div class="tag is-dark">{{ conchVersion }}</div>
-                    </div>
-                    <div class="tags has-addons">
-                        <div class="tag is-primary">UI</div>
-                        <div class="tag is-dark">{{ conchUIVersion }}</div>
-                    </div>
-                </div>
-            </div> -->
         </div>
     </aside>
 </template>
@@ -112,72 +118,48 @@
 <script>
 import isEmpty from 'lodash/isEmpty';
 import Spinner from '@src/views/components/Spinner.vue';
-import { getApiVersion } from '@api/conchApiVersion.js';
+import { EventBus } from '@src/eventBus.js';
 import { logout } from '@api/authentication.js';
-import { getCurrentUser } from '@api/users.js';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import * as Users from '@api/users.js';
+import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
         Spinner,
     },
-    data() {
-        return {
-            conchVersion: '',
-            conchUIVersion: '',
-        };
-    },
     methods: {
-        ...mapActions(['setCurrentUser']),
-        isEmpty,
-        navigateHomepage() {
-            this.$router.push({
-                name: 'status',
-                params: { currentWorkspace: this.currentWorkspaceId },
+        ...mapActions(['resetState', 'setCurrentUser']),
+        getCurrentUser() {
+            Users.getCurrentUser().then(response => {
+                this.setCurrentUser(response.data);
             });
         },
+        isEmpty,
+        navigateDashboard() {
+            this.$router.push({ name: 'dashboard' });
+        },
         signOut() {
+            this.resetState();
             logout().then(() => {
                 this.$router.push({ name: 'signIn' });
             });
         },
     },
     computed: {
-        ...mapGetters(['currentWorkspaceId']),
-        ...mapState(['currentUser', 'currentWorkspace']),
-        workspaceId() {
-            let workspaceId = this.currentWorkspaceId;
-
-            if (!workspaceId && !isEmpty(this.currentWorkspace)) {
-                workspaceId = this.currentWorkspace.id;
-            }
-
-            if (!workspaceId) {
-                if (
-                    this.$route &&
-                    this.$route.params &&
-                    this.$route.params.currentWorkspace
-                ) {
-                    workspaceId = this.$route.params.currentWorkspace;
-                }
-            }
-
-            return workspaceId;
-        },
+        ...mapState(['currentUser']),
     },
     created() {
-        /* eslint-disable */
-        this.conchUIVersion = CONCH.GLOBALS.conchUIVersion;
-
-        getApiVersion().then(response => {
-            this.conchVersion = response.data.version;
-        });
-
         if (isEmpty(this.currentUser)) {
-            getCurrentUser().then(response => {
-                this.setCurrentUser(response.data);
-            });
+            this.getCurrentUser();
         }
+    },
+    mounted() {
+        EventBus.$on(
+            ['build-created', 'organization-created', 'organization-deleted'],
+            () => {
+                this.getCurrentUser();
+            }
+        );
     },
 };
 </script>

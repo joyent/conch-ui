@@ -1,0 +1,68 @@
+.remove-item-modal {
+    .modal-card {
+        border-bottom-right-radius: 4px;
+        border-bottom-left-radius: 4px;
+        width: 500px;
+    }
+    .modal-card-head {
+        display: flex;
+        background-color: $red;
+        align-items: center;
+        border-bottom: none;
+        padding: 12px;
+
+        .modal-card-title {
+            color: white;
+            font-weight: bold;
+        }
+
+        &.is-success {
+            background-color: $green;
+        }
+    }
+
+    .modal-card-body {
+        text-align: center;
+
+        .notification {
+            align-items: center;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0;
+            padding: 12px;
+            opacity: 0.5;
+            background-color: darken($dark, 5%);
+
+            i {
+                flex-shrink: 1;
+            }
+
+            p {
+                flex-grow: 1;
+            }
+        }
+    }
+
+    i.material-icons {
+        &.close {
+            cursor: pointer;
+            color: $white;
+            font-size: 24px;
+        }
+    }
+
+    .buttons-group {
+        display: flex;
+        justify-content: center;
+    }
+
+    a.button {
+        font-weight: bold;
+        height: 42px;
+        width: 125px;
+        padding-right: 24px;
+        padding-left: 24px;
+        margin: 0 6px;
+    }
+}

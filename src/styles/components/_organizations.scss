@@ -1,0 +1,407 @@
+.organization {
+    .spinner-column {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .organization-name {
+        margin-bottom: 0.5rem;
+    }
+
+    .tag {
+        border-radius: 4px;
+    }
+
+    .table-header {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    .datatable-header {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .datatable-header {
+        display: flex;
+        background-color: #4a5dbd;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        position: sticky;
+        top: 0;
+        width: 100%;
+    }
+
+    .datatable-header-title {
+        align-items: center;
+        color: #bdcbdb;
+        display: flex;
+        flex-grow: 1;
+        font-weight: 700;
+        padding: 0.75rem;
+    }
+
+    .datatable-header-icon {
+        color: $white;
+        padding: 15px 12px;
+        display: flex;
+        align-content: center;
+
+        &:hover {
+            color: $grey-lighter;
+        }
+    }
+
+    .datatable-header-icon {
+        cursor: pointer;
+    }
+
+    .datatable-footer {
+        background-color: $grey;
+        border-top: 1px solid #4e5d6c;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        align-items: stretch;
+        display: flex;
+        font-weight: bold;
+        transition: all 0.2s ease-in-out;
+        position: sticky;
+        bottom: 0;
+
+        a {
+            color: $white;
+        }
+
+        .datatable-footer-item {
+            align-items: center;
+            display: flex;
+            flex-basis: 0;
+            flex-grow: 1;
+            flex-shrink: 0;
+            justify-content: center;
+            padding: 0.75rem;
+
+            i {
+                margin: 0 5px;
+            }
+
+            &.save {
+                i {
+                    margin: 0 10px;
+                }
+            }
+        }
+
+        &:hover {
+            background-color: $green;
+            border-top: 1px solid transparent;
+            transition: all 0.2s ease-in-out;
+        }
+    }
+
+    .datatable-simple {
+        transition: all 0.2s ease-in-out;
+        max-height: 600px;
+        overflow: auto;
+
+        th {
+            background-color: $grey-dark;
+        }
+
+        table.table {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .row-simple {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .row,
+        .row-simple {
+            background-color: darken($grey-darker, 4%);
+            height: 66px;
+
+            td {
+                border: none;
+            }
+        }
+
+        .table-data {
+            align-items: center;
+            color: #bdcbdb;
+            display: flex;
+            flex-grow: 1;
+            font-weight: 700;
+            padding: 0.75rem;
+        }
+
+        .row-action-button {
+            cursor: pointer;
+        }
+
+        .row-action-button,
+        .table-data {
+            border: none;
+        }
+
+        .row-action-button {
+            .button-delete {
+                display: flex;
+                justify-content: center;
+
+                &:hover {
+                    color: $red;
+                }
+            }
+        }
+
+        select {
+            background-color: $grey-darker;
+            border-radius: 4px;
+            border-color: $grey;
+            color: #bdcbdb;
+        }
+    }
+
+    .dropdown-menu {
+        padding-top: 0;
+    }
+
+    .dropdown-content {
+        background-color: lighten($grey-dark, 4%);
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+
+        i {
+            margin-right: 10px;
+            min-width: 24px;
+
+            &.fa-trash-alt {
+                text-align: center;
+            }
+        }
+
+        &.add {
+            &:hover {
+                color: $green;
+            }
+        }
+
+        &.edit {
+            &:hover {
+                color: #209eee;
+            }
+        }
+
+        &.remove {
+            &:hover {
+                color: $red;
+            }
+        }
+    }
+}
+
+.organizations {
+    .page-heading {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+
+        h1 {
+            margin: 0;
+            word-break: normal;
+        }
+
+        .views {
+            display: flex;
+            align-items: center;
+
+            i {
+                cursor: pointer;
+                font-size: 36px;
+
+                &:not(:last-of-type) {
+                    margin-right: 10px;
+                }
+            }
+
+            .button {
+                border: 1px solid $grey;
+                color: $grey-lighter;
+                display: flex;
+                height: 42px;
+                text-decoration: none;
+                width: 150px;
+
+                span {
+                    flex-grow: 1;
+                }
+
+                &:hover {
+                    background-color: $blue;
+                    border-color: $blue;
+                    color: $white;
+                }
+            }
+        }
+
+        .create-organization {
+            font-weight: bold;
+            height: 42px;
+            padding: 5px 20px;
+            margin: 0 20px;
+        }
+    }
+
+    input {
+        background-color: $dark;
+        border-color: $grey;
+        border-radius: 4px;
+        color: #bdcbdb;
+        height: 42px;
+        margin-bottom: 0;
+        min-width: 350px;
+
+        &::placeholder {
+            color: #bdcbdb;
+        }
+    }
+
+    .create-new {
+        height: 42px;
+    }
+
+    .control {
+        .icon {
+            left: 2px;
+            top: 3px;
+        }
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-gap: 25px;
+
+        @media (min-width: 1500px) {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        }
+
+        .card {
+            background-color: $grey-dark;
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0px 9px 45px -19px rgba(0, 0, 0, 1);
+            max-height: 225px;
+            min-width: 276px;
+            max-width: 276px;
+            transition: all 0.1s ease-in-out;
+
+            .card-content {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                padding: 20px;
+
+                i.material-icons {
+                    margin: 0 auto 10px;
+                    font-size: 60px;
+
+                    &.close {
+                        cursor: pointer;
+                        position: absolute;
+                        right: 10px;
+                        top: 10px;
+                        font-size: 24px;
+                    }
+                }
+
+                .organization-name {
+                    text-align: center;
+                    font-weight: bold;
+                    color: darken($grey-lighter, 4%);
+                    font-size: 20px;
+                    margin-bottom: 10px;
+                    flex-grow: 1;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .organization-desc {
+                    margin: 0 auto;
+                    max-width: 241px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+            }
+
+            .button {
+                margin-top: 15px;
+                border: none;
+            }
+
+            &:hover {
+                transform: scale(1.04);
+                transition: all 0.1s ease-in-out;
+
+                .button {
+                    background-color: #4a5dbd;
+                }
+
+                .organization-name {
+                    color: $white;
+                }
+            }
+        }
+    }
+
+    .organizations-table {
+        thead th {
+            border-width: 0 0 1px 0;
+        }
+
+        table {
+            border-radius: 4px;
+        }
+
+        .button {
+            border: none;
+        }
+    }
+
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            margin: 30px auto;
+        }
+
+        .empty-state-heading {
+            color: $white;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            font-weight: bold;
+            padding: 5px 20px;
+            height: 42px;
+            min-width: 180px;
+        }
+    }
+
+    .no-results {
+        margin-top: 50px;
+    }
+}

@@ -10,31 +10,15 @@ localVue.use(VueRouter);
 const router = new VueRouter();
 
 describe('App.vue', () => {
-    let actions;
-    let getters;
     let state;
     let store;
     let stubs;
     let wrapper;
 
     beforeEach(() => {
-        actions = {
-            setActiveDevice: jest.fn(),
-            setActiveDeviceDetails: jest.fn(),
-            setActiveDeviceSettings: jest.fn(),
-            setActiveDeviceValidations: jest.fn(),
-            setAllRooms: jest.fn(),
-            setCurrentWorkspace: jest.fn(),
-            setValidations: jest.fn(),
-            setWorkspaces: jest.fn(),
-        };
-        getters = {
-            currentWorkspaceId: jest.fn(),
-            loadCurrentWorkspace: jest.fn(),
-        };
         state = {};
         stubs = ['router-view'];
-        store = new Vuex.Store({ actions, getters, state });
+        store = new Vuex.Store({ state });
         wrapper = shallowMount(App, { localVue, router, store, stubs });
     });
 
@@ -91,26 +75,20 @@ describe('App.vue', () => {
             });
         });
 
-        describe('path contains currentWorkspace', () => {
-            test('should display the navbar router-view component', () => {
-                const navbar = wrapper
-                    .findAll('router-view-stub')
-                    .filter(view => {
-                        return view.attributes('name') === 'navbar';
-                    });
-
-                expect(navbar.exists()).toBeTruthy();
+        test('should display the navbar router-view component', () => {
+            const navbar = wrapper.findAll('router-view-stub').filter(view => {
+                return view.attributes('name') === 'navbar';
             });
 
-            test('should display the sidebar router-view component', () => {
-                const navbar = wrapper
-                    .findAll('router-view-stub')
-                    .filter(view => {
-                        return view.attributes('name') === 'sidebar';
-                    });
+            expect(navbar.exists()).toBeTruthy();
+        });
 
-                expect(navbar.exists()).toBeTruthy();
+        test('should display the sidebar router-view component', () => {
+            const navbar = wrapper.findAll('router-view-stub').filter(view => {
+                return view.attributes('name') === 'sidebar';
             });
+
+            expect(navbar.exists()).toBeTruthy();
         });
     });
 

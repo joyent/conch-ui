@@ -7,20 +7,20 @@
             </h2>
             <hr />
             <p class="is-size-5">
-                Head back to the last known workspace.
+                Head back to the build you most recently interacted with.
             </p>
             <p class="is-size-5">
                 If you think something is broken, please report it.
             </p>
             <div class="buttons">
                 <a
-                    class="button is-outlined is-info is-uppercase has-text-weight-semibold"
-                    @click="routeLastKnownWorkspace()"
+                    class="button is-outlined is-info is-uppercase has-text-weight-semibold recent-build"
+                    @click="routeToMostRecentBuild()"
                 >
-                    Last Known Workspace
+                    Most Recent Build
                 </a>
                 <a
-                    class="button is-outlined is-danger is-uppercase has-text-weight-semibold"
+                    class="button is-outlined is-danger is-uppercase has-text-weight-semibold report-problem"
                     href="https://github.com/joyent/conch-ui/issues/new"
                     target="_blank"
                 >
@@ -35,38 +35,11 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
-
 export default {
     methods: {
-        routeLastKnownWorkspace() {
-            let currentWorkspaceId = this.currentWorkspaceId;
-
-            if (!currentWorkspaceId) {
-                const routeParams = this.$route.params;
-
-                if (routeParams && routeParams.currentWorkspace) {
-                    this.loadCurrentWorkspace(routeParams.currentWorkspace);
-                }
-            }
-
-            if (!currentWorkspaceId) {
-                currentWorkspaceId = this.loadCurrentWorkspace;
-            }
-
-            if (!currentWorkspaceId) {
-                currentWorkspaceId = this.workspaces[0].id;
-            }
-
-            this.$router.push({
-                name: 'status',
-                params: { currentWorkspace: currentWorkspaceId },
-            });
+        routeToMostRecentBuild() {
+            this.$router.push({ name: 'dashboard' });
         },
-    },
-    computed: {
-        ...mapGetters(['currentWorkspaceId', 'loadCurrentWorkspace']),
-        ...mapState(['workspaces']),
     },
 };
 </script>

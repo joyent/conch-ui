@@ -2,7 +2,7 @@
     <div class="overview-tab">
         <div class="level">
             <div class="level-left">
-                <div class="level-item tags">
+                <div class="level-item tags are-medium">
                     <div
                         class="tag"
                         v-for="(tag, index) in deviceTags"
@@ -14,22 +14,40 @@
                 </div>
             </div>
             <div class="level-right">
-                <div class="level-item" v-if="userHasPermissions">
+                <div class="level-item">
                     <button
-                        class="button update-phase is-small is-info"
+                        class="button update-phase is-info"
                         @click="updatingPhase = true"
                     >
-                        Update Device Phase
+                        Update Phase
                     </button>
                 </div>
-                <div class="level-item" v-if="activeDeviceDetails.location">
+                <div class="level-item">
                     <button
-                        class="button show-device-in-rack is-small is-info"
+                        class="button show-device-in-rack is-info"
                         @click="showDeviceInRack()"
+                        :disabled="!activeDeviceDetails.location"
                     >
-                        Show Device in Rack
+                        <span v-if="!activeDeviceDetails.location">
+                            Device Location Unknown
+                        </span>
+                        <span v-else>Show Device in Rack</span>
                     </button>
                 </div>
+            </div>
+        </div>
+        <div class="columns" v-if="errorMessage">
+            <div class="column is-12">
+                <article class="message is-danger">
+                    <div class="message-header">
+                        <p class="">Error: {{ errorMessage }}</p>
+                        <button
+                            class="delete"
+                            aria-label="delete"
+                            @click="errorMessage = ''"
+                        ></button>
+                    </div>
+                </article>
             </div>
         </div>
         <section class="info-tiles">
@@ -40,6 +58,27 @@
                         <p class="title device-phase is-capitalized">
                             {{ activeDeviceDetails.phase }}
                         </p>
+                    </article>
+                </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <p class="subtitle" style="margin-bottom: 10px"
+                            >Hardware Product</p
+                        >
+                        <a
+                            class="is-size-5 device-phase has-text-white"
+                            @click="
+                                navigateToHardwareProduct(
+                                    activeDeviceDetails.hardware_product_id
+                                )
+                            "
+                        >
+                            {{
+                                getHardwareProductName(
+                                    activeDeviceDetails.hardware_product_id
+                                )
+                            }}
+                        </a>
                     </article>
                 </div>
             </div>
@@ -94,6 +133,7 @@ import TimeToBurnin from './TimeToBurnin.vue';
 import PhaseUpdateModal from '@src/views/components/PhaseUpdateModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { getHardwareProducts } from '@api/hardwareProduct.js';
 
 export default {
     components: {
@@ -102,6 +142,8 @@ export default {
     },
     data() {
         return {
+            errorMessage: '',
+            hardwareProducts: [],
             updatingPhase: false,
         };
     },
@@ -114,32 +156,46 @@ export default {
         closeModal() {
             this.updatingPhase = false;
         },
+        getHardwareProductName(id) {
+            const product = this.hardwareProducts.find(
+                product => product.id === id
+            );
+
+            if (product) {
+                return product.name;
+            } else {
+                return 'Unknown';
+            }
+        },
+        navigateToHardwareProduct(id) {
+            this.$router.push({ name: 'hardware-product', params: { id } });
+        },
+        setError(error) {
+            this.errorMessage =
+                (error && error.data && error.data.error) ||
+                'An error occurred';
+            this.editProduct = false;
+            this.isLoading = false;
+        },
         showDeviceInRack() {
-            const { datacenter_room, rack } = this.activeDeviceDetails.location;
-            const route = this.$route.path;
-            const workspaceRoute = route.substring(0, route.indexOf('/', 1));
-            const datacenterRoomName = datacenter_room.az;
+            const { id } = this.activeDeviceDetails;
+            const { az, rack } = this.activeDeviceDetails.location;
 
-            this.setHighlightDeviceId(this.activeDeviceId);
-            this.setActiveRoomName(datacenterRoomName);
+            this.setHighlightDeviceId(id);
+            this.setActiveRoomName(az);
 
-            EventBus.$emit('closeModal:deviceModal');
             EventBus.$emit('showDeviceInRack');
 
             this.setShowDeviceInRack(true);
 
             this.$router.push({
-                path: `${workspaceRoute}/datacenter/${datacenterRoomName}/rack/${rack.id}/device?highlightDeviceId=${this.activeDeviceId}`,
+                path: `/datacenter/${az}/rack/${rack}/device?highlightDeviceId=${id}`,
             });
         },
     },
     computed: {
         ...mapGetters(['activeDeviceId']),
-        ...mapState([
-            'activeDeviceDetails',
-            'activeDeviceSettings',
-            'currentWorkspace',
-        ]),
+        ...mapState(['activeDeviceDetails', 'activeDeviceSettings']),
         deviceTags() {
             const tags = [];
             let health;
@@ -210,14 +266,17 @@ export default {
         uptimeSince() {
             return moment(this.activeDeviceDetails.uptime_since).fromNow(true);
         },
-        userHasPermissions() {
-            return (
-                this.currentWorkspace.role === 'admin' ||
-                this.currentWorkspace.role === 'rw'
-            );
-        },
     },
-    mounted() {
+    async mounted() {
+        let response;
+
+        try {
+            response = await getHardwareProducts();
+            this.hardwareProducts = response.data;
+        } catch (error) {
+            this.setError(error);
+        }
+
         EventBus.$on('closeModal:baseModal', () => {
             this.closeModal();
         });

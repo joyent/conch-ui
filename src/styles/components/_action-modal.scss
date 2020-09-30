@@ -1,0 +1,197 @@
+.action-modal {
+    .close {
+        cursor: pointer;
+    }
+
+    select {
+        background-color: $grey-darker;
+        border-color: $grey;
+        border-radius: 4px;
+        color: #bdcbdb;
+    }
+
+    .search-input {
+        padding: 0;
+
+        input {
+            background-color: $grey-darker;
+            border: none;
+            border-top-right-radius: 4px;
+            border-top-left-radius: 4px;
+            color: #bdcbdb;
+            height: 46px;
+            font-size: 1.15rem;
+
+            &::placeholder {
+                color: $grey-light;
+            }
+
+            &:active,
+            &:focus {
+                box-shadow: none;
+                background-color: darken($grey-darker, 1%);
+            }
+        }
+
+        span.icon {
+            left: 6px;
+            top: 6px;
+
+            i.material-icons {
+                font-size: 28px;
+            }
+        }
+    }
+
+    .modal-card-head {
+        background-color: $dark;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        border: none;
+
+        .modal-card-title {
+            text-align: center;
+            margin-left: 24px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+    }
+
+    .modal-card-body {
+        background-color: lighten($grey-darker, 2%);
+        display: flex;
+        padding: 20px;
+        max-height: 560px;
+        overflow: scroll;
+
+        table {
+            margin-bottom: 0;
+        }
+
+        .row {
+            display: flex;
+            align-items: stretch;
+
+            td {
+                background-color: $grey-darker;
+                border: none;
+                display: flex;
+                align-items: center;
+                min-height: 66px;
+
+                &.item-name {
+                    flex-grow: 1;
+                    overflow: hidden;
+
+                    span.name {
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+
+                &.action {
+                    width: 52px;
+                }
+
+                &:first-of-type {
+                    padding-right: 0;
+                }
+            }
+
+            &.no-changes td {
+                justify-content: center;
+
+                &:hover {
+                    background-color: $grey-darker;
+                }
+            }
+
+            &.is-adding {
+                border-width: 0 0 0 6px;
+                border-color: $green;
+                border-style: solid;
+
+                td {
+                    background-color: darken($grey-darker, 1%);
+                }
+            }
+
+            &.is-removing {
+                border-width: 0 0 0 6px;
+                border-color: $red;
+                border-style: solid;
+
+                td {
+                    background-color: darken($grey-darker, 1%);
+                }
+            }
+
+            &.no-data {
+                td {
+                    background-color: darken($grey-darker, 3%);
+                    justify-content: center;
+                    width: 100%;
+                }
+            }
+
+            &:hover {
+                td {
+                    background-color: darken($grey-darker, 3%);
+                }
+            }
+        }
+
+        .table-title td {
+            border: none;
+            // padding: 6px;
+            text-align: center;
+        }
+
+        .close {
+            cursor: pointer;
+        }
+
+        .add-item,
+        .remove-item {
+            cursor: pointer;
+            font-size: 28px;
+            transition: color 0.1s ease-in-out;
+        }
+
+        .add-item {
+            &:hover {
+                color: lighten($green, 3%);
+                transition: color 0.1s ease-in-out;
+            }
+        }
+
+        .remove-item {
+            &:hover {
+                color: $red;
+                transition: color 0.1s ease-in-out;
+            }
+        }
+    }
+
+    .modal-card-foot {
+        background-color: $dark;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border: none;
+        display: flex;
+        justify-content: space-evenly;
+        padding: 16px;
+
+        .button {
+            font-weight: bold;
+            height: 46px;
+            margin: 0;
+            width: 200px;
+
+            &:first-of-type {
+                margin-right: 22px;
+            }
+        }
+    }
+}

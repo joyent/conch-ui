@@ -6,7 +6,7 @@
 
 	hr {
 		margin-top: 30px;
-		max-width: 474px;
+		max-width: 500px;
 	}
 
 	.title {
@@ -16,8 +16,11 @@
 	.buttons {
 		margin-top: 30px;
 
-		button {
+		a.button {
+			transition: all 0.1s ease-in-out;
 			border-radius: 4px;
+			height: 42px;
+			width: 200px;
 		}
 	}
 }

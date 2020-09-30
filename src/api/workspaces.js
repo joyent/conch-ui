@@ -11,7 +11,7 @@ export const addUserToWorkspace = (workspaceId, data) => {
     });
 };
 
-export const getAllRacks = workspaceId => {
+export const getWorkspaceRacks = workspaceId => {
     return requestWithToken({
         method: 'GET',
         url: `/workspace/${workspaceId}/rack`,
@@ -25,25 +25,7 @@ export const getDevices = workspaceId => {
     });
 };
 
-export const getRackById = (workspaceId, rackId) => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/workspace/${workspaceId}/rack/${rackId}`,
-    }).then(response => {
-        const data = response.data;
-
-        if (data.slots) {
-            data.slots = data.slots.reduce((obj, curr) => {
-                obj[curr.rack_unit_start] = curr;
-                return obj;
-            }, {});
-        }
-
-        return Promise.resolve(data);
-    });
-};
-
-export const loadAllWorkspaces = () => {
+export const getWorkspaces = () => {
     return requestWithToken({
         method: 'GET',
         url: '/workspace',
@@ -62,9 +44,8 @@ export const removeUserFromWorkspace = (workspaceId, userId) => {
 
 export default {
     addUserToWorkspace,
-    getAllRacks,
+    getWorkspaceRacks,
     getDevices,
-    getRackById,
-    loadAllWorkspaces,
+    getWorkspaces,
     removeUserFromWorkspace,
 };

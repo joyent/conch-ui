@@ -9,14 +9,14 @@
                     type="text"
                     class="input is-small"
                     placeholder="Search Racks"
-                    v-model="rackFilterText"
+                    v-model="searchText"
                 />
                 <span class="icon is-small is-left">
                     <i class="fas fa-search"></i>
                 </span>
             </p>
         </div>
-        <p class="panel-tabs">
+        <p class="panel-tabs" v-if="filteredActiveRacks.length > 0">
             <a
                 v-for="(progress, index) in availableRackProgress"
                 :key="index"
@@ -26,7 +26,7 @@
                 {{ progress }}
             </a>
         </p>
-        <p class="panel-tabs">
+        <p class="panel-tabs" v-if="filteredActiveRacks.length > 0">
             <a
                 v-for="(role, index) in availableRackRoles"
                 :key="index"
@@ -36,91 +36,120 @@
                 {{ role }}
             </a>
         </p>
-        <a
-            v-for="(rack, index) in filteredActiveRacks"
-            :key="index"
+        <template v-if="filteredActiveRacks.length > 0">
+            <a
+                v-for="(rack, index) in filteredActiveRacks"
+                :key="index"
+                class="panel-block"
+                :class="{ 'is-active': isRackSelected(rack.id) }"
+                @click="activateRack(rack.id)"
+            >
+                <div class="panel-icon">
+                    <ProgressIcon :progress="rackToProgress(rack)" />
+                </div>
+                {{ rack.name }}
+            </a>
+        </template>
+        <p
             class="panel-block"
-            :class="{ 'is-active': rackLayout.id === rack.id }"
-            @click="activateRack(rack)"
+            v-else-if="filteredActiveRacks.length === 0 && searchText"
+            style="justify-content: center;"
         >
-            <div class="panel-icon">
-                <ProgressIcon :progress="rackToProgress(rack)" />
-            </div>
-            {{ rack.name }}
-        </a>
+            No racks found
+        </p>
     </nav>
 </template>
 
 <script>
 import search from 'fuzzysearch';
 import ProgressIcon from '@views/components/ProgressIcon.vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
-import { getRackById } from '@api/workspaces';
+import { mapActions, mapState } from 'vuex';
+import { getRack, getRackAssignment } from '@api/racks';
+import { getDeviceDetails, getDeviceSettings } from '@api/devices.js';
 import { EventBus } from '@src/eventBus.js';
 
 export default {
-    props: {
-        activeRacks: {
-            type: Array,
-            required: true,
-        },
-    },
-    components: {
-        ProgressIcon,
-    },
+    components: { ProgressIcon },
     data() {
         return {
             availableRackRoles: '',
             availableRackProgress: '',
-            rackFilterText: '',
+            searchText: '',
             selectedProgress: 'all',
             selectedRole: 'all',
         };
     },
-    computed: {
-        ...mapGetters(['currentWorkspaceId']),
-        ...mapState(['activeRoomName', 'rackLayout']),
-        filteredActiveRacks() {
-            return this.activeRacks.reduce((acc, rack) => {
-                if (this.rackFilterMatch(rack)) {
-                    acc.push(rack);
-                }
-
-                return acc;
-            }, []);
-        },
-        rackFilterTextLowerCase() {
-            return this.rackFilterText.toLowerCase();
-        },
-    },
     methods: {
         ...mapActions(['setRackLayout']),
-        activateRack(rack) {
-            getRackById(this.currentWorkspaceId, rack.id).then(response => {
-                this.setRackLayout(response);
+        async activateRack(rackId, pushRoute = true) {
+            this.$emit('rack-activated');
+            let rack = await getRack(rackId).then(response => response.data);
 
+            const rackAssignment = await getRackAssignment(rackId).then(
+                response => response.data
+            );
+
+            rack.slots = {};
+
+            for (let i = 0; i < rackAssignment.length; i++) {
+                const assignment = rackAssignment[i];
+                const deviceId = assignment.device_id;
+                const slotId = assignment.rack_unit_start;
+
+                if (deviceId) {
+                    assignment.occupant = await getDeviceDetails(deviceId).then(
+                        response => response.data
+                    );
+
+                    assignment.occupant.settings = await getDeviceSettings(
+                        deviceId
+                    ).then(response => response.data);
+                } else {
+                    assignment.occupant = {};
+                }
+
+                rack.slots[slotId] = assignment;
+            }
+
+            this.setRackLayout(rack);
+
+            if (pushRoute) {
                 this.$router.push({
                     name: 'datacenterRack',
-                    params: { rackId: `${this.rackLayout.id}` },
+                    params: { rackId },
                 });
-            });
+            }
+        },
+        isRackSelected(rackId) {
+            if (this.rackLayout && this.rackLayout.id) {
+                return this.rackLayout.id === rackId ? true : false;
+            } else if (this.$route.params && this.$route.params.rackId) {
+                const rackIdParam = this.$route.params.rackId;
+
+                return rackId === rackIdParam ? true : false;
+            }
+
+            return false;
         },
         rackFilterMatch(rack) {
             return (
                 this.rackNameFilter(rack.name) &&
-                this.rackRoleFilter(rack.role) &&
+                this.rackRoleFilter(rack.rack_role_name) &&
                 this.rackProgressFilter(rack)
             );
         },
         rackNameFilter(rackName) {
-            return search(this.rackFilterTextLowerCase, rackName.toLowerCase());
+            return search(
+                this.searchText.toLowerCase(),
+                rackName.toLowerCase()
+            );
         },
         rackToProgress(rack) {
-            if (rack['device_progress']['FAIL']) {
+            if (rack['device_progress']['fail']) {
                 return 'failing';
-            } else if (rack['device_progress']['PASS']) {
+            } else if (rack['device_progress']['pass']) {
                 return 'in progress';
-            } else if (rack['device_progress']['VALID']) {
+            } else if (rack['device_progress']['valid']) {
                 return 'validated';
             } else {
                 return 'not started';
@@ -139,11 +168,46 @@ export default {
             );
         },
     },
+    computed: {
+        ...mapState(['activeRoomName', 'rackLayout', 'rackRooms']),
+        activeRacks() {
+            if (this.rackRooms.length) {
+                let racks;
+
+                this.rackRooms.map(rackRoom => {
+                    if (rackRoom.name === this.activeRoomName) {
+                        racks = rackRoom.racks.sort((a, b) => {
+                            a.name > b.name ? 1 : -1;
+                        });
+
+                        return racks;
+                    }
+                });
+
+                return racks;
+            }
+
+            return [];
+        },
+        filteredActiveRacks() {
+            if (this.activeRacks && this.activeRacks.length) {
+                return this.activeRacks.reduce((acc, rack) => {
+                    if (this.rackFilterMatch(rack)) {
+                        acc.push(rack);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            return [];
+        },
+    },
     created() {
         // get the list of available rack roles
         this.availableRackRoles = Array.from(
             this.activeRacks.reduce((acc, rack) => {
-                const rackRole = rack.role.toLowerCase();
+                const rackRole = rack.rack_role_name.toLowerCase();
 
                 if (!acc.has(rackRole)) {
                     acc.add(rackRole);
@@ -160,10 +224,14 @@ export default {
                 return acc;
             }, new Set(['all']))
         ).sort();
+
+        if (this.$route.params && this.$route.params.rackId) {
+            this.activateRack(this.$route.params.rackId, false);
+        }
     },
     mounted() {
         EventBus.$on('refreshRackLayout', rack => {
-            this.activateRack(rack);
+            this.activateRack(rack.id);
         });
     },
 };

@@ -3,14 +3,19 @@ import Router from 'vue-router';
 import Devices from './views/Devices/Devices.vue';
 import DataCenterBrowser from './views/DataCenterBrowser/DataCenterBrowser.vue';
 import SignIn from './views/SignIn/SignIn.vue';
-import Status from './views/Status/Status.vue';
-import UserProfile from './views/UserProfile/UserProfile.vue';
 import UserManagement from './views/UserManagement/UserManagement.vue';
+import User from './views/UserManagement/User.vue';
 import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTokens.vue';
-import Navbar from './views/Navbar/Navbar.vue';
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import PasswordReset from './views/PasswordReset/PasswordReset.vue';
+import BuildsList from './views/Builds/BuildsList.vue';
+import Build from './views/Builds/Build.vue';
+import Organizations from './views/Organizations/Organizations.vue';
+import Organization from './views/Organizations/Organization.vue';
+import Dashboard from './views/Dashboard/Dashboard.vue';
+import HardwareProduct from './views/HardwareProducts/HardwareProduct.vue';
+import HardwareProducts from './views/HardwareProducts/HardwareProducts.vue';
 
 Vue.use(Router);
 
@@ -22,28 +27,19 @@ export default new Router({
             component: SignIn,
         },
         {
-            path: '/:currentWorkspace/status',
-            name: 'status',
+            path: '/dashboard',
+            name: 'dashboard',
             components: {
-                default: Status,
+                default: Dashboard,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
-            children: [
-                {
-                    // when /status/device/:deviceId is matched
-                    path: 'device/:deviceId',
-                    component: Status,
-                },
-            ],
         },
         {
-            path: '/:currentWorkspace/device',
+            path: '/devices',
             name: 'devices',
             components: {
                 default: Devices,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
             children: [
                 {
@@ -55,12 +51,29 @@ export default new Router({
             ],
         },
         {
-            path: '/:currentWorkspace/datacenter',
+            path: '/hardware-products',
+            name: 'hardware-products',
+            components: {
+                default: HardwareProducts,
+                sidebar: Sidebar,
+            },
+            children: [
+                {
+                    path: ':id',
+                    name: 'hardware-product',
+                    components: {
+                        default: HardwareProduct,
+                        sidebar: Sidebar,
+                    },
+                },
+            ],
+        },
+        {
+            path: '/datacenter',
             name: 'datacenter',
             components: {
                 default: DataCenterBrowser,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
             children: [
                 {
@@ -88,13 +101,22 @@ export default new Router({
             ],
         },
         {
-            path: '/user',
-            name: 'user',
+            path: '/builds',
+            name: 'builds',
             components: {
-                default: UserProfile,
+                default: BuildsList,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
+            children: [
+                {
+                    path: ':id',
+                    name: 'build',
+                    components: {
+                        default: Build,
+                        sidebar: Sidebar,
+                    },
+                },
+            ],
         },
         {
             path: '/admin/tokens',
@@ -102,7 +124,6 @@ export default new Router({
             components: {
                 default: AuthenticationTokens,
                 sidebar: Sidebar,
-                navbar: Navbar,
             },
             children: [
                 {
@@ -119,7 +140,24 @@ export default new Router({
             components: {
                 default: UserManagement,
                 sidebar: Sidebar,
-                navbar: Navbar,
+            },
+            children: [
+                {
+                    path: ':id',
+                    name: 'user',
+                    components: {
+                        default: User,
+                        sidebar: Sidebar,
+                    },
+                },
+            ],
+        },
+        {
+            path: '/profile/:id',
+            name: 'profile',
+            components: {
+                default: User,
+                sidebar: Sidebar,
             },
         },
         {
@@ -128,6 +166,24 @@ export default new Router({
             component: {
                 PasswordReset,
             },
+        },
+        {
+            path: '/organizations',
+            name: 'organizations',
+            components: {
+                default: Organizations,
+                sidebar: Sidebar,
+            },
+            children: [
+                {
+                    path: ':id',
+                    name: 'organization',
+                    components: {
+                        default: Organization,
+                        sidebar: Sidebar,
+                    },
+                },
+            ],
         },
         {
             path: '/*',

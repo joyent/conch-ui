@@ -1,7 +1,7 @@
 <template>
     <div class="user-management">
         <Spinner v-if="users.length < 1" />
-        <div class="users" v-else>
+        <div class="users" v-else-if="users.length && !$route.params.id">
             <div class="columns is-vcentered">
                 <div class="column">
                     <a class="filter-all" @click="setFilters('all')">
@@ -63,45 +63,6 @@
                         </div>
                     </a>
                 </div>
-                <div class="column">
-                    <a
-                        class="filter-auth-issues"
-                        @click="setFilters('auth_issues')"
-                    >
-                        <div
-                            class="box users-stats"
-                            :class="{
-                                'is-selected':
-                                    statisticFilter === 'auth_issues',
-                            }"
-                        >
-                            <h2 class="is-6">Authentication Issues</h2>
-                            <span class="is-size-3 has-text-info">
-                                {{ authenticationIssuesCount }}
-                            </span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="tabs">
-                <ul>
-                    <li :class="{ 'is-active': currentTab === 'users' }">
-                        <a
-                            class="tab users-tab is-uppercase"
-                            @click="currentTab = 'users'"
-                        >
-                            Users
-                        </a>
-                    </li>
-                    <li :class="{ 'is-active': currentTab === 'workspaces' }">
-                        <a
-                            class="tab workspaces-tab is-uppercase"
-                            @click="currentTab = 'workspaces'"
-                        >
-                            Workspaces
-                        </a>
-                    </li>
-                </ul>
             </div>
             <div class="data-table">
                 <div class="table-header">
@@ -133,20 +94,6 @@
                                 <i class="fas fa-search"></i>
                             </span>
                         </div>
-                        <div
-                            class="control has-icons-left has-icons-right"
-                            v-if="currentTab === 'workspaces'"
-                        >
-                            <input
-                                class="input search workspaces"
-                                type="text"
-                                placeholder="Search Workspaces"
-                                v-model="searchTextWorkspaces"
-                            />
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-search"></i>
-                            </span>
-                        </div>
                     </div>
                     <div style="width: 135px;">
                         <button
@@ -163,15 +110,7 @@
                 </div>
                 <transition name="fade-in-slow">
                     <div v-if="filteredUsers.length">
-                        <div v-if="currentTab === 'users'">
-                            <UsersTable :users="filteredUsers" />
-                        </div>
-                        <div v-else>
-                            <WorkspaceView
-                                :filtered-users="filteredUsers"
-                                :search-text="searchTextWorkspaces"
-                            />
-                        </div>
+                        <UsersTable :users="filteredUsers" />
                     </div>
                     <div class="no-results" v-else>
                         <p class="title">No Results Found.</p>
@@ -183,11 +122,11 @@
                 </transition>
             </div>
             <transition name="fade">
-                <CreateUserModal v-if="action === 'create'" :user="user" />
-                <EditUserModal
-                    v-else-if="action === 'edit'"
+                <UserModal
+                    v-if="action === 'create' || action === 'edit'"
+                    :action="action"
+                    :editing-user="user"
                     :modal-step="modalStep"
-                    :user="user"
                 />
                 <UserActionModal
                     v-else-if="action"
@@ -196,29 +135,26 @@
                 />
             </transition>
         </div>
+        <router-view v-else></router-view>
     </div>
 </template>
 
 <script>
 import search from 'fuzzysearch';
-import CreateUserModal from './CreateUserModal.vue';
-import EditUserModal from './EditUserModal.vue';
+import UserModal from './UserModal.vue';
 import UserActionModal from './UserActionModal.vue';
 import Spinner from '@src/views/components/Spinner.vue';
-import WorkspaceView from './WorkspaceView.vue';
 import UsersTable from './UsersTable.vue';
-import { getUser, getUsers } from '@api/users.js';
+import { getUsers } from '@api/users.js';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
-        CreateUserModal,
-        EditUserModal,
+        UserModal,
         Spinner,
         UserActionModal,
         UsersTable,
-        WorkspaceView,
     },
     data() {
         return {
@@ -228,7 +164,6 @@ export default {
             currentTab: 'users',
             modalStep: null,
             searchText: '',
-            searchTextWorkspaces: '',
             statisticFilter: 'all',
             user: {},
             userFilter: 'all',
@@ -266,8 +201,7 @@ export default {
             if (
                 filter === this.userFilter ||
                 filter === 'all' ||
-                filter === 'inactive' ||
-                filter === 'auth_issues'
+                filter === 'inactive'
             ) {
                 this.userFilter = 'all';
             } else if (filter === 'admins') {
@@ -321,14 +255,6 @@ export default {
                     users = users.filter(user => user.is_admin === false);
                 } else if (statisticFilter === 'inactive') {
                     users = users.filter(user => user.last_login == null);
-                } else if (statisticFilter === 'auth_issues') {
-                    users = users.filter(user => {
-                        if (
-                            user.force_password_change === true ||
-                            user.refuse_session_auth === true
-                        )
-                            return user;
-                    });
                 }
             }
 
@@ -352,37 +278,12 @@ export default {
             this.openModal(data.action, data.user, data.step);
         });
 
-        EventBus.$on('close-modal', () => {
-            this.action = '';
-        });
-
-        EventBus.$on('close-modal:success', () => {
-            this.action = '';
-        });
-
-        EventBus.$on('action-success', actionData => {
-            const userId = actionData.userId;
-            const users = this.users;
-
-            if (actionData.action !== 'deactivate') {
-                getUser(userId).then(response => {
-                    const newUser = response.data;
-
-                    if (actionData.action && actionData.action === 'create') {
-                        users.push(newUser);
-                        this.setUsers(users);
-                    } else {
-                        const index = this.getIndex(users, userId);
-                        users.splice(index, 1, newUser);
-                        this.setUsers(users);
-                    }
-                });
-            } else if (actionData && actionData.action === 'deactivate') {
-                const index = this.getIndex(users, userId);
-                users.splice(index, 1);
-                this.setUsers(users);
+        EventBus.$on(
+            ['close-modal', 'close-user-modal', 'close-modal:success'],
+            () => {
+                this.action = '';
             }
-        });
+        );
     },
 };
 </script>

@@ -1,13 +1,12 @@
 import PhaseUpdateModal from '../PhaseUpdateModal.vue';
 import Vuex from 'vuex';
 import { createLocalVue, mount } from '@vue/test-utils';
-import * as deviceApi from '@api/device.js';
-import * as rackApi from '@api/rack.js';
+import * as deviceApi from '@api/devices.js';
+import * as rackApi from '@api/racks.js';
 
 // Fixtures
 import deviceDetails from '@src/__fixtures__/deviceDetails.js';
 import { rackLayout } from '@src/__fixtures__/rackLayout.js';
-import workspaces from '@src/__fixtures__/workspaces.js';
 
 const localVue = createLocalVue();
 
@@ -29,7 +28,7 @@ describe('PhaseUpdateModal.vue', () => {
             setRackLayout: jest.fn(),
         };
         propsData = { item: 'device', itemData: deviceDetails };
-        state = { currentWorkspace: workspaces[0], rackLayout };
+        state = { rackLayout };
         store = new Vuex.Store({ actions, state });
         wrapper = mount(PhaseUpdateModal, { localVue, propsData, store });
         confirmButton = wrapper.find('.button.confirm');
@@ -91,8 +90,8 @@ describe('PhaseUpdateModal.vue', () => {
         });
 
         test('should display device id', () => {
-            expect(wrapper.find('.device-id').text()).toContain(
-                deviceDetails.id
+            expect(wrapper.find('.device-serial-number').text()).toContain(
+                deviceDetails.serial_number
             );
         });
 

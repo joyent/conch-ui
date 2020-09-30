@@ -2,7 +2,6 @@ import SignIn from '../SignIn.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import * as authentication from '@api/authentication.js';
-import * as users from '@api/users.js';
 import * as conchApiVersion from '@api/conchApiVersion.js';
 
 const localVue = createLocalVue();
@@ -14,7 +13,6 @@ jest.mock('@api/conchApiVersion.js');
 
 describe('SignIn.vue', () => {
     let actions;
-    let getters;
     let mocks;
     let state;
     let store;
@@ -23,17 +21,12 @@ describe('SignIn.vue', () => {
     beforeEach(() => {
         actions = {
             setCurrentUser: jest.fn(),
-            setCurrentWorkspace: jest.fn(),
             setForcePasswordChange: jest.fn(),
-            setWorkspaces: jest.fn(),
-        };
-        getters = {
-            currentWorkspaceId: jest.fn(),
-            loadCurrentWorkspace: jest.fn(),
+            setGlobalWorkspaceId: jest.fn(),
         };
         mocks = { $router: [] };
         state = { workspaces: {} };
-        store = new Vuex.Store({ actions, getters, state });
+        store = new Vuex.Store({ actions, state });
         wrapper = shallowMount(SignIn, { localVue, mocks, store });
     });
 
@@ -66,14 +59,6 @@ describe('SignIn.vue', () => {
 
     test('should call the login method', () => {
         const spy = jest.spyOn(authentication, 'login');
-
-        // Needed in order for test to pass. It seems like Jest doesn't know
-        // how to handle getters that take arguments. It seems to identify such
-        // calls as method calls and looks for a corresponding item in the
-        // 'methods' object of the Vue component.
-        Object.defineProperty(wrapper.vm, 'loadCurrentWorkspace', {
-            value: jest.fn(),
-        });
 
         wrapper.setData({
             emailAddress: 'validuser@joyent.com',

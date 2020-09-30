@@ -7,14 +7,14 @@
                     type="text"
                     class="input is-small"
                     placeholder="Search Rooms"
-                    v-model="roomFilterText"
+                    v-model="searchText"
                 />
                 <span class="icon is-small is-left">
                     <i class="fas fa-search"></i>
                 </span>
             </p>
         </div>
-        <p class="panel-tabs">
+        <p class="panel-tabs" v-if="filteredRackRooms.length > 0">
             <a
                 :class="{ 'is-active': selectedProgress === progress }"
                 @click="selectedProgress = progress"
@@ -25,18 +25,27 @@
                 {{ progress }}
             </a>
         </p>
-        <a
-            v-for="(room, index) in filteredRackRooms"
-            :key="index"
+        <template v-if="filteredRackRooms.length > 0">
+            <a
+                v-for="(room, index) in filteredRackRooms"
+                :key="index"
+                class="panel-block"
+                :class="{ 'is-active': activeRoomName === room.name }"
+                @click="activateRoom(room)"
+            >
+                <div class="panel-icon">
+                    <ProgressIcon :progress="room.progress" />
+                </div>
+                {{ room.name }}
+            </a>
+        </template>
+        <p
             class="panel-block"
-            :class="{ 'is-active': activeRoomName === room.name }"
-            @click="activateRoom(room)"
+            v-else-if="filteredRackRooms.length === 0 && searchText"
+            style="justify-content: center;"
         >
-            <div class="panel-icon">
-                <ProgressIcon :progress="room.progress" />
-            </div>
-            {{ room.name }}
-        </a>
+            No rooms found
+        </p>
     </nav>
 </template>
 
@@ -47,46 +56,14 @@ import ProgressIcon from '@views/components/ProgressIcon.vue';
 import { mapActions, mapState } from 'vuex';
 
 export default {
-    props: {
-        rackRooms: {
-            type: Array,
-            required: true,
-        },
-    },
     components: {
         ProgressIcon,
     },
     data() {
         return {
-            roomFilterText: '',
+            searchText: '',
             selectedProgress: 'all',
         };
-    },
-    computed: {
-        ...mapState(['activeRoomName', 'rackLayout']),
-        availableRoomProgress() {
-            return Array.from(
-                this.rackRooms.reduce((acc, room) => {
-                    if (!acc.has(room.progress)) {
-                        acc.add(room.progress);
-                    }
-
-                    return acc;
-                }, new Set(['all']))
-            ).sort();
-        },
-        filteredRackRooms() {
-            return this.rackRooms.reduce((acc, room) => {
-                if (
-                    this.roomNameFilter(room.name) &&
-                    this.roomProgressFilter(room.progress)
-                ) {
-                    acc.push(room);
-                }
-
-                return acc;
-            }, []);
-        },
     },
     methods: {
         ...mapActions(['clearRackLayout', 'setActiveRoomName']),
@@ -101,17 +78,12 @@ export default {
 
             this.$router.push({
                 name: 'datacenterRoom',
-                params: {
-                    roomName: `${this.activeRoomName}`,
-                },
+                params: { roomName: this.activeRoomName },
             });
-        },
-        roomFilterTextLowerCase() {
-            return this.roomFilterText.toLowerCase();
         },
         roomNameFilter(roomName) {
             return search(
-                this.roomFilterTextLowerCase(),
+                this.searchText.toLowerCase(),
                 roomName.toLowerCase()
             );
         },
@@ -120,6 +92,40 @@ export default {
                 this.selectedProgress === 'all' ||
                 this.selectedProgress === progress
             );
+        },
+    },
+    computed: {
+        ...mapState(['activeRoomName', 'rackLayout', 'rackRooms']),
+        availableRoomProgress() {
+            if (this.rackRooms.length) {
+                return Array.from(
+                    this.rackRooms.reduce((acc, room) => {
+                        if (!acc.has(room.progress)) {
+                            acc.add(room.progress);
+                        }
+
+                        return acc;
+                    }, new Set(['all']))
+                ).sort();
+            }
+
+            return [];
+        },
+        filteredRackRooms() {
+            if (this.rackRooms.length) {
+                return this.rackRooms.reduce((acc, room) => {
+                    if (
+                        this.roomNameFilter(room.name) &&
+                        this.roomProgressFilter(room.progress)
+                    ) {
+                        acc.push(room);
+                    }
+
+                    return acc;
+                }, []);
+            }
+
+            return [];
         },
     },
 };
