@@ -22,7 +22,7 @@ export const getDatacenterRoomRack = (datacenterRoomId, rackId) => {
  * @param id
  * @return {Response Object}
  */
-export const getDatacenterRoom = (id) => {
+export const getDatacenterRoom = id => {
     return requestWithToken({
         method: 'GET',
         url: `/room/${id}`,

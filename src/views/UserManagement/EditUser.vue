@@ -204,7 +204,7 @@ export default {
                 this.email = user.email;
                 this.name = user.name;
                 this.isAdmin = user.is_admin;
-                this.successMessage = "User update successful";
+                this.successMessage = 'User update successful';
                 this.isLoading = false;
             } catch (error) {
                 this.setError(error);

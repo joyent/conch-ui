@@ -200,14 +200,10 @@ describe('OverviewTab.vue', () => {
 
     describe('device phase', () => {
         // Needs permissions rewrite
-        test.skip('should display a button to update device phase if user has write permissions', () => {
-
-        });
+        test.skip('should display a button to update device phase if user has write permissions', () => {});
 
         // Needs permissions rewrite
-        test.skip('should not display a button to update device phase if user does not have write permissions', () => {
-
-        });
+        test.skip('should not display a button to update device phase if user does not have write permissions', () => {});
 
         test('should display the current phase of the device', () => {
             expect(wrapper.find('.device-phase').text()).toContain(

@@ -182,8 +182,8 @@ export default new Router({
                         default: Organization,
                         sidebar: Sidebar,
                     },
-                }
-            ]
+                },
+            ],
         },
         {
             path: '/*',

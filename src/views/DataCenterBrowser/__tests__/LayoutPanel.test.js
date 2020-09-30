@@ -95,14 +95,10 @@ describe('LayoutPanel.vue', () => {
 
     describe('rack phase', () => {
         // Needs permissions rewrite
-        test('should display a button to update rack phase if user has write permissions', () => {
-
-        });
+        test('should display a button to update rack phase if user has write permissions', () => {});
 
         // Needs permissions rewrite
-        test('should not display a button to update rack phase if user does not have write permissions', () => {
-
-        });
+        test('should not display a button to update rack phase if user does not have write permissions', () => {});
 
         test('should display the current phase of the rack', () => {
             expect(wrapper.find('.rack-phase').text()).toContain(

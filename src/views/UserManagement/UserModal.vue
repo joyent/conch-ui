@@ -311,7 +311,7 @@ export default {
         },
         closeModal() {
             if (this.reloadUserList) {
-                getUsers().then((response) => {
+                getUsers().then(response => {
                     this.setUsers(response.data);
                 });
             }
@@ -331,13 +331,13 @@ export default {
                 };
 
                 createUser(user)
-                    .then((response) => {
+                    .then(response => {
                         this.user = response.data;
                         this.reloadUserList = true;
                         this.isLoading = false;
                         this.step = 2;
                     })
-                    .catch((error) => {
+                    .catch(error => {
                         if (error.status === 409) {
                             this.errors.duplicateEmail = true;
                             this.isLoading = false;
@@ -374,13 +374,13 @@ export default {
                     };
 
                     editUser(editedUser)
-                        .then((response) => {
+                        .then(response => {
                             this.user = response.data;
                             this.reloadUserList = true;
                             this.isLoading = false;
                             this.step = 2;
                         })
-                        .catch((error) => {
+                        .catch(error => {
                             if (error.status === 500) {
                                 this.errors.duplicateEmail = true;
                                 this.isLoading = false;
@@ -420,7 +420,7 @@ export default {
                     ) {
                         const userBuilds = this.user.builds;
                         const selectedBuildIds = selectedBuilds.map(
-                            (build) => build.id
+                            build => build.id
                         );
 
                         for (let i = 0; i < userBuilds.length; i++) {
@@ -461,7 +461,7 @@ export default {
                     ) {
                         const userOrganizations = this.user.organizations;
                         const selectedOrganizationIds = selectedOrganizations.map(
-                            (organization) => organization.id
+                            organization => organization.id
                         );
 
                         for (let i = 0; i < userOrganizations.length; i++) {
@@ -509,20 +509,20 @@ export default {
     computed: {
         ...mapState(['builds', 'organizations']),
         hasErrors() {
-            return Object.values(this.errors).some((error) => error === true)
+            return Object.values(this.errors).some(error => error === true)
                 ? true
                 : false;
         },
     },
     created() {
         if (!this.builds.length) {
-            getBuilds().then((response) => {
+            getBuilds().then(response => {
                 this.setBuilds(response.data);
             });
         }
 
         if (!this.organizations.length) {
-            getOrganizations().then((response) => {
+            getOrganizations().then(response => {
                 this.setOrganizations(response.data);
             });
         }
@@ -544,7 +544,7 @@ export default {
             this.closeModal();
         });
 
-        EventBus.$on('send-selected-items', (data) => {
+        EventBus.$on('send-selected-items', data => {
             if (data.itemType === 'builds') {
                 this.selectedBuilds = data.items;
             } else if (data.itemType === 'organizations') {
