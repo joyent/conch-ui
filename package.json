@@ -5,11 +5,11 @@
   "scripts": {
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "jest": "vue-cli-service test:unit -c=./jest.config.js --passWithNoTests",
-    "jest:coverage": "vue-cli-service test:unit -c=./jest.config.js --coverage --passWithNoTests",
-    "jest:local": "vue-cli-service test:unit -c=./jest.config.js -o --passWithNoTests",
-    "jest:watch": "vue-cli-service test:unit -c=./jest.config.js --watch --passWithNoTests",
-    "jest:watch:all": "vue-cli-service test:unit -c=./jest.config.js --watchAll --passWithNoTests",
+    "jest": "vue-cli-service test:unit -c=./jest.config.js --passWithNoTests --bail 0",
+    "jest:coverage": "vue-cli-service test:unit -c=./jest.config.js --coverage --passWithNoTests --bail 0",
+    "jest:local": "vue-cli-service test:unit -c=./jest.config.js -o --passWithNoTests --bail 0",
+    "jest:watch": "vue-cli-service test:unit -c=./jest.config.js --watch --passWithNoTests --bail 0",
+    "jest:watch:all": "vue-cli-service test:unit -c=./jest.config.js --watchAll --passWithNoTests --bail 0",
     "start": "vue-cli-service serve"
   },
   "dependencies": {
