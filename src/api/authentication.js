@@ -10,7 +10,7 @@ import store from '@src/store/store.js';
 export const isLoggedIn = () => !!getToken();
 
 /**
- * Login to Conch
+ * Log in to Conch
  *
  * @param {String} email                    This is the user's email address
  * @param {String} password                 This is the user's password
