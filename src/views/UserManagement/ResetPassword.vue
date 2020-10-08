@@ -74,6 +74,7 @@
                                     'is-danger': errors.passwordLength,
                                     'is-success': validPassword,
                                 }"
+                                :disabled="isLoading"
                                 type="password"
                                 placeholder="New Password"
                                 v-model="password"
@@ -102,6 +103,7 @@
                                     'is-danger': errors.passwordMismatch,
                                     'is-success': validConfirmPassword,
                                 }"
+                                :disabled="isLoading"
                                 type="password"
                                 placeholder="Confirm Password"
                                 v-model="confirmPassword"
@@ -254,7 +256,7 @@ export default {
                 });
             }
         },
-        savePassword() {
+        async savePassword() {
             this.isLoading = true;
             const password = this.password;
             const confirmPassword = this.confirmPassword;
@@ -286,10 +288,21 @@ export default {
                     params.clear_tokens = 'none';
                 }
 
-                updatePassword(password, params).then(() => {
-                    this.$router.push({ name: 'signIn' });
+                try {
+                    await updatePassword(password, params);
+
+                    this.$toasted.success('Password updated successfully', {
+                        icon: 'check_circle',
+                    });
+
                     this.isLoading = false;
-                });
+                    this.resetFields();
+                } catch (error) {
+                    this.$toasted.error(`An error occurred: ${error}`, {
+                        className: 'toast',
+                        icon: 'check_circle',
+                    });
+                }
             }
         },
         validateConfirmPassword() {
