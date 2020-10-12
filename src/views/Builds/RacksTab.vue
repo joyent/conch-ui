@@ -109,6 +109,9 @@
                                 <td class="name">
                                     <span>{{ rack.name }}</span>
                                 </td>
+                                <td class="rack-role-name">
+                                    <span>{{ rack.rack_role_name }}</span>
+                                </td>
                                 <td class="datacenterRoom">
                                     <span>
                                         {{ rack.datacenter_room_alias }}
@@ -166,7 +169,7 @@ export default {
             addingRack: false,
             datacenterRoomAliases: [],
             datacenterRoomFilter: 'all',
-            headers: ['name', 'datacenter room alias', 'phase'],
+            headers: ['name', 'role', 'datacenter room alias', 'phase'],
             phaseFilter: 'all',
             phases: [
                 'Installation',
@@ -248,8 +251,17 @@ export default {
 
                 return racks.reduce((acc, rack) => {
                     const name = rack.name.toLowerCase();
+                    const role = rack.rack_role_name.toLowerCase();
+                    const datacenterRoomAlias = rack.datacenter_room_alias.toLowerCase();
+                    const phase = rack.phase.toLowerCase();
 
-                    if (search(searchText, name)) {
+                    if (
+                        (name && search(searchText, name)) ||
+                        (role && search(searchText, role)) ||
+                        (datacenterRoomAlias &&
+                            search(searchText, datacenterRoomAlias)) ||
+                        (phase && search(searchText, phase))
+                    ) {
                         acc.push(rack);
                     }
 

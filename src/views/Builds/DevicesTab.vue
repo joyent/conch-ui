@@ -61,29 +61,11 @@
                     >
                         <thead>
                             <th v-for="header in headers" :key="header">
-                                <a
+                                <span
                                     class="table-header-filter is-capitalized"
-                                    :class="{
-                                        'has-text-white': sortBy === header,
-                                    }"
-                                    @click="sort()"
                                 >
                                     {{ header }}
-                                    <i
-                                        class="fas fa-angle-down"
-                                        v-if="
-                                            sortBy === header && !reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                    <i
-                                        class="fas fa-angle-up"
-                                        v-else-if="
-                                            sortBy === header && reversedSort
-                                        "
-                                        style="margin-left: 10px;"
-                                    ></i>
-                                </a>
+                                </span>
                             </th>
                             <th></th>
                         </thead>
@@ -105,6 +87,16 @@
                                 @click="navigateToDevice(device)"
                                 style="cursor: pointer;"
                             >
+                                <td class="rack-unit">
+                                    <span>{{
+                                        `${device.rack_unit_start || 'N/A'}`
+                                    }}</span>
+                                </td>
+                                <td class="rack-name">
+                                    <span>{{
+                                        `${device.rack_name || 'N/A'}`
+                                    }}</span>
+                                </td>
                                 <td class="name">
                                     <span>{{ device.serial_number }}</span>
                                 </td>
@@ -115,7 +107,12 @@
                                     <span>{{ device.phase }}</span>
                                 </td>
                                 <td class="hardare-product">
-                                    <span>dell-2u-compute-v1-256g-10-12tb</span>
+                                    <span>{{
+                                        device.hardware_product_name
+                                    }}</span>
+                                </td>
+                                <td class="last-reported">
+                                    <span>{{ getDate(device.last_seen) }}</span>
                                 </td>
                                 <td class="remove-item has-text-right">
                                     <i
@@ -144,6 +141,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import orderBy from 'lodash/orderBy';
 import search from 'fuzzysearch';
 import AddDeviceModal from './AddDeviceModal.vue';
@@ -152,6 +150,7 @@ import { EventBus } from '@src/eventBus.js';
 import * as Builds from '@api/builds.js';
 import { mapState, mapActions } from 'vuex';
 import { getRackAssignment } from '@api/racks.js';
+import { getHardwareProducts } from '@api/hardwareProduct.js';
 
 export default {
     components: {
@@ -176,7 +175,15 @@ export default {
             devicePhaseFilter: 'all',
             deviceHealthFilter: 'all',
             devices: [],
-            headers: ['name', 'health', 'phase', 'hardware product'],
+            headers: [
+                'rack unit',
+                'rack name',
+                'name',
+                'health',
+                'phase',
+                'hardware product',
+                'last reported',
+            ],
             healthStates: ['Pass', 'Fail', 'Error', 'Unknown'],
             phases: [
                 'Installation',
@@ -185,26 +192,30 @@ export default {
                 'Diagnostics',
                 'Decommissioned',
             ],
-            previousSortBy: '',
             removeDevice: false,
             removingDevice: {},
-            reversedSort: false,
             searchText: '',
             showActionsDropdown: false,
             showRackDevices: false,
-            sortBy: '',
-            sortedDevices: [],
         };
     },
     methods: {
-        ...mapActions(['setActiveDeviceDetails', 'setCurrentBuildDevices']),
+        ...mapActions([
+            'setActiveDeviceDetails',
+            'setCurrentBuildDevices',
+            'setHardwareProducts',
+        ]),
         closeModal() {
             this.addDevice = false;
             this.removeDevice = false;
             this.removingDevice = {};
         },
-        isSortedBy(field) {
-            return this.sortBy === field || this.previousSortBy === field;
+        getDate(date) {
+            if (date) {
+                return moment(date).fromNow();
+            }
+
+            return 'N/A';
         },
         navigateToDevice(device) {
             this.setActiveDeviceDetails(device);
@@ -239,19 +250,9 @@ export default {
             this.removingDevice = device;
             this.removeDevice = true;
         },
-        sort(field) {
-            if (this.sortBy === field) {
-                this.previousSortBy = field;
-                this.sortBy = 'reverse';
-                this.reversedSort = true;
-            } else {
-                this.sortBy = field;
-                this.reversedSort = false;
-            }
-        },
     },
     computed: {
-        ...mapState(['currentBuildDevices']),
+        ...mapState(['currentBuildDevices', 'hardwareProducts']),
         filteredDevices() {
             let devices = this.devices;
 
@@ -261,8 +262,22 @@ export default {
 
                     return devices.reduce((acc, device) => {
                         const serialNumber = device.serial_number.toLowerCase();
+                        const rackUnit = device.rack_unit_start;
+                        const health = device.health.toLowerCase();
+                        const phase = device.phase.toLowerCase();
+                        const hardwareProduct = device.hardware_product_name.toLowerCase();
+                        const lastSeen = device.last_seen;
 
-                        if (search(searchText, serialNumber)) {
+                        if (
+                            (serialNumber &&
+                                search(searchText, serialNumber)) ||
+                            (rackUnit && search(searchText, rackUnit)) ||
+                            (health && search(searchText, health)) ||
+                            (phase && search(searchText, phase)) ||
+                            (hardwareProduct &&
+                                search(searchText, hardwareProduct)) ||
+                            (lastSeen && search(searchText, lastSeen))
+                        ) {
                             acc.push(device);
                         }
 
@@ -286,40 +301,11 @@ export default {
                     );
                 }
 
-                if (this.sortBy) {
-                    const sortBy = this.sortBy;
-                    devices = this.sortedDevices;
-
-                    if (sortBy !== 'reverse') {
-                        if (sortBy === 'name') {
-                            devices = orderBy(
-                                devices,
-                                [device => device.name],
-                                ['asc']
-                            );
-                        } else if (sortBy === 'graduated') {
-                            devices = orderBy(
-                                devices,
-                                [device => device.graduated],
-                                ['asc']
-                            );
-                        } else if (sortBy === 'validated') {
-                            devices = orderBy(
-                                devices,
-                                [device => device.validated],
-                                ['asc']
-                            );
-                        } else if (sortBy === 'phase') {
-                            devices = orderBy(
-                                devices,
-                                [device => device.phase],
-                                ['asc']
-                            );
-                        }
-                    } else {
-                        devices.reverse();
-                    }
-                }
+                devices = orderBy(
+                    devices,
+                    ['rack_name', 'rack_unit_start'],
+                    ['asc', 'desc']
+                );
             }
 
             return devices;
@@ -344,6 +330,27 @@ export default {
             }
         } else {
             this.devices = this.currentBuildDevices;
+        }
+
+        let hardwareProducts = this.hardwareProducts;
+
+        if (!hardwareProducts || !hardwareProducts.length) {
+            const response = await getHardwareProducts();
+            hardwareProducts = response.data;
+            this.setHardwareProducts(hardwareProducts);
+        }
+
+        for (let i = 0; i < this.devices.length; i++) {
+            const device = this.devices[i];
+
+            for (let j = 0; j < hardwareProducts.length; j++) {
+                const hardwareProduct = hardwareProducts[j];
+
+                if (hardwareProduct.id === device.hardware_product_id) {
+                    this.devices[i].hardware_product_name =
+                        hardwareProduct.name;
+                }
+            }
         }
 
         EventBus.$on(
