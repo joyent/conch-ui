@@ -1,4 +1,4 @@
-import { clearToken, requestWithToken } from './request.js';
+import { requestWithToken } from './request.js';
 
 export const createToken = name => {
     return requestWithToken({
@@ -143,7 +143,7 @@ export const updatePassword = (password, params) => {
         url: '/user/me/password',
         data: { password },
         params,
-    }).then(clearToken());
+    });
 };
 
 export const updateUser = (email, isAdmin, name) => {

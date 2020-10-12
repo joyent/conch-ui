@@ -4,6 +4,13 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store/store';
+import Toasted from 'vue-toasted';
+
+Vue.use(Toasted, {
+    className: 'toast-custom',
+    duration: 3000,
+    position: 'top-center',
+});
 
 Vue.config.productionTip = false;
 
