@@ -310,12 +310,19 @@ export default {
                         this.badEmailAddress = true;
                         this.badPassword = true;
 
-                        const errorMessage =
-                            (error.response &&
-                                error.response.data &&
-                                error.response.data.error) ||
-                            'An error occurred';
-                        this.$toasted.error(`Error: ${errorMessage}`, {
+                        let errorMessage;
+
+                        if (
+                            error.response &&
+                            error.response.data &&
+                            error.response.data.error
+                        ) {
+                            errorMessage = `Error: ${error.response.data.error}`;
+                        } else {
+                            errorMessage = 'An error occurred';
+                        }
+
+                        this.$toasted.error(errorMessage, {
                             action: [
                                 {
                                     icon: 'close',

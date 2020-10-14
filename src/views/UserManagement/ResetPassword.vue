@@ -298,7 +298,19 @@ export default {
                     this.isLoading = false;
                     this.resetFields();
                 } catch (error) {
-                    this.$toasted.error(`Error: ${error}`, {
+                    let errorMessage;
+
+                    if (
+                        error.response &&
+                        error.response.data &&
+                        error.response.data.error
+                    ) {
+                        errorMessage = `Error: ${error.response.data.error}`;
+                    } else {
+                        errorMessage = 'An error occurred';
+                    }
+
+                    this.$toasted.error(errorMessage, {
                         action: [
                             {
                                 icon: 'close',
