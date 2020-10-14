@@ -240,10 +240,28 @@ export default {
                             }
                         }
                     })
-                    .catch(() => {
+                    .catch(error => {
                         this.isLoading = false;
                         this.badEmailAddress = true;
                         this.badPassword = true;
+
+                        const errorMessage =
+                            (error.response &&
+                                error.response.data &&
+                                error.response.data.error) ||
+                            'An error occurred';
+                        this.$toasted.error(`Error: ${errorMessage}`, {
+                            action: [
+                                {
+                                    icon: 'close',
+                                    onClick: (e, toastObject) => {
+                                        toastObject.goAway(0);
+                                    },
+                                },
+                            ],
+                            duration: 8000,
+                            icon: 'error',
+                        });
                     });
             } else {
                 if (!this.emailAddress) {
