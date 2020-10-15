@@ -298,9 +298,29 @@ export default {
                     this.isLoading = false;
                     this.resetFields();
                 } catch (error) {
-                    this.$toasted.error(`An error occurred: ${error}`, {
-                        className: 'toast',
-                        icon: 'check_circle',
+                    let errorMessage;
+
+                    if (
+                        error.response &&
+                        error.response.data &&
+                        error.response.data.error
+                    ) {
+                        errorMessage = `Error: ${error.response.data.error}`;
+                    } else {
+                        errorMessage = 'An error occurred';
+                    }
+
+                    this.$toasted.error(errorMessage, {
+                        action: [
+                            {
+                                icon: 'close',
+                                onClick: (e, toastObject) => {
+                                    toastObject.goAway(0);
+                                },
+                            },
+                        ],
+                        duration: 8000,
+                        icon: 'error',
                     });
                 }
             }

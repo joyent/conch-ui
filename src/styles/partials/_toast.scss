@@ -1,3 +1,15 @@
 .toasted.toasted-primary.toast-custom {
+    border-radius: 4px;
     font-weight: bold;
+
+    a.action {
+        color: #ffffff;
+        margin-left: 14px;
+    }
+}
+
+.toasted-container.toast-container-custom {
+    &.top-center {
+        top: 6%;
+    }
 }

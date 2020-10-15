@@ -8,7 +8,8 @@ import Toasted from 'vue-toasted';
 
 Vue.use(Toasted, {
     className: 'toast-custom',
-    duration: 3000,
+    containerClass: 'toast-container-custom',
+    duration: 3500,
     position: 'top-center',
 });
 
