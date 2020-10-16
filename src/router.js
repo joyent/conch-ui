@@ -9,11 +9,10 @@ import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTok
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import PasswordReset from './views/PasswordReset/PasswordReset.vue';
-import BuildsList from './views/Builds/BuildsList.vue';
+import Builds from './views/Builds/Builds.vue';
 import Build from './views/Builds/Build.vue';
 import Organizations from './views/Organizations/Organizations.vue';
 import Organization from './views/Organizations/Organization.vue';
-import Dashboard from './views/Dashboard/Dashboard.vue';
 import HardwareProduct from './views/HardwareProducts/HardwareProduct.vue';
 import HardwareProducts from './views/HardwareProducts/HardwareProducts.vue';
 import OverviewTab from './views/Builds/OverviewTab.vue';
@@ -30,14 +29,6 @@ export default new Router({
             path: '/',
             name: 'signIn',
             component: SignIn,
-        },
-        {
-            path: '/dashboard',
-            name: 'dashboard',
-            components: {
-                default: Dashboard,
-                sidebar: Sidebar,
-            },
         },
         {
             path: '/devices',
@@ -160,7 +151,7 @@ export default new Router({
             path: '/builds',
             name: 'builds',
             components: {
-                default: BuildsList,
+                default: Builds,
                 sidebar: Sidebar,
             },
         },

@@ -46,9 +46,20 @@
                     <div class="build-devices">
                         <div class="box-header">
                             <i class="material-icons">dns</i>
-                            <p class="heading is-size-6">Devices Overview</p>
+                            <p class="heading is-size-5">Devices Overview</p>
+                            <router-link
+                                class="button view-all"
+                                :to="{
+                                    name: 'build-devices',
+                                    params: { id: currentBuild.id },
+                                }"
+                                tag="a"
+                            >
+                                <strong>View All Devices</strong>
+                                <i class="material-icons">arrow_forward</i>
+                            </router-link>
                         </div>
-                        <p class="subtitle is-4">Phase</p>
+                        <p class="subtitle is-5">Phase</p>
                         <div class="columns">
                             <div
                                 class="column"
@@ -76,7 +87,7 @@
                                 </a>
                             </div>
                         </div>
-                        <p class="subtitle is-4">Health</p>
+                        <p class="subtitle is-5">Health</p>
                         <div class="columns">
                             <div
                                 class="column"
@@ -116,19 +127,6 @@
                             </div>
                         </div>
                     </div>
-                    <router-link
-                        class="button is-fullwidth is-medium view-all"
-                        :to="{
-                            name: 'build-devices',
-                            params: { id: currentBuild.id },
-                        }"
-                        tag="a"
-                    >
-                        <span class="heading is-marginless is-size-6">
-                            View All Devices
-                        </span>
-                        <i class="material-icons view-all">arrow_forward</i>
-                    </router-link>
                 </div>
             </div>
         </div>
@@ -138,9 +136,20 @@
                     <div class="rack-devices">
                         <div class="box-header">
                             <i class="material-icons">storage</i>
-                            <p class="heading is-size-6">Racks Overview</p>
+                            <p class="heading is-size-5">Racks Overview</p>
+                            <router-link
+                                class="button view-all"
+                                :to="{
+                                    name: 'build-racks',
+                                    params: { id: currentBuild.id },
+                                }"
+                                tag="a"
+                            >
+                                <strong>View All Racks</strong>
+                                <i class="material-icons">arrow_forward</i>
+                            </router-link>
                         </div>
-                        <p class="subtitle is-4">Phase</p>
+                        <p class="subtitle is-5">Phase</p>
                         <div class="columns">
                             <div
                                 class="column"
@@ -169,19 +178,6 @@
                             </div>
                         </div>
                     </div>
-                    <router-link
-                        class="button is-fullwidth is-medium view-all"
-                        :to="{
-                            name: 'build-racks',
-                            params: { id: currentBuild.id },
-                        }"
-                        tag="a"
-                    >
-                        <span class="heading is-marginless is-size-6">
-                            View All Racks
-                        </span>
-                        <i class="material-icons view-all">arrow_forward</i>
-                    </router-link>
                 </div>
             </div>
         </div>

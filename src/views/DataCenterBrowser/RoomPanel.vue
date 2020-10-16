@@ -1,6 +1,6 @@
 <template>
     <nav class="panel room-panel">
-        <p class="panel-heading has-text-centered">Datacenter Rooms</p>
+        <p class="panel-heading has-text-centered">Data Center Rooms</p>
         <div class="panel-block">
             <p class="control has-icons-left">
                 <input

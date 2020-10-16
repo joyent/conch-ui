@@ -301,7 +301,7 @@ export default {
                                     path: this.$route.query.redirect,
                                 });
                             } else {
-                                this.$router.push({ name: 'dashboard' });
+                                this.$router.push({ name: 'builds' });
                             }
                         }
                     })

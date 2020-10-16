@@ -9,21 +9,21 @@
             </article>
         </transition>
         <div class="build-header">
-            <router-link
-                v-if="$route.name === 'builds'"
-                :to="{
-                    name: 'build-overview',
-                    params: { id: currentBuild.id },
-                }"
-                class="build-name title has-text-white"
-                tag="a"
-            >
-                {{ currentBuild.name }}
-            </router-link>
-            <p v-else class="build-name title has-text-white">
+            <p class="build-name title has-text-white">
                 {{ currentBuild.name }}
             </p>
             <div class="field is-grouped">
+                <p class="control">
+                    <a
+                        class="button is-dark"
+                        @click="$router.push({ name: 'builds' })"
+                    >
+                        <span class="icon">
+                            <i class="material-icons">arrow_back</i>
+                        </span>
+                        <strong>Back To Builds</strong>
+                    </a>
+                </p>
                 <p class="control" v-if="!currentBuild.started">
                     <a class="button is-success" @click="updateBuild('start')">
                         Start Build
@@ -55,7 +55,6 @@
                 </p>
             </div>
         </div>
-        <p class="build-id has-text-grey">Build ID: {{ currentBuild.id }}</p>
         <div class="tabs is-toggle">
             <ul>
                 <li
