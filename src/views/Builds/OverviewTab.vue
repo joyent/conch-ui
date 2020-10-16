@@ -57,7 +57,13 @@
                             >
                                 <a
                                     :class="`filter-devices-phase-${phase}`"
-                                    @click="filterDevicesByPhase(phase)"
+                                    @click="
+                                        $router.push({
+                                            name: 'build-devices',
+                                            params: { id: currentBuild.id },
+                                            query: { devicePhase: phase },
+                                        })
+                                    "
                                 >
                                     <div class="box filter">
                                         <h2 class="is-6 is-capitalized">
@@ -79,7 +85,13 @@
                             >
                                 <a
                                     :class="`filter-devices-health-${status}`"
-                                    @click="filterDevicesByHealth(status)"
+                                    @click="
+                                        $router.push({
+                                            name: 'build-devices',
+                                            params: { id: currentBuild.id },
+                                            query: { deviceHealth: status },
+                                        })
+                                    "
                                 >
                                     <div class="box filter">
                                         <h2 class="is-6 is-capitalized">
@@ -104,15 +116,19 @@
                             </div>
                         </div>
                     </div>
-                    <a
+                    <router-link
                         class="button is-fullwidth is-medium view-all"
-                        @click="changeTab('DevicesTab')"
+                        :to="{
+                            name: 'build-devices',
+                            params: { id: currentBuild.id },
+                        }"
+                        tag="a"
                     >
                         <span class="heading is-marginless is-size-6">
                             View All Devices
                         </span>
                         <i class="material-icons view-all">arrow_forward</i>
-                    </a>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -133,7 +149,13 @@
                             >
                                 <a
                                     :class="`filter-racks-phase-${phase}`"
-                                    @click="filterRackByPhase(phase)"
+                                    @click="
+                                        $router.push({
+                                            name: 'build-racks',
+                                            params: { id: currentBuild.id },
+                                            query: { rackPhase: phase },
+                                        })
+                                    "
                                 >
                                     <div class="box filter">
                                         <h2 class="is-6 is-capitalized">
@@ -147,15 +169,19 @@
                             </div>
                         </div>
                     </div>
-                    <a
+                    <router-link
                         class="button is-fullwidth is-medium view-all"
-                        @click="changeTab('RacksTab')"
+                        :to="{
+                            name: 'build-racks',
+                            params: { id: currentBuild.id },
+                        }"
+                        tag="a"
                     >
                         <span class="heading is-marginless is-size-6">
                             View All Racks
                         </span>
                         <i class="material-icons view-all">arrow_forward</i>
-                    </a>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -164,7 +190,6 @@
 
 <script>
 import moment from 'moment';
-import { EventBus } from '@src/eventBus.js';
 import { mapState } from 'vuex';
 
 export default {
@@ -181,24 +206,6 @@ export default {
         };
     },
     methods: {
-        changeTab(tab) {
-            this.$parent.changeTab(tab);
-        },
-        filterDevicesByHealth(health) {
-            this.$parent.changeTab('DevicesTab');
-
-            EventBus.$emit('setDeviceTabHealthFilter', health);
-        },
-        filterDevicesByPhase(phase) {
-            this.$parent.changeTab('DevicesTab');
-
-            EventBus.$emit('setDeviceTabPhaseFilter', phase);
-        },
-        filterRackByPhase(phase) {
-            this.$parent.changeTab('RacksTab');
-
-            EventBus.$emit('setRackTabPhaseFilter', phase);
-        },
         getDate(date) {
             return moment(date).format('YYYY/MM/DD');
         },

@@ -1,5 +1,21 @@
 <template>
     <div class="devices-tab">
+        <div
+            class="custom-tags"
+            v-if="rack && rack.name"
+            style="margin-bottom: 15px; margin-top: -10px;"
+        >
+            <label class="tag-label">Rack</label>
+            <div class="tag-value">
+                {{ rack.name }}
+            </div>
+            <a
+                class="button is-text"
+                style="margin-left: 5px"
+                @click="clearRack()"
+                >Clear Rack</a
+            >
+        </div>
         <div class="columns">
             <div class="column">
                 <div class="devices-table is-paddingless">
@@ -21,7 +37,10 @@
                         <div class="select-with-label phase">
                             <label class="select-label">Phase</label>
                             <div class="select device-phase">
-                                <select v-model="devicePhaseFilter">
+                                <select
+                                    v-model="devicePhaseFilter"
+                                    class="is-capitalized"
+                                >
                                     <option value="all">All</option>
                                     <option
                                         v-for="phase in phases"
@@ -36,7 +55,10 @@
                         <div class="select-with-label health">
                             <label class="select-label">Health</label>
                             <div class="select device-health">
-                                <select v-model="deviceHealthFilter">
+                                <select
+                                    v-model="deviceHealthFilter"
+                                    class="is-capitalized"
+                                >
                                     <option value="all">All</option>
                                     <option
                                         v-for="state in healthStates"
@@ -149,24 +171,13 @@ import RemoveItemModal from './RemoveItemModal.vue';
 import { EventBus } from '@src/eventBus.js';
 import * as Builds from '@api/builds.js';
 import { mapState, mapActions } from 'vuex';
-import { getRackAssignment } from '@api/racks.js';
+import { getRack, getRackAssignment } from '@api/racks.js';
 import { getHardwareProducts } from '@api/hardwareProduct.js';
 
 export default {
     components: {
         AddDeviceModal,
         RemoveItemModal,
-    },
-    props: {
-        buildId: {
-            type: String,
-            required: true,
-        },
-        rack: {
-            type: Object,
-            required: false,
-            default: () => null,
-        },
     },
     data() {
         return {
@@ -184,19 +195,19 @@ export default {
                 'hardware product',
                 'last reported',
             ],
-            healthStates: ['Pass', 'Fail', 'Error', 'Unknown'],
+            healthStates: ['pass', 'fail', 'error', 'unknown'],
             phases: [
-                'Installation',
-                'Integration',
-                'Production',
-                'Diagnostics',
-                'Decommissioned',
+                'installation',
+                'integration',
+                'production',
+                'diagnostics',
+                'decommissioned',
             ],
+            rack: {},
             removeDevice: false,
             removingDevice: {},
             searchText: '',
             showActionsDropdown: false,
-            showRackDevices: false,
         };
     },
     methods: {
@@ -205,6 +216,14 @@ export default {
             'setCurrentBuildDevices',
             'setHardwareProducts',
         ]),
+        clearRack() {
+            this.rack = {};
+            this.devices = this.currentBuildDevices;
+
+            const query = Object.assign({}, this.$route.query);
+            delete query.rackId;
+            this.$router.replace({ query });
+        },
         closeModal() {
             this.addDevice = false;
             this.removeDevice = false;
@@ -225,13 +244,13 @@ export default {
             });
         },
         refetchCurrentBuildDevices() {
-            Builds.getBuildDevices(this.buildId).then(response => {
+            Builds.getBuildDevices(this.currentBuild.id).then(response => {
                 this.setCurrentBuildDevices(response.data);
             });
         },
         removeDeviceFromBuild() {
             Builds.removeDeviceFromBuild(
-                this.buildId,
+                this.currentBuild.id,
                 this.removingDevice.id
             ).then(() => {
                 EventBus.$emit('item-removed');
@@ -242,17 +261,17 @@ export default {
         showAddDeviceModal() {
             this.addDevice = true;
         },
-        showAllDevices() {
-            this.devices = this.currentBuildDevices;
-            this.showRackDevices = false;
-        },
         showRemoveDeviceModal(device) {
             this.removingDevice = device;
             this.removeDevice = true;
         },
     },
     computed: {
-        ...mapState(['currentBuildDevices', 'hardwareProducts']),
+        ...mapState([
+            'currentBuild',
+            'currentBuildDevices',
+            'hardwareProducts',
+        ]),
         filteredDevices() {
             let devices = this.devices;
 
@@ -312,24 +331,44 @@ export default {
         },
     },
     async created() {
-        if (this.rack.id) {
-            const response = await getRackAssignment(this.rack.id);
-            const rackDevices = response.data;
+        if (this.$route.query) {
+            const routeQuery = this.$route.query;
 
-            this.showRackDevices = true;
+            if (routeQuery.rackId) {
+                const rackId = routeQuery.rackId;
 
-            for (let i = 0; i < rackDevices.length; i++) {
-                const device = rackDevices[i];
-                const buildDevice = this.currentBuildDevices.find(
-                    buildDevice => buildDevice.id === device.device_id
-                );
+                const [
+                    rackResponse,
+                    rackAssignmentResponse,
+                ] = await Promise.all([
+                    getRack(rackId),
+                    getRackAssignment(rackId),
+                ]);
 
-                if (buildDevice.id) {
-                    this.devices.push(buildDevice);
+                this.rack = rackResponse.data;
+                const rackDevices = rackAssignmentResponse.data;
+
+                for (let i = 0; i < rackDevices.length; i++) {
+                    const device = rackDevices[i];
+                    const buildDevice = this.currentBuildDevices.find(
+                        buildDevice => buildDevice.id === device.device_id
+                    );
+
+                    if (buildDevice.id) {
+                        this.devices.push(buildDevice);
+                    }
                 }
+            } else {
+                this.devices = this.currentBuildDevices;
             }
-        } else {
-            this.devices = this.currentBuildDevices;
+
+            if (routeQuery.devicePhase) {
+                this.devicePhaseFilter = routeQuery.devicePhase;
+            }
+
+            if (routeQuery.deviceHealth) {
+                this.deviceHealthFilter = routeQuery.deviceHealth;
+            }
         }
 
         let hardwareProducts = this.hardwareProducts;
@@ -367,10 +406,9 @@ export default {
         EventBus.$on('device-added-to-build', () => {
             this.refetchCurrentBuildDevices();
         });
-
-        EventBus.$on('device-tab-clicked', () => {
-            this.showAllDevices();
-        });
+    },
+    destroyed() {
+        this.rack = {};
     },
 };
 </script>

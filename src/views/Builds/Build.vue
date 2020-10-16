@@ -11,7 +11,10 @@
         <div class="build-header">
             <router-link
                 v-if="$route.name === 'builds'"
-                :to="{ name: 'build', params: { id: currentBuild.id } }"
+                :to="{
+                    name: 'build-overview',
+                    params: { id: currentBuild.id },
+                }"
                 class="build-name title has-text-white"
                 tag="a"
             >
@@ -56,76 +59,33 @@
         <div class="tabs is-toggle">
             <ul>
                 <li
-                    :class="{ 'is-active': currentTab === tab.component }"
+                    :class="{ 'is-active': $route.name === `build-${tab.key}` }"
                     v-for="tab in tabs"
                     :key="tab.name"
                 >
-                    <a
-                        :class="`tab is-uppercase ${tab.class}`"
-                        @click="changeTab(tab.component)"
+                    <router-link
+                        :to="{
+                            name: `build-${tab.key}`,
+                            params: { id: currentBuild.id },
+                        }"
+                        class="tab is-uppercase"
+                        tag="a"
                     >
                         {{ tab.name }}
-                    </a>
+                    </router-link>
                 </li>
             </ul>
         </div>
-        <div
-            class="custom-tags"
-            v-if="rack && rack.name"
-            style="margin-bottom: 15px; margin-top: -10px;"
-        >
-            <label class="tag-label">Rack</label>
-            <div class="tag-value">
-                {{ rack.name }}
-            </div>
-            <a
-                class="button is-text"
-                style="margin-left: 5px"
-                @click="clearRack()"
-                >Clear Rack</a
-            >
-        </div>
-        <OverviewTab v-if="currentTab === 'OverviewTab'" />
-        <OrganizationsTab
-            :build-id="currentBuild.id"
-            v-if="userIsAdmin && currentTab === 'OrganizationsTab'"
-        />
-        <MembersTab
-            :build-id="currentBuild.id"
-            v-if="userIsAdmin && currentTab === 'MembersTab'"
-        />
-        <RacksTab
-            :build-id="currentBuild.id"
-            v-if="currentTab === 'RacksTab'"
-            @rack-selected="selectRack"
-        />
-        <DevicesTab
-            :build-id="currentBuild.id"
-            v-if="currentTab === 'DevicesTab'"
-            :rack="rack"
-        />
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
-import DevicesTab from './DevicesTab.vue';
-import OverviewTab from './OverviewTab.vue';
-import RacksTab from './RacksTab.vue';
-import MembersTab from './MembersTab.vue';
-import OrganizationsTab from './OrganizationsTab.vue';
-import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
 import { getOrganizations } from '@api/organizations.js';
 
 export default {
-    components: {
-        DevicesTab,
-        MembersTab,
-        OrganizationsTab,
-        OverviewTab,
-        RacksTab,
-    },
     props: {
         buildId: {
             type: String,
@@ -137,8 +97,6 @@ export default {
         return {
             action: '',
             buildUpdated: false,
-            currentTab: 'OverviewTab',
-            rack: {},
         };
     },
     methods: {
@@ -151,17 +109,6 @@ export default {
             'setDevices',
             'setOrganizations',
         ]),
-        changeTab(tab) {
-            this.currentTab = tab;
-
-            if (this.currentTab === 'DevicesTab' && tab === 'DevicesTab') {
-                this.clearRack();
-            }
-        },
-        clearRack() {
-            this.rack = {};
-            EventBus.$emit('device-tab-clicked');
-        },
         getBuildData(buildId) {
             Builds.getBuild(buildId).then(response => {
                 this.setCurrentBuild(response.data);
@@ -273,29 +220,29 @@ export default {
         tabs() {
             const tabs = [
                 {
-                    class: 'overview-tab',
+                    key: 'overview',
                     component: 'OverviewTab',
                     name: 'Overview',
                 },
                 {
-                    class: 'racks-tab',
+                    key: 'racks',
                     component: 'RacksTab',
                     name: 'Racks',
                 },
                 {
-                    class: 'devices-tab',
+                    key: 'devices',
                     component: 'DevicesTab',
                     name: 'Devices',
                 },
             ];
             const adminTabs = [
                 {
-                    class: 'members-tab',
+                    key: 'members',
                     component: 'MembersTab',
                     name: 'Members',
                 },
                 {
-                    class: 'organizations-tab',
+                    key: 'organizations',
                     component: 'OrganizationsTab',
                     name: 'Organizations',
                 },

@@ -53,7 +53,7 @@
         <div class="cards grid-view" v-if="activeView === 'grid'">
             <div class="card" v-for="build in filteredBuilds" :key="build.id">
                 <router-link
-                    :to="{ name: 'build', params: { id: build.id } }"
+                    :to="{ name: 'build-overview', params: { id: build.id } }"
                     style="display: flex; flex-direction: column; height: 100%;"
                 >
                     <div class="card-content" style="flex-grow: 1;">

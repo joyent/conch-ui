@@ -144,12 +144,6 @@ export default {
         AddOrganizationModal,
         RemoveItemModal,
     },
-    props: {
-        buildId: {
-            type: String,
-            required: true,
-        },
-    },
     data() {
         return {
             addOrganization: false,
@@ -170,13 +164,15 @@ export default {
             this.removingOrganization = {};
         },
         refetchCurrentBuildOrganizations() {
-            Builds.getBuildOrganizations(this.buildId).then(response => {
-                this.setCurrentBuildOrganizations(response.data);
-            });
+            Builds.getBuildOrganizations(this.currentBuild.id).then(
+                response => {
+                    this.setCurrentBuildOrganizations(response.data);
+                }
+            );
         },
         removeOrganizationFromBuild() {
             Builds.removeOrganizationFromBuild(
-                this.buildId,
+                this.currentBuild.id,
                 this.removingOrganization.id
             ).then(() => {
                 EventBus.$emit('item-removed');
@@ -193,7 +189,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentBuildOrganizations']),
+        ...mapState(['currentBuild', 'currentBuildOrganizations']),
         filteredOrganizations() {
             let organizations = this.currentBuildOrganizations;
 

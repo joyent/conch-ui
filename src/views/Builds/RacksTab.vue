@@ -21,7 +21,10 @@
                         <div class="select-with-label phase">
                             <label class="select-label">Phase</label>
                             <div class="select device-phase">
-                                <select v-model="phaseFilter">
+                                <select
+                                    v-model="phaseFilter"
+                                    class="is-capitalized"
+                                >
                                     <option value="all">All</option>
                                     <option
                                         :value="phase"
@@ -101,7 +104,13 @@
                                 class="row"
                                 v-for="rack in filteredRacks"
                                 :key="rack.id"
-                                @click="selectRack(rack)"
+                                @click="
+                                    $router.push({
+                                        name: 'build-devices',
+                                        params: { id: currentBuild.id },
+                                        query: { rackId: rack.id },
+                                    })
+                                "
                                 :style="{
                                     cursor: userIsAdmin ? 'pointer' : 'default',
                                 }"
@@ -158,12 +167,6 @@ export default {
         AddRackModal,
         RemoveItemModal,
     },
-    props: {
-        buildId: {
-            type: String,
-            required: true,
-        },
-    },
     data() {
         return {
             addingRack: false,
@@ -172,11 +175,11 @@ export default {
             headers: ['name', 'role', 'datacenter room alias', 'phase'],
             phaseFilter: 'all',
             phases: [
-                'Installation',
-                'Integration',
-                'Production',
-                'Diagnostics',
-                'Decommissioned',
+                'installation',
+                'integration',
+                'production',
+                'diagnostics',
+                'decommissioned',
             ],
             removeRack: false,
             removingRack: {},
@@ -217,13 +220,13 @@ export default {
             this.removeRack = true;
         },
         refetchCurrentBuildRacks() {
-            Builds.getBuildRacks(this.buildId).then(response => {
+            Builds.getBuildRacks(this.currentBuild.id).then(response => {
                 this.setCurrentBuildRacks(response.data);
             });
         },
     },
     computed: {
-        ...mapState(['currentBuildRacks', 'currentUser']),
+        ...mapState(['currentBuild', 'currentBuildRacks', 'currentUser']),
         availableDatacenterRooms() {
             if (!this.currentBuildRacks.length) {
                 return [];
@@ -293,7 +296,7 @@ export default {
 
             if (user && user.builds && user.builds.length) {
                 const build = user.builds.find(
-                    build => build.id === this.buildId
+                    build => build.id === this.currentBuild.id
                 );
 
                 if (build && build.role === 'admin') {
@@ -305,6 +308,10 @@ export default {
         },
     },
     created() {
+        if (this.$route.query && this.$route.query.rackPhase) {
+            this.phaseFilter = this.$route.query.rackPhase;
+        }
+
         this.datacenterRoomAliases = this.currentBuildRacks.map(
             rack => rack.datacenter_room_alias
         );

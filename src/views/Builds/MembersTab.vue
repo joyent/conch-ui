@@ -164,12 +164,6 @@ export default {
         AddUsersModal,
         RemoveItemModal,
     },
-    props: {
-        buildId: {
-            type: String,
-            required: true,
-        },
-    },
     data() {
         return {
             addUser: false,
@@ -189,16 +183,18 @@ export default {
             this.removingUser = {};
         },
         refetchCurrentBuildUsers() {
-            Builds.getBuildUsers(this.buildId).then(response => {
+            Builds.getBuildUsers(this.currentBuild.id).then(response => {
                 this.setCurrentBuildUsers(response.data);
             });
         },
         removeUserFromBuild(user) {
-            Builds.removeUserFromBuild(this.buildId, user.id).then(() => {
-                EventBus.$emit('item-removed');
+            Builds.removeUserFromBuild(this.currentBuild.id, user.id).then(
+                () => {
+                    EventBus.$emit('item-removed');
 
-                this.refetchCurrentBuildUsers();
-            });
+                    this.refetchCurrentBuildUsers();
+                }
+            );
         },
         showAddUserModal() {
             this.addUser = true;
@@ -210,7 +206,7 @@ export default {
         sort() {},
     },
     computed: {
-        ...mapState(['currentBuildUsers']),
+        ...mapState(['currentBuild', 'currentBuildUsers']),
         adminUsersCount() {
             if (this.buildHasUsers) {
                 return this.currentBuildUsers.filter(
