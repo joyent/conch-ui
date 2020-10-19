@@ -24,6 +24,7 @@
                                 <select
                                     v-model="phaseFilter"
                                     class="is-capitalized"
+                                    @change="changeFilter($event, 'phase')"
                                 >
                                     <option value="all">All</option>
                                     <option
@@ -41,7 +42,11 @@
                                 >Datacenter Room Alias</label
                             >
                             <div class="select device-phase">
-                                <select v-model="datacenterRoomFilter">
+                                <select
+                                    v-model="datacenterRoomFilter"
+                                    class="is-capitalized"
+                                    @change="changeFilter($event, 'room')"
+                                >
                                     <option value="all" selected>All</option>
                                     <option
                                         v-for="(alias,
@@ -189,6 +194,27 @@ export default {
     },
     methods: {
         ...mapActions(['setCurrentBuildRacks']),
+        changeFilter(event, filter) {
+            let phaseFilter, roomFilter;
+            const eventValue = event && event.target && event.target.value;
+
+            if (filter === 'phase') {
+                phaseFilter = eventValue;
+                roomFilter = this.$route.query.room;
+            } else {
+                phaseFilter = this.$route.query.phase;
+                roomFilter = eventValue;
+            }
+
+            this.$router.push({
+                name: 'build-racks',
+                params: { id: this.currentBuild.id },
+                query: {
+                    phase: phaseFilter || 'all',
+                    room: roomFilter || 'all',
+                },
+            });
+        },
         closeModal() {
             this.addingRack = false;
             this.removeRack = false;
@@ -308,8 +334,12 @@ export default {
         },
     },
     created() {
-        if (this.$route.query && this.$route.query.rackPhase) {
-            this.phaseFilter = this.$route.query.rackPhase;
+        if (this.$route.query && this.$route.query.phase) {
+            this.phaseFilter = this.$route.query.phase;
+        }
+
+        if (this.$route.query && this.$route.query.room) {
+            this.datacenterRoomFilter = this.$route.query.room;
         }
 
         this.datacenterRoomAliases = this.currentBuildRacks.map(

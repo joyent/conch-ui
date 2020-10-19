@@ -21,7 +21,11 @@
                         <div class="select-with-label role">
                             <label class="select-label">Role</label>
                             <div class="select role-type">
-                                <select v-model="roleFilter">
+                                <select
+                                    v-model="roleFilter"
+                                    class="is-capitalized"
+                                    @change="changeFilter($event)"
+                                >
                                     <option value="all">All</option>
                                     <option value="admin">Admin</option>
                                     <option value="regular">
@@ -158,6 +162,16 @@ export default {
     },
     methods: {
         ...mapActions(['setCurrentBuildOrganizations']),
+        changeFilter(event) {
+            this.$router.push({
+                name: 'build-organizations',
+                params: { id: this.currentBuild.id },
+                query: {
+                    role:
+                        (event && event.target && event.target.value) || 'all',
+                },
+            });
+        },
         closeModal() {
             this.addOrganization = false;
             this.removeOrganization = false;
@@ -225,6 +239,10 @@ export default {
         },
     },
     created() {
+        if (this.$route.query && this.$route.query.role) {
+            this.roleFilter = this.$route.query.role;
+        }
+
         EventBus.$on(
             ['close-modal:add-item', 'close-modal:remove-item'],
             () => {

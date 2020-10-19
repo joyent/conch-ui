@@ -72,7 +72,7 @@
                                         $router.push({
                                             name: 'build-devices',
                                             params: { id: currentBuild.id },
-                                            query: { devicePhase: phase },
+                                            query: { health: 'all', phase },
                                         })
                                     "
                                 >
@@ -100,7 +100,10 @@
                                         $router.push({
                                             name: 'build-devices',
                                             params: { id: currentBuild.id },
-                                            query: { deviceHealth: status },
+                                            query: {
+                                                health: status,
+                                                phase: 'all',
+                                            },
                                         })
                                     "
                                 >
@@ -162,7 +165,7 @@
                                         $router.push({
                                             name: 'build-racks',
                                             params: { id: currentBuild.id },
-                                            query: { rackPhase: phase },
+                                            query: { phase, room: 'all' },
                                         })
                                     "
                                 >

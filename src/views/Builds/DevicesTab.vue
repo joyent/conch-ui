@@ -34,30 +34,13 @@
                                 <i class="material-icons search">search</i>
                             </span>
                         </div>
-                        <div class="select-with-label phase">
-                            <label class="select-label">Phase</label>
-                            <div class="select device-phase">
-                                <select
-                                    v-model="devicePhaseFilter"
-                                    class="is-capitalized"
-                                >
-                                    <option value="all">All</option>
-                                    <option
-                                        v-for="phase in phases"
-                                        :key="phase"
-                                        :value="phase"
-                                    >
-                                        {{ phase }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
                         <div class="select-with-label health">
                             <label class="select-label">Health</label>
                             <div class="select device-health">
                                 <select
                                     v-model="deviceHealthFilter"
                                     class="is-capitalized"
+                                    @change="changeFilter($event, 'health')"
                                 >
                                     <option value="all">All</option>
                                     <option
@@ -66,6 +49,25 @@
                                         :value="state"
                                     >
                                         {{ state }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="select-with-label phase">
+                            <label class="select-label">Phase</label>
+                            <div class="select device-phase">
+                                <select
+                                    v-model="devicePhaseFilter"
+                                    class="is-capitalized"
+                                    @change="changeFilter($event, 'phase')"
+                                >
+                                    <option value="all">All</option>
+                                    <option
+                                        v-for="phase in phases"
+                                        :key="phase"
+                                        :value="phase"
+                                    >
+                                        {{ phase }}
                                     </option>
                                 </select>
                             </div>
@@ -216,6 +218,27 @@ export default {
             'setCurrentBuildDevices',
             'setHardwareProducts',
         ]),
+        changeFilter(event, filter) {
+            let healthFilter, phaseFilter;
+            const eventValue = event && event.target && event.target.value;
+
+            if (filter === 'health') {
+                healthFilter = eventValue;
+                phaseFilter = this.$route.query.phase;
+            } else {
+                healthFilter = this.$route.query.health;
+                phaseFilter = eventValue;
+            }
+
+            this.$router.push({
+                name: 'build-devices',
+                params: { id: this.currentBuild.id },
+                query: {
+                    health: healthFilter || 'all',
+                    phase: phaseFilter || 'all',
+                },
+            });
+        },
         clearRack() {
             this.rack = {};
             this.devices = this.currentBuildDevices;
@@ -362,12 +385,12 @@ export default {
                 this.devices = this.currentBuildDevices;
             }
 
-            if (routeQuery.devicePhase) {
-                this.devicePhaseFilter = routeQuery.devicePhase;
+            if (routeQuery.phase) {
+                this.devicePhaseFilter = routeQuery.phase;
             }
 
-            if (routeQuery.deviceHealth) {
-                this.deviceHealthFilter = routeQuery.deviceHealth;
+            if (routeQuery.health) {
+                this.deviceHealthFilter = routeQuery.health;
             }
         }
 

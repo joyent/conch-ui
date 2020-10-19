@@ -21,11 +21,15 @@
                         <div class="select-with-label role">
                             <label class="select-label">Role</label>
                             <div class="select member-type">
-                                <select v-model="userFilter">
+                                <select
+                                    v-model="roleFilter"
+                                    class="is-capitalized"
+                                    @change="changeFilter($event)"
+                                >
                                     <option value="all">All</option>
                                     <option value="admin">Admin</option>
                                     <option value="regular">
-                                        Regular Member
+                                        Regular
                                     </option>
                                 </select>
                             </div>
@@ -170,13 +174,23 @@ export default {
             headers: ['name', 'role', 'permissions'],
             removeUser: false,
             removingUser: {},
+            roleFilter: 'all',
             searchText: '',
             sortBy: '',
-            userFilter: 'all',
         };
     },
     methods: {
         ...mapActions(['setCurrentBuildUsers']),
+        changeFilter(event) {
+            this.$router.push({
+                name: 'build-members',
+                params: { id: this.currentBuild.id },
+                query: {
+                    role:
+                        (event && event.target && event.target.value) || 'all',
+                },
+            });
+        },
         closeModal() {
             this.addUser = false;
             this.removeUser = false;
@@ -240,12 +254,12 @@ export default {
                 }, []);
             }
 
-            if (this.userFilter !== 'all') {
-                const userFilter = this.userFilter;
+            if (this.roleFilter !== 'all') {
+                const roleFilter = this.roleFilter;
 
-                if (userFilter === 'admin') {
+                if (roleFilter === 'admin') {
                     return users.filter(user => user.role === 'admin');
-                } else if (userFilter === 'regular') {
+                } else if (roleFilter === 'regular') {
                     return users.filter(user => user.role !== 'admin');
                 }
             }
@@ -263,6 +277,10 @@ export default {
         },
     },
     created() {
+        if (this.$route.query && this.$route.query.role) {
+            this.roleFilter = this.$route.query.role;
+        }
+
         EventBus.$on(
             ['close-modal:add-item', 'close-modal:remove-item'],
             () => {
