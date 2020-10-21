@@ -189,7 +189,9 @@
 
 <script>
 import moment from 'moment';
-import { mapState } from 'vuex';
+import isEmpty from 'lodash/isEmpty';
+import { mapActions, mapState } from 'vuex';
+import { getBuildDevices, getBuildRacks } from '@api/builds.js';
 
 export default {
     data() {
@@ -205,6 +207,11 @@ export default {
         };
     },
     methods: {
+        ...mapActions([
+            'setCurrentBuild',
+            'setCurrentBuildDevices',
+            'setCurrentBuildRacks',
+        ]),
         getDate(date) {
             return moment(date).format('YYYY/MM/DD');
         },
@@ -241,6 +248,34 @@ export default {
                 }
             }).length;
         },
+        async fetchData() {
+            const buildId = this.$route.params.id;
+            const currentBuild = this.currentBuild;
+            const currentBuildDevices = this.currentBuildDevices;
+            const currentBuildRacks = this.currentBuildRacks;
+
+            if (
+                !currentBuild ||
+                isEmpty(currentBuild) ||
+                currentBuild.id !== buildId
+            ) {
+                const devicesResponse = await getBuildDevices(buildId);
+                this.setCurrentBuildDevices(devicesResponse.data);
+
+                const racksResponse = await getBuildRacks(buildId);
+                this.setCurrentBuildRacks(racksResponse.data);
+            } else {
+                if (!currentBuildDevices || currentBuildDevices.length === 0) {
+                    const devicesResponse = await getBuildDevices(buildId);
+                    this.setCurrentBuildDevices(devicesResponse.data);
+                }
+
+                if (!currentBuildRacks || currentBuildRacks.length === 0) {
+                    const racksResponse = await getBuildRacks(buildId);
+                    this.setCurrentBuildRacks(racksResponse.data);
+                }
+            }
+        },
     },
     computed: {
         ...mapState([
@@ -248,6 +283,9 @@ export default {
             'currentBuildDevices',
             'currentBuildRacks',
         ]),
+    },
+    created() {
+        this.fetchData();
     },
 };
 </script>

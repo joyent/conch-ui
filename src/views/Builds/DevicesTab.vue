@@ -16,7 +16,8 @@
                 >Clear Rack</a
             >
         </div>
-        <div class="columns">
+        <spinner v-if="fetchingData"></spinner>
+        <div v-else class="columns">
             <div class="column">
                 <div class="devices-table is-paddingless">
                     <div class="datatable-header">
@@ -167,11 +168,13 @@
 <script>
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
+import isEmpty from 'lodash/isEmpty';
 import search from 'fuzzysearch';
 import AddDeviceModal from './AddDeviceModal.vue';
 import RemoveItemModal from './RemoveItemModal.vue';
+import Spinner from '../components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
-import * as Builds from '@api/builds.js';
+import { getBuildDevices, removeDeviceFromBuild } from '@api/builds.js';
 import { mapState, mapActions } from 'vuex';
 import { getRack, getRackAssignment } from '@api/racks.js';
 import { getHardwareProducts } from '@api/hardwareProduct.js';
@@ -180,6 +183,7 @@ export default {
     components: {
         AddDeviceModal,
         RemoveItemModal,
+        Spinner,
     },
     data() {
         return {
@@ -188,6 +192,7 @@ export default {
             devicePhaseFilter: 'all',
             deviceHealthFilter: 'all',
             devices: [],
+            fetchingData: false,
             headers: [
                 'rack unit',
                 'rack name',
@@ -215,6 +220,7 @@ export default {
     methods: {
         ...mapActions([
             'setActiveDeviceDetails',
+            'setCurrentBuild',
             'setCurrentBuildDevices',
             'setHardwareProducts',
         ]),
@@ -252,6 +258,93 @@ export default {
             this.removeDevice = false;
             this.removingDevice = {};
         },
+        async fetchData() {
+            this.fetchingData = true;
+
+            const buildId = this.$route.params.id;
+            const currentBuild = this.currentBuild;
+            const currentBuildDevices = this.currentBuildDevices;
+
+            if (
+                !currentBuild ||
+                isEmpty(currentBuild) ||
+                currentBuild.id !== buildId
+            ) {
+                const devicesResponse = await getBuildDevices(buildId);
+                this.setCurrentBuildDevices(devicesResponse.data);
+            } else if (
+                !currentBuildDevices ||
+                currentBuildDevices.length === 0
+            ) {
+                const devicesResponse = await getBuildDevices(buildId);
+                this.setCurrentBuildDevices(devicesResponse.data);
+            }
+
+            // Process route queries
+            if (this.$route.query) {
+                const routeQuery = this.$route.query;
+
+                if (routeQuery.rackId) {
+                    const rackId = routeQuery.rackId;
+
+                    const [
+                        rackResponse,
+                        rackAssignmentResponse,
+                    ] = await Promise.all([
+                        getRack(rackId),
+                        getRackAssignment(rackId),
+                    ]);
+
+                    this.rack = rackResponse.data;
+                    const rackDevices = rackAssignmentResponse.data;
+
+                    for (let i = 0; i < rackDevices.length; i++) {
+                        const device = rackDevices[i];
+                        const buildDevice = this.currentBuildDevices.find(
+                            buildDevice => buildDevice.id === device.device_id
+                        );
+
+                        if (buildDevice.id) {
+                            this.devices.push(buildDevice);
+                        }
+                    }
+                } else {
+                    this.devices = this.currentBuildDevices;
+                }
+
+                if (routeQuery.phase) {
+                    this.devicePhaseFilter = routeQuery.phase;
+                }
+
+                if (routeQuery.health) {
+                    this.deviceHealthFilter = routeQuery.health;
+                }
+            }
+
+            // Set device hardware products
+            let hardwareProducts = this.hardwareProducts;
+
+            if (!hardwareProducts || !hardwareProducts.length) {
+                const response = await getHardwareProducts();
+                hardwareProducts = response.data;
+                this.setHardwareProducts(hardwareProducts);
+            }
+
+            for (let i = 0; i < this.devices.length; i++) {
+                const device = this.devices[i];
+
+                for (let j = 0; j < hardwareProducts.length; j++) {
+                    const hardwareProduct = hardwareProducts[j];
+
+                    if (hardwareProduct.id === device.hardware_product_id) {
+                        this.devices[i].hardware_product_name =
+                            hardwareProduct.name;
+                    }
+                }
+            }
+
+            this.fetchingData = false;
+        },
         getDate(date) {
             if (date) {
                 return moment(date).fromNow();
@@ -267,12 +360,12 @@ export default {
             });
         },
         refetchCurrentBuildDevices() {
-            Builds.getBuildDevices(this.currentBuild.id).then(response => {
+            getBuildDevices(this.currentBuild.id).then(response => {
                 this.setCurrentBuildDevices(response.data);
             });
         },
         removeDeviceFromBuild() {
-            Builds.removeDeviceFromBuild(
+            removeDeviceFromBuild(
                 this.currentBuild.id,
                 this.removingDevice.id
             ).then(() => {
@@ -354,66 +447,7 @@ export default {
         },
     },
     async created() {
-        if (this.$route.query) {
-            const routeQuery = this.$route.query;
-
-            if (routeQuery.rackId) {
-                const rackId = routeQuery.rackId;
-
-                const [
-                    rackResponse,
-                    rackAssignmentResponse,
-                ] = await Promise.all([
-                    getRack(rackId),
-                    getRackAssignment(rackId),
-                ]);
-
-                this.rack = rackResponse.data;
-                const rackDevices = rackAssignmentResponse.data;
-
-                for (let i = 0; i < rackDevices.length; i++) {
-                    const device = rackDevices[i];
-                    const buildDevice = this.currentBuildDevices.find(
-                        buildDevice => buildDevice.id === device.device_id
-                    );
-
-                    if (buildDevice.id) {
-                        this.devices.push(buildDevice);
-                    }
-                }
-            } else {
-                this.devices = this.currentBuildDevices;
-            }
-
-            if (routeQuery.phase) {
-                this.devicePhaseFilter = routeQuery.phase;
-            }
-
-            if (routeQuery.health) {
-                this.deviceHealthFilter = routeQuery.health;
-            }
-        }
-
-        let hardwareProducts = this.hardwareProducts;
-
-        if (!hardwareProducts || !hardwareProducts.length) {
-            const response = await getHardwareProducts();
-            hardwareProducts = response.data;
-            this.setHardwareProducts(hardwareProducts);
-        }
-
-        for (let i = 0; i < this.devices.length; i++) {
-            const device = this.devices[i];
-
-            for (let j = 0; j < hardwareProducts.length; j++) {
-                const hardwareProduct = hardwareProducts[j];
-
-                if (hardwareProduct.id === device.hardware_product_id) {
-                    this.devices[i].hardware_product_name =
-                        hardwareProduct.name;
-                }
-            }
-        }
+        this.fetchData();
 
         EventBus.$on(
             ['close-modal:remove-item', 'close-modal:add-item'],

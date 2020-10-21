@@ -1,13 +1,5 @@
 <template>
     <div class="build">
-        <transition name="fade">
-            <article class="message is-success" v-if="buildUpdated">
-                <div class="message-header">
-                    <i class="material-icons">check_circle</i>
-                    <p>Build {{ action }}</p>
-                </div>
-            </article>
-        </transition>
         <div class="build-header">
             <p class="build-name title has-text-white">
                 {{ currentBuild.name }}
@@ -80,69 +72,36 @@
 </template>
 
 <script>
+import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapState } from 'vuex';
-import * as Builds from '@api/builds.js';
-import { getOrganizations } from '@api/organizations.js';
+import { getBuild, updateBuild } from '@api/builds.js';
 
 export default {
-    props: {
-        buildId: {
-            type: String,
-            required: false,
-            default: '',
-        },
-    },
     data() {
         return {
             action: '',
-            buildUpdated: false,
         };
     },
     methods: {
-        ...mapActions([
-            'setCurrentBuild',
-            'setCurrentBuildDevices',
-            'setCurrentBuildOrganizations',
-            'setCurrentBuildRacks',
-            'setCurrentBuildUsers',
-            'setDevices',
-            'setOrganizations',
-        ]),
-        getBuildData(buildId) {
-            Builds.getBuild(buildId).then(response => {
-                this.setCurrentBuild(response.data);
-            });
+        ...mapActions(['setCurrentBuild']),
+        async fetchData() {
+            const currentBuild = this.currentBuild;
 
-            Builds.getBuildDevices(buildId).then(response => {
-                this.setCurrentBuildDevices(response.data);
-            });
-
-            Builds.getBuildRacks(buildId).then(response => {
-                this.setCurrentBuildRacks(response.data);
-            });
-
-            if (this.userIsAdmin) {
-                Builds.getBuildOrganizations(buildId).then(response => {
-                    this.setCurrentBuildOrganizations(response.data);
-                });
-
-                Builds.getBuildUsers(buildId).then(response => {
-                    this.setCurrentBuildUsers(response.data);
-                });
+            if (
+                this.$route.params &&
+                this.$route.params.id &&
+                ((currentBuild && currentBuild.id !== this.$route.params.id) ||
+                    isEmpty(currentBuild))
+            ) {
+                const buildResponse = await getBuild(this.$route.params.id);
+                this.setCurrentBuild(buildResponse.data);
+                localStorage.setItem(
+                    'mostRecentBuildId',
+                    this.$route.params.id
+                );
             }
         },
-        preFetchData() {
-            if (!this.organizations.length) {
-                getOrganizations().then(response => {
-                    this.setOrganizations(response.data);
-                });
-            }
-        },
-        selectRack(data) {
-            this.rack = data.rack;
-            this.currentTab = 'DevicesTab';
-        },
-        updateBuild(action) {
+        async updateBuild(action) {
             const buildId = this.currentBuild.id;
             const now = new Date();
             let data;
@@ -159,50 +118,42 @@ export default {
                 data = { started: now };
             }
 
-            Builds.updateBuild(buildId, data).then(() => {
-                this.buildUpdated = true;
+            try {
+                await updateBuild(buildId, data);
+                this.$toasted.success('Build updated successfully');
 
-                this.getBuildData(buildId);
+                await getBuild(buildId);
+                this.setCurrentBuild(buildId);
+            } catch (error) {
+                let errorMessage;
 
-                setTimeout(() => {
-                    this.buildUpdated = false;
-                }, 3000);
-            });
-        },
-    },
-    watch: {
-        buildId: {
-            immediate: true,
-            handler(buildId) {
-                if (!buildId) {
-                    if (this.$route.params && this.$route.params.id) {
-                        buildId = this.$route.params.id;
-                    }
+                if (
+                    error.response &&
+                    error.response.data &&
+                    error.response.data.error
+                ) {
+                    errorMessage = `Error: ${error.response.data.error}`;
+                } else {
+                    errorMessage = 'An error occurred';
                 }
 
-                this.currentTab = 'OverviewTab';
-                localStorage.setItem('mostRecentBuildId', buildId);
-                this.getBuildData(buildId);
-            },
-        },
-        currentTab: {
-            immediate: true,
-            handler(newTab, lastTab) {
-                if (lastTab === 'DevicesTab') {
-                    this.rack = {};
-                }
-            },
+                this.$toasted.error(errorMessage, {
+                    action: [
+                        {
+                            icon: 'close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            },
+                        },
+                    ],
+                    duration: 8000,
+                    icon: 'error',
+                });
+            }
         },
     },
     computed: {
-        ...mapState([
-            'currentBuild',
-            'currentBuildDevices',
-            'currentUser',
-            'devices',
-            'organizations',
-            'racks',
-        ]),
+        ...mapState(['currentBuild', 'currentBuildDevices', 'currentUser']),
         isBuildCompletable() {
             if (this.currentBuildDevices.length) {
                 const healthyDevicesCount = this.currentBuildDevices.filter(
@@ -270,7 +221,7 @@ export default {
         },
     },
     created() {
-        this.preFetchData();
+        this.fetchData();
     },
 };
 </script>

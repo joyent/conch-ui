@@ -1,6 +1,7 @@
 <template>
     <div class="members-tab">
-        <div class="columns">
+        <spinner v-if="fetchingData"></spinner>
+        <div v-else class="columns">
             <div class="column">
                 <div class="members-table is-paddingless">
                     <div class="datatable-header">
@@ -157,20 +158,24 @@
 
 <script>
 import search from 'fuzzysearch';
+import isEmpty from 'lodash/isEmpty';
 import AddUsersModal from './AddUsersModal.vue';
 import RemoveItemModal from './RemoveItemModal.vue';
+import Spinner from '../components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
-import * as Builds from '@api/builds.js';
+import { getBuildUsers, removeUserFromBuild } from '@api/builds.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
         AddUsersModal,
         RemoveItemModal,
+        Spinner,
     },
     data() {
         return {
             addUser: false,
+            fetchingData: false,
             headers: ['name', 'role', 'permissions'],
             removeUser: false,
             removingUser: {},
@@ -180,7 +185,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setCurrentBuildUsers']),
+        ...mapActions(['setCurrentBuild', 'setCurrentBuildUsers']),
         changeFilter(event) {
             this.$router.push({
                 name: 'build-members',
@@ -196,19 +201,43 @@ export default {
             this.removeUser = false;
             this.removingUser = {};
         },
+        async fetchData() {
+            this.fetchingData = true;
+
+            const buildId = this.$route.params.id;
+            const currentBuild = this.currentBuild;
+            const currentBuildUsers = this.currentBuildUsers;
+
+            if (
+                !currentBuild ||
+                isEmpty(currentBuild) ||
+                currentBuild.id !== buildId
+            ) {
+                const usersResponse = await getBuildUsers(buildId);
+                this.setCurrentBuildUsers(usersResponse.data);
+            } else if (!currentBuildUsers || currentBuildUsers.length === 0) {
+                const usersResponse = await getBuildUsers(buildId);
+                this.setCurrentBuildUsers(usersResponse.data);
+            }
+
+            // Process route queries
+            if (this.$route.query && this.$route.query.role) {
+                this.roleFilter = this.$route.query.role;
+            }
+
+            this.fetchingData = false;
+        },
         refetchCurrentBuildUsers() {
-            Builds.getBuildUsers(this.currentBuild.id).then(response => {
+            getBuildUsers(this.currentBuild.id).then(response => {
                 this.setCurrentBuildUsers(response.data);
             });
         },
         removeUserFromBuild(user) {
-            Builds.removeUserFromBuild(this.currentBuild.id, user.id).then(
-                () => {
-                    EventBus.$emit('item-removed');
+            removeUserFromBuild(this.currentBuild.id, user.id).then(() => {
+                EventBus.$emit('item-removed');
 
-                    this.refetchCurrentBuildUsers();
-                }
-            );
+                this.refetchCurrentBuildUsers();
+            });
         },
         showAddUserModal() {
             this.addUser = true;
@@ -217,7 +246,6 @@ export default {
             this.removingUser = user;
             this.removeUser = true;
         },
-        sort() {},
     },
     computed: {
         ...mapState(['currentBuild', 'currentBuildUsers']),
@@ -277,9 +305,7 @@ export default {
         },
     },
     created() {
-        if (this.$route.query && this.$route.query.role) {
-            this.roleFilter = this.$route.query.role;
-        }
+        this.fetchData();
 
         EventBus.$on(
             ['close-modal:add-item', 'close-modal:remove-item'],

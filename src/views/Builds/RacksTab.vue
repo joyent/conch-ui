@@ -1,6 +1,7 @@
 <template>
     <div class="racks-tab">
-        <div class="columns">
+        <spinner v-if="fetchingData"></spinner>
+        <div v-else class="columns">
             <div class="column">
                 <div class="members-table is-paddingless">
                     <div class="datatable-header">
@@ -160,23 +161,28 @@
 
 <script>
 import search from 'fuzzysearch';
+import isEmpty from 'lodash/isEmpty';
 import AddRackModal from './AddRackModal.vue';
 import RemoveItemModal from './RemoveItemModal.vue';
+import Spinner from '../components/Spinner.vue';
 import * as DatacenterRooms from '@api/datacenterRooms.js';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
-import * as Builds from '@api/builds.js';
+import { getBuildRacks } from '@api/builds.js';
+import { getCurrentUser } from '@api/users.js';
 
 export default {
     components: {
         AddRackModal,
         RemoveItemModal,
+        Spinner,
     },
     data() {
         return {
             addingRack: false,
             datacenterRoomAliases: [],
             datacenterRoomFilter: 'all',
+            fetchingData: false,
             headers: ['name', 'role', 'datacenter room alias', 'phase'],
             phaseFilter: 'all',
             phases: [
@@ -193,7 +199,11 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setCurrentBuildRacks']),
+        ...mapActions([
+            'setCurrentBuild',
+            'setCurrentBuildRacks',
+            'setCurrentUser',
+        ]),
         changeFilter(event, filter) {
             let phaseFilter, roomFilter;
             const eventValue = event && event.target && event.target.value;
@@ -219,6 +229,50 @@ export default {
             this.addingRack = false;
             this.removeRack = false;
             this.removingRack = {};
+        },
+        async fetchData() {
+            this.fetchingData = true;
+
+            const buildId = this.$route.params.id;
+            const currentBuild = this.currentBuild;
+            const currentBuildRacks = this.currentBuildRacks;
+            const currentUser = this.currentUser;
+
+            if (
+                !currentBuild ||
+                isEmpty(currentBuild) ||
+                currentBuild.id !== buildId
+            ) {
+                const racksResponse = await getBuildRacks(buildId);
+                this.setCurrentBuildRacks(racksResponse.data);
+
+                const userResponse = await getCurrentUser();
+                this.setCurrentUser(userResponse.data);
+            } else {
+                if (!currentBuildRacks || currentBuildRacks.length === 0) {
+                    const racksResponse = await getBuildRacks(buildId);
+                    this.setCurrentBuildRacks(racksResponse.data);
+                }
+
+                if (!currentUser || isEmpty(currentUser)) {
+                    const userResponse = await getCurrentUser();
+                    this.setCurrentUser(userResponse.data);
+                }
+            }
+
+            if (this.$route.query && this.$route.query.phase) {
+                this.phaseFilter = this.$route.query.phase;
+            }
+
+            if (this.$route.query && this.$route.query.room) {
+                this.datacenterRoomFilter = this.$route.query.room;
+            }
+
+            this.datacenterRoomAliases = this.currentBuildRacks.map(
+                rack => rack.datacenter_room_alias
+            );
+
+            this.fetchingData = false;
         },
         selectRack(rack) {
             this.$emit('rack-selected', { rack });
@@ -246,7 +300,7 @@ export default {
             this.removeRack = true;
         },
         refetchCurrentBuildRacks() {
-            Builds.getBuildRacks(this.currentBuild.id).then(response => {
+            getBuildRacks(this.currentBuild.id).then(response => {
                 this.setCurrentBuildRacks(response.data);
             });
         },
@@ -334,17 +388,7 @@ export default {
         },
     },
     created() {
-        if (this.$route.query && this.$route.query.phase) {
-            this.phaseFilter = this.$route.query.phase;
-        }
-
-        if (this.$route.query && this.$route.query.room) {
-            this.datacenterRoomFilter = this.$route.query.room;
-        }
-
-        this.datacenterRoomAliases = this.currentBuildRacks.map(
-            rack => rack.datacenter_room_alias
-        );
+        this.fetchData();
 
         EventBus.$on(
             [
