@@ -249,7 +249,7 @@ export default {
             if (this.searchText) {
                 const searchText = this.searchText.toLowerCase();
 
-                return organizations.reduce((acc, organization) => {
+                organizations = organizations.reduce((acc, organization) => {
                     const name = organization.name.toLowerCase();
 
                     if (search(searchText, name)) {

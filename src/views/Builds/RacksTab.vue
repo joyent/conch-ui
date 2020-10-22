@@ -332,7 +332,7 @@ export default {
             if (this.searchText) {
                 const searchText = this.searchText.toLowerCase();
 
-                return racks.reduce((acc, rack) => {
+                racks = racks.reduce((acc, rack) => {
                     const name = rack.name.toLowerCase();
                     const role = rack.rack_role_name.toLowerCase();
                     const datacenterRoomAlias = rack.datacenter_room_alias.toLowerCase();

@@ -6,9 +6,8 @@
     &:hover {
         .select-label,
         .select select {
-            border-color: $grey-light;
+            border-color: lighten($grey, 8%);
         }
-
     }
 
     .select-label {
@@ -34,6 +33,19 @@
             border-top-left-radius: 0;
             border-top-right-radius: 4px;
             color: $grey-lighter;
+        }
+    }
+
+    &.is-large {
+        .select,
+        select,
+        .select-label {
+            height: 45px;
+        }
+
+        .select-label {
+            display: flex;
+            align-items: center;
         }
     }
 }
