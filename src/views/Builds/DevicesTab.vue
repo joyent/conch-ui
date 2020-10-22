@@ -395,7 +395,7 @@ export default {
                 if (this.searchText) {
                     const searchText = this.searchText.toLowerCase();
 
-                    return devices.reduce((acc, device) => {
+                    devices = devices.reduce((acc, device) => {
                         const serialNumber = device.serial_number.toLowerCase();
                         const rackUnit = device.rack_unit_start;
                         const health = device.health.toLowerCase();

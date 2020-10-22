@@ -271,7 +271,7 @@ export default {
             if (this.searchText) {
                 const searchText = this.searchText.toLowerCase();
 
-                return users.reduce((acc, user) => {
+                users = users.reduce((acc, user) => {
                     const name = user.name.toLowerCase();
 
                     if (search(searchText, name)) {
