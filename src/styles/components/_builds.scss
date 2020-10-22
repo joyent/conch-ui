@@ -12,6 +12,31 @@
         }
     }
 
+    .select-with-label {
+        margin-right: 20px;
+        margin-bottom: 20px;
+
+        select,
+        .select-label {
+            background-color: $dark;
+        }
+
+        .select-label {
+            font-weight: bold;
+        }
+
+        &:hover {
+            select,
+            .select-label {
+                background-color: lighten($dark, 2%);
+            }
+
+            .select-label {
+                font-weight: bold;
+            }
+        }
+    }
+
     .page-heading {
         display: flex;
         align-items: center;
@@ -179,6 +204,18 @@
                     }
                 }
             }
+        }
+    }
+
+    .builds-empty-state {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+
+        .icon {
+            font-size: 40px;
+            margin-right: 14px;
         }
     }
 

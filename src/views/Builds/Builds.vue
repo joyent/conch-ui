@@ -43,6 +43,35 @@
                     <i class="material-icons">search</i>
                 </span>
             </div>
+            <div class="select-with-label is-large">
+                <label class="select-label">Status</label>
+                <div class="select">
+                    <select
+                        v-model="statusFilter"
+                        class="is-capitalized"
+                        @change="
+                            $router.push({
+                                name: 'builds',
+                                query: {
+                                    status:
+                                        ($event &&
+                                            $event.target &&
+                                            $event.target.value) ||
+                                        'all',
+                                },
+                            })
+                        "
+                    >
+                        <option
+                            v-for="(option, index) in statusFilterOptions"
+                            :key="index"
+                            :value="option"
+                        >
+                            {{ option }}
+                        </option>
+                    </select>
+                </div>
+            </div>
             <a
                 v-if="currentUser && currentUser.is_admin"
                 class="button is-success create-organization"
@@ -55,7 +84,12 @@
                 <span>New Build</span>
             </a>
         </div>
-        <div class="cards grid-view" v-if="activeView === 'grid'">
+        <div
+            class="cards grid-view"
+            v-if="
+                activeView === 'grid' && filteredBuilds && filteredBuilds.length
+            "
+        >
             <div class="card" v-for="build in filteredBuilds" :key="build.id">
                 <router-link
                     :to="{ name: 'build-overview', params: { id: build.id } }"
@@ -110,73 +144,15 @@
                 </router-link>
             </div>
         </div>
-        <!-- <div class="columns list-view" v-else-if="activeView === 'list'">
-            <div class="column is-4">
-                <ul>
-                    <li
-                        class="build-box"
-                        v-for="build in filteredBuilds"
-                        :key="build.name"
-                    >
-                        <a @click="selectBuild(build)">
-                            <div
-                                class="box is-paddingless"
-                                :class="{
-                                    'is-selected':
-                                        selectedBuild.name === build.name,
-                                }"
-                            >
-                                <div class="build-details">
-                                    <p
-                                        class="name is-size-5"
-                                        style="margin-bottom: 4px;"
-                                    >
-                                        {{ build.name }}
-                                    </p>
-                                    <p
-                                        class="status is-capitalized"
-                                        :class="`${buildStatusClass(build)}`"
-                                    >
-                                        {{ buildStatusText(build) }}
-                                    </p>
-                                </div>
-                                <div class="build-progress">
-                                    <span
-                                        class="icon is-large"
-                                        :class="{
-                                            'has-text-success': build.completed,
-                                        }"
-                                    >
-                                        <i
-                                            v-if="build.completed"
-                                            class="material-icons"
-                                            style="font-size: 36px;"
-                                            >check_circle</i
-                                        >
-                                        <i
-                                            v-else-if="build.started"
-                                            class="fa fa-circle-notch fa-spin fa-2x"
-                                        ></i>
-                                        <i
-                                            v-else
-                                            class="material-icons"
-                                            style="font-size: 36px;"
-                                        >
-                                            more_horiz
-                                        </i>
-                                    </span>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <transition name="fade">
-                <div class="column is-8" v-if="!isEmpty(selectedBuild)">
-                    <Build :build-id="selectedBuild.id" />
-                </div>
-            </transition>
-        </div> -->
+        <div v-else class="builds-empty-state">
+            <span class="icon material-icons">layers</span>
+            <h1
+                class="title is-4 has-text-weight-bold"
+                style="margin-left: 8px;"
+            >
+                No builds found
+            </h1>
+        </div>
         <transition name="fade">
             <CreateBuildModal v-if="creatingBuild" />
         </transition>
@@ -210,6 +186,8 @@ export default {
             noBuildsExist: false,
             searchText: '',
             selectedBuild: {},
+            statusFilter: 'started',
+            statusFilterOptions: ['all', 'created', 'started', 'completed'],
         };
     },
     methods: {
@@ -277,7 +255,7 @@ export default {
             let builds = this.builds;
 
             if (searchText) {
-                return builds.reduce((acc, build) => {
+                builds = builds.reduce((acc, build) => {
                     const name = build.name.toLowerCase();
 
                     if (search(searchText, name)) {
@@ -288,12 +266,41 @@ export default {
                 }, []);
             }
 
+            if (this.statusFilter !== 'all') {
+                const statusFilter = this.statusFilter;
+
+                builds = builds.filter(build => {
+                    if (
+                        statusFilter === 'started' &&
+                        build.started &&
+                        !build.completed
+                    ) {
+                        return build;
+                    } else if (
+                        statusFilter === 'completed' &&
+                        build.completed
+                    ) {
+                        return build;
+                    } else if (
+                        statusFilter === 'created' &&
+                        build.created &&
+                        !build.started
+                    ) {
+                        return build;
+                    }
+                });
+            }
+
             return builds;
         },
     },
     created() {
         if (!this.builds || !this.builds.length) {
             this.getBuilds();
+        }
+
+        if (this.$route.query && this.$route.query.status) {
+            this.statusFilter = this.$route.query.status;
         }
     },
     mounted() {
