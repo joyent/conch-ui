@@ -1,28 +1,41 @@
 <template>
     <Spinner v-if="builds.length < 1 && !noBuildsExist" />
-    <router-view v-else-if="$route.params && $route.params.id"></router-view>
-    <div class="builds-list" v-else>
+    <section class="builds" v-else>
         <div class="empty-state" v-if="noBuildsExist">
             <img src="../../assets/rack.svg" width="500" />
             <template v-if="currentUser && currentUser.is_admin">
-                <p class="empty-state-heading">No organizations exist.</p>
+                <p class="empty-state-heading">No builds exist.</p>
                 <a
                     class="button is-info create-organization"
-                    @click="createOrganization()"
+                    @click="createBuild()"
                 >
-                    Create an Organization
+                    Create a Build
                 </a>
             </template>
             <p v-else class="empty-state-heading">
                 You don't have access to any builds.
             </p>
         </div>
-        <div v-else class="page-heading">
-            <h1 class="title is-3 has-text-weight-bold">Builds</h1>
-            <div class="control has-icons-left">
+        <div
+            class="page-heading"
+            style="display: flex; align-items: center; margin-bottom: 20px"
+        >
+            <span class="icon material-icons">layers</span>
+            <h1
+                class="title is-4 has-text-weight-bold"
+                style="margin-left: 8px;"
+            >
+                Builds
+            </h1>
+        </div>
+        <div style="display: flex">
+            <div
+                class="control has-icons-left"
+                style="margin-bottom: 20px; margin-right: 20px; flex-grow: 1"
+            >
                 <input
                     type="text"
-                    class="input search"
+                    class="input search is-medium"
                     placeholder="Search..."
                     v-model="searchText"
                 />
@@ -30,30 +43,22 @@
                     <i class="material-icons">search</i>
                 </span>
             </div>
-            <div class="views-toggle">
-                <a class="button is-text" @click="toggleView()">
-                    <template v-if="activeView === 'grid'">
-                        <i class="material-icons view-list">dehaze</i>
-                        <span>List View</span>
-                    </template>
-                    <template v-else-if="activeView === 'list'">
-                        <i class="material-icons view-grid">apps</i>
-                        <span>Grid View</span>
-                    </template>
-                </a>
-            </div>
             <a
                 v-if="currentUser && currentUser.is_admin"
                 class="button is-success create-organization"
                 @click="createBuild()"
+                style="height: 45px; margin-bottom: 20px;"
             >
-                Create a Build
+                <span class="icon">
+                    <i class="material-icons">add</i>
+                </span>
+                <span>New Build</span>
             </a>
         </div>
         <div class="cards grid-view" v-if="activeView === 'grid'">
             <div class="card" v-for="build in filteredBuilds" :key="build.id">
                 <router-link
-                    :to="{ name: 'build', params: { id: build.id } }"
+                    :to="{ name: 'build-overview', params: { id: build.id } }"
                     style="display: flex; flex-direction: column; height: 100%;"
                 >
                     <div class="card-content" style="flex-grow: 1;">
@@ -91,7 +96,6 @@
                             justify-content: center;
                             border-bottom-right-radius: 4px;
                             border-bottom-left-radius: 4px;
-                            background-color: #243340;
                             border-top: none;
                         "
                     >
@@ -106,7 +110,7 @@
                 </router-link>
             </div>
         </div>
-        <div class="columns list-view" v-else-if="activeView === 'list'">
+        <!-- <div class="columns list-view" v-else-if="activeView === 'list'">
             <div class="column is-4">
                 <ul>
                     <li
@@ -172,11 +176,11 @@
                     <Build :build-id="selectedBuild.id" />
                 </div>
             </transition>
-        </div>
+        </div> -->
         <transition name="fade">
             <CreateBuildModal v-if="creatingBuild" />
         </transition>
-    </div>
+    </section>
 </template>
 
 <script>
@@ -187,11 +191,9 @@ import Spinner from '../components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
 import { mapActions, mapState } from 'vuex';
 import * as Builds from '@api/builds.js';
-import Build from './Build.vue';
 
 export default {
     components: {
-        Build,
         CreateBuildModal,
         Spinner,
     },

@@ -6,25 +6,31 @@
                 The page you're looking for is... missing.
             </h2>
             <hr />
-            <p class="is-size-5">
-                Head back to the build you most recently interacted with.
+            <p class="is-size-5" style="padding-bottom: 10px;">
+                If you think something is broken, please report it.
             </p>
             <p class="is-size-5">
-                If you think something is broken, please report it.
+                Otherwise, head back to the Builds page.
             </p>
             <div class="buttons">
                 <a
-                    class="button is-outlined is-info is-uppercase has-text-weight-semibold recent-build"
-                    @click="routeToMostRecentBuild()"
-                >
-                    Most Recent Build
-                </a>
-                <a
-                    class="button is-outlined is-danger is-uppercase has-text-weight-semibold report-problem"
+                    class="button has-text-danger is-dark is-uppercase has-text-weight-semibold report-problem"
+                    style="text-decoration: none;"
                     href="https://github.com/joyent/conch-ui/issues/new"
                     target="_blank"
                 >
                     Report a Problem
+                </a>
+                <a
+                    class="button is-info is-uppercase has-text-weight-semibold recent-build"
+                    @click="$router.push({ name: 'builds' })"
+                >
+                    Builds Page
+                    <span
+                        class="icon is-small material-icons"
+                        style="margin-left: 10px"
+                        >arrow_forward</span
+                    >
                 </a>
             </div>
         </div>
@@ -33,13 +39,3 @@
         </div>
     </div>
 </template>
-
-<script>
-export default {
-    methods: {
-        routeToMostRecentBuild() {
-            this.$router.push({ name: 'dashboard' });
-        },
-    },
-};
-</script>

@@ -6,27 +6,24 @@
             class="sidebar"
             style="display: flex; flex-direction: column; height: 100%"
         >
-            <div class="brand">
+            <router-link :to="{ name: 'builds' }" tag="div" class="brand">
                 <img
                     class="brand-icon"
                     src="../../assets/brand.png"
                     width="150px"
-                    @click="navigateDashboard()"
                 />
-            </div>
+            </router-link>
             <ul
                 class="menu-list"
                 style="display: flex; flex-direction: column; flex-grow: 1"
             >
                 <li class="nav-item">
                     <router-link
-                        :to="{
-                            name: 'dashboard',
-                        }"
+                        :to="{ name: 'builds' }"
                         active-class="is-active"
                     >
-                        <i class="material-icons">dashboard</i>
-                        <span>Dashboard</span>
+                        <i class="material-icons">layers</i>
+                        <span>Builds</span>
                     </router-link>
                 </li>
                 <li class="nav-item" v-if="currentUser.is_admin">
@@ -34,8 +31,8 @@
                         :to="{ name: 'datacenter' }"
                         active-class="is-active"
                     >
-                        <i class="material-icons">search</i>
-                        <span>Browse</span>
+                        <i class="material-icons">business</i>
+                        <span>Data Centers</span>
                     </router-link>
                 </li>
                 <li class="nav-item" v-if="currentUser.is_admin">
@@ -45,15 +42,6 @@
                     >
                         <i class="material-icons">dns</i>
                         <span>Devices</span>
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link
-                        :to="{ name: 'builds' }"
-                        active-class="is-active"
-                    >
-                        <i class="material-icons">layers</i>
-                        <span>Builds</span>
                     </router-link>
                 </li>
                 <li class="nav-item">
@@ -135,9 +123,6 @@ export default {
             });
         },
         isEmpty,
-        navigateDashboard() {
-            this.$router.push({ name: 'dashboard' });
-        },
         signOut() {
             this.resetState();
             logout().then(() => {

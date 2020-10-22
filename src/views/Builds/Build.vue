@@ -1,26 +1,21 @@
 <template>
     <div class="build">
-        <transition name="fade">
-            <article class="message is-success" v-if="buildUpdated">
-                <div class="message-header">
-                    <i class="material-icons">check_circle</i>
-                    <p>Build {{ action }}</p>
-                </div>
-            </article>
-        </transition>
         <div class="build-header">
-            <router-link
-                v-if="$route.name === 'builds'"
-                :to="{ name: 'build', params: { id: currentBuild.id } }"
-                class="build-name title has-text-white"
-                tag="a"
-            >
-                {{ currentBuild.name }}
-            </router-link>
-            <p v-else class="build-name title has-text-white">
+            <p class="build-name title has-text-white">
                 {{ currentBuild.name }}
             </p>
             <div class="field is-grouped">
+                <p class="control">
+                    <a
+                        class="button is-dark"
+                        @click="$router.push({ name: 'builds' })"
+                    >
+                        <span class="icon">
+                            <i class="material-icons">arrow_back</i>
+                        </span>
+                        <strong>Back To Builds</strong>
+                    </a>
+                </p>
                 <p class="control" v-if="!currentBuild.started">
                     <a class="button is-success" @click="updateBuild('start')">
                         Start Build
@@ -52,151 +47,61 @@
                 </p>
             </div>
         </div>
-        <p class="build-id has-text-grey">Build ID: {{ currentBuild.id }}</p>
         <div class="tabs is-toggle">
             <ul>
                 <li
-                    :class="{ 'is-active': currentTab === tab.component }"
+                    :class="{ 'is-active': $route.name === `build-${tab.key}` }"
                     v-for="tab in tabs"
                     :key="tab.name"
                 >
-                    <a
-                        :class="`tab is-uppercase ${tab.class}`"
-                        @click="changeTab(tab.component)"
+                    <router-link
+                        :to="{
+                            name: `build-${tab.key}`,
+                            params: { id: currentBuild.id },
+                        }"
+                        class="tab is-uppercase"
+                        tag="a"
                     >
                         {{ tab.name }}
-                    </a>
+                    </router-link>
                 </li>
             </ul>
         </div>
-        <div
-            class="custom-tags"
-            v-if="rack && rack.name"
-            style="margin-bottom: 15px; margin-top: -10px;"
-        >
-            <label class="tag-label">Rack</label>
-            <div class="tag-value">
-                {{ rack.name }}
-            </div>
-            <a
-                class="button is-text"
-                style="margin-left: 5px"
-                @click="clearRack()"
-                >Clear Rack</a
-            >
-        </div>
-        <OverviewTab v-if="currentTab === 'OverviewTab'" />
-        <OrganizationsTab
-            :build-id="currentBuild.id"
-            v-if="userIsAdmin && currentTab === 'OrganizationsTab'"
-        />
-        <MembersTab
-            :build-id="currentBuild.id"
-            v-if="userIsAdmin && currentTab === 'MembersTab'"
-        />
-        <RacksTab
-            :build-id="currentBuild.id"
-            v-if="currentTab === 'RacksTab'"
-            @rack-selected="selectRack"
-        />
-        <DevicesTab
-            :build-id="currentBuild.id"
-            v-if="currentTab === 'DevicesTab'"
-            :rack="rack"
-        />
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
-import DevicesTab from './DevicesTab.vue';
-import OverviewTab from './OverviewTab.vue';
-import RacksTab from './RacksTab.vue';
-import MembersTab from './MembersTab.vue';
-import OrganizationsTab from './OrganizationsTab.vue';
-import { EventBus } from '@src/eventBus.js';
+import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapState } from 'vuex';
-import * as Builds from '@api/builds.js';
-import { getOrganizations } from '@api/organizations.js';
+import { getBuild, updateBuild } from '@api/builds.js';
 
 export default {
-    components: {
-        DevicesTab,
-        MembersTab,
-        OrganizationsTab,
-        OverviewTab,
-        RacksTab,
-    },
-    props: {
-        buildId: {
-            type: String,
-            required: false,
-            default: '',
-        },
-    },
     data() {
         return {
             action: '',
-            buildUpdated: false,
-            currentTab: 'OverviewTab',
-            rack: {},
         };
     },
     methods: {
-        ...mapActions([
-            'setCurrentBuild',
-            'setCurrentBuildDevices',
-            'setCurrentBuildOrganizations',
-            'setCurrentBuildRacks',
-            'setCurrentBuildUsers',
-            'setDevices',
-            'setOrganizations',
-        ]),
-        changeTab(tab) {
-            this.currentTab = tab;
+        ...mapActions(['setCurrentBuild']),
+        async fetchData() {
+            const currentBuild = this.currentBuild;
 
-            if (this.currentTab === 'DevicesTab' && tab === 'DevicesTab') {
-                this.clearRack();
+            if (
+                this.$route.params &&
+                this.$route.params.id &&
+                ((currentBuild && currentBuild.id !== this.$route.params.id) ||
+                    isEmpty(currentBuild))
+            ) {
+                const buildResponse = await getBuild(this.$route.params.id);
+                this.setCurrentBuild(buildResponse.data);
+                localStorage.setItem(
+                    'mostRecentBuildId',
+                    this.$route.params.id
+                );
             }
         },
-        clearRack() {
-            this.rack = {};
-            EventBus.$emit('device-tab-clicked');
-        },
-        getBuildData(buildId) {
-            Builds.getBuild(buildId).then(response => {
-                this.setCurrentBuild(response.data);
-            });
-
-            Builds.getBuildDevices(buildId).then(response => {
-                this.setCurrentBuildDevices(response.data);
-            });
-
-            Builds.getBuildRacks(buildId).then(response => {
-                this.setCurrentBuildRacks(response.data);
-            });
-
-            if (this.userIsAdmin) {
-                Builds.getBuildOrganizations(buildId).then(response => {
-                    this.setCurrentBuildOrganizations(response.data);
-                });
-
-                Builds.getBuildUsers(buildId).then(response => {
-                    this.setCurrentBuildUsers(response.data);
-                });
-            }
-        },
-        preFetchData() {
-            if (!this.organizations.length) {
-                getOrganizations().then(response => {
-                    this.setOrganizations(response.data);
-                });
-            }
-        },
-        selectRack(data) {
-            this.rack = data.rack;
-            this.currentTab = 'DevicesTab';
-        },
-        updateBuild(action) {
+        async updateBuild(action) {
             const buildId = this.currentBuild.id;
             const now = new Date();
             let data;
@@ -213,50 +118,42 @@ export default {
                 data = { started: now };
             }
 
-            Builds.updateBuild(buildId, data).then(() => {
-                this.buildUpdated = true;
+            try {
+                await updateBuild(buildId, data);
+                this.$toasted.success('Build updated successfully');
 
-                this.getBuildData(buildId);
+                await getBuild(buildId);
+                this.setCurrentBuild(buildId);
+            } catch (error) {
+                let errorMessage;
 
-                setTimeout(() => {
-                    this.buildUpdated = false;
-                }, 3000);
-            });
-        },
-    },
-    watch: {
-        buildId: {
-            immediate: true,
-            handler(buildId) {
-                if (!buildId) {
-                    if (this.$route.params && this.$route.params.id) {
-                        buildId = this.$route.params.id;
-                    }
+                if (
+                    error.response &&
+                    error.response.data &&
+                    error.response.data.error
+                ) {
+                    errorMessage = `Error: ${error.response.data.error}`;
+                } else {
+                    errorMessage = 'An error occurred';
                 }
 
-                this.currentTab = 'OverviewTab';
-                localStorage.setItem('mostRecentBuildId', buildId);
-                this.getBuildData(buildId);
-            },
-        },
-        currentTab: {
-            immediate: true,
-            handler(newTab, lastTab) {
-                if (lastTab === 'DevicesTab') {
-                    this.rack = {};
-                }
-            },
+                this.$toasted.error(errorMessage, {
+                    action: [
+                        {
+                            icon: 'close',
+                            onClick: (e, toastObject) => {
+                                toastObject.goAway(0);
+                            },
+                        },
+                    ],
+                    duration: 8000,
+                    icon: 'error',
+                });
+            }
         },
     },
     computed: {
-        ...mapState([
-            'currentBuild',
-            'currentBuildDevices',
-            'currentUser',
-            'devices',
-            'organizations',
-            'racks',
-        ]),
+        ...mapState(['currentBuild', 'currentBuildDevices', 'currentUser']),
         isBuildCompletable() {
             if (this.currentBuildDevices.length) {
                 const healthyDevicesCount = this.currentBuildDevices.filter(
@@ -273,29 +170,29 @@ export default {
         tabs() {
             const tabs = [
                 {
-                    class: 'overview-tab',
+                    key: 'overview',
                     component: 'OverviewTab',
                     name: 'Overview',
                 },
                 {
-                    class: 'racks-tab',
+                    key: 'racks',
                     component: 'RacksTab',
                     name: 'Racks',
                 },
                 {
-                    class: 'devices-tab',
+                    key: 'devices',
                     component: 'DevicesTab',
                     name: 'Devices',
                 },
             ];
             const adminTabs = [
                 {
-                    class: 'members-tab',
+                    key: 'members',
                     component: 'MembersTab',
                     name: 'Members',
                 },
                 {
-                    class: 'organizations-tab',
+                    key: 'organizations',
                     component: 'OrganizationsTab',
                     name: 'Organizations',
                 },
@@ -324,7 +221,7 @@ export default {
         },
     },
     created() {
-        this.preFetchData();
+        this.fetchData();
     },
 };
 </script>

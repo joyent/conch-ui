@@ -1,4 +1,4 @@
-import BuildsList from '../BuildsList.vue';
+import Builds from '../Builds.vue';
 import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import * as buildsApi from '@api/builds.js';
@@ -11,7 +11,7 @@ localVue.use(Vuex);
 
 jest.mock('@api/request.js');
 
-describe('BuildsList.vue', () => {
+describe('Builds.vue', () => {
     let actions;
     let state;
     let store;
@@ -21,7 +21,7 @@ describe('BuildsList.vue', () => {
         actions = { setBuilds: jest.fn() };
         state = { builds };
         store = new Vuex.Store({ actions, state });
-        wrapper = shallowMount(BuildsList, { localVue, store });
+        wrapper = shallowMount(Builds, { localVue, store });
     });
 
     describe('initial render', () => {
@@ -84,7 +84,7 @@ describe('BuildsList.vue', () => {
 
         state = { builds: [] };
         store = new Vuex.Store({ actions, state });
-        wrapper = shallowMount(BuildsList, { localVue, store });
+        wrapper = shallowMount(Builds, { localVue, store });
 
         expect(spy).toHaveBeenCalled();
     });

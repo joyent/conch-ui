@@ -1,6 +1,6 @@
 <template>
     <div class="data-center-browser">
-        <PageHeader title="Datacenter Browser" />
+        <PageHeader title="Data Centers" />
         <section class="info-tiles">
             <div class="tile is-ancestor has-text-right">
                 <div class="tile is-parent">

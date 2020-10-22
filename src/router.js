@@ -9,13 +9,17 @@ import AuthenticationTokens from './views/AuthenticationTokens/AuthenticationTok
 import Sidebar from './views/Sidebar/Sidebar.vue';
 import PageNotFound from './views/PageNotFound/PageNotFound.vue';
 import PasswordReset from './views/PasswordReset/PasswordReset.vue';
-import BuildsList from './views/Builds/BuildsList.vue';
+import Builds from './views/Builds/Builds.vue';
 import Build from './views/Builds/Build.vue';
 import Organizations from './views/Organizations/Organizations.vue';
 import Organization from './views/Organizations/Organization.vue';
-import Dashboard from './views/Dashboard/Dashboard.vue';
 import HardwareProduct from './views/HardwareProducts/HardwareProduct.vue';
 import HardwareProducts from './views/HardwareProducts/HardwareProducts.vue';
+import OverviewTab from './views/Builds/OverviewTab.vue';
+import RacksTab from './views/Builds/RacksTab.vue';
+import DevicesTab from './views/Builds/DevicesTab.vue';
+import MembersTab from './views/Builds/MembersTab.vue';
+import OrganizationsTab from './views/Builds/OrganizationsTab.vue';
 
 Vue.use(Router);
 
@@ -25,14 +29,6 @@ export default new Router({
             path: '/',
             name: 'signIn',
             component: SignIn,
-        },
-        {
-            path: '/dashboard',
-            name: 'dashboard',
-            components: {
-                default: Dashboard,
-                sidebar: Sidebar,
-            },
         },
         {
             path: '/devices',
@@ -101,22 +97,63 @@ export default new Router({
             ],
         },
         {
-            path: '/builds',
-            name: 'builds',
+            path: '/builds/:id',
+            name: 'build',
             components: {
-                default: BuildsList,
+                default: Build,
                 sidebar: Sidebar,
             },
+            redirect: { name: 'build-overview' },
             children: [
                 {
-                    path: ':id',
-                    name: 'build',
+                    path: 'overview',
+                    name: 'build-overview',
                     components: {
-                        default: Build,
+                        default: OverviewTab,
+                        sidebar: Sidebar,
+                    },
+                },
+                {
+                    path: 'racks',
+                    name: 'build-racks',
+                    components: {
+                        default: RacksTab,
+                        sidebar: Sidebar,
+                    },
+                },
+                {
+                    path: 'devices',
+                    name: 'build-devices',
+                    components: {
+                        default: DevicesTab,
+                        sidebar: Sidebar,
+                    },
+                },
+                {
+                    path: 'members',
+                    name: 'build-members',
+                    components: {
+                        default: MembersTab,
+                        sidebar: Sidebar,
+                    },
+                },
+                {
+                    path: 'organizations',
+                    name: 'build-organizations',
+                    components: {
+                        default: OrganizationsTab,
                         sidebar: Sidebar,
                     },
                 },
             ],
+        },
+        {
+            path: '/builds',
+            name: 'builds',
+            components: {
+                default: Builds,
+                sidebar: Sidebar,
+            },
         },
         {
             path: '/admin/tokens',
@@ -191,4 +228,11 @@ export default new Router({
             component: PageNotFound,
         },
     ],
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition;
+        } else {
+            return { x: 0, y: 0 };
+        }
+    },
 });

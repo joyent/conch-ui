@@ -46,9 +46,20 @@
                     <div class="build-devices">
                         <div class="box-header">
                             <i class="material-icons">dns</i>
-                            <p class="heading is-size-6">Devices Overview</p>
+                            <p class="heading is-size-5">Devices Overview</p>
+                            <router-link
+                                class="button view-all"
+                                :to="{
+                                    name: 'build-devices',
+                                    params: { id: currentBuild.id },
+                                }"
+                                tag="a"
+                            >
+                                <strong>View All Devices</strong>
+                                <i class="material-icons">arrow_forward</i>
+                            </router-link>
                         </div>
-                        <p class="subtitle is-4">Phase</p>
+                        <p class="subtitle is-5">Phase</p>
                         <div class="columns">
                             <div
                                 class="column"
@@ -57,7 +68,13 @@
                             >
                                 <a
                                     :class="`filter-devices-phase-${phase}`"
-                                    @click="filterDevicesByPhase(phase)"
+                                    @click="
+                                        $router.push({
+                                            name: 'build-devices',
+                                            params: { id: currentBuild.id },
+                                            query: { health: 'all', phase },
+                                        })
+                                    "
                                 >
                                     <div class="box filter">
                                         <h2 class="is-6 is-capitalized">
@@ -70,7 +87,7 @@
                                 </a>
                             </div>
                         </div>
-                        <p class="subtitle is-4">Health</p>
+                        <p class="subtitle is-5">Health</p>
                         <div class="columns">
                             <div
                                 class="column"
@@ -79,7 +96,16 @@
                             >
                                 <a
                                     :class="`filter-devices-health-${status}`"
-                                    @click="filterDevicesByHealth(status)"
+                                    @click="
+                                        $router.push({
+                                            name: 'build-devices',
+                                            params: { id: currentBuild.id },
+                                            query: {
+                                                health: status,
+                                                phase: 'all',
+                                            },
+                                        })
+                                    "
                                 >
                                     <div class="box filter">
                                         <h2 class="is-6 is-capitalized">
@@ -104,15 +130,6 @@
                             </div>
                         </div>
                     </div>
-                    <a
-                        class="button is-fullwidth is-medium view-all"
-                        @click="changeTab('DevicesTab')"
-                    >
-                        <span class="heading is-marginless is-size-6">
-                            View All Devices
-                        </span>
-                        <i class="material-icons view-all">arrow_forward</i>
-                    </a>
                 </div>
             </div>
         </div>
@@ -122,9 +139,20 @@
                     <div class="rack-devices">
                         <div class="box-header">
                             <i class="material-icons">storage</i>
-                            <p class="heading is-size-6">Racks Overview</p>
+                            <p class="heading is-size-5">Racks Overview</p>
+                            <router-link
+                                class="button view-all"
+                                :to="{
+                                    name: 'build-racks',
+                                    params: { id: currentBuild.id },
+                                }"
+                                tag="a"
+                            >
+                                <strong>View All Racks</strong>
+                                <i class="material-icons">arrow_forward</i>
+                            </router-link>
                         </div>
-                        <p class="subtitle is-4">Phase</p>
+                        <p class="subtitle is-5">Phase</p>
                         <div class="columns">
                             <div
                                 class="column"
@@ -133,7 +161,13 @@
                             >
                                 <a
                                     :class="`filter-racks-phase-${phase}`"
-                                    @click="filterRackByPhase(phase)"
+                                    @click="
+                                        $router.push({
+                                            name: 'build-racks',
+                                            params: { id: currentBuild.id },
+                                            query: { phase, room: 'all' },
+                                        })
+                                    "
                                 >
                                     <div class="box filter">
                                         <h2 class="is-6 is-capitalized">
@@ -147,15 +181,6 @@
                             </div>
                         </div>
                     </div>
-                    <a
-                        class="button is-fullwidth is-medium view-all"
-                        @click="changeTab('RacksTab')"
-                    >
-                        <span class="heading is-marginless is-size-6">
-                            View All Racks
-                        </span>
-                        <i class="material-icons view-all">arrow_forward</i>
-                    </a>
                 </div>
             </div>
         </div>
@@ -164,8 +189,9 @@
 
 <script>
 import moment from 'moment';
-import { EventBus } from '@src/eventBus.js';
-import { mapState } from 'vuex';
+import isEmpty from 'lodash/isEmpty';
+import { mapActions, mapState } from 'vuex';
+import { getBuildDevices, getBuildRacks } from '@api/builds.js';
 
 export default {
     data() {
@@ -181,24 +207,11 @@ export default {
         };
     },
     methods: {
-        changeTab(tab) {
-            this.$parent.changeTab(tab);
-        },
-        filterDevicesByHealth(health) {
-            this.$parent.changeTab('DevicesTab');
-
-            EventBus.$emit('setDeviceTabHealthFilter', health);
-        },
-        filterDevicesByPhase(phase) {
-            this.$parent.changeTab('DevicesTab');
-
-            EventBus.$emit('setDeviceTabPhaseFilter', phase);
-        },
-        filterRackByPhase(phase) {
-            this.$parent.changeTab('RacksTab');
-
-            EventBus.$emit('setRackTabPhaseFilter', phase);
-        },
+        ...mapActions([
+            'setCurrentBuild',
+            'setCurrentBuildDevices',
+            'setCurrentBuildRacks',
+        ]),
         getDate(date) {
             return moment(date).format('YYYY/MM/DD');
         },
@@ -235,6 +248,34 @@ export default {
                 }
             }).length;
         },
+        async fetchData() {
+            const buildId = this.$route.params.id;
+            const currentBuild = this.currentBuild;
+            const currentBuildDevices = this.currentBuildDevices;
+            const currentBuildRacks = this.currentBuildRacks;
+
+            if (
+                !currentBuild ||
+                isEmpty(currentBuild) ||
+                currentBuild.id !== buildId
+            ) {
+                const devicesResponse = await getBuildDevices(buildId);
+                this.setCurrentBuildDevices(devicesResponse.data);
+
+                const racksResponse = await getBuildRacks(buildId);
+                this.setCurrentBuildRacks(racksResponse.data);
+            } else {
+                if (!currentBuildDevices || currentBuildDevices.length === 0) {
+                    const devicesResponse = await getBuildDevices(buildId);
+                    this.setCurrentBuildDevices(devicesResponse.data);
+                }
+
+                if (!currentBuildRacks || currentBuildRacks.length === 0) {
+                    const racksResponse = await getBuildRacks(buildId);
+                    this.setCurrentBuildRacks(racksResponse.data);
+                }
+            }
+        },
     },
     computed: {
         ...mapState([
@@ -242,6 +283,9 @@ export default {
             'currentBuildDevices',
             'currentBuildRacks',
         ]),
+    },
+    created() {
+        this.fetchData();
     },
 };
 </script>

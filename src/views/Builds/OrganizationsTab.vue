@@ -1,6 +1,7 @@
 <template>
     <div class="organizations-tab">
-        <div class="columns">
+        <spinner v-if="fetchingData"></spinner>
+        <div v-else class="columns">
             <div class="column">
                 <div class="organizations-table is-paddingless">
                     <div class="datatable-header">
@@ -21,7 +22,11 @@
                         <div class="select-with-label role">
                             <label class="select-label">Role</label>
                             <div class="select role-type">
-                                <select v-model="roleFilter">
+                                <select
+                                    v-model="roleFilter"
+                                    class="is-capitalized"
+                                    @change="changeFilter($event)"
+                                >
                                     <option value="all">All</option>
                                     <option value="admin">Admin</option>
                                     <option value="regular">
@@ -133,26 +138,27 @@
 
 <script>
 import search from 'fuzzysearch';
+import isEmpty from 'lodash/isEmpty';
 import AddOrganizationModal from './AddOrganizationsModal.vue';
 import RemoveItemModal from './RemoveItemModal.vue';
+import Spinner from '../components/Spinner.vue';
 import { EventBus } from '@src/eventBus.js';
-import * as Builds from '@api/builds.js';
+import {
+    getBuildOrganizations,
+    removeOrganizationFromBuild,
+} from '@api/builds.js';
 import { mapActions, mapState } from 'vuex';
 
 export default {
     components: {
         AddOrganizationModal,
         RemoveItemModal,
-    },
-    props: {
-        buildId: {
-            type: String,
-            required: true,
-        },
+        Spinner,
     },
     data() {
         return {
             addOrganization: false,
+            fetchingData: false,
             headers: ['name', 'role'],
             removeOrganization: false,
             removingOrganization: {},
@@ -163,20 +169,63 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['setCurrentBuildOrganizations']),
+        ...mapActions(['setCurrentBuild', 'setCurrentBuildOrganizations']),
+        changeFilter(event) {
+            this.$router.push({
+                name: 'build-organizations',
+                params: { id: this.currentBuild.id },
+                query: {
+                    role:
+                        (event && event.target && event.target.value) || 'all',
+                },
+            });
+        },
         closeModal() {
             this.addOrganization = false;
             this.removeOrganization = false;
             this.removingOrganization = {};
         },
+        async fetchData() {
+            this.fetchingData = true;
+
+            const buildId = this.$route.params.id;
+            const currentBuild = this.currentBuild;
+            const currentBuildOrganizations = this.currentBuildOrganizations;
+
+            if (
+                !currentBuild ||
+                isEmpty(currentBuild) ||
+                currentBuild.id !== buildId
+            ) {
+                const organizationsResponse = await getBuildOrganizations(
+                    buildId
+                );
+                this.setCurrentBuildOrganizations(organizationsResponse.data);
+            } else if (
+                !currentBuildOrganizations ||
+                currentBuildOrganizations.length === 0
+            ) {
+                const organizationsResponse = await getBuildOrganizations(
+                    buildId
+                );
+                this.setCurrentBuildOrganizations(organizationsResponse.data);
+            }
+
+            // Process route queries
+            if (this.$route.query && this.$route.query.role) {
+                this.roleFilter = this.$route.query.role;
+            }
+
+            this.fetchingData = false;
+        },
         refetchCurrentBuildOrganizations() {
-            Builds.getBuildOrganizations(this.buildId).then(response => {
+            getBuildOrganizations(this.currentBuild.id).then(response => {
                 this.setCurrentBuildOrganizations(response.data);
             });
         },
         removeOrganizationFromBuild() {
-            Builds.removeOrganizationFromBuild(
-                this.buildId,
+            removeOrganizationFromBuild(
+                this.currentBuild.id,
                 this.removingOrganization.id
             ).then(() => {
                 EventBus.$emit('item-removed');
@@ -193,7 +242,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['currentBuildOrganizations']),
+        ...mapState(['currentBuild', 'currentBuildOrganizations']),
         filteredOrganizations() {
             let organizations = this.currentBuildOrganizations;
 
@@ -229,6 +278,8 @@ export default {
         },
     },
     created() {
+        this.fetchData();
+
         EventBus.$on(
             ['close-modal:add-item', 'close-modal:remove-item'],
             () => {

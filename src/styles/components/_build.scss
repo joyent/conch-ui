@@ -26,16 +26,6 @@
         }
     }
 
-    .box {
-        transition: all 0.2s ease-in-out;
-
-        &:hover {
-            background-color: lighten($grey-dark, 2%);
-            box-shadow: 0px 9px 45px -19px rgba(0, 0, 0, 1);
-            transition: all 0.2s ease-in-out;
-        }
-    }
-
     .tabs {
         margin: 20px 0 25px;
 
@@ -70,7 +60,6 @@
         display: flex;
         align-items: center;
         height: 42px;
-        margin-bottom: 6px;
 
         .build-name {
             flex-grow: 1;
@@ -103,6 +92,20 @@
 
         .fraction {
             color: $grey-light;
+        }
+
+        .button.view-all {
+            background-color: #1f2d3b;
+            border: none;
+
+            i.material-icons {
+                font-size: 24px;
+                margin: 0 0 0 6px;
+            }
+
+            &:hover {
+                background-color: lighten(#1f2d3b, 2%);
+            }
         }
     }
 
@@ -175,28 +178,20 @@
                     font-size: 36px;
                 }
             }
+
+            p.subtitle {
+                margin-bottom: 10px;
+            }
         }
 
         .box {
             &.filter {
                 background-color: #1f2d3b;
-            }
-        }
+                padding: 14px;
 
-        .view-all {
-            background-color: #0476d0;
-            border: none;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            transition: background-color 0.1s ease-in-out;
-
-            &:hover {
-                background-color: darken(#0476d0, 2%);
-                transition: background-color 0.1s ease-in-out;
-            }
-
-            .material-icons {
-                margin-left: 10px;
+                &:hover {
+                    background-color: lighten(#1f2d3b, 1%);
+                }
             }
         }
     }
