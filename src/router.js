@@ -24,6 +24,7 @@ import DataCenter from './views/DataCenterBrowser/DataCenter.vue';
 import DataCenterRoomsTab from './views/DataCenterBrowser/DataCenterRoomsTab.vue';
 import DataCenterRacksTab from './views/DataCenterBrowser/DataCenterRacksTab.vue';
 import DataCenterDevicesTab from './views/DataCenterBrowser/DataCenterDevicesTab.vue';
+import LinksTab from './views/Builds/LinksTab.vue';
 
 Vue.use(Router);
 
@@ -181,6 +182,14 @@ export default new Router({
           name: 'build-organizations',
           components: {
             default: OrganizationsTab,
+            sidebar: Sidebar,
+          },
+        },
+        {
+          path: 'links',
+          name: 'build-links',
+          components: {
+            default: LinksTab,
             sidebar: Sidebar,
           },
         },
