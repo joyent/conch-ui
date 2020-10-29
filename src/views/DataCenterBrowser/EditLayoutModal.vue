@@ -63,7 +63,7 @@
                         <th>Asset Tag</th>
                         <th></th>
                     </thead>
-                    <tfoot v-if="deviceSlots.length > 10">
+                    <tfoot v-if="layoutDevices.length > 10">
                         <th>Slot</th>
                         <th>Product Name</th>
                         <th>Serial Number</th>
@@ -253,16 +253,14 @@
 </template>
 
 <script>
-import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapState } from 'vuex';
-import { EventBus } from '@src/eventBus.js';
 import { updateRackAssignment } from '@api/racks.js';
 import { getRack } from '@api/racks';
 import { getHardwareProducts } from '@api/hardwareProduct';
 
 export default {
     props: {
-        deviceSlots: {
+        layoutDevices: {
             required: true,
             type: Array,
         },
@@ -327,9 +325,8 @@ export default {
             this.validationErrors = [];
         },
         closeModal() {
+            this.$emit('close-modal');
             this.isActive = false;
-
-            EventBus.$emit('closeModal:editLayoutModal');
         },
         editAssignment(assignment) {
             const slot = assignment.slot;
@@ -553,21 +550,7 @@ export default {
         }
     },
     created() {
-        this.deviceSlots.map(slot => {
-            const occupant = slot.occupant;
-
-            if (!isEmpty(occupant)) {
-                this.assignments.push({
-                    asset_tag: occupant.asset_tag,
-                    hardware_product_name: slot.hardware_product_name,
-                    original_asset_tag: occupant.asset_tag,
-                    original_serial_number: occupant.serial_number,
-                    rack_unit_start: occupant.rack_unit_start,
-                    serial_number: occupant.serial_number || '',
-                    slot: slot.id,
-                });
-            }
-        });
+        this.assignments = this.layoutDevices;
     },
 };
 </script>

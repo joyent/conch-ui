@@ -198,8 +198,9 @@ export default {
     methods: {
         ...mapActions(['setActiveDeviceDetails', 'setRackLayout']),
         closeModal() {
-            this.updateSuccess = false;
             EventBus.$emit('closeModal:baseModal');
+            this.$emit('close-modal');
+            this.updateSuccess = false;
         },
         updatePhase() {
             this.isLoading = true;

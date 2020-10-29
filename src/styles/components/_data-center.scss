@@ -1,0 +1,217 @@
+.data-center {
+    .data-center-details {
+        display: flex;
+        align-items: center;
+        margin: 6px 0 14px;
+    }
+
+    .select-with-label {
+        margin-left: 20px;
+    }
+
+    .data-center-room-header {
+        display: flex;
+        align-items: center;
+        height: 42px;
+
+        .data-center-region {
+            flex-grow: 1;
+            margin: 0 10px 0 0;
+        }
+
+        .button {
+            height: 42px;
+            font-weight: bold;
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+    }
+
+    .box-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        justify-content: flex-start;
+
+        i {
+            margin-right: 15px;
+        }
+
+        .heading {
+            margin: 0;
+            flex-grow: 1;
+            font-weight: bold;
+        }
+
+        .fraction {
+            color: $grey-light;
+        }
+
+        .button.view-all {
+            background-color: #1f2d3b;
+            border: none;
+
+            i.material-icons {
+                font-size: 24px;
+                margin: 0 0 0 6px;
+            }
+
+            &:hover {
+                background-color: lighten(#1f2d3b, 2%);
+            }
+        }
+    }
+
+    .overview-tab {
+        .total-build-progress {
+            .box-header {
+                .material-icons {
+                    font-size: 36px;
+                }
+            }
+
+            .progress-overall {
+                display: flex;
+                align-items: center;
+
+                progress {
+                    margin: 0;
+                    height: 0.5rem;
+                }
+
+                .amount {
+                    flex-grow: 1;
+                    line-height: 25px;
+                    margin-left: 20px;
+                    white-space: nowrap;
+                }
+            }
+        }
+
+        .build-dates {
+            .box-header {
+                margin-bottom: 0;
+                width: 100%;
+
+                .dates {
+                    display: flex;
+                    flex-grow: 1;
+                    justify-content: space-around;
+                    text-align: center;
+                }
+            }
+        }
+
+        .build-dates,
+        .sign-off {
+            display: flex;
+
+            .box-header {
+                margin-bottom: 0;
+
+                .material-icons {
+                    font-size: 42px;
+                }
+            }
+        }
+
+        .sign-off {
+            .sign-off-details {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        .build-devices,
+        .rack-devices {
+            padding: 20px;
+
+            .box-header {
+                .material-icons {
+                    font-size: 36px;
+                }
+            }
+
+            p.subtitle {
+                margin-bottom: 10px;
+            }
+        }
+
+        .box {
+            &.filter {
+                background-color: #1f2d3b;
+                padding: 14px;
+
+                &:hover {
+                    background-color: lighten(#1f2d3b, 1%);
+                }
+            }
+        }
+    }
+
+    .breadcrumb {
+        a {
+            font-weight: bold;
+        }
+    }
+
+    .data-center-rooms-tab,
+    .data-center-racks-tab,
+    .data-center-devices-tab {
+        input {
+            background-color: $grey-darker;
+            border-color: $grey;
+            border-radius: 4px;
+            color: $grey-lighter;
+
+            &::placeholder {
+                color: $grey-light;
+            }
+        }
+
+        select {
+            background-color: $grey-darker;
+            border-color: $grey;
+            color: $grey-lighter;
+        }
+
+        td,
+        th {
+            padding: 15px 20px;
+        }
+
+        .datatable-header {
+            align-items: center;
+            background-color: $grey-dark;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            display: flex;
+            font-weight: bold;
+            padding: 20px;
+
+            .control {
+                flex-grow: 1;
+                margin-left: 20px;
+
+                input {
+                    margin-bottom: 0;
+                }
+            }
+
+            i.material-icons {
+                cursor: pointer;
+                font-size: 36px;
+                margin-left: 20px;
+
+                &.search {
+                    font-size: 22px;
+                    margin-left: 5px;
+                }
+            }
+
+            .button {
+                margin-left: 20px;
+            }
+        }
+    }
+}

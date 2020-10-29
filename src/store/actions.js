@@ -81,8 +81,24 @@ export const setCurrentBuildUsers = ({ commit }, users) => {
     commit('setCurrentBuildUsers', users);
 };
 
+export const setCurrentDataCenter = ({ commit }, dataCenter) => {
+    commit('setCurrentDataCenter', dataCenter);
+};
+
+export const setCurrentDataCenterRack = ({ commit }, rack) => {
+    commit('setCurrentDataCenterRack', rack);
+};
+
+export const setCurrentDataCenterRoom = ({ commit }, room) => {
+    commit('setCurrentDataCenterRoom', room);
+};
+
 export const setCurrentUser = ({ commit }, currentUser) => {
     commit('setCurrentUser', currentUser);
+};
+
+export const setDataCenters = ({ commit }, dataCenters) => {
+    commit('setDataCenters', dataCenters);
 };
 
 export const setDatacenterRooms = ({ commit }, datacenterRooms) => {
@@ -162,7 +178,11 @@ export default {
     setCurrentBuildOrganizations,
     setCurrentBuildRacks,
     setCurrentBuildUsers,
+    setCurrentDataCenter,
+    setCurrentDataCenterRack,
+    setCurrentDataCenterRoom,
     setCurrentUser,
+    setDataCenters,
     setDatacenterRooms,
     setDevices,
     setForcePasswordChange,
