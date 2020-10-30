@@ -4,18 +4,18 @@ import getters from '../getters.js';
 import activeDevice from '@src/__fixtures__/activeDevice.js';
 
 describe('getters', () => {
-    let state;
+  let state;
 
-    beforeEach(() => {
-        state = {};
+  beforeEach(() => {
+    state = {};
+  });
+
+  describe('activeDeviceId', () => {
+    test('it returns the id of the active device', () => {
+      state = { activeDevice };
+      const activeDeviceId = getters.activeDeviceId(state);
+
+      expect(activeDeviceId).toEqual(activeDevice.id);
     });
-
-    describe('activeDeviceId', () => {
-        test('it returns the id of the active device', () => {
-            state = { activeDevice };
-            const activeDeviceId = getters.activeDeviceId(state);
-
-            expect(activeDeviceId).toEqual(activeDevice.id);
-        });
-    });
+  });
 });

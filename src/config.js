@@ -9,8 +9,8 @@ const breakingApiVersion = '4.0.0';
 const minimumApiVersion = '3.0.0';
 
 module.exports = {
-    breakingApiVersion,
-    conchApi,
-    conchReleaseUrl,
-    minimumApiVersion,
+  breakingApiVersion,
+  conchApi,
+  conchReleaseUrl,
+  minimumApiVersion,
 };

@@ -8,10 +8,10 @@ import { requestWithToken } from './request.js';
  * @return {Response Object}
  */
 export const getRack = rackId => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/rack/${rackId}`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/rack/${rackId}`,
+  });
 };
 
 /**
@@ -22,32 +22,32 @@ export const getRack = rackId => {
  * @return {Response Object}
  */
 export const getRackAssignment = rackId => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/rack/${rackId}/assignment`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/rack/${rackId}/assignment`,
+  });
 };
 
 export const setRackPhase = (rackId, data, params) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/rack/${rackId}/phase`,
-        data,
-        params,
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: `/rack/${rackId}/phase`,
+    data,
+    params,
+  });
 };
 
 export const updateRackAssignment = (rackId, data) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/rack/${rackId}/assignment`,
-        data,
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: `/rack/${rackId}/assignment`,
+    data,
+  });
 };
 
 export default {
-    getRack,
-    getRackAssignment,
-    setRackPhase,
-    updateRackAssignment,
+  getRack,
+  getRackAssignment,
+  setRackPhase,
+  updateRackAssignment,
 };
