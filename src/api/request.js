@@ -5,19 +5,19 @@ import store from '@src/store/store.js';
 import { logout } from '@api/authentication.js';
 
 export const clearToken = () => {
-    return Cookies.remove('token');
+  return Cookies.remove('token');
 };
 
 export const getToken = () => {
-    return Cookies.get('token');
+  return Cookies.get('token');
 };
 
 export const setToken = token => {
-    Cookies.set('token', token);
+  Cookies.set('token', token);
 };
 
 export const request = args => {
-    /* eslint-disable */
+  /* eslint-disable */
     const uiHeader = {
         'X-Conch-UI': CONCH.GLOBALS.conchUIVersion,
     };

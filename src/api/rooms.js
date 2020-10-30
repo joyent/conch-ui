@@ -7,10 +7,10 @@ import { requestWithToken } from './request.js';
  * @return {Response Object}
  */
 export const getRooms = () => {
-    return requestWithToken({
-        method: 'GET',
-        url: '/room',
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: '/room',
+  });
 };
 
 /**
@@ -21,10 +21,10 @@ export const getRooms = () => {
  * @return {Response Object}
  */
 export const getDataCenterRoomRacks = id => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/room/${id}/rack`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/room/${id}/rack`,
+  });
 };
 
 /**
@@ -36,14 +36,14 @@ export const getDataCenterRoomRacks = id => {
  * @return {Response Object}
  */
 export const getDataCenterRackAssignment = (roomId, rackId) => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/room/${roomId}/rack/${rackId}/assignment`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/room/${roomId}/rack/${rackId}/assignment`,
+  });
 };
 
 export default {
-    getDataCenterRackAssignment,
-    getDataCenterRoomRacks,
-    getRooms,
+  getDataCenterRackAssignment,
+  getDataCenterRoomRacks,
+  getRooms,
 };

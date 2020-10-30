@@ -10,14 +10,14 @@ import { requestWithToken } from './request.js';
  * @return {Response Object}
  */
 export const addUserToOrganization = (organizationId, role, userId) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/organization/${organizationId}/user`,
-        data: { role, user_id: userId },
-        params: {
-            send_mail: 1,
-        },
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: `/organization/${organizationId}/user`,
+    data: { role, user_id: userId },
+    params: {
+      send_mail: 1,
+    },
+  });
 };
 
 /**
@@ -29,11 +29,11 @@ export const addUserToOrganization = (organizationId, role, userId) => {
  * @return {Response Object}
  */
 export const createOrganization = (name, description, admins) => {
-    return requestWithToken({
-        method: 'POST',
-        url: '/organization',
-        data: { name, description, admins },
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: '/organization',
+    data: { name, description, admins },
+  });
 };
 
 /**
@@ -45,10 +45,10 @@ export const createOrganization = (name, description, admins) => {
  * @return {Response Object}
  */
 export const deleteOrganization = organizationId => {
-    return requestWithToken({
-        method: 'DELETE',
-        url: `/organization/${organizationId}`,
-    });
+  return requestWithToken({
+    method: 'DELETE',
+    url: `/organization/${organizationId}`,
+  });
 };
 
 /**
@@ -59,10 +59,10 @@ export const deleteOrganization = organizationId => {
  * @return {Response Object}
  */
 export const getOrganization = organizationId => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/organization/${organizationId}`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/organization/${organizationId}`,
+  });
 };
 
 /**
@@ -72,10 +72,10 @@ export const getOrganization = organizationId => {
  * @return {Response Object}
  */
 export const getOrganizations = () => {
-    return requestWithToken({
-        method: 'GET',
-        url: '/organization',
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: '/organization',
+  });
 };
 
 /**
@@ -87,20 +87,20 @@ export const getOrganizations = () => {
  * @return {Response Object}
  */
 export const removeUserFromOrganization = (organizationId, userId) => {
-    return requestWithToken({
-        method: 'DELETE',
-        url: `/organization/${organizationId}/user/${userId}`,
-        params: {
-            send_mail: 1,
-        },
-    });
+  return requestWithToken({
+    method: 'DELETE',
+    url: `/organization/${organizationId}/user/${userId}`,
+    params: {
+      send_mail: 1,
+    },
+  });
 };
 
 export default {
-    addUserToOrganization,
-    createOrganization,
-    deleteOrganization,
-    getOrganization,
-    getOrganizations,
-    removeUserFromOrganization,
+  addUserToOrganization,
+  createOrganization,
+  deleteOrganization,
+  getOrganization,
+  getOrganizations,
+  removeUserFromOrganization,
 };

@@ -28,250 +28,250 @@ import DataCenterDevicesTab from './views/DataCenterBrowser/DataCenterDevicesTab
 Vue.use(Router);
 
 export default new Router({
-    routes: [
-        {
-            path: '/',
-            name: 'signIn',
-            component: SignIn,
-        },
-        {
-            path: '/devices',
-            name: 'devices',
-            components: {
-                default: Devices,
-                sidebar: Sidebar,
-            },
-            children: [
-                {
-                    // when /device/:deviceId is matched
-                    path: ':deviceId',
-                    name: 'device',
-                    component: Devices,
-                },
-            ],
-        },
-        {
-            path: '/hardware-products',
-            name: 'hardware-products',
-            components: {
-                default: HardwareProducts,
-                sidebar: Sidebar,
-            },
-            children: [
-                {
-                    path: ':id',
-                    name: 'hardware-product',
-                    components: {
-                        default: HardwareProduct,
-                        sidebar: Sidebar,
-                    },
-                },
-            ],
-        },
-        {
-            path: '/datacenters',
-            name: 'datacenters',
-            components: {
-                default: DataCenters,
-                sidebar: Sidebar,
-            },
-            children: [
-                {
-                    // when /datacenter/:roomName/rack is matched
-                    path: ':roomName/rack',
-                    name: 'datacenterRoom',
-                    component: DataCenters,
-                    children: [
-                        {
-                            // when /datacenter/:roomName/rack/:rackId/device is matched
-                            path: ':rackId/device',
-                            name: 'datacenterRack',
-                            component: DataCenters,
-                            children: [
-                                {
-                                    // when /datacenter/:roomName/rack/:rackId/device/:deviceId is matched
-                                    path: ':deviceId',
-                                    name: 'datacenterDevice',
-                                    component: DataCenters,
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            path: '/datacenters/:id',
-            name: 'datacenter',
-            components: {
-                default: DataCenter,
-                sidebar: Sidebar,
-            },
-            redirect: { name: 'datacenter-rooms' },
-            children: [
-                {
-                    path: 'rooms',
-                    name: 'datacenter-rooms',
-                    components: {
-                        default: DataCenterRoomsTab,
-                        sidebar: Sidebar,
-                    },
-                },
-                {
-                    path: 'racks',
-                    name: 'datacenter-racks',
-                    components: {
-                        default: DataCenterRacksTab,
-                        sidebar: Sidebar,
-                    },
-                },
-                {
-                    path: 'devices',
-                    name: 'datacenter-devices',
-                    components: {
-                        default: DataCenterDevicesTab,
-                        sidebar: Sidebar,
-                    },
-                },
-            ],
-        },
-        {
-            path: '/builds/:id',
-            name: 'build',
-            components: {
-                default: Build,
-                sidebar: Sidebar,
-            },
-            redirect: { name: 'build-overview' },
-            children: [
-                {
-                    path: 'overview',
-                    name: 'build-overview',
-                    components: {
-                        default: OverviewTab,
-                        sidebar: Sidebar,
-                    },
-                },
-                {
-                    path: 'racks',
-                    name: 'build-racks',
-                    components: {
-                        default: RacksTab,
-                        sidebar: Sidebar,
-                    },
-                },
-                {
-                    path: 'devices',
-                    name: 'build-devices',
-                    components: {
-                        default: DevicesTab,
-                        sidebar: Sidebar,
-                    },
-                },
-                {
-                    path: 'members',
-                    name: 'build-members',
-                    components: {
-                        default: MembersTab,
-                        sidebar: Sidebar,
-                    },
-                },
-                {
-                    path: 'organizations',
-                    name: 'build-organizations',
-                    components: {
-                        default: OrganizationsTab,
-                        sidebar: Sidebar,
-                    },
-                },
-            ],
-        },
-        {
-            path: '/builds',
-            name: 'builds',
-            components: {
-                default: Builds,
-                sidebar: Sidebar,
-            },
-        },
-        {
-            path: '/admin/tokens',
-            name: 'tokens',
-            components: {
-                default: AuthenticationTokens,
-                sidebar: Sidebar,
-            },
-            children: [
-                {
-                    // when /admin/tokens/:userId is matched
-                    path: ':userId',
-                    name: 'userTokens',
-                    component: AuthenticationTokens,
-                },
-            ],
-        },
-        {
-            path: '/admin/users',
-            name: 'user-management',
-            components: {
-                default: UserManagement,
-                sidebar: Sidebar,
-            },
-            children: [
-                {
-                    path: ':id',
-                    name: 'user',
-                    components: {
-                        default: User,
-                        sidebar: Sidebar,
-                    },
-                },
-            ],
-        },
-        {
-            path: '/profile/:id',
-            name: 'profile',
-            components: {
-                default: User,
-                sidebar: Sidebar,
-            },
-        },
-        {
-            path: '/password-reset',
-            name: 'passwordReset',
-            component: {
-                PasswordReset,
-            },
-        },
-        {
-            path: '/organizations',
-            name: 'organizations',
-            components: {
-                default: Organizations,
-                sidebar: Sidebar,
-            },
-            children: [
-                {
-                    path: ':id',
-                    name: 'organization',
-                    components: {
-                        default: Organization,
-                        sidebar: Sidebar,
-                    },
-                },
-            ],
-        },
-        {
-            path: '/*',
-            name: '404',
-            component: PageNotFound,
-        },
-    ],
-    scrollBehavior(to, from, savedPosition) {
-        if (savedPosition) {
-            return savedPosition;
-        } else {
-            return { x: 0, y: 0 };
-        }
+  routes: [
+    {
+      path: '/',
+      name: 'signIn',
+      component: SignIn,
     },
+    {
+      path: '/devices',
+      name: 'devices',
+      components: {
+        default: Devices,
+        sidebar: Sidebar,
+      },
+      children: [
+        {
+          // when /device/:deviceId is matched
+          path: ':deviceId',
+          name: 'device',
+          component: Devices,
+        },
+      ],
+    },
+    {
+      path: '/hardware-products',
+      name: 'hardware-products',
+      components: {
+        default: HardwareProducts,
+        sidebar: Sidebar,
+      },
+      children: [
+        {
+          path: ':id',
+          name: 'hardware-product',
+          components: {
+            default: HardwareProduct,
+            sidebar: Sidebar,
+          },
+        },
+      ],
+    },
+    {
+      path: '/datacenters',
+      name: 'datacenters',
+      components: {
+        default: DataCenters,
+        sidebar: Sidebar,
+      },
+      children: [
+        {
+          // when /datacenter/:roomName/rack is matched
+          path: ':roomName/rack',
+          name: 'datacenterRoom',
+          component: DataCenters,
+          children: [
+            {
+              // when /datacenter/:roomName/rack/:rackId/device is matched
+              path: ':rackId/device',
+              name: 'datacenterRack',
+              component: DataCenters,
+              children: [
+                {
+                  // when /datacenter/:roomName/rack/:rackId/device/:deviceId is matched
+                  path: ':deviceId',
+                  name: 'datacenterDevice',
+                  component: DataCenters,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: '/datacenters/:id',
+      name: 'datacenter',
+      components: {
+        default: DataCenter,
+        sidebar: Sidebar,
+      },
+      redirect: { name: 'datacenter-rooms' },
+      children: [
+        {
+          path: 'rooms',
+          name: 'datacenter-rooms',
+          components: {
+            default: DataCenterRoomsTab,
+            sidebar: Sidebar,
+          },
+        },
+        {
+          path: 'racks',
+          name: 'datacenter-racks',
+          components: {
+            default: DataCenterRacksTab,
+            sidebar: Sidebar,
+          },
+        },
+        {
+          path: 'devices',
+          name: 'datacenter-devices',
+          components: {
+            default: DataCenterDevicesTab,
+            sidebar: Sidebar,
+          },
+        },
+      ],
+    },
+    {
+      path: '/builds/:id',
+      name: 'build',
+      components: {
+        default: Build,
+        sidebar: Sidebar,
+      },
+      redirect: { name: 'build-overview' },
+      children: [
+        {
+          path: 'overview',
+          name: 'build-overview',
+          components: {
+            default: OverviewTab,
+            sidebar: Sidebar,
+          },
+        },
+        {
+          path: 'racks',
+          name: 'build-racks',
+          components: {
+            default: RacksTab,
+            sidebar: Sidebar,
+          },
+        },
+        {
+          path: 'devices',
+          name: 'build-devices',
+          components: {
+            default: DevicesTab,
+            sidebar: Sidebar,
+          },
+        },
+        {
+          path: 'members',
+          name: 'build-members',
+          components: {
+            default: MembersTab,
+            sidebar: Sidebar,
+          },
+        },
+        {
+          path: 'organizations',
+          name: 'build-organizations',
+          components: {
+            default: OrganizationsTab,
+            sidebar: Sidebar,
+          },
+        },
+      ],
+    },
+    {
+      path: '/builds',
+      name: 'builds',
+      components: {
+        default: Builds,
+        sidebar: Sidebar,
+      },
+    },
+    {
+      path: '/admin/tokens',
+      name: 'tokens',
+      components: {
+        default: AuthenticationTokens,
+        sidebar: Sidebar,
+      },
+      children: [
+        {
+          // when /admin/tokens/:userId is matched
+          path: ':userId',
+          name: 'userTokens',
+          component: AuthenticationTokens,
+        },
+      ],
+    },
+    {
+      path: '/admin/users',
+      name: 'user-management',
+      components: {
+        default: UserManagement,
+        sidebar: Sidebar,
+      },
+      children: [
+        {
+          path: ':id',
+          name: 'user',
+          components: {
+            default: User,
+            sidebar: Sidebar,
+          },
+        },
+      ],
+    },
+    {
+      path: '/profile/:id',
+      name: 'profile',
+      components: {
+        default: User,
+        sidebar: Sidebar,
+      },
+    },
+    {
+      path: '/password-reset',
+      name: 'passwordReset',
+      component: {
+        PasswordReset,
+      },
+    },
+    {
+      path: '/organizations',
+      name: 'organizations',
+      components: {
+        default: Organizations,
+        sidebar: Sidebar,
+      },
+      children: [
+        {
+          path: ':id',
+          name: 'organization',
+          components: {
+            default: Organization,
+            sidebar: Sidebar,
+          },
+        },
+      ],
+    },
+    {
+      path: '/*',
+      name: '404',
+      component: PageNotFound,
+    },
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { x: 0, y: 0 };
+    }
+  },
 });

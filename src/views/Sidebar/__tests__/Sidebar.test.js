@@ -15,31 +15,31 @@ jest.spyOn(auth, 'logout');
 jest.spyOn(conchApi, 'getApiVersion');
 
 describe('Sidebar.vue', () => {
-    let mocks;
-    let state;
-    let store;
-    let stubs;
-    let wrapper;
+  let mocks;
+  let state;
+  let store;
+  let stubs;
+  let wrapper;
 
-    beforeEach(() => {
-        mocks = { $router: [] };
-        state = { currentUser: users[0] };
-        store = new Vuex.Store({ state });
-        stubs = ['router-link'];
-        wrapper = shallowMount(Sidebar, { localVue, mocks, store, stubs });
-    });
+  beforeEach(() => {
+    mocks = { $router: [] };
+    state = { currentUser: users[0] };
+    store = new Vuex.Store({ state });
+    stubs = ['router-link'];
+    wrapper = shallowMount(Sidebar, { localVue, mocks, store, stubs });
+  });
 
-    test('should call signOut method when "Log out" link is clicked', () => {
-        const spy = jest.spyOn(wrapper.vm, 'signOut');
+  test('should call signOut method when "Log out" link is clicked', () => {
+    const spy = jest.spyOn(wrapper.vm, 'signOut');
 
-        wrapper.find('.sign-out').trigger('click');
+    wrapper.find('.sign-out').trigger('click');
 
-        return expect(spy).toHaveBeenCalled();
-    });
+    return expect(spy).toHaveBeenCalled();
+  });
 
-    test('should call logout from auth API when signOut is called', () => {
-        wrapper.find('.sign-out').trigger('click');
+  test('should call logout from auth API when signOut is called', () => {
+    wrapper.find('.sign-out').trigger('click');
 
-        return expect(auth.logout).toHaveBeenCalled();
-    });
+    return expect(auth.logout).toHaveBeenCalled();
+  });
 });

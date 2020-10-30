@@ -8,10 +8,10 @@ import { requestWithToken } from './request.js';
  * @return {Response Object}
  */
 export const getDataCenter = id => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/dc/${id}`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/dc/${id}`,
+  });
 };
 
 /**
@@ -22,10 +22,10 @@ export const getDataCenter = id => {
  * @return {Response Object}
  */
 export const getDataCenterRooms = id => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/dc/${id}/rooms`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/dc/${id}/rooms`,
+  });
 };
 
 /**
@@ -35,10 +35,10 @@ export const getDataCenterRooms = id => {
  * @return {Response Object}
  */
 export const getDataCenters = () => {
-    return requestWithToken({
-        method: 'GET',
-        url: '/dc',
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: '/dc',
+  });
 };
 
 export default { getDataCenter, getDataCenterRooms, getDataCenters };

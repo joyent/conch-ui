@@ -15,215 +15,215 @@ import users from '@src/__fixtures__/users.js';
 import validations from '@src/__fixtures__/validations.js';
 
 describe('mutations', () => {
-    let state;
+  let state;
 
-    beforeEach(() => {
-        state = {};
+  beforeEach(() => {
+    state = {};
+  });
+
+  describe('clearActiveDevice', () => {
+    test('it clears the active device currently in state', () => {
+      state = { activeDevice };
+
+      mutations.clearActiveDevice(state);
+      expect(state).toMatchObject({ activeDevice: {} });
     });
+  });
 
-    describe('clearActiveDevice', () => {
-        test('it clears the active device currently in state', () => {
-            state = { activeDevice };
+  describe('clearActiveRoomName', () => {
+    test('it clears the active room currently in state', () => {
+      state = { activeRoomName: activeRoom.name };
 
-            mutations.clearActiveDevice(state);
-            expect(state).toMatchObject({ activeDevice: {} });
-        });
+      mutations.clearActiveRoomName(state);
+      expect(state).toMatchObject({ activeRoomName: {} });
     });
+  });
 
-    describe('clearActiveRoomName', () => {
-        test('it clears the active room currently in state', () => {
-            state = { activeRoomName: activeRoom.name };
+  describe('clearForcePasswordChange', () => {
+    test('it clears forcePasswordChange by setting it to false', () => {
+      state = { forcePasswordChange: true };
+      mutations.clearForcePasswordChange(state);
 
-            mutations.clearActiveRoomName(state);
-            expect(state).toMatchObject({ activeRoomName: {} });
-        });
+      expect(state).toMatchObject({ forcePasswordChange: false });
     });
+  });
 
-    describe('clearForcePasswordChange', () => {
-        test('it clears forcePasswordChange by setting it to false', () => {
-            state = { forcePasswordChange: true };
-            mutations.clearForcePasswordChange(state);
+  describe('clearRackLayout', () => {
+    test('it clears rackLayout', () => {
+      state = { rackLayout };
 
-            expect(state).toMatchObject({ forcePasswordChange: false });
-        });
+      mutations.clearRackLayout(state);
+      expect(state).toMatchObject({ rackLayout: {} });
     });
+  });
 
-    describe('clearRackLayout', () => {
-        test('it clears rackLayout', () => {
-            state = { rackLayout };
+  describe('clearShowDeviceInRack', () => {
+    test('it clears showDeviceInRack by setting it to false', () => {
+      state = { showDeviceInRack: true };
 
-            mutations.clearRackLayout(state);
-            expect(state).toMatchObject({ rackLayout: {} });
-        });
+      mutations.clearShowDeviceInRack(state);
+      expect(state).toMatchObject({ showDeviceInRack: false });
     });
+  });
 
-    describe('clearShowDeviceInRack', () => {
-        test('it clears showDeviceInRack by setting it to false', () => {
-            state = { showDeviceInRack: true };
+  describe('clearUserAuthTokens', () => {
+    test('it clears the auth tokens stored for the current user', () => {
+      state = { userAuthTokens };
 
-            mutations.clearShowDeviceInRack(state);
-            expect(state).toMatchObject({ showDeviceInRack: false });
-        });
+      mutations.clearUserAuthTokens(state);
+      expect(state).toMatchObject({ userAuthTokens: [] });
     });
+  });
 
-    describe('clearUserAuthTokens', () => {
-        test('it clears the auth tokens stored for the current user', () => {
-            state = { userAuthTokens };
+  describe('setActiveDevice', () => {
+    test('it adds an active device to the state', () => {
+      state = { activeDevice: {} };
 
-            mutations.clearUserAuthTokens(state);
-            expect(state).toMatchObject({ userAuthTokens: [] });
-        });
+      mutations.setActiveDevice(state, activeDevice);
+      expect(state).toMatchObject({ activeDevice });
     });
+  });
 
-    describe('setActiveDevice', () => {
-        test('it adds an active device to the state', () => {
-            state = { activeDevice: {} };
+  describe('setActiveDeviceDetails', () => {
+    test('it adds active device details to the state', () => {
+      state = { activeDeviceDetails: {} };
 
-            mutations.setActiveDevice(state, activeDevice);
-            expect(state).toMatchObject({ activeDevice });
-        });
+      mutations.setActiveDeviceDetails(state, deviceDetails);
+      expect(state).toMatchObject({ activeDeviceDetails: deviceDetails });
     });
+  });
 
-    describe('setActiveDeviceDetails', () => {
-        test('it adds active device details to the state', () => {
-            state = { activeDeviceDetails: {} };
+  describe('setActiveDeviceSettings', () => {
+    test('it adds active device settings to the state', () => {
+      state = { activeDeviceSettings: {} };
 
-            mutations.setActiveDeviceDetails(state, deviceDetails);
-            expect(state).toMatchObject({ activeDeviceDetails: deviceDetails });
-        });
+      mutations.setActiveDeviceSettings(state, deviceSettings);
+      expect(state).toMatchObject({
+        activeDeviceSettings: deviceSettings,
+      });
     });
+  });
 
-    describe('setActiveDeviceSettings', () => {
-        test('it adds active device settings to the state', () => {
-            state = { activeDeviceSettings: {} };
+  describe('setActiveDeviceValidations', () => {
+    test('it adds active device validations to the state', () => {
+      state = { activeDeviceValidations: [] };
 
-            mutations.setActiveDeviceSettings(state, deviceSettings);
-            expect(state).toMatchObject({
-                activeDeviceSettings: deviceSettings,
-            });
-        });
+      mutations.setActiveDeviceValidations(state, deviceValidations);
+      expect(state).toMatchObject({
+        activeDeviceValidations: deviceValidations,
+      });
     });
+  });
 
-    describe('setActiveDeviceValidations', () => {
-        test('it adds active device validations to the state', () => {
-            state = { activeDeviceValidations: [] };
+  describe('setActiveRoomName', () => {
+    test('it adds an active room to the state', () => {
+      state = { activeRoomName: '' };
 
-            mutations.setActiveDeviceValidations(state, deviceValidations);
-            expect(state).toMatchObject({
-                activeDeviceValidations: deviceValidations,
-            });
-        });
+      mutations.setActiveRoomName(state, activeRoom.name);
+      expect(state).toMatchObject({ activeRoomName: activeRoom.name });
     });
+  });
 
-    describe('setActiveRoomName', () => {
-        test('it adds an active room to the state', () => {
-            state = { activeRoomName: '' };
+  describe('setCurrentUser', () => {
+    test('it adds the current user to the state', () => {
+      const currentUser = users[0];
+      state = { currentUser: {} };
 
-            mutations.setActiveRoomName(state, activeRoom.name);
-            expect(state).toMatchObject({ activeRoomName: activeRoom.name });
-        });
+      mutations.setCurrentUser(state, currentUser);
+      expect(state).toMatchObject({ currentUser });
     });
+  });
 
-    describe('setCurrentUser', () => {
-        test('it adds the current user to the state', () => {
-            const currentUser = users[0];
-            state = { currentUser: {} };
+  describe('setAuthTokens', () => {
+    test('it adds authentication tokens to the state', () => {
+      state = { authTokens: [] };
 
-            mutations.setCurrentUser(state, currentUser);
-            expect(state).toMatchObject({ currentUser });
-        });
+      mutations.setAuthTokens(state, authTokens);
+      expect(state).toMatchObject({ authTokens });
     });
+  });
 
-    describe('setAuthTokens', () => {
-        test('it adds authentication tokens to the state', () => {
-            state = { authTokens: [] };
+  describe('setForcePasswordChange', () => {
+    test('it sets forcePasswordChange by setting it to true', () => {
+      const forcePasswordChange = true;
+      state = { forcePasswordChange: false };
 
-            mutations.setAuthTokens(state, authTokens);
-            expect(state).toMatchObject({ authTokens });
-        });
+      mutations.setForcePasswordChange(state, forcePasswordChange);
+      expect(state).toMatchObject({ forcePasswordChange });
     });
+  });
 
-    describe('setForcePasswordChange', () => {
-        test('it sets forcePasswordChange by setting it to true', () => {
-            const forcePasswordChange = true;
-            state = { forcePasswordChange: false };
+  describe('setHardwareProducts', () => {
+    test('it adds hardware products to state', () => {
+      state = { hardwareProducts: [] };
 
-            mutations.setForcePasswordChange(state, forcePasswordChange);
-            expect(state).toMatchObject({ forcePasswordChange });
-        });
+      mutations.setHardwareProducts(state, hardwareProducts);
+      expect(state).toMatchObject({ hardwareProducts });
     });
+  });
 
-    describe('setHardwareProducts', () => {
-        test('it adds hardware products to state', () => {
-            state = { hardwareProducts: [] };
+  describe('setHighlightDeviceId', () => {
+    test('it adds highlightDeviceId which is a searched device to the state', () => {
+      const highlightDeviceId = activeDevice.id;
+      state = { highlightDeviceId: '' };
 
-            mutations.setHardwareProducts(state, hardwareProducts);
-            expect(state).toMatchObject({ hardwareProducts });
-        });
+      mutations.setHighlightDeviceId(state, highlightDeviceId);
+      expect(state).toMatchObject({ highlightDeviceId });
     });
+  });
 
-    describe('setHighlightDeviceId', () => {
-        test('it adds highlightDeviceId which is a searched device to the state', () => {
-            const highlightDeviceId = activeDevice.id;
-            state = { highlightDeviceId: '' };
+  describe('setRackLayout', () => {
+    test('it adds a rack layout which is the active rack to the state', () => {
+      state = { rackLayout: {} };
 
-            mutations.setHighlightDeviceId(state, highlightDeviceId);
-            expect(state).toMatchObject({ highlightDeviceId });
-        });
+      mutations.setRackLayout(state, rackLayout);
+      expect(state).toMatchObject({ rackLayout });
     });
+  });
 
-    describe('setRackLayout', () => {
-        test('it adds a rack layout which is the active rack to the state', () => {
-            state = { rackLayout: {} };
+  describe('setRackRooms', () => {
+    test('it adds rack rooms to the state', () => {
+      state = { rackRooms: {} };
 
-            mutations.setRackLayout(state, rackLayout);
-            expect(state).toMatchObject({ rackLayout });
-        });
+      mutations.setRackRooms(state, rackRooms);
+      expect(state).toMatchObject({ rackRooms });
     });
+  });
 
-    describe('setRackRooms', () => {
-        test('it adds rack rooms to the state', () => {
-            state = { rackRooms: {} };
+  describe('setShowDeviceInRack', () => {
+    test('it sets a boolean value when showing a device in rack to the state', () => {
+      const showDeviceInRack = true;
+      state = { showDeviceInRack: false };
 
-            mutations.setRackRooms(state, rackRooms);
-            expect(state).toMatchObject({ rackRooms });
-        });
+      mutations.setShowDeviceInRack(state, showDeviceInRack);
+      expect(state).toMatchObject({ showDeviceInRack });
     });
+  });
 
-    describe('setShowDeviceInRack', () => {
-        test('it sets a boolean value when showing a device in rack to the state', () => {
-            const showDeviceInRack = true;
-            state = { showDeviceInRack: false };
+  describe('setUserAuthTokens', () => {
+    test('it adds authentication tokens to the state', () => {
+      state = { userAuthTokens: [] };
 
-            mutations.setShowDeviceInRack(state, showDeviceInRack);
-            expect(state).toMatchObject({ showDeviceInRack });
-        });
+      mutations.setUserAuthTokens(state, userAuthTokens);
+      expect(state).toMatchObject({ userAuthTokens });
     });
+  });
 
-    describe('setUserAuthTokens', () => {
-        test('it adds authentication tokens to the state', () => {
-            state = { userAuthTokens: [] };
+  describe('setUsers', () => {
+    test('it adds users to the state', () => {
+      state = { users: [] };
 
-            mutations.setUserAuthTokens(state, userAuthTokens);
-            expect(state).toMatchObject({ userAuthTokens });
-        });
+      mutations.setUsers(state, users);
+      expect(state).toMatchObject({ users });
     });
+  });
 
-    describe('setUsers', () => {
-        test('it adds users to the state', () => {
-            state = { users: [] };
+  describe('setValidations', () => {
+    test('it adds validations to the state', () => {
+      state = { validations: [] };
 
-            mutations.setUsers(state, users);
-            expect(state).toMatchObject({ users });
-        });
+      mutations.setValidations(state, validations);
+      expect(state).toMatchObject({ validations });
     });
-
-    describe('setValidations', () => {
-        test('it adds validations to the state', () => {
-            state = { validations: [] };
-
-            mutations.setValidations(state, validations);
-            expect(state).toMatchObject({ validations });
-        });
-    });
+  });
 });
