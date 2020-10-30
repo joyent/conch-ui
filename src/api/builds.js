@@ -197,9 +197,6 @@ export const getBuilds = () => {
     return requestWithToken({
         method: 'GET',
         url: '/build',
-        params: {
-            include_completed: 1,
-        },
     });
 };
 
