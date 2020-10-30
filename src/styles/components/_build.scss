@@ -170,8 +170,8 @@
         }
 
         .build-devices,
-        .rack-devices {
-            padding: 20px;
+            .rack-devices {
+                padding: 20px;
 
             .box-header {
                 .material-icons {
@@ -252,14 +252,6 @@
             }
         }
 
-        .remove-item i {
-            cursor: pointer;
-
-            &:hover {
-                color: $red;
-            }
-        }
-
         .no-results {
             margin: 40px auto;
         }
@@ -277,6 +269,14 @@
                 margin: 0 auto;
                 max-width: 200px;
                 min-width: 150px;
+            }
+        }
+    }
+
+    .devices-tab {
+        .row {
+            &:hover {
+                color: $white;
             }
         }
     }

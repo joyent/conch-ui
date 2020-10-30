@@ -98,33 +98,41 @@
             <tbody>
               <tr
                 class="row"
-                v-for="device in filteredDevices"
+                v-for="(device, index) in filteredDevices"
                 :key="device.name"
                 @click="navigateToDevice(device)"
-                style="cursor: pointer;"
+                style="cursor: pointer; font-weight: bold; border-top: 1px solid #1f2d3b"
+                :style="{
+                  backgroundColor:
+                    hoveredRow === index
+                      ? getHoveredBackgroundColor(device.health)
+                      : getBackgroundColor(device.health),
+                }"
+                @mouseover="hoveredRow = index"
+                @mouseleave="hoveredRow = null"
               >
-                <td class="rack-unit">
+                <td class="rack-unit" style="border: none;">
                   <span>{{ `${device.rack_unit_start || 'N/A'}` }}</span>
                 </td>
-                <td class="rack-name">
+                <td class="rack-name" style="border: none;">
                   <span>{{ `${device.rack_name || 'N/A'}` }}</span>
                 </td>
-                <td class="name">
+                <td class="name" style="border: none;">
                   <span>{{ device.serial_number }}</span>
                 </td>
-                <td class="graduated">
+                <td class="graduated" style="border: none;">
                   <span>{{ device.health }}</span>
                 </td>
-                <td class="phase">
+                <td class="phase" style="border: none;">
                   <span>{{ device.phase }}</span>
                 </td>
-                <td class="hardare-product">
+                <td class="hardare-product" style="border: none;">
                   <span>{{ device.hardware_product_name }}</span>
                 </td>
-                <td class="last-reported">
+                <td class="last-reported" style="border: none;">
                   <span>{{ getDate(device.last_seen) }}</span>
                 </td>
-                <td class="remove-item has-text-right">
+                <td class="remove-item has-text-right" style="border: none;">
                   <i
                     class="fas fa-trash-alt"
                     @click="showRemoveDeviceModal(device)"
@@ -188,6 +196,7 @@ export default {
         'last reported',
       ],
       healthStates: ['pass', 'fail', 'error', 'unknown'],
+      hoveredRow: '',
       phases: [
         'installation',
         'integration',
@@ -322,6 +331,24 @@ export default {
       }
 
       this.fetchingData = false;
+    },
+    getBackgroundColor(deviceHealth) {
+      if (deviceHealth === 'pass') {
+        return 'rgb(76, 175, 80, 0.8)';
+      } else if (deviceHealth === 'error' || deviceHealth === 'fail') {
+        return 'rgb(234, 70, 37, 0.7)';
+      } else if (deviceHealth === 'unknown') {
+        return 'rgb(250, 180, 7, 0.7)';
+      }
+    },
+    getHoveredBackgroundColor(deviceHealth) {
+      if (deviceHealth === 'pass') {
+        return 'rgb(76, 175, 80, 1)';
+      } else if (deviceHealth === 'error' || deviceHealth === 'fail') {
+        return 'rgb(234, 70, 37, 0.9)';
+      } else if (deviceHealth === 'unknown') {
+        return 'rgb(250, 180, 7, 0.9)';
+      }
     },
     getDate(date) {
       if (date) {
