@@ -28,7 +28,7 @@
                 </li>
                 <li class="nav-item" v-if="currentUser.is_admin">
                     <router-link
-                        :to="{ name: 'datacenter' }"
+                        :to="{ name: 'datacenters' }"
                         active-class="is-active"
                     >
                         <i class="material-icons">business</i>

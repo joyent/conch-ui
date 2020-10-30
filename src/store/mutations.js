@@ -83,8 +83,24 @@ export const setCurrentBuildUsers = (state, users) => {
     state.currentBuildUsers = users;
 };
 
+export const setCurrentDataCenter = (state, dataCenter) => {
+    state.currentDataCenter = dataCenter;
+};
+
+export const setCurrentDataCenterRack = (state, rack) => {
+    state.currentDataCenterRack = rack;
+};
+
+export const setCurrentDataCenterRoom = (state, room) => {
+    state.currentDataCenterRoom = room;
+};
+
 export const setCurrentUser = (state, currentUser) => {
     state.currentUser = currentUser;
+};
+
+export const setDataCenters = (state, dataCenters) => {
+    state.dataCenters = dataCenters;
 };
 
 export const setDatacenterRooms = (state, datacenterRooms) => {
@@ -164,7 +180,11 @@ export default {
     setCurrentBuildOrganizations,
     setCurrentBuildRacks,
     setCurrentBuildUsers,
+    setCurrentDataCenter,
+    setCurrentDataCenterRack,
+    setCurrentDataCenterRoom,
     setCurrentUser,
+    setDataCenters,
     setDatacenterRooms,
     setDevices,
     setForcePasswordChange,

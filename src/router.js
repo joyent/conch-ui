@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Devices from './views/Devices/Devices.vue';
-import DataCenterBrowser from './views/DataCenterBrowser/DataCenterBrowser.vue';
+import DataCenters from './views/DataCenterBrowser/DataCenters.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import UserManagement from './views/UserManagement/UserManagement.vue';
 import User from './views/UserManagement/User.vue';
@@ -20,6 +20,10 @@ import RacksTab from './views/Builds/RacksTab.vue';
 import DevicesTab from './views/Builds/DevicesTab.vue';
 import MembersTab from './views/Builds/MembersTab.vue';
 import OrganizationsTab from './views/Builds/OrganizationsTab.vue';
+import DataCenter from './views/DataCenterBrowser/DataCenter.vue';
+import DataCenterRoomsTab from './views/DataCenterBrowser/DataCenterRoomsTab.vue';
+import DataCenterRacksTab from './views/DataCenterBrowser/DataCenterRacksTab.vue';
+import DataCenterDevicesTab from './views/DataCenterBrowser/DataCenterDevicesTab.vue';
 
 Vue.use(Router);
 
@@ -65,10 +69,10 @@ export default new Router({
             ],
         },
         {
-            path: '/datacenter',
-            name: 'datacenter',
+            path: '/datacenters',
+            name: 'datacenters',
             components: {
-                default: DataCenterBrowser,
+                default: DataCenters,
                 sidebar: Sidebar,
             },
             children: [
@@ -76,23 +80,58 @@ export default new Router({
                     // when /datacenter/:roomName/rack is matched
                     path: ':roomName/rack',
                     name: 'datacenterRoom',
-                    component: DataCenterBrowser,
+                    component: DataCenters,
                     children: [
                         {
                             // when /datacenter/:roomName/rack/:rackId/device is matched
                             path: ':rackId/device',
                             name: 'datacenterRack',
-                            component: DataCenterBrowser,
+                            component: DataCenters,
                             children: [
                                 {
                                     // when /datacenter/:roomName/rack/:rackId/device/:deviceId is matched
                                     path: ':deviceId',
                                     name: 'datacenterDevice',
-                                    component: DataCenterBrowser,
+                                    component: DataCenters,
                                 },
                             ],
                         },
                     ],
+                },
+            ],
+        },
+        {
+            path: '/datacenters/:id',
+            name: 'datacenter',
+            components: {
+                default: DataCenter,
+                sidebar: Sidebar,
+            },
+            redirect: { name: 'datacenter-rooms' },
+            children: [
+                {
+                    path: 'rooms',
+                    name: 'datacenter-rooms',
+                    components: {
+                        default: DataCenterRoomsTab,
+                        sidebar: Sidebar,
+                    },
+                },
+                {
+                    path: 'racks',
+                    name: 'datacenter-racks',
+                    components: {
+                        default: DataCenterRacksTab,
+                        sidebar: Sidebar,
+                    },
+                },
+                {
+                    path: 'devices',
+                    name: 'datacenter-devices',
+                    components: {
+                        default: DataCenterDevicesTab,
+                        sidebar: Sidebar,
+                    },
                 },
             ],
         },
