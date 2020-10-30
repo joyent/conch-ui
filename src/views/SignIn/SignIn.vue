@@ -66,7 +66,7 @@
                                             Sign in to get started
                                         </p>
                                     </div>
-                                    <validation-observer v-slot="{ invalid }">
+                                    <validation-observer>
                                         <form>
                                             <div class="sign-in-input">
                                                 <div class="field">
@@ -190,14 +190,12 @@
                                                         'is-loading': isLoading,
                                                     }"
                                                     @click="
-                                                        incompatibleApiVersion ||
-                                                        invalid
+                                                        incompatibleApiVersion
                                                             ? null
                                                             : signIn()
                                                     "
                                                     :disabled="
-                                                        incompatibleApiVersion ||
-                                                            invalid
+                                                        incompatibleApiVersion
                                                     "
                                                 >
                                                     Sign In
