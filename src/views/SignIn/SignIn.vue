@@ -227,7 +227,6 @@ import semver from 'semver';
 import { getApiVersion } from '@api/conchApiVersion.js';
 import { mapActions, mapState } from 'vuex';
 import { login } from '@api/authentication.js';
-import { setGlobalWorkspaceId } from '@src/views/shared/utils.js';
 import { getCurrentUser } from '@api/users.js';
 import { extend, ValidationProvider, ValidationObserver } from 'vee-validate';
 import { required, email } from 'vee-validate/dist/rules';
@@ -288,10 +287,6 @@ export default {
                             await getCurrentUser().then(response => {
                                 this.setCurrentUser(response.data);
                             });
-
-                            if (!this.globalWorkspaceId) {
-                                setGlobalWorkspaceId();
-                            }
 
                             if (
                                 this.$route.query &&

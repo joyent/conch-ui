@@ -22,7 +22,6 @@ describe('SignIn.vue', () => {
         actions = {
             setCurrentUser: jest.fn(),
             setForcePasswordChange: jest.fn(),
-            setGlobalWorkspaceId: jest.fn(),
         };
         mocks = { $router: [] };
         state = { workspaces: {} };

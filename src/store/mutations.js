@@ -115,10 +115,6 @@ export const setForcePasswordChange = state => {
     state.forcePasswordChange = true;
 };
 
-export const setGlobalWorkspaceId = (state, globalWorkspaceId) => {
-    state.globalWorkspaceId = globalWorkspaceId;
-};
-
 export const setHardwareProducts = (state, hardwareProducts) => {
     state.hardwareProducts = hardwareProducts;
 };
@@ -188,7 +184,6 @@ export default {
     setDatacenterRooms,
     setDevices,
     setForcePasswordChange,
-    setGlobalWorkspaceId,
     setHardwareProducts,
     setHighlightDeviceId,
     setInvalidCredentials,
