@@ -2,6 +2,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const GitRevisionWebpackPlugin = require('git-revision-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
@@ -25,9 +26,16 @@ module.exports = {
       // Keeps original un-compressed files in output
       config.plugins.push(new CompressionPlugin());
 
+      config.plugins.push(
+        new MiniCssExtractPlugin({
+          chunkFilename: 'css/[name]-chunk.[contenthash].js',
+          filename: 'css/[name].[contenthash].css',
+        })
+      );
+
       Object.assign(config.output, {
-        chunkFilename: 'js/[name]-chunk.[contenthash:6].js',
-        filename: 'js/[name].[contenthash:6].js',
+        chunkFilename: 'js/[name]-chunk.[contenthash].js',
+        filename: 'js/[name].[contenthash].js',
       });
     } else {
       config.optimization = {
