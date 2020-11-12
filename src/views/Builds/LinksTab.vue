@@ -6,13 +6,13 @@
           <div
             class="datatable-header"
             :style="{
-              'border-bottom': deviceLinks ? '1px solid #4e5d6c' : 'none',
-              'border-bottom-left-radius': deviceLinks ? '0' : '4px',
-              'border-bottom-right-radius': deviceLinks ? '0' : '4px',
+              'border-bottom': buildLinks ? '1px solid #4e5d6c' : 'none',
+              'border-bottom-left-radius': buildLinks ? '0' : '4px',
+              'border-bottom-right-radius': buildLinks ? '0' : '4px',
             }"
           >
             <span class="heading is-size-6 is-marginless">
-              {{ `Links (${deviceLinks && deviceLinks.length})` }}
+              {{ `Links (${filteredLinks && filteredLinks.length})` }}
             </span>
             <div class="control has-icons-left has-icons-right">
               <input
@@ -26,7 +26,7 @@
               </span>
             </div>
             <i
-              v-if="deviceLinks && deviceLinks > 1"
+              v-if="buildLinks && buildLinks > 1"
               class="material-icons has-text-danger"
               @click="showConfirmationModal = true"
             >
@@ -39,7 +39,7 @@
               add_circle
             </i>
           </div>
-          <table v-if="deviceLinks" class="table is-hoverable is-fullwidth">
+          <table v-if="buildLinks" class="table is-hoverable is-fullwidth">
             <tbody>
               <tr
                 class="row"
@@ -68,28 +68,28 @@
     <confirmation-modal
       v-if="showConfirmationModal"
       @close-modal="closeConfirmationModal()"
-      @action-confirmed="removeDeviceLinks()"
+      @action-confirmed="executeAction"
       :link="link"
     ></confirmation-modal>
     <add-link-modal
       v-if="showAddLinkModal"
       @close-modal="showAddLinkModal = false"
-      @action-confirmed="addLink"
+      @action-confirmed="addLinkToBuild"
     ></add-link-modal>
   </section>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import {
-  addDeviceLinks,
-  getDeviceDetails,
-  removeDeviceLinks,
-} from '@api/devices.js';
-
 import search from 'fuzzysearch';
 import AddLinkModal from '@src/views/components/AddLinkModal.vue';
 import ConfirmationModal from '@src/views/components/ConfirmationModal.vue';
+import { mapActions, mapState } from 'vuex';
+import {
+  addLinkToBuild,
+  getBuild,
+  removeAllLinksFromBuild,
+  removeLinkFromBuild,
+} from '@api/builds.js';
 
 export default {
   components: {
@@ -99,52 +99,20 @@ export default {
   data() {
     return {
       link: '',
-      links: [],
       searchText: '',
       showAddLinkModal: false,
       showConfirmationModal: false,
     };
   },
-  computed: {
-    ...mapState(['activeDeviceDetails']),
-    deviceLinks() {
-      return (
-        this.activeDeviceDetails &&
-        this.activeDeviceDetails.links &&
-        this.activeDeviceDetails.links.length
-      );
-    },
-    filteredLinks() {
-      let links = this.links;
-
-      if (this.searchText) {
-        const searchText = this.searchText.toLowerCase();
-
-        links = links.reduce((acc, link) => {
-          const linkText = link.toLowerCase();
-
-          if (search(searchText, linkText)) {
-            acc.push(link);
-          }
-
-          return acc;
-        }, []);
-      }
-
-      return links;
-    },
-  },
   methods: {
-    ...mapActions(['setActiveDeviceDetails']),
-    async addLink(data) {
-      this.isLoadingAddLinks = true;
+    ...mapActions(['setCurrentBuild']),
+    async addLinkToBuild(data) {
+      const buildId = this.currentBuild.id;
 
       try {
-        await addDeviceLinks(this.activeDeviceDetails.id, [data.link]);
-        await this.refetchDevice();
-        this.$toasted.success('Link added successfully', {
-          icon: 'check',
-        });
+        await addLinkToBuild(buildId, [data.link]);
+        this.showSuccessMessage('Link added successfully');
+        this.refetchBuild();
       } catch (error) {
         this.showErrorMessage(error);
       }
@@ -153,31 +121,24 @@ export default {
       this.showConfirmationModal = false;
       this.link = '';
     },
-    async refetchDevice() {
-      const response = await getDeviceDetails(this.activeDeviceDetails.id);
-      const deviceDetails = response.data;
-      this.setActiveDeviceDetails(deviceDetails);
-      this.links = deviceDetails.links;
-    },
-    async removeDeviceLinks() {
-      let data = null;
-
-      if (this.link) {
-        data = {
-          links: [this.link],
-        };
-      }
-
+    async executeAction() {
       try {
-        await removeDeviceLinks(this.activeDeviceDetails.id, data);
-        await this.refetchDevice();
-        this.$toasted.success(
-          `${this.link ? 'Link' : 'Links'} removed successfully`,
-          { icon: 'check' }
-        );
+        if (this.link) {
+          await removeLinkFromBuild(this.currentBuild.id, [this.link]);
+          this.showSuccessMessage('Link removed successfully');
+        } else {
+          await removeAllLinksFromBuild(this.currentBuild.id);
+          this.showSuccessMessage('Links removed successfully');
+        }
+
+        this.refetchBuild();
       } catch (error) {
         this.showErrorMessage(error);
       }
+    },
+    async refetchBuild() {
+      const buildResponse = await getBuild(this.currentBuild.id);
+      this.setCurrentBuild(buildResponse.data);
     },
     showDeleteLinkModal(link) {
       this.link = link;
@@ -205,9 +166,49 @@ export default {
         icon: 'error',
       });
     },
+    showSuccessMessage(msg) {
+      this.$toasted.success(msg, {
+        action: [
+          {
+            icon: 'close',
+            onClick: (e, toastObject) => {
+              toastObject.goAway(0);
+            },
+          },
+        ],
+        duration: 4000,
+        icon: 'check',
+      });
+    },
   },
-  mounted() {
-    this.links = this.activeDeviceDetails.links;
+  computed: {
+    ...mapState(['currentBuild']),
+    buildLinks() {
+      return (
+        this.currentBuild &&
+        this.currentBuild.links &&
+        this.currentBuild.links.length
+      );
+    },
+    filteredLinks() {
+      let links = this.currentBuild.links;
+
+      if (this.searchText) {
+        const searchText = this.searchText.toLowerCase();
+
+        links = links.reduce((acc, link) => {
+          const linkText = link.toLowerCase();
+
+          if (search(searchText, linkText)) {
+            acc.push(link);
+          }
+
+          return acc;
+        }, []);
+      }
+
+      return links;
+    },
   },
 };
 </script>

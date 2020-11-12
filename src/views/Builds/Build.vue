@@ -160,7 +160,7 @@ export default {
       return false;
     },
     tabs() {
-      const tabs = [
+      let tabs = [
         {
           key: 'overview',
           component: 'OverviewTab',
@@ -190,7 +190,14 @@ export default {
         },
       ];
 
-      return this.userIsAdmin ? tabs.concat(adminTabs) : tabs;
+      tabs = this.userIsAdmin ? tabs.concat(adminTabs) : tabs;
+      tabs.push({
+        key: 'links',
+        component: 'LinksTab',
+        name: 'Links',
+      });
+
+      return tabs;
     },
     userIsAdmin() {
       const user = this.currentUser;

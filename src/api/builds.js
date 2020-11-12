@@ -16,6 +16,22 @@ export const addDeviceToBuild = (buildId, deviceId) => {
 };
 
 /**
+ * Add a link to a build
+ *
+ * @type   {POST}
+ * @param  {String} buildId                 The ID of the build being updated
+ * @param  {Array} links                    Array of links being added to the build
+ * @return {Response Object}
+ */
+export const addLinkToBuild = (buildId, links) => {
+  return requestWithToken({
+    method: 'POST',
+    url: `/build/${buildId}/links`,
+    data: { links },
+  });
+};
+
+/**
  * Add an organization to a build
  *
  * @type   {POST}
@@ -247,6 +263,36 @@ export const removeDeviceFromBuild = (buildId, deviceId) => {
 };
 
 /**
+ * Remove a link from a build
+ *
+ * @type {DELETE}
+ * @param {String} buildId                  The ID of the build being updated
+ * @param {Array} links                     Array of links being removed from the build
+ * @return {Response Object}
+ */
+export const removeLinkFromBuild = (buildId, links) => {
+  return requestWithToken({
+    method: 'DELETE',
+    url: `/build/${buildId}/links`,
+    data: { links },
+  });
+};
+
+/**
+ * Remove all links from a build
+ *
+ * @type {DELETE}
+ * @param {String} buildId                  The ID of the build being updated
+ * @return {Response Object}
+ */
+export const removeAllLinksFromBuild = buildId => {
+  return requestWithToken({
+    method: 'DELETE',
+    url: `/build/${buildId}/links`,
+  });
+};
+
+/**
  * Remove an organization from a build
  *
  * @type {DELETE}
@@ -284,6 +330,7 @@ export const removeUserFromBuild = (buildId, userId) => {
 
 export default {
   addDeviceToBuild,
+  addLinkToBuild,
   addOrganizationToBuild,
   addRackToBuild,
   addUserToBuild,
@@ -294,7 +341,9 @@ export default {
   getBuildRacks,
   getBuildUsers,
   getBuilds,
+  removeAllLinksFromBuild,
   removeDeviceFromBuild,
+  removeLinkFromBuild,
   removeOrganizationFromBuild,
   removeUserFromBuild,
   updateBuild,
