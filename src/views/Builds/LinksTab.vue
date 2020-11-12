@@ -12,7 +12,7 @@
             }"
           >
             <span class="heading is-size-6 is-marginless">
-              {{ `Links (${buildLinks})` }}
+              {{ `Links (${filteredLinks && filteredLinks.length})` }}
             </span>
             <div class="control has-icons-left has-icons-right">
               <input
@@ -26,7 +26,7 @@
               </span>
             </div>
             <i
-              v-if="buildLinks"
+              v-if="buildLinks && buildLinks > 1"
               class="material-icons has-text-danger"
               @click="showConfirmationModal = true"
             >
@@ -45,7 +45,6 @@
                 class="row"
                 v-for="(item, index) in filteredLinks"
                 :key="index"
-                style="cursor: pointer"
               >
                 <td class="link">
                   <span>{{ item }}</span>
@@ -82,8 +81,8 @@
 
 <script>
 import search from 'fuzzysearch';
-import AddLinkModal from './AddLinkModal.vue';
-import ConfirmationModal from './ConfirmationModal.vue';
+import AddLinkModal from '@src/views/components/AddLinkModal.vue';
+import ConfirmationModal from '@src/views/components/ConfirmationModal.vue';
 import { mapActions, mapState } from 'vuex';
 import {
   addLinkToBuild,

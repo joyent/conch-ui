@@ -1,116 +1,81 @@
 <template>
-  <section class="device-links-tab">
-    <hr style="margin-bottom: 1.5rem;" />
-    <article class="message is-danger" v-if="showErrorMessage">
-      <div class="message-header">
-        <p>{{ `Error: ${errorMessage}` }}</p>
-        <button
-          class="delete"
-          aria-label="delete"
-          @click="showErrorMessage = false"
-        ></button>
-      </div>
-    </article>
-    <div class="field has-addons" style="margin-bottom: 1.5rem;">
-      <div class="control has-icons-left" style="width: 100%;">
-        <input
-          class="input"
-          type="text"
-          placeholder="Add a link"
-          v-model="link"
-        />
-        <span class="icon is-small is-left">
-          <i class="fas fa-link"></i>
-        </span>
-      </div>
-      <div class="control">
-        <a
-          class="button is-info"
-          :class="{ 'is-loading': isLoadingAddLinks }"
-          :disabled="!link || isLoadingAddLinks"
-          @click="link ? addLink() : null"
-          style="height: 46px;"
-          >Add Link</a
-        >
-      </div>
-    </div>
-    <div style="display: flex; flex-direction: column;" v-if="deviceHasLinks">
-      <div class="columns" v-if="deviceHasLinks">
-        <div class="column is-12">
-          <table class="table is-bordered is-striped" style="width: 100%;">
+  <section class="links-tab">
+    <div class="columns">
+      <div class="column">
+        <div class="is-paddingless">
+          <div
+            class="datatable-header"
+            :style="{
+              'border-bottom': deviceLinks ? '1px solid #4e5d6c' : 'none',
+              'border-bottom-left-radius': deviceLinks ? '0' : '4px',
+              'border-bottom-right-radius': deviceLinks ? '0' : '4px',
+            }"
+          >
+            <span class="heading is-size-6 is-marginless">
+              {{ `Links (${deviceLinks && deviceLinks.length})` }}
+            </span>
+            <div class="control has-icons-left has-icons-right">
+              <input
+                type="text"
+                class="input search"
+                v-model="searchText"
+                placeholder="Search..."
+              />
+              <span class="icon is-small is-left">
+                <i class="material-icons search">search</i>
+              </span>
+            </div>
+            <i
+              v-if="deviceLinks && deviceLinks > 1"
+              class="material-icons has-text-danger"
+              @click="showConfirmationModal = true"
+            >
+              delete
+            </i>
+            <i
+              class="material-icons has-text-success"
+              @click="showAddLinkModal = true"
+            >
+              add_circle
+            </i>
+          </div>
+          <table v-if="deviceLinks" class="table is-hoverable is-fullwidth">
             <tbody>
-              <tr v-for="(deviceLink, index) in links" :key="index">
-                <td
-                  style="
-                                            display: flex;
-                                            align-items: center;
-                                        "
-                >
-                  <a :href="deviceLink" target="_blank">{{ deviceLink }}</a>
-                  <div class="spacer"></div>
-                  <a
-                    :disabled="isLoadingRemoveLinks"
-                    class="button"
-                    @click="confirmLinkRemoval(deviceLink)"
-                  >
-                    <div class="icon">
-                      <i class="fas fa-trash-alt"></i>
-                    </div>
+              <tr
+                class="row"
+                v-for="(item, index) in filteredLinks"
+                :key="index"
+              >
+                <td class="link">
+                  <span>{{ item }}</span>
+                </td>
+                <td class="has-text-right">
+                  <a @click.stop="showDeleteLinkModal(item)">
+                    <span class="icon material-icons">delete</span>
                   </a>
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column is-6 is-offset-3">
-          <a
-            class="button is-danger is-fullwidth"
-            :class="{ 'is-loading': isLoadingRemoveLinks }"
-            :disabled="isLoadingRemoveLinks"
-            @click="confirmLinkRemoval()"
-            >Remove All Device Links</a
-          >
+          <div class="no-results" v-else>
+            <p class="subtitle has-text-centered">
+              No Results to Display
+            </p>
+          </div>
         </div>
       </div>
     </div>
-    <p class="has-text-centered" v-else>No links available.</p>
-    <div class="modal confirm-action" :class="{ 'is-active': isActive }">
-      <div class="modal-background" @click="isActive = false"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title is-capitalized has-text-left"
-            >Confirm Action</p
-          >
-          <i class="material-icons close" @click="isActive = false">
-            close
-          </i>
-        </header>
-        <section class="modal-card-body">
-          <div class="modal-panel">
-            <p class="has-text-centered" v-if="link"
-              >Are you sure you want to remove this link?</p
-            >
-            <p class="has-text-centered" v-else
-              >Are you sure you want to remove all device links?</p
-            >
-          </div>
-          <div class="spacer"></div>
-          <div class="buttons-group">
-            <a class="button cancel" @click="isActive = false">
-              Cancel
-            </a>
-            <a
-              class="button is-danger is-capitalized action-button"
-              @click="removeDeviceLinks()"
-            >
-              {{ `Remove Link${link ? '' : 's'}` }}
-            </a>
-          </div>
-        </section>
-      </div>
-    </div>
+    <confirmation-modal
+      v-if="showConfirmationModal"
+      @close-modal="closeConfirmationModal()"
+      @action-confirmed="removeDeviceLinks()"
+      :link="link"
+    ></confirmation-modal>
+    <add-link-modal
+      v-if="showAddLinkModal"
+      @close-modal="showAddLinkModal = false"
+      @action-confirmed="addLink"
+    ></add-link-modal>
   </section>
 </template>
 
@@ -122,63 +87,71 @@ import {
   removeDeviceLinks,
 } from '@api/devices.js';
 
+import search from 'fuzzysearch';
+import AddLinkModal from '@src/views/components/AddLinkModal.vue';
+import ConfirmationModal from '@src/views/components/ConfirmationModal.vue';
+
 export default {
+  components: {
+    AddLinkModal,
+    ConfirmationModal,
+  },
+  data() {
+    return {
+      link: '',
+      links: [],
+      searchText: '',
+      showAddLinkModal: false,
+      showConfirmationModal: false,
+    };
+  },
   computed: {
     ...mapState(['activeDeviceDetails']),
-    deviceHasLinks() {
+    deviceLinks() {
       return (
         this.activeDeviceDetails &&
         this.activeDeviceDetails.links &&
         this.activeDeviceDetails.links.length
       );
     },
-  },
-  data() {
-    return {
-      errorMessage: '',
-      isActive: false,
-      isLoadingAddLinks: false,
-      isLoadingRemoveLinks: false,
-      link: '',
-      links: [],
-      loading: false,
-      showAddLinkDialog: false,
-      showErrorMessage: false,
-    };
+    filteredLinks() {
+      let links = this.links;
+
+      if (this.searchText) {
+        const searchText = this.searchText.toLowerCase();
+
+        links = links.reduce((acc, link) => {
+          const linkText = link.toLowerCase();
+
+          if (search(searchText, linkText)) {
+            acc.push(link);
+          }
+
+          return acc;
+        }, []);
+      }
+
+      return links;
+    },
   },
   methods: {
     ...mapActions(['setActiveDeviceDetails']),
-    async addLink() {
+    async addLink(data) {
       this.isLoadingAddLinks = true;
 
       try {
-        await addDeviceLinks(this.activeDeviceDetails.id, [this.link]);
+        await addDeviceLinks(this.activeDeviceDetails.id, [data.link]);
         await this.refetchDevice();
-        this.showErrorMessage = false;
-        this.errorMessage = '';
-        this.isLoadingAddLinks = false;
-        this.link = '';
-      } catch (e) {
-        const errorMessage = e && e.data && e.data.error;
-
-        if (errorMessage === 'request did not match required format') {
-          this.errorMessage = 'Link is not in the required format';
-        } else {
-          this.errorMessage = errorMessage;
-        }
-
-        this.showErrorMessage = true;
-        this.isLoadingAddLinks = false;
+        this.$toasted.success('Link added successfully', {
+          icon: 'check',
+        });
+      } catch (error) {
+        this.showErrorMessage(error);
       }
     },
-    confirmLinkRemoval(link = null) {
-      if (link) {
-        this.link = link;
-      } else {
-        this.link = '';
-      }
-
-      this.isActive = true;
+    closeConfirmationModal() {
+      this.showConfirmationModal = false;
+      this.link = '';
     },
     async refetchDevice() {
       const response = await getDeviceDetails(this.activeDeviceDetails.id);
@@ -187,9 +160,7 @@ export default {
       this.links = deviceDetails.links;
     },
     async removeDeviceLinks() {
-      this.isActive = false;
       let data = null;
-      this.isLoadingRemoveLinks = true;
 
       if (this.link) {
         data = {
@@ -200,13 +171,39 @@ export default {
       try {
         await removeDeviceLinks(this.activeDeviceDetails.id, data);
         await this.refetchDevice();
-        this.isLoadingRemoveLinks = false;
-      } catch (e) {
-        const errorMessage = e && e.data && e.data.error;
-        this.errorMessage = errorMessage;
-        this.showErrorMessage = true;
-        this.isLoadingRemoveLinks = false;
+        this.$toasted.success(
+          `${this.link ? 'Link' : 'Links'} removed successfully`,
+          { icon: 'check' }
+        );
+      } catch (error) {
+        this.showErrorMessage(error);
       }
+    },
+    showDeleteLinkModal(link) {
+      this.link = link;
+      this.showConfirmationModal = true;
+    },
+    showErrorMessage(error) {
+      let errorMessage;
+
+      if (error.response && error.response.data && error.response.data.error) {
+        errorMessage = `Error: ${error.response.data.error}`;
+      } else {
+        errorMessage = 'An error occurred';
+      }
+
+      this.$toasted.error(errorMessage, {
+        action: [
+          {
+            icon: 'close',
+            onClick: (e, toastObject) => {
+              toastObject.goAway(0);
+            },
+          },
+        ],
+        duration: 8000,
+        icon: 'error',
+      });
     },
   },
   mounted() {
