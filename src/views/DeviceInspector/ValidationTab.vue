@@ -85,7 +85,7 @@
                 <table class="table is-narrow is-marginless is-fullwidth">
                   <thead>
                     <tr>
-                      <th>Order</th>
+                      <th>Component / Category</th>
                       <th>Results</th>
                       <th>Message</th>
                       <th>Hint</th>
@@ -100,7 +100,9 @@
                       v-for="(result, index) in validation.results"
                       :key="index"
                     >
-                      <td>{{ result.order + 1 }}</td>
+                      <td>{{
+                        result.component ? result.component : result.category
+                      }}</td>
                       <td>{{ result.status }}</td>
                       <td>{{ result.message }}</td>
                       <td v-if="result.hint">{{ result.hint }}</td>
