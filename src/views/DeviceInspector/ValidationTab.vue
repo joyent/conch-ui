@@ -85,7 +85,7 @@
                 <table class="table is-narrow is-marginless is-fullwidth">
                   <thead>
                     <tr>
-                      <th>Order</th>
+                      <th>Component / Category</th>
                       <th>Results</th>
                       <th>Message</th>
                       <th>Hint</th>
@@ -100,7 +100,9 @@
                       v-for="(result, index) in validation.results"
                       :key="index"
                     >
-                      <td>{{ result.order + 1 }}</td>
+                      <td>{{
+                        result.component ? result.component : result.category
+                      }}</td>
                       <td>{{ result.status }}</td>
                       <td>{{ result.message }}</td>
                       <td v-if="result.hint">{{ result.hint }}</td>
@@ -182,38 +184,35 @@ export default {
     ...mapState(['activeDeviceValidations', 'validations']),
     deviceValidations() {
       const validations = [];
+      const validationStateResultsById = this.validationStateResultsById;
 
-      this.validationStateResultsById.map(validationResults => {
-        Object.keys(validationResults).map(validationId => {
-          let {
-            created,
-            deactivated,
-            description,
-            id,
-            name,
-            updated,
-            version,
-          } = this.getValidation(validationId);
+      Object.keys(validationStateResultsById).map(validationId => {
+        let {
+          created,
+          deactivated,
+          description,
+          id,
+          name,
+          updated,
+          version,
+        } = this.getValidation(validationId);
 
-          validations.push({
-            results: validationResults[validationId],
-            created,
-            deactivated,
-            description,
-            id,
-            name,
-            updated,
-            version,
-          });
+        validations.push({
+          results: validationStateResultsById[validationId],
+          created,
+          deactivated,
+          description,
+          id,
+          name,
+          updated,
+          version,
         });
       });
 
       return sortBy(validations, validation => validation.name);
     },
     validationStateResultsById() {
-      return this.activeDeviceValidations.map(state => {
-        return groupBy(state.results, 'validation_id');
-      });
+      return groupBy(this.activeDeviceValidations.results, 'validation_id');
     },
   },
 };
