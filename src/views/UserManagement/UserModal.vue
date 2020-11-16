@@ -314,10 +314,28 @@ export default {
             this.step = 2;
           })
           .catch(error => {
-            if (error.status === 409) {
-              this.errors.duplicateEmail = true;
-              this.isLoading = false;
+            let errorMessage;
+
+            if (error && error.data && error.data.error) {
+              errorMessage = `Error: ${error.data.error}`;
+            } else {
+              errorMessage = 'An error occurred';
             }
+
+            this.$toasted.error(errorMessage, {
+              action: [
+                {
+                  icon: 'close',
+                  onClick: (e, toastObject) => {
+                    toastObject.goAway(0);
+                  },
+                },
+              ],
+              duration: 8000,
+              icon: 'error',
+            });
+
+            this.loading = false;
           });
       } else {
         this.isLoading = false;

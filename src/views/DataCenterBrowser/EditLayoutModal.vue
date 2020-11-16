@@ -31,7 +31,7 @@
       </article>
       <header class="modal-card-head">
         <div class="modal-card-title has-text-centered">
-          Assign Rack {{ rackLayout.name }}
+          Assign Rack {{ currentDataCenterRack.name }}
         </div>
         <button class="delete" @click="closeModal()" type="button"> </button>
       </header>
@@ -231,7 +231,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['devices', 'rackLayout']),
+    ...mapState(['currentDataCenterRack', 'devices']),
   },
   methods: {
     ...mapActions(['setDevices', 'setRackLayout']),
@@ -359,6 +359,7 @@ export default {
 
       if (!this.validationErrors.length) {
         const modifiedAssignments = this.modifiedAssignments;
+        const rackId = this.currentDataCenterRack.id;
         let newRackAssignments = [];
 
         await modifiedAssignments.map(assignment => {
@@ -369,22 +370,51 @@ export default {
           });
         });
 
-        updateRackAssignment(this.rackLayout.id, newRackAssignments).then(
-          () => {
-            getRack(this.rackLayout.id).then(response => {
-              this.setRackLayout(response.data);
+        try {
+          await updateRackAssignment(rackId, newRackAssignments);
+          const rackResponse = await getRack(rackId.id);
+          this.setRackLayout(rackResponse.data);
 
-              this.modifiedAssignments = [];
-              this.isLoading = false;
-              this.editingAssignments = false;
-              this.isSuccess = true;
+          this.modifiedAssignments = [];
+          this.isLoading = false;
+          this.editingAssignments = false;
 
-              setTimeout(() => {
-                this.isSuccess = false;
-              }, 2000);
-            });
+          this.$toasted.success('Assignment updated successfully', {
+            action: [
+              {
+                icon: 'close',
+                onClick: (e, toastObject) => {
+                  toastObject.goAway(0);
+                },
+              },
+            ],
+            duration: 4000,
+            icon: 'check',
+          });
+        } catch (error) {
+          let errorMessage;
+
+          if (error && error.data && error.data.error) {
+            errorMessage = `Error: ${error.data.error}`;
+          } else {
+            errorMessage = 'An error occurred';
           }
-        );
+
+          this.$toasted.error(errorMessage, {
+            action: [
+              {
+                icon: 'close',
+                onClick: (e, toastObject) => {
+                  toastObject.goAway(0);
+                },
+              },
+            ],
+            duration: 8000,
+            icon: 'error',
+          });
+
+          this.isLoading = false;
+        }
       } else {
         this.isLoading = false;
       }
