@@ -1,245 +1,265 @@
 .builds {
-    input {
-        background-color: $dark;
-        border-color: $grey;
-        border-radius: 4px;
-        color: #bdcbdb;
-        margin-bottom: 0;
-        min-width: 350px;
+  table {
+    margin-bottom: 20px;
+    width: 100%;
 
-        &::placeholder {
-            color: #bdcbdb;
-        }
+    tr {
+      td {
+        padding: 14px;
+      }
     }
 
-    .select-with-label {
-        margin-right: 20px;
-        margin-bottom: 20px;
-
-        select,
-        .select-label {
-            background-color: $dark;
+    thead {
+      tr {
+        th {
+          border-bottom: 1px solid $grey;
+          font-weight: bold;
         }
+      }
+    }
+  }
 
-        .select-label {
-            font-weight: bold;
+  input {
+    background-color: $dark;
+    border-color: $grey;
+    border-radius: 4px;
+    color: #bdcbdb;
+    margin-bottom: 0;
+    min-width: 350px;
+
+    &::placeholder {
+      color: #bdcbdb;
+    }
+  }
+
+  .select-with-label {
+    margin-right: 20px;
+    margin-bottom: 20px;
+
+    select,
+    .select-label {
+      background-color: $dark;
+    }
+
+    .select-label {
+      font-weight: bold;
+    }
+
+    &:hover {
+      select,
+      .select-label {
+        background-color: lighten($dark, 2%);
+      }
+
+      .select-label {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .page-heading {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      margin: 0;
+      word-break: normal;
+    }
+
+    .views-toggle {
+      display: flex;
+      align-items: center;
+
+      i {
+        cursor: pointer;
+        font-size: 36px;
+
+        &:not(:last-of-type) {
+          margin-right: 10px;
+        }
+      }
+
+      .button {
+        border: 1px solid $grey;
+        color: $grey-lighter;
+        display: flex;
+        height: 42px;
+        text-decoration: none;
+        width: 150px;
+
+        span {
+          flex-grow: 1;
         }
 
         &:hover {
-            select,
-            .select-label {
-                background-color: lighten($dark, 2%);
-            }
-
-            .select-label {
-                font-weight: bold;
-            }
+          background-color: $blue;
+          border-color: $blue;
+          color: $white;
         }
+      }
     }
 
-    .page-heading {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
+    .create-organization {
+      font-weight: bold;
+      height: 42px;
+      padding: 5px 20px;
+      margin: 0 20px;
+    }
+  }
 
-        h1 {
-            margin: 0;
-            word-break: normal;
-        }
+  .grid-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 25px;
 
-        .views-toggle {
-            display: flex;
-            align-items: center;
-
-            i {
-                cursor: pointer;
-                font-size: 36px;
-
-                &:not(:last-of-type) {
-                    margin-right: 10px;
-                }
-            }
-
-            .button {
-                border: 1px solid $grey;
-                color: $grey-lighter;
-                display: flex;
-                height: 42px;
-                text-decoration: none;
-                width: 150px;
-
-                span {
-                    flex-grow: 1;
-                }
-
-                &:hover {
-                    background-color: $blue;
-                    border-color: $blue;
-                    color: $white;
-                }
-            }
-        }
-
-        .create-organization {
-            font-weight: bold;
-            height: 42px;
-            padding: 5px 20px;
-            margin: 0 20px;
-        }
+    @media (min-width: 1500px) {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     }
 
-    .grid-view {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        grid-gap: 25px;
+    .card {
+      background-color: $grey-dark;
+      border: none;
+      border-radius: 4px;
+      box-shadow: none;
+      transition: all 0.2s ease-in-out;
 
-        @media (min-width: 1500px) {
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        }
-
-        .card {
-            background-color: $grey-dark;
-            border: none;
-            border-radius: 4px;
-            box-shadow: none;
-            transition: all 0.2s ease-in-out;
-
-            .card-content {
-                display: flex;
-                flex-direction: column;
-                padding: 20px;
-
-                .more {
-                    cursor: pointer;
-                    text-align: right;
-                }
-
-                .build-progress {
-                    margin: 0 auto 15px;
-                }
-
-                .build-name {
-                    text-align: center;
-                    font-weight: bold;
-                    color: darken($grey-lighter, 5%);
-                    font-size: 20px;
-                    margin-bottom: 10px;
-                }
-            }
-
-            .button {
-                margin-top: 15px;
-                border: none;
-            }
-
-            &:hover {
-                background-color: lighten($grey-dark, 1%);
-                transition: all 0.2s ease-in-out;
-                transform: scale(1.02);
-
-                .build-name {
-                    color: $white;
-                }
-
-                .card-footer {
-                    background-color: lighten(#1a2531, 1%);
-                }
-            }
-        }
-    }
-
-    .list-view {
-        .build-box {
-            margin-bottom: 15px;
-
-            .box {
-                align-items: center;
-                display: flex;
-                transition: all 0.2s ease-in-out;
-
-                &:hover {
-                    background-color: lighten($grey-dark, 2%);
-                    box-shadow: 0px 9px 45px -19px rgba(0, 0, 0, 1);
-                    transition: all 0.2s ease-in-out;
-                }
-
-                .build-details {
-                    display: flex;
-                    flex-direction: column;
-                    flex-grow: 1;
-                    font-weight: bold;
-                    height: 100%;
-                    justify-content: space-between;
-                    padding: 10px 20px;
-                }
-
-                .build-progress {
-                    background-color: lighten($grey-darker, 3%);
-                    border-top-right-radius: 6px;
-                    border-bottom-right-radius: 6px;
-                    padding: 15px;
-                }
-
-                .status {
-                    color: $grey-light;
-                }
-
-                &.is-selected {
-                    background-color: lighten($grey-dark, 8%);
-                    border-bottom-left-radius: 4px;
-                    border-color: #209cee;
-                    border-style: solid;
-                    border-top-left-radius: 4px;
-                    border-width: 0 0 0 8px;
-                    box-shadow: 0px 9px 45px -19px rgba(0, 0, 0, 1);
-                    position: relative;
-                    z-index: 10;
-
-                    .build-progress {
-                        background-color: lighten($grey-darker, 5%);
-                    }
-
-                    .status {
-                        color: $grey-lighter;
-                    }
-                }
-            }
-        }
-    }
-
-    .builds-empty-state {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 200px;
-
-        .icon {
-            font-size: 40px;
-            margin-right: 14px;
-        }
-    }
-
-    .empty-state {
+      .card-content {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        padding: 20px;
 
-        img {
-            margin: 30px auto;
+        .more {
+          cursor: pointer;
+          text-align: right;
         }
 
-        .empty-state-heading {
-            color: $white;
-            font-size: 24px;
-            margin-bottom: 30px;
+        .build-progress {
+          margin: 0 auto 15px;
         }
 
-        .button {
-            font-weight: bold;
-            padding: 5px 20px;
-            height: 42px;
-            min-width: 180px;
+        .build-name {
+          text-align: left;
+          font-weight: bold;
+          color: darken(#ffffff, 10%);
+          font-size: 20px;
+          margin-bottom: 10px;
         }
+      }
+
+      .button {
+        margin-top: 15px;
+        border: none;
+      }
+
+      &:hover {
+        background-color: lighten($grey-dark, 1%);
+        transition: all 0.2s ease-in-out;
+        transform: scale(1.02);
+
+        .build-name {
+          color: $white;
+        }
+
+        .card-footer {
+          background-color: lighten(#1a2531, 1%);
+        }
+      }
     }
+  }
+
+  .list-view {
+    .build-box {
+      margin-bottom: 15px;
+
+      .box {
+        align-items: center;
+        display: flex;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+          background-color: lighten($grey-dark, 2%);
+          box-shadow: 0px 9px 45px -19px rgba(0, 0, 0, 1);
+          transition: all 0.2s ease-in-out;
+        }
+
+        .build-details {
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+          font-weight: bold;
+          height: 100%;
+          justify-content: space-between;
+          padding: 10px 20px;
+        }
+
+        .build-progress {
+          background-color: lighten($grey-darker, 3%);
+          border-top-right-radius: 6px;
+          border-bottom-right-radius: 6px;
+          padding: 15px;
+        }
+
+        .status {
+          color: $grey-light;
+        }
+
+        &.is-selected {
+          background-color: lighten($grey-dark, 8%);
+          border-bottom-left-radius: 4px;
+          border-color: #209cee;
+          border-style: solid;
+          border-top-left-radius: 4px;
+          border-width: 0 0 0 8px;
+          box-shadow: 0px 9px 45px -19px rgba(0, 0, 0, 1);
+          position: relative;
+          z-index: 10;
+
+          .build-progress {
+            background-color: lighten($grey-darker, 5%);
+          }
+
+          .status {
+            color: $grey-lighter;
+          }
+        }
+      }
+    }
+  }
+
+  .builds-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+
+    .icon {
+      font-size: 40px;
+      margin-right: 14px;
+    }
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      margin: 30px auto;
+    }
+
+    .empty-state-heading {
+      color: $white;
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .button {
+      font-weight: bold;
+      padding: 5px 20px;
+      height: 42px;
+      min-width: 180px;
+    }
+  }
 }

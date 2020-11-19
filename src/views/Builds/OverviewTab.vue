@@ -1,41 +1,59 @@
 <template>
   <div class="overview-tab">
-    <div class="columns">
-      <div class="column">
-        <div class="box build-dates">
-          <div class="box-header">
-            <i class="material-icons">schedule</i>
-            <div class="dates">
-              <div class="start-date">
-                <p class="heading is-size-6">Started</p>
-                <p v-if="currentBuild.started">
-                  {{ getDate(currentBuild.started) }}
-                </p>
-                <p v-else>Not Started</p>
-              </div>
-              <div class="sign-off-date">
-                <p class="heading is-size-6">Completed</p>
-                <p v-if="currentBuild.completed">
-                  {{ getDate(currentBuild.completed) }}
-                </p>
-                <p v-else>Not Completed</p>
-              </div>
-            </div>
+    <div class="box build-dates">
+      <div class="box-header">
+        <i class="material-icons">schedule</i>
+        <p class="heading is-size-5">Build Details</p>
+      </div>
+      <div class="columns">
+        <div class="column is-2">
+          <div class="box filter">
+            <h2 class="is-6 is-capitalized">Start Date</h2>
+            <span v-if="currentBuild.started" class="is-size-4 has-text-info">
+              {{ getDate(currentBuild.started) }}
+            </span>
+            <span class="is-size-4 has-text-info" v-else>Not Started</span>
           </div>
         </div>
-      </div>
-      <div class="column">
-        <div class="box sign-off">
-          <div class="box-header">
-            <i class="material-icons">gesture</i>
-            <div class="sign-off-details">
-              <p class="heading is-size-6">Sign Off Details</p>
-              <p v-if="currentBuild.completed">
-                {{ getDate(currentBuild.completed) }} |
-                {{ currentBuild.completed_user.name }}
-              </p>
-              <p v-else>Build Not Complete</p>
+        <div class="column is-2">
+          <div class="box filter">
+            <h2 class="is-6 is-capitalized">Complete Date</h2>
+            <span v-if="currentBuild.completed" class="is-size-4 has-text-info">
+              {{ getDate(currentBuild.completed) }}
+            </span>
+            <span class="is-size-4 has-text-info" v-else>Incomplete</span>
+          </div>
+        </div>
+        <div class="column is-2">
+          <div class="box filter">
+            <h2 class="is-6 is-capitalized">Completed Status</h2>
+            <div
+              v-if="currentBuild.completed_status"
+              style="display: flex; align-items: center"
+            >
+              <span
+                class="is-size-4 is-capitalized"
+                :class="{
+                  'has-text-info': !currentBuild.completed_status,
+                  'has-text-success':
+                    currentBuild.completed_status === 'success',
+                  'has-text-danger':
+                    currentBuild.completed_status === 'failure',
+                }"
+              >
+                {{ currentBuild.completed_status }}
+              </span>
             </div>
+            <span class="is-size-4 has-text-info" v-else>N/A</span>
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="box filter">
+            <h2 class="is-6 is-capitalized">Signed Off By</h2>
+            <span v-if="currentBuild.completed" class="is-size-4 has-text-info">
+              {{ currentBuild.completed_user.name }}
+            </span>
+            <span class="is-size-4 has-text-info" v-else>N/A</span>
           </div>
         </div>
       </div>
@@ -104,9 +122,7 @@
                   "
                 >
                   <div class="box filter">
-                    <h2 class="is-6 is-capitalized">
-                      {{ status }}
-                    </h2>
+                    <h2 class="is-6 is-capitalized">{{ status }}</h2>
                     <span
                       class="is-size-3"
                       :class="{
@@ -159,9 +175,7 @@
                   "
                 >
                   <div class="box filter">
-                    <h2 class="is-6 is-capitalized">
-                      {{ phase }}
-                    </h2>
+                    <h2 class="is-6 is-capitalized">{{ phase }}</h2>
                     <span class="is-size-3 has-text-info">
                       {{ getRackPhaseCount(phase) }}
                     </span>

@@ -110,65 +110,7 @@
   }
 
   .overview-tab {
-    .total-build-progress {
-      .box-header {
-        .material-icons {
-          font-size: 36px;
-        }
-      }
-
-      .progress-overall {
-        display: flex;
-        align-items: center;
-
-        progress {
-          margin: 0;
-          height: 0.5rem;
-        }
-
-        .amount {
-          flex-grow: 1;
-          line-height: 25px;
-          margin-left: 20px;
-          white-space: nowrap;
-        }
-      }
-    }
-
-    .build-dates {
-      .box-header {
-        margin-bottom: 0;
-        width: 100%;
-
-        .dates {
-          display: flex;
-          flex-grow: 1;
-          justify-content: space-around;
-          text-align: center;
-        }
-      }
-    }
-
     .build-dates,
-    .sign-off {
-      display: flex;
-
-      .box-header {
-        margin-bottom: 0;
-
-        .material-icons {
-          font-size: 42px;
-        }
-      }
-    }
-
-    .sign-off {
-      .sign-off-details {
-        display: flex;
-        flex-direction: column;
-      }
-    }
-
     .build-devices,
     .rack-devices {
       padding: 20px;
