@@ -32,6 +32,30 @@
     }
   }
 
+  .button.view-toggle {
+    background-color: $dark;
+    border-color: $grey;
+    height: 45px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    width: 130px;
+
+    &:hover {
+      background-color: lighten($dark, 2%);
+      border-color: lighten($grey, 2%);
+    }
+  }
+
+  .tag.complete-status {
+    align-items: center;
+    border-radius: 4px;
+    display: flex;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 16px;
+    width: 100px;
+  }
+
   .select-with-label {
     margin-right: 20px;
     margin-bottom: 20px;
@@ -143,7 +167,7 @@
           font-weight: bold;
           color: darken(#ffffff, 10%);
           font-size: 20px;
-          margin-bottom: 10px;
+          margin-bottom: 2px;
         }
       }
 
