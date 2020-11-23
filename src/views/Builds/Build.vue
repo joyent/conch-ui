@@ -21,22 +21,8 @@
         <p
           v-if="currentBuild.started && !currentBuild.completed"
           class="control"
-          :class="{
-            'tooltip is-tooltip-left is-tooltip-info': !isBuildCompletable,
-          }"
-          :data-tooltip="
-            `${
-              isBuildCompletable
-                ? ''
-                : 'Cannot complete a build with unhealthy devices'
-            }`
-          "
         >
-          <a
-            class="button is-success"
-            @click="isBuildCompletable ? updateBuild('complete') : null"
-            :disabled="!isBuildCompletable"
-          >
+          <a class="button is-success" @click="updateBuild('complete')">
             Complete Build
           </a>
         </p>
@@ -98,10 +84,6 @@ export default {
       const now = new Date();
       let data;
 
-      if (!this.isBuildCompletable) {
-        return;
-      }
-
       if (action === 'complete') {
         this.action = 'completed';
         data = { completed: now };
@@ -145,20 +127,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['currentBuild', 'currentBuildDevices', 'currentUser']),
-    isBuildCompletable() {
-      if (this.currentBuildDevices.length) {
-        const healthyDevicesCount = this.currentBuildDevices.filter(
-          device => device.health === 'pass'
-        ).length;
-
-        if (healthyDevicesCount === this.currentBuildDevices.length) {
-          return true;
-        }
-      }
-
-      return false;
-    },
+    ...mapState(['currentBuild', 'currentUser']),
     tabs() {
       let tabs = [
         {
