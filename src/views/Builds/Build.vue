@@ -22,7 +22,11 @@
           v-if="currentBuild.started && !currentBuild.completed"
           class="control"
         >
-          <a class="button is-success" @click="updateBuild('complete')">
+          <a
+            v-if="userIsAdmin"
+            class="button is-success"
+            @click="updateBuild('complete')"
+          >
             Complete Build
           </a>
         </p>
@@ -169,18 +173,17 @@ export default {
       return tabs;
     },
     userIsAdmin() {
+      const build = this.currentBuild;
       const user = this.currentUser;
 
-      if (user && user.is_admin) {
+      if (
+        (user && user.is_admin) ||
+        (build &&
+          build.admins &&
+          build.admins.length &&
+          build.admins.map(admin => admin.id).includes(user.id))
+      ) {
         return true;
-      }
-
-      if (user && user.builds && user.builds.length) {
-        const build = user.builds.find(build => build.id === this.buildId);
-
-        if (build && build.role === 'admin') {
-          return true;
-        }
       }
 
       return false;

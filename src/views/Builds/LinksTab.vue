@@ -25,19 +25,21 @@
                 <i class="material-icons search">search</i>
               </span>
             </div>
-            <i
-              v-if="buildLinks && buildLinks > 1"
-              class="material-icons has-text-danger"
-              @click="showConfirmationModal = true"
-            >
-              delete
-            </i>
-            <i
-              class="material-icons has-text-success"
-              @click="showAddLinkModal = true"
-            >
-              add_circle
-            </i>
+            <template v-if="userIsAdmin">
+              <i
+                v-if="buildLinks && buildLinks > 1"
+                class="material-icons has-text-danger"
+                @click="showConfirmationModal = true"
+              >
+                delete
+              </i>
+              <i
+                class="material-icons has-text-success"
+                @click="showAddLinkModal = true"
+              >
+                add_circle
+              </i>
+            </template>
           </div>
           <table v-if="buildLinks" class="table is-hoverable is-fullwidth">
             <tbody>
@@ -182,7 +184,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['currentBuild']),
+    ...mapState(['currentBuild', 'currentUser']),
     buildLinks() {
       return (
         this.currentBuild &&
@@ -208,6 +210,22 @@ export default {
       }
 
       return links;
+    },
+    userIsAdmin() {
+      const build = this.currentBuild;
+      const user = this.currentUser;
+
+      if (
+        (user && user.is_admin) ||
+        (build &&
+          build.admins &&
+          build.admins.length &&
+          build.admins.map(admin => admin.id).includes(user.id))
+      ) {
+        return true;
+      }
+
+      return false;
     },
   },
 };

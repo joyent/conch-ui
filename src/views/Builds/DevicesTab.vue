@@ -67,6 +67,7 @@
               </div>
             </div>
             <i
+              v-if="userIsAdmin"
               class="material-icons has-text-success"
               @click="showAddDeviceModal()"
             >
@@ -387,7 +388,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(['currentBuild', 'currentBuildDevices', 'hardwareProducts']),
+    ...mapState([
+      'currentBuild',
+      'currentBuildDevices',
+      'currentUser',
+      'hardwareProducts',
+    ]),
     filteredDevices() {
       let devices = this.devices;
 
@@ -438,6 +444,22 @@ export default {
       }
 
       return devices;
+    },
+    userIsAdmin() {
+      const build = this.currentBuild;
+      const user = this.currentUser;
+
+      if (
+        (user && user.is_admin) ||
+        (build &&
+          build.admins &&
+          build.admins.length &&
+          build.admins.map(admin => admin.id).includes(user.id))
+      ) {
+        return true;
+      }
+
+      return false;
     },
   },
   async created() {
