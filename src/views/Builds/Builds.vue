@@ -166,27 +166,6 @@
                   </span>
                   <span v-else>Incomplete</span>
                 </p>
-                <!-- <p
-                v-if="build.completed_status"
-                style="display: flex; align-items: center;"
-              >
-                <span
-                  v-if="build.completed_status === 'success'"
-                  class="material-icons has-text-success"
-                  style="margin-right: 6px"
-                >
-                  check_circle
-                </span>
-                <span
-                  v-else-if="build.completed_status === 'failure'"
-                  class="material-icons has-text-danger"
-                  style="margin-right: 6px"
-                >
-                  error
-                </span>
-                {{ build.completed_status }}
-              </p>
-              <p v-else>N/A</p> -->
               </td>
             </router-link>
           </tbody>
