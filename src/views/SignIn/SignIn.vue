@@ -227,7 +227,7 @@ export default {
             if (
               response.headers &&
               response.headers.location &&
-              response.headers.location === '/user/me/password'
+              response.headers.location.includes('/user/me/password')
             ) {
               this.setForcePasswordChange();
               this.$router.push({ name: 'passwordReset' });
