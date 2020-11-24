@@ -13,157 +13,160 @@
         You don't have access to any builds.
       </p>
     </div>
-    <div
-      class="page-heading"
-      style="display: flex; align-items: center; margin-bottom: 20px"
-    >
-      <span class="icon material-icons">layers</span>
-      <h1 class="title is-4 has-text-weight-bold" style="margin-left: 8px;">
-        Builds
-      </h1>
-    </div>
-    <div style="display: flex">
+    <div v-else>
       <div
-        class="control has-icons-left"
-        style="margin-bottom: 20px; margin-right: 20px; flex-grow: 1"
+        class="page-heading"
+        style="display: flex; align-items: center; margin-bottom: 20px"
       >
-        <input
-          type="text"
-          class="input search is-medium"
-          placeholder="Search..."
-          v-model="searchText"
-        />
-        <span class="icon is-small is-left">
-          <i class="material-icons">search</i>
-        </span>
+        <span class="icon material-icons">layers</span>
+        <h1 class="title is-4 has-text-weight-bold" style="margin-left: 8px;">
+          Builds
+        </h1>
       </div>
-      <div class="select-with-label is-large">
-        <label class="select-label">Status</label>
-        <div class="select">
-          <select
-            v-model="statusFilter"
-            class="is-capitalized"
-            @change="setFilter($event)"
-          >
-            <option
-              v-for="(option, index) in statusFilterOptions"
-              :key="index"
-              :value="option"
-            >
-              {{ option }}
-            </option>
-          </select>
+      <div style="display: flex">
+        <div
+          class="control has-icons-left"
+          style="margin-bottom: 20px; margin-right: 20px; flex-grow: 1"
+        >
+          <input
+            type="text"
+            class="input search is-medium"
+            placeholder="Search..."
+            v-model="searchText"
+          />
+          <span class="icon is-small is-left">
+            <i class="material-icons">search</i>
+          </span>
         </div>
+        <div class="select-with-label is-large">
+          <label class="select-label">Status</label>
+          <div class="select">
+            <select
+              v-model="statusFilter"
+              class="is-capitalized"
+              @change="setFilter($event)"
+            >
+              <option
+                v-for="(option, index) in statusFilterOptions"
+                :key="index"
+                :value="option"
+              >
+                {{ option }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <a class="button view-toggle" @click="setView()">
+          <template v-if="activeView === 'grid'">
+            <span class="icon">
+              <i class="material-icons">reorder</i>
+            </span>
+            <span>Table View</span>
+          </template>
+          <template v-else>
+            <span class="icon">
+              <i class="material-icons">view_module</i>
+            </span>
+            <span>Grid View</span>
+          </template>
+        </a>
+        <a
+          v-if="currentUser && currentUser.is_admin"
+          class="button is-success create-organization"
+          @click="createBuild()"
+          style="height: 45px; margin-bottom: 20px;"
+        >
+          <span class="icon">
+            <i class="material-icons">add</i>
+          </span>
+          <span>New Build</span>
+        </a>
       </div>
-      <a class="button view-toggle" @click="setView()">
-        <template v-if="activeView === 'grid'">
-          <span class="icon">
-            <i class="material-icons">reorder</i>
-          </span>
-          <span>Table View</span>
-        </template>
-        <template v-else>
-          <span class="icon">
-            <i class="material-icons">view_module</i>
-          </span>
-          <span>Grid View</span>
-        </template>
-      </a>
-      <a
-        v-if="currentUser && currentUser.is_admin"
-        class="button is-success create-organization"
-        @click="createBuild()"
-        style="height: 45px; margin-bottom: 20px;"
-      >
-        <span class="icon">
-          <i class="material-icons">add</i>
-        </span>
-        <span>New Build</span>
-      </a>
-    </div>
-    <div v-if="filteredBuilds && filteredBuilds.length">
-      <table v-if="activeView === 'table'" class="table is-hoverable">
-        <thead>
-          <tr>
-            <th v-for="header in headers" :key="header">
-              <a
-                class="table-header-filter is-capitalized"
-                :class="{
-                  'has-text-white': sortHeader === header,
-                }"
-                @click="sort(header)"
-              >
-                {{ header }}
-                <i
-                  class="fas fa-angle-down"
-                  v-if="sortHeader === header && !reversedSort"
-                  style="margin-left: 10px;"
-                ></i>
-                <i
-                  class="fas fa-angle-up"
-                  v-else-if="sortHeader === header && reversedSort"
-                  style="margin-left: 10px;"
-                ></i>
-              </a>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <router-link
-            v-for="build in filteredBuilds"
-            :key="build.id"
-            :to="{ name: 'build-overview', params: { id: build.id } }"
-            tag="tr"
-            style="cursor: pointer;"
-          >
-            <td>
-              <p
-                class="is-size-6 has-text-weight-bold"
-                style="padding-bottom: 4px;"
-                >{{ build.name }}</p
-              >
-              <p class="is-size-6" v-if="build.description">{{
-                build.description
-              }}</p>
-              <p class="is-size-6" v-else>No Description</p>
-            </td>
-            <td style="vertical-align: middle">
-              <span v-if="build.started">{{ getDate(build.started) }}</span>
-              <span v-else>N/A</span>
-            </td>
-            <td style="vertical-align: middle">
-              <span v-if="build.completed">{{ getDate(build.completed) }}</span>
-              <span v-else>N/A</span>
-            </td>
-            <td style="vertical-align: middle">
-              <p
-                class="tag complete-status is-light is-capitalized"
-                :class="{
-                  'is-success': build.completed_status === 'success',
-                  'is-danger': build.completed_status === 'failure',
-                  'is-dark': !build.completed_status,
-                }"
-              >
-                <span
-                  v-if="build.completed_status === 'success'"
-                  class="material-icons"
-                  style="margin-right: 4px; font-size: 20px;"
+      <div v-if="filteredBuilds && filteredBuilds.length">
+        <table v-if="activeView === 'table'" class="table is-hoverable">
+          <thead>
+            <tr>
+              <th v-for="header in headers" :key="header">
+                <a
+                  class="table-header-filter is-capitalized"
+                  :class="{
+                    'has-text-white': sortHeader === header,
+                  }"
+                  @click="sort(header)"
                 >
-                  check_circle
-                </span>
-                <span
-                  v-else-if="build.completed_status === 'failure'"
-                  class="material-icons"
-                  style="margin-right: 4px; font-size: 20px;"
+                  {{ header }}
+                  <i
+                    class="fas fa-angle-down"
+                    v-if="sortHeader === header && !reversedSort"
+                    style="margin-left: 10px;"
+                  ></i>
+                  <i
+                    class="fas fa-angle-up"
+                    v-else-if="sortHeader === header && reversedSort"
+                    style="margin-left: 10px;"
+                  ></i>
+                </a>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <router-link
+              v-for="build in filteredBuilds"
+              :key="build.id"
+              :to="{ name: 'build-overview', params: { id: build.id } }"
+              tag="tr"
+              style="cursor: pointer;"
+            >
+              <td>
+                <p
+                  class="is-size-6 has-text-weight-bold"
+                  style="padding-bottom: 4px;"
+                  >{{ build.name }}</p
                 >
-                  error
-                </span>
-                <span v-if="build.completed_status">
-                  {{ build.completed_status }}
-                </span>
-                <span v-else>Incomplete</span>
-              </p>
-              <!-- <p
+                <p class="is-size-6" v-if="build.description">{{
+                  build.description
+                }}</p>
+                <p class="is-size-6" v-else>No Description</p>
+              </td>
+              <td style="vertical-align: middle">
+                <span v-if="build.started">{{ getDate(build.started) }}</span>
+                <span v-else>N/A</span>
+              </td>
+              <td style="vertical-align: middle">
+                <span v-if="build.completed">{{
+                  getDate(build.completed)
+                }}</span>
+                <span v-else>N/A</span>
+              </td>
+              <td style="vertical-align: middle">
+                <p
+                  class="tag complete-status is-light is-capitalized"
+                  :class="{
+                    'is-success': build.completed_status === 'success',
+                    'is-danger': build.completed_status === 'failure',
+                    'is-dark': !build.completed_status,
+                  }"
+                >
+                  <span
+                    v-if="build.completed_status === 'success'"
+                    class="material-icons"
+                    style="margin-right: 4px; font-size: 20px;"
+                  >
+                    check_circle
+                  </span>
+                  <span
+                    v-else-if="build.completed_status === 'failure'"
+                    class="material-icons"
+                    style="margin-right: 4px; font-size: 20px;"
+                  >
+                    error
+                  </span>
+                  <span v-if="build.completed_status">
+                    {{ build.completed_status }}
+                  </span>
+                  <span v-else>Incomplete</span>
+                </p>
+                <!-- <p
                 v-if="build.completed_status"
                 style="display: flex; align-items: center;"
               >
@@ -184,60 +187,60 @@
                 {{ build.completed_status }}
               </p>
               <p v-else>N/A</p> -->
-            </td>
-          </router-link>
-        </tbody>
-      </table>
-      <div class="cards grid-view" v-else>
-        <div class="card" v-for="build in filteredBuilds" :key="build.id">
-          <router-link
-            :to="{ name: 'build-overview', params: { id: build.id } }"
-            style="display: flex; flex-direction: column; height: 100%;"
-          >
-            <div class="card-content" style="flex-grow: 1;">
-              <p class="build-name">{{ build.name }}</p>
-              <p style="padding-bottom: 10px; height: 60px;">{{
-                build.description || 'No Description'
-              }}</p>
-              <div
-                class="details"
-                style="display: flex; align-content: center; justify-content: space-between;"
-              >
-                <div class="start-date">
-                  <p style="color: #ced8e4; margin-bottom: 4px">
-                    <strong>Started</strong>
-                  </p>
-                  <div>
-                    <div style="display: flex; align-items: center">
-                      <span class="material-icons" style="margin-right: 4px"
-                        >event</span
-                      >
-                      <p v-if="build.started">{{ getDate(build.started) }}</p>
-                      <p v-else>Not Started</p>
+              </td>
+            </router-link>
+          </tbody>
+        </table>
+        <div class="cards grid-view" v-else>
+          <div class="card" v-for="build in filteredBuilds" :key="build.id">
+            <router-link
+              :to="{ name: 'build-overview', params: { id: build.id } }"
+              style="display: flex; flex-direction: column; height: 100%;"
+            >
+              <div class="card-content" style="flex-grow: 1;">
+                <p class="build-name">{{ build.name }}</p>
+                <p style="padding-bottom: 10px; height: 60px;">{{
+                  build.description || 'No Description'
+                }}</p>
+                <div
+                  class="details"
+                  style="display: flex; align-content: center; justify-content: space-between;"
+                >
+                  <div class="start-date">
+                    <p style="color: #ced8e4; margin-bottom: 4px">
+                      <strong>Started</strong>
+                    </p>
+                    <div>
+                      <div style="display: flex; align-items: center">
+                        <span class="material-icons" style="margin-right: 4px"
+                          >event</span
+                        >
+                        <p v-if="build.started">{{ getDate(build.started) }}</p>
+                        <p v-else>Not Started</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="start-date">
-                  <p style="color: #ced8e4; margin-bottom: 4px">
-                    <strong>Completed</strong>
-                  </p>
-                  <div>
-                    <div style="display: flex; align-items: center">
-                      <span class="material-icons" style="margin-right: 4px"
-                        >event_available</span
-                      >
-                      <p v-if="build.completed">{{
-                        getDate(build.completed)
-                      }}</p>
-                      <p v-else>Not Started</p>
+                  <div class="start-date">
+                    <p style="color: #ced8e4; margin-bottom: 4px">
+                      <strong>Completed</strong>
+                    </p>
+                    <div>
+                      <div style="display: flex; align-items: center">
+                        <span class="material-icons" style="margin-right: 4px"
+                          >event_available</span
+                        >
+                        <p v-if="build.completed">{{
+                          getDate(build.completed)
+                        }}</p>
+                        <p v-else>Not Started</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <footer
-              class="card-footer"
-              style="
+              <footer
+                class="card-footer"
+                style="
               display: flex;
               align-content: center;
               justify-content: center;
@@ -245,27 +248,28 @@
               border-bottom-left-radius: 4px;
               border-top: none;
             "
-            >
-              <p
-                class="status has-text-weight-bold is-capitalized"
-                :class="{
-                  'has-text-success': build.completed_status === 'success',
-                  'has-text-danger': build.completed_status === 'failure',
-                }"
-                style="padding: 8px; font-size: 18px;"
               >
-                {{ build.completed_status || 'Incomplete' }}
-              </p>
-            </footer>
-          </router-link>
+                <p
+                  class="status has-text-weight-bold is-capitalized"
+                  :class="{
+                    'has-text-success': build.completed_status === 'success',
+                    'has-text-danger': build.completed_status === 'failure',
+                  }"
+                  style="padding: 8px; font-size: 18px;"
+                >
+                  {{ build.completed_status || 'Incomplete' }}
+                </p>
+              </footer>
+            </router-link>
+          </div>
         </div>
       </div>
-    </div>
-    <div v-else class="builds-empty-state">
-      <span class="icon material-icons">layers</span>
-      <h1 class="title is-4 has-text-weight-bold" style="margin-left: 8px;">
-        No builds found
-      </h1>
+      <div v-else class="builds-empty-state">
+        <span class="icon material-icons">layers</span>
+        <h1 class="title is-4 has-text-weight-bold" style="margin-left: 8px;">
+          No builds found
+        </h1>
+      </div>
     </div>
     <transition name="fade">
       <CreateBuildModal v-if="creatingBuild" />
