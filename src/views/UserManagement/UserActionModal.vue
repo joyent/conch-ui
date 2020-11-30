@@ -229,9 +229,9 @@ export default {
         const params = {};
 
         if (this.clearTokens) {
-          params.clear_tokens = 1;
+          params.clear_tokens = 'all';
         } else {
-          params.clear_tokens = 0;
+          params.clear_tokens = 'none';
         }
 
         deactivateUser(userId, params).then(() => {

@@ -54,6 +54,7 @@
               </div>
             </div>
             <i
+              v-if="userIsAdmin"
               class="material-icons has-text-success"
               @click="showAddRackModal()"
             >
@@ -351,20 +352,17 @@ export default {
       return racks;
     },
     userIsAdmin() {
+      const build = this.currentBuild;
       const user = this.currentUser;
 
-      if (user && user.is_admin) {
+      if (
+        (user && user.is_admin) ||
+        (build &&
+          build.admins &&
+          build.admins.length &&
+          build.admins.map(admin => admin.id).includes(user.id))
+      ) {
         return true;
-      }
-
-      if (user && user.builds && user.builds.length) {
-        const build = user.builds.find(
-          build => build.id === this.currentBuild.id
-        );
-
-        if (build && build.role === 'admin') {
-          return true;
-        }
       }
 
       return false;

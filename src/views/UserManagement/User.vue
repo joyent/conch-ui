@@ -357,7 +357,7 @@ export default {
   methods: {
     async deactivateUser(clearTokens) {
       await deactivateUser(this.$route.params.id, {
-        clear_tokens: clearTokens === true ? 1 : 0,
+        clear_tokens: clearTokens === true ? 'all' : 'none',
       });
     },
     async deleteToken() {
