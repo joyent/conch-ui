@@ -489,7 +489,7 @@ export default {
       this.showSuccessModal = false;
     },
     getDate(date) {
-      return moment(date).format('YYYY/MM/DD');
+      return moment(date).format('YYYY-MM-DD');
     },
     getModifiedMemberIndex(memberName) {
       if (this.modifiedMembers && this.modifiedMembers.length) {

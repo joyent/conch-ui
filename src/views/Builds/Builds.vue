@@ -321,7 +321,7 @@ export default {
       });
     },
     getDate(date) {
-      return moment(date).format('YYYY/MM/DD');
+      return moment(date).format('YYYY-MM-DD');
     },
     graphColor(progress) {
       return progress === 100 ? this.colors.green : this.colors.blue;
