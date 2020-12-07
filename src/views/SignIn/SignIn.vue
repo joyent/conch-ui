@@ -202,7 +202,6 @@ export default {
   },
   data() {
     return {
-      apiVersion: '',
       badEmailAddress: false,
       badPassword: false,
       breakingApiVersion: '',
@@ -210,7 +209,6 @@ export default {
       emailAddress: '',
       incompatibleApiVersion: false,
       isLoading: false,
-      minimumApiVersion: '',
       password: '',
       showHelp: false,
       showNotification: true,
@@ -291,22 +289,13 @@ export default {
   },
   created() {
     this.breakingApiVersion = breakingApiVersion;
-    this.minimumApiVersion = minimumApiVersion;
     this.conchReleaseUrl = conchReleaseUrl;
 
     getApiVersion().then(response => {
       const range = `${minimumApiVersion} - ${breakingApiVersion}`;
-      let apiVersion = response.data.version;
-      let index;
+      const { version } = response.data;
 
-      if (apiVersion.indexOf('-') !== -1) {
-        index = apiVersion.indexOf('-');
-        apiVersion = apiVersion.slice(0, index);
-      }
-
-      this.apiVersion = apiVersion;
-
-      if (!semver.satisfies(apiVersion, range)) {
+      if (!semver.satisfies(semver.coerce(version), range)) {
         this.incompatibleApiVersion = true;
       }
     });
