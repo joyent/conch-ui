@@ -13,37 +13,37 @@ localVue.use(Vuex);
 jest.mock('@api/request.js');
 
 describe('CreateUserModal.vue', () => {
-    let propsData;
-    let state;
-    let store;
-    let user;
-    let wrapper;
+  let propsData;
+  let state;
+  let store;
+  let user;
+  let wrapper;
+
+  beforeEach(() => {
+    state = { builds, organizations };
+    user = users[0];
+    propsData = { editingUser: user };
+    store = new Vuex.Store({ state });
+    wrapper = mount(CreateUserModal, { localVue, propsData, store });
+  });
+
+  describe('closing the modal', () => {
+    let spy;
 
     beforeEach(() => {
-        state = { builds, organizations };
-        user = users[0];
-        propsData = { editingUser: user };
-        store = new Vuex.Store({ state });
-        wrapper = mount(CreateUserModal, { localVue, propsData, store });
+      spy = jest.spyOn(wrapper.vm, 'closeModal');
     });
 
-    describe('closing the modal', () => {
-        let spy;
+    test('should close the modal when modal background is clicked', () => {
+      wrapper.find('.modal-background').trigger('click');
 
-        beforeEach(() => {
-            spy = jest.spyOn(wrapper.vm, 'closeModal');
-        });
-
-        test('should close the modal when modal background is clicked', () => {
-            wrapper.find('.modal-background').trigger('click');
-
-            expect(spy).toHaveBeenCalled();
-        });
-
-        test('should close the modal when modal close button is clicked', () => {
-            wrapper.find('button.delete').trigger('click');
-
-            expect(spy).toHaveBeenCalled();
-        });
+      expect(spy).toHaveBeenCalled();
     });
+
+    test('should close the modal when modal close button is clicked', () => {
+      wrapper.find('button.delete').trigger('click');
+
+      expect(spy).toHaveBeenCalled();
+    });
+  });
 });

@@ -9,10 +9,26 @@ import { requestWithToken } from './request.js';
  * @return {Response Object}
  */
 export const addDeviceToBuild = (buildId, deviceId) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/build/${buildId}/device/${deviceId}`,
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: `/build/${buildId}/device/${deviceId}`,
+  });
+};
+
+/**
+ * Add a link to a build
+ *
+ * @type   {POST}
+ * @param  {String} buildId                 The ID of the build being updated
+ * @param  {Array} links                    Array of links being added to the build
+ * @return {Response Object}
+ */
+export const addLinkToBuild = (buildId, links) => {
+  return requestWithToken({
+    method: 'POST',
+    url: `/build/${buildId}/links`,
+    data: { links },
+  });
 };
 
 /**
@@ -25,17 +41,17 @@ export const addDeviceToBuild = (buildId, deviceId) => {
  * @return {Response Object}
  */
 export const addOrganizationToBuild = (buildId, organizationId, role) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/build/${buildId}/organization`,
-        data: {
-            organization_id: organizationId,
-            role,
-        },
-        params: {
-            send_mail: 1,
-        },
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: `/build/${buildId}/organization`,
+    data: {
+      organization_id: organizationId,
+      role,
+    },
+    params: {
+      send_mail: 1,
+    },
+  });
 };
 
 /**
@@ -47,10 +63,10 @@ export const addOrganizationToBuild = (buildId, organizationId, role) => {
  * @return {Response Object}
  */
 export const addRackToBuild = (buildId, rackId) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/build/${buildId}/rack/${rackId}`,
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: `/build/${buildId}/rack/${rackId}`,
+  });
 };
 
 /**
@@ -63,17 +79,17 @@ export const addRackToBuild = (buildId, rackId) => {
  * @return {Response Object}
  */
 export const addUserToBuild = (buildId, userId, role) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/build/${buildId}/user`,
-        data: {
-            user_id: userId,
-            role: role,
-        },
-        params: {
-            send_mail: 1,
-        },
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: `/build/${buildId}/user`,
+    data: {
+      user_id: userId,
+      role: role,
+    },
+    params: {
+      send_mail: 1,
+    },
+  });
 };
 
 /**
@@ -87,17 +103,17 @@ export const addUserToBuild = (buildId, userId, role) => {
  * @return {Response Object}
  */
 export const createDeviceAddToBuild = (buildId, serial_number, sku, links) => {
-    return requestWithToken({
-        method: 'POST',
-        url: `/build/${buildId}/device`,
-        data: [
-            {
-                sku,
-                serial_number,
-                links,
-            },
-        ],
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: `/build/${buildId}/device`,
+    data: [
+      {
+        sku,
+        serial_number,
+        links,
+      },
+    ],
+  });
 };
 
 /**
@@ -110,11 +126,11 @@ export const createDeviceAddToBuild = (buildId, serial_number, sku, links) => {
  * @return {Response Object}
  */
 export const createBuild = (name, description, admins, started) => {
-    return requestWithToken({
-        method: 'POST',
-        url: '/build',
-        data: { name, description, admins, started },
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: '/build',
+    data: { name, description, admins, started },
+  });
 };
 
 /**
@@ -125,10 +141,10 @@ export const createBuild = (name, description, admins, started) => {
  * @return {Response Object}
  */
 export const getBuild = buildId => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/build/${buildId}`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/build/${buildId}`,
+  });
 };
 
 /**
@@ -139,10 +155,10 @@ export const getBuild = buildId => {
  * @return {Response Object}
  */
 export const getBuildDevices = buildId => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/build/${buildId}/device`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/build/${buildId}/device`,
+  });
 };
 
 /**
@@ -153,10 +169,10 @@ export const getBuildDevices = buildId => {
  * @return {Response Object}
  */
 export const getBuildOrganizations = buildId => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/build/${buildId}/organization`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/build/${buildId}/organization`,
+  });
 };
 
 /**
@@ -167,10 +183,10 @@ export const getBuildOrganizations = buildId => {
  * @return {Response Object}
  */
 export const getBuildRacks = buildId => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/build/${buildId}/rack`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/build/${buildId}/rack`,
+  });
 };
 
 /**
@@ -181,10 +197,10 @@ export const getBuildRacks = buildId => {
  * @return {Response Object}
  */
 export const getBuildUsers = buildId => {
-    return requestWithToken({
-        method: 'GET',
-        url: `/build/${buildId}/user`,
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: `/build/${buildId}/user`,
+  });
 };
 
 /**
@@ -194,10 +210,10 @@ export const getBuildUsers = buildId => {
  * @return {Response Object}
  */
 export const getBuilds = () => {
-    return requestWithToken({
-        method: 'GET',
-        url: '/build',
-    });
+  return requestWithToken({
+    method: 'GET',
+    url: '/build',
+  });
 };
 
 /**
@@ -209,26 +225,26 @@ export const getBuilds = () => {
  * @return {Response Object}
  */
 export const updateBuild = (buildId, updatedData) => {
-    const data = {};
-    const { description, started, completed } = updatedData;
+  const data = {};
+  const { description, started, completed } = updatedData;
 
-    if (description) {
-        data.description = description;
-    }
+  if (description) {
+    data.description = description;
+  }
 
-    if (updatedData.started) {
-        data.started = started;
-    }
+  if (updatedData.started) {
+    data.started = started;
+  }
 
-    if (updatedData.completed) {
-        data.completed = completed;
-    }
+  if (updatedData.completed) {
+    data.completed = completed;
+  }
 
-    return requestWithToken({
-        method: 'POST',
-        url: `/build/${buildId}`,
-        data,
-    });
+  return requestWithToken({
+    method: 'POST',
+    url: `/build/${buildId}`,
+    data,
+  });
 };
 
 /**
@@ -240,10 +256,40 @@ export const updateBuild = (buildId, updatedData) => {
  * @return {Response Object}
  */
 export const removeDeviceFromBuild = (buildId, deviceId) => {
-    return requestWithToken({
-        method: 'DELETE',
-        url: `/build/${buildId}/device/${deviceId}`,
-    });
+  return requestWithToken({
+    method: 'DELETE',
+    url: `/build/${buildId}/device/${deviceId}`,
+  });
+};
+
+/**
+ * Remove a link from a build
+ *
+ * @type {DELETE}
+ * @param {String} buildId                  The ID of the build being updated
+ * @param {Array} links                     Array of links being removed from the build
+ * @return {Response Object}
+ */
+export const removeLinkFromBuild = (buildId, links) => {
+  return requestWithToken({
+    method: 'DELETE',
+    url: `/build/${buildId}/links`,
+    data: { links },
+  });
+};
+
+/**
+ * Remove all links from a build
+ *
+ * @type {DELETE}
+ * @param {String} buildId                  The ID of the build being updated
+ * @return {Response Object}
+ */
+export const removeAllLinksFromBuild = buildId => {
+  return requestWithToken({
+    method: 'DELETE',
+    url: `/build/${buildId}/links`,
+  });
 };
 
 /**
@@ -255,13 +301,13 @@ export const removeDeviceFromBuild = (buildId, deviceId) => {
  * @return {Response Object}
  */
 export const removeOrganizationFromBuild = (buildId, organizationId) => {
-    return requestWithToken({
-        method: 'DELETE',
-        url: `/build/${buildId}/organization/${organizationId}`,
-        params: {
-            send_mail: 1,
-        },
-    });
+  return requestWithToken({
+    method: 'DELETE',
+    url: `/build/${buildId}/organization/${organizationId}`,
+    params: {
+      send_mail: 1,
+    },
+  });
 };
 
 /**
@@ -273,29 +319,32 @@ export const removeOrganizationFromBuild = (buildId, organizationId) => {
  * @return {Response Object}
  */
 export const removeUserFromBuild = (buildId, userId) => {
-    return requestWithToken({
-        method: 'DELETE',
-        url: `/build/${buildId}/user/${userId}`,
-        params: {
-            send_mail: 1,
-        },
-    });
+  return requestWithToken({
+    method: 'DELETE',
+    url: `/build/${buildId}/user/${userId}`,
+    params: {
+      send_mail: 1,
+    },
+  });
 };
 
 export default {
-    addDeviceToBuild,
-    addOrganizationToBuild,
-    addRackToBuild,
-    addUserToBuild,
-    createBuild,
-    getBuild,
-    getBuildDevices,
-    getBuildOrganizations,
-    getBuildRacks,
-    getBuildUsers,
-    getBuilds,
-    removeDeviceFromBuild,
-    removeOrganizationFromBuild,
-    removeUserFromBuild,
-    updateBuild,
+  addDeviceToBuild,
+  addLinkToBuild,
+  addOrganizationToBuild,
+  addRackToBuild,
+  addUserToBuild,
+  createBuild,
+  getBuild,
+  getBuildDevices,
+  getBuildOrganizations,
+  getBuildRacks,
+  getBuildUsers,
+  getBuilds,
+  removeAllLinksFromBuild,
+  removeDeviceFromBuild,
+  removeLinkFromBuild,
+  removeOrganizationFromBuild,
+  removeUserFromBuild,
+  updateBuild,
 };

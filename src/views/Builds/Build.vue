@@ -1,330 +1,196 @@
 <template>
-    <div class="build">
-        <transition name="fade">
-            <article class="message is-success" v-if="buildUpdated">
-                <div class="message-header">
-                    <i class="material-icons">check_circle</i>
-                    <p>Build {{ action }}</p>
-                </div>
-            </article>
-        </transition>
-        <div class="build-header">
-            <router-link
-                v-if="$route.name === 'builds'"
-                :to="{ name: 'build', params: { id: currentBuild.id } }"
-                class="build-name title has-text-white"
-                tag="a"
-            >
-                {{ currentBuild.name }}
-            </router-link>
-            <p v-else class="build-name title has-text-white">
-                {{ currentBuild.name }}
-            </p>
-            <div class="field is-grouped">
-                <p class="control" v-if="!currentBuild.started">
-                    <a class="button is-success" @click="updateBuild('start')">
-                        Start Build
-                    </a>
-                </p>
-                <p
-                    v-if="currentBuild.started && !currentBuild.completed"
-                    class="control"
-                    :class="{
-                        'tooltip is-tooltip-left is-tooltip-info': !isBuildCompletable,
-                    }"
-                    :data-tooltip="
-                        `${
-                            isBuildCompletable
-                                ? ''
-                                : 'Cannot complete a build with unhealthy devices'
-                        }`
-                    "
-                >
-                    <a
-                        class="button is-success"
-                        @click="
-                            isBuildCompletable ? updateBuild('complete') : null
-                        "
-                        :disabled="!isBuildCompletable"
-                    >
-                        Complete Build
-                    </a>
-                </p>
-            </div>
-        </div>
-        <p class="build-id has-text-grey">Build ID: {{ currentBuild.id }}</p>
-        <div class="tabs is-toggle">
-            <ul>
-                <li
-                    :class="{ 'is-active': currentTab === tab.component }"
-                    v-for="tab in tabs"
-                    :key="tab.name"
-                >
-                    <a
-                        :class="`tab is-uppercase ${tab.class}`"
-                        @click="changeTab(tab.component)"
-                    >
-                        {{ tab.name }}
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div
-            class="custom-tags"
-            v-if="rack && rack.name"
-            style="margin-bottom: 15px; margin-top: -10px;"
+  <div class="build">
+    <div class="build-header">
+      <p class="build-name title has-text-white">
+        {{ currentBuild.name }}
+      </p>
+      <div class="field is-grouped">
+        <p class="control">
+          <a class="button is-dark" @click="$router.push({ name: 'builds' })">
+            <span class="icon">
+              <i class="material-icons">arrow_back</i>
+            </span>
+            <strong>Back To Builds</strong>
+          </a>
+        </p>
+        <p class="control" v-if="!currentBuild.started">
+          <a class="button is-success" @click="updateBuild('start')">
+            Start Build
+          </a>
+        </p>
+        <p
+          v-if="currentBuild.started && !currentBuild.completed"
+          class="control"
         >
-            <label class="tag-label">Rack</label>
-            <div class="tag-value">
-                {{ rack.name }}
-            </div>
-            <a
-                class="button is-text"
-                style="margin-left: 5px"
-                @click="clearRack()"
-                >Clear Rack</a
-            >
-        </div>
-        <OverviewTab v-if="currentTab === 'OverviewTab'" />
-        <OrganizationsTab
-            :build-id="currentBuild.id"
-            v-if="userIsAdmin && currentTab === 'OrganizationsTab'"
-        />
-        <MembersTab
-            :build-id="currentBuild.id"
-            v-if="userIsAdmin && currentTab === 'MembersTab'"
-        />
-        <RacksTab
-            :build-id="currentBuild.id"
-            v-if="currentTab === 'RacksTab'"
-            @rack-selected="selectRack"
-        />
-        <DevicesTab
-            :build-id="currentBuild.id"
-            v-if="currentTab === 'DevicesTab'"
-            :rack="rack"
-        />
+          <a
+            v-if="userIsAdmin"
+            class="button is-success"
+            @click="updateBuild('complete')"
+          >
+            Complete Build
+          </a>
+        </p>
+      </div>
     </div>
+    <div class="tabs is-toggle">
+      <ul>
+        <li
+          :class="{ 'is-active': $route.name === `build-${tab.key}` }"
+          v-for="tab in tabs"
+          :key="tab.name"
+        >
+          <router-link
+            :to="{
+              name: `build-${tab.key}`,
+              params: { id: currentBuild.id },
+            }"
+            class="tab is-uppercase"
+            tag="a"
+          >
+            {{ tab.name }}
+          </router-link>
+        </li>
+      </ul>
+    </div>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import DevicesTab from './DevicesTab.vue';
-import OverviewTab from './OverviewTab.vue';
-import RacksTab from './RacksTab.vue';
-import MembersTab from './MembersTab.vue';
-import OrganizationsTab from './OrganizationsTab.vue';
-import { EventBus } from '@src/eventBus.js';
+import isEmpty from 'lodash/isEmpty';
 import { mapActions, mapState } from 'vuex';
-import * as Builds from '@api/builds.js';
-import { getOrganizations } from '@api/organizations.js';
+import { getBuild, updateBuild } from '@api/builds.js';
 
 export default {
-    components: {
-        DevicesTab,
-        MembersTab,
-        OrganizationsTab,
-        OverviewTab,
-        RacksTab,
+  data() {
+    return {
+      action: '',
+    };
+  },
+  methods: {
+    ...mapActions(['setCurrentBuild']),
+    async fetchData() {
+      const currentBuild = this.currentBuild;
+
+      if (
+        this.$route.params &&
+        this.$route.params.id &&
+        ((currentBuild && currentBuild.id !== this.$route.params.id) ||
+          isEmpty(currentBuild))
+      ) {
+        const buildResponse = await getBuild(this.$route.params.id);
+        this.setCurrentBuild(buildResponse.data);
+        localStorage.setItem('mostRecentBuildId', this.$route.params.id);
+      }
     },
-    props: {
-        buildId: {
-            type: String,
-            required: false,
-            default: '',
-        },
-    },
-    data() {
-        return {
-            action: '',
-            buildUpdated: false,
-            currentTab: 'OverviewTab',
-            rack: {},
-        };
-    },
-    methods: {
-        ...mapActions([
-            'setCurrentBuild',
-            'setCurrentBuildDevices',
-            'setCurrentBuildOrganizations',
-            'setCurrentBuildRacks',
-            'setCurrentBuildUsers',
-            'setDevices',
-            'setOrganizations',
-        ]),
-        changeTab(tab) {
-            this.currentTab = tab;
+    async updateBuild(action) {
+      const buildId = this.currentBuild.id;
+      const now = new Date();
+      let data;
 
-            if (this.currentTab === 'DevicesTab' && tab === 'DevicesTab') {
-                this.clearRack();
-            }
-        },
-        clearRack() {
-            this.rack = {};
-            EventBus.$emit('device-tab-clicked');
-        },
-        getBuildData(buildId) {
-            Builds.getBuild(buildId).then(response => {
-                this.setCurrentBuild(response.data);
-            });
+      if (action === 'complete') {
+        this.action = 'completed';
+        data = { completed: now };
+      } else if (action === 'start') {
+        this.action = 'started';
+        data = { started: now };
+      }
 
-            Builds.getBuildDevices(buildId).then(response => {
-                this.setCurrentBuildDevices(response.data);
-            });
+      try {
+        await updateBuild(buildId, data);
+        this.$toasted.success('Build updated successfully');
 
-            Builds.getBuildRacks(buildId).then(response => {
-                this.setCurrentBuildRacks(response.data);
-            });
+        await getBuild(buildId);
+        this.setCurrentBuild(buildId);
+      } catch (error) {
+        let errorMessage;
 
-            if (this.userIsAdmin) {
-                Builds.getBuildOrganizations(buildId).then(response => {
-                    this.setCurrentBuildOrganizations(response.data);
-                });
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
+          errorMessage = `Error: ${error.response.data.error}`;
+        } else {
+          errorMessage = 'An error occurred';
+        }
 
-                Builds.getBuildUsers(buildId).then(response => {
-                    this.setCurrentBuildUsers(response.data);
-                });
-            }
-        },
-        preFetchData() {
-            if (!this.organizations.length) {
-                getOrganizations().then(response => {
-                    this.setOrganizations(response.data);
-                });
-            }
-        },
-        selectRack(data) {
-            this.rack = data.rack;
-            this.currentTab = 'DevicesTab';
-        },
-        updateBuild(action) {
-            const buildId = this.currentBuild.id;
-            const now = new Date();
-            let data;
-
-            if (!this.isBuildCompletable) {
-                return;
-            }
-
-            if (action === 'complete') {
-                this.action = 'completed';
-                data = { completed: now };
-            } else if (action === 'start') {
-                this.action = 'started';
-                data = { started: now };
-            }
-
-            Builds.updateBuild(buildId, data).then(() => {
-                this.buildUpdated = true;
-
-                this.getBuildData(buildId);
-
-                setTimeout(() => {
-                    this.buildUpdated = false;
-                }, 3000);
-            });
-        },
-    },
-    watch: {
-        buildId: {
-            immediate: true,
-            handler(buildId) {
-                if (!buildId) {
-                    if (this.$route.params && this.$route.params.id) {
-                        buildId = this.$route.params.id;
-                    }
-                }
-
-                this.currentTab = 'OverviewTab';
-                localStorage.setItem('mostRecentBuildId', buildId);
-                this.getBuildData(buildId);
+        this.$toasted.error(errorMessage, {
+          action: [
+            {
+              icon: 'close',
+              onClick: (e, toastObject) => {
+                toastObject.goAway(0);
+              },
             },
-        },
-        currentTab: {
-            immediate: true,
-            handler(newTab, lastTab) {
-                if (lastTab === 'DevicesTab') {
-                    this.rack = {};
-                }
-            },
-        },
+          ],
+          duration: 8000,
+          icon: 'error',
+        });
+      }
     },
-    computed: {
-        ...mapState([
-            'currentBuild',
-            'currentBuildDevices',
-            'currentUser',
-            'devices',
-            'organizations',
-            'racks',
-        ]),
-        isBuildCompletable() {
-            if (this.currentBuildDevices.length) {
-                const healthyDevicesCount = this.currentBuildDevices.filter(
-                    device => device.health === 'pass'
-                ).length;
-
-                if (healthyDevicesCount === this.currentBuildDevices.length) {
-                    return true;
-                }
-            }
-
-            return false;
+  },
+  computed: {
+    ...mapState(['currentBuild', 'currentUser']),
+    tabs() {
+      let tabs = [
+        {
+          key: 'overview',
+          component: 'OverviewTab',
+          name: 'Overview',
         },
-        tabs() {
-            const tabs = [
-                {
-                    class: 'overview-tab',
-                    component: 'OverviewTab',
-                    name: 'Overview',
-                },
-                {
-                    class: 'racks-tab',
-                    component: 'RacksTab',
-                    name: 'Racks',
-                },
-                {
-                    class: 'devices-tab',
-                    component: 'DevicesTab',
-                    name: 'Devices',
-                },
-            ];
-            const adminTabs = [
-                {
-                    class: 'members-tab',
-                    component: 'MembersTab',
-                    name: 'Members',
-                },
-                {
-                    class: 'organizations-tab',
-                    component: 'OrganizationsTab',
-                    name: 'Organizations',
-                },
-            ];
-
-            return this.userIsAdmin ? tabs.concat(adminTabs) : tabs;
+        {
+          key: 'racks',
+          component: 'RacksTab',
+          name: 'Racks',
         },
-        userIsAdmin() {
-            const user = this.currentUser;
-
-            if (user && user.is_admin) {
-                return true;
-            }
-
-            if (user && user.builds && user.builds.length) {
-                const build = user.builds.find(
-                    build => build.id === this.buildId
-                );
-
-                if (build && build.role === 'admin') {
-                    return true;
-                }
-            }
-
-            return false;
+        {
+          key: 'devices',
+          component: 'DevicesTab',
+          name: 'Devices',
         },
+      ];
+      const adminTabs = [
+        {
+          key: 'members',
+          component: 'MembersTab',
+          name: 'Members',
+        },
+        {
+          key: 'organizations',
+          component: 'OrganizationsTab',
+          name: 'Organizations',
+        },
+      ];
+
+      tabs = this.userIsAdmin ? tabs.concat(adminTabs) : tabs;
+      tabs.push({
+        key: 'links',
+        component: 'LinksTab',
+        name: 'Links',
+      });
+
+      return tabs;
     },
-    created() {
-        this.preFetchData();
+    userIsAdmin() {
+      const build = this.currentBuild;
+      const user = this.currentUser;
+
+      if (
+        (user && user.is_admin) ||
+        (build &&
+          build.admins &&
+          build.admins.length &&
+          build.admins.map(admin => admin.id).includes(user.id))
+      ) {
+        return true;
+      }
+
+      return false;
     },
+  },
+  created() {
+    this.fetchData();
+  },
 };
 </script>
