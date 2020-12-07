@@ -110,7 +110,7 @@
                   :locale="{
                     masks: {
                       dayPopover: 'WWWW, MMMM DD, YYYY',
-                      L: 'YYYY/MM/DD',
+                      L: 'YYYY-MM-DD',
                     },
                   }"
                   :popover="{
@@ -882,7 +882,7 @@ export default {
       }).id;
     },
     getDate(date) {
-      return moment(date).format('YYYY/MM/DD');
+      return moment(date).format('YYYY-MM-DD');
     },
     initializeData() {
       if (!this.organizations.length) {

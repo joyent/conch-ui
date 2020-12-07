@@ -490,7 +490,7 @@ export default {
       }
     },
     getFormattedValue(fieldValue) {
-      return moment.utc(fieldValue).format('DD-MMM-YYYY HH:mm:ss');
+      return moment.utc(fieldValue).format('YYYY-MM-DD HH:mm:ss');
     },
     isValueModified(formField) {
       const { key, value } = formField;
