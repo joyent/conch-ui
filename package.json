@@ -13,7 +13,7 @@
     "start": "vue-cli-service serve"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bulma": "^0.7.1",
     "bulma-checkradio": "^1.1.1",
     "bulma-tooltip": "^2.0.2",
