@@ -38,7 +38,6 @@ import {
   getDeviceSettings,
   getDeviceValidations,
 } from '@api/devices.js';
-import { getValidations } from '@api/validations.js';
 
 export default {
   components: {
@@ -94,7 +93,6 @@ export default {
       'setActiveDeviceValidations',
       'setActiveRoomName',
       'setRackLayout',
-      'setValidations',
     ]),
     setActiveDeviceData() {
       getDeviceSettings(this.activeDeviceId).then(response => {
@@ -117,12 +115,6 @@ export default {
       getDeviceValidations(this.activeDeviceId).then(response => {
         this.setActiveDeviceValidations(response.data);
       });
-
-      if (isEmpty(this.validations)) {
-        getValidations().then(response => {
-          this.setValidations(response.data);
-        });
-      }
     },
     setActiveTab(tab) {
       this.activeTab = tab;
@@ -130,7 +122,7 @@ export default {
   },
   computed: {
     ...mapGetters(['activeDeviceId']),
-    ...mapState(['activeDevice', 'showDeviceInRack', 'validations']),
+    ...mapState(['activeDevice', 'showDeviceInRack']),
     hasActiveDevice() {
       return !isEmpty(this.activeDevice);
     },

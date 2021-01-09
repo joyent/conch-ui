@@ -149,10 +149,6 @@ export const setUsers = ({ commit }, users) => {
   commit('setUsers', users);
 };
 
-export const setValidations = ({ commit }, validations) => {
-  commit('setValidations', validations);
-};
-
 export default {
   clearActiveDevice,
   clearActiveRoomName,
@@ -191,5 +187,4 @@ export default {
   setShowDeviceInRack,
   setUserAuthTokens,
   setUsers,
-  setValidations,
 };

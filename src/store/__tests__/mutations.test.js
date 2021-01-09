@@ -12,7 +12,6 @@ import rackLayout from '@src/__fixtures__/rackLayout.js';
 import rackRooms from '@src/__fixtures__/rackRooms.js';
 import userAuthTokens from '@src/__fixtures__/userAuthTokens.js';
 import users from '@src/__fixtures__/users.js';
-import validations from '@src/__fixtures__/validations.js';
 
 describe('mutations', () => {
   let state;
@@ -215,15 +214,6 @@ describe('mutations', () => {
 
       mutations.setUsers(state, users);
       expect(state).toMatchObject({ users });
-    });
-  });
-
-  describe('setValidations', () => {
-    test('it adds validations to the state', () => {
-      state = { validations: [] };
-
-      mutations.setValidations(state, validations);
-      expect(state).toMatchObject({ validations });
     });
   });
 });

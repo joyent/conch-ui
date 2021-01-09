@@ -1,6 +1,6 @@
 <template>
   <div class="validation-tab">
-    <Spinner v-if="!activeDeviceValidations.length && !validations.length" />
+    <Spinner v-if="isEmpty(activeDeviceValidations)" />
     <table class="table is-narrow is-marginless is-fullwidth" v-else>
       <thead>
         <tr>
@@ -79,13 +79,16 @@
             v-if="isRowSelected(validationIndex)"
             :key="`${validationIndex}a`"
           >
-            <td></td>
-            <td colspan="3">
+            <td colspan="6">
               <div class="content">
-                <table class="table is-narrow is-marginless is-fullwidth">
+                <table
+                  class="table is-narrow is-marginless is-fullwidth"
+                  style="background-color: #1a2531"
+                >
                   <thead>
                     <tr>
-                      <th>Component / Category</th>
+                      <th>Component</th>
+                      <th>Category</th>
                       <th>Results</th>
                       <th>Message</th>
                       <th>Hint</th>
@@ -100,9 +103,8 @@
                       v-for="(result, index) in validation.results"
                       :key="index"
                     >
-                      <td>{{
-                        result.component ? result.component : result.category
-                      }}</td>
+                      <td>{{ `${result.component || 'N/A'}` }}</td>
+                      <td>{{ `${result.category || 'N/A'}` }}</td>
                       <td>{{ result.status }}</td>
                       <td>{{ result.message }}</td>
                       <td v-if="result.hint">{{ result.hint }}</td>
@@ -132,9 +134,10 @@
 </template>
 
 <script>
-import sortBy from 'lodash/sortBy';
 import countBy from 'lodash/countBy';
 import groupBy from 'lodash/groupBy';
+import isEmpty from 'lodash/isEmpty';
+import sortBy from 'lodash/sortBy';
 import Spinner from '@views/components/Spinner.vue';
 import { mapState } from 'vuex';
 
@@ -148,11 +151,7 @@ export default {
     };
   },
   methods: {
-    getValidation(validationId) {
-      return this.validations.find(validation => {
-        return validation.id === validationId;
-      });
-    },
+    isEmpty,
     isRowSelected(index) {
       return this.validationDetailsRows.indexOf(index) >= 0;
     },
@@ -181,30 +180,19 @@ export default {
     },
   },
   computed: {
-    ...mapState(['activeDeviceValidations', 'validations']),
+    ...mapState(['activeDeviceValidations']),
     deviceValidations() {
       const validations = [];
       const validationStateResultsById = this.validationStateResultsById;
 
       Object.keys(validationStateResultsById).map(validationId => {
-        let {
-          created,
-          deactivated,
-          description,
-          id,
-          name,
-          updated,
-          version,
-        } = this.getValidation(validationId);
+        const results = validationStateResultsById[validationId];
+        const { name, description, version } = results[0];
 
         validations.push({
-          results: validationStateResultsById[validationId],
-          created,
-          deactivated,
+          results,
           description,
-          id,
           name,
-          updated,
           version,
         });
       });

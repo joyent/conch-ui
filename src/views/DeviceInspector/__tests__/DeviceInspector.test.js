@@ -25,7 +25,6 @@ describe('DeviceInspector.vue', () => {
       setActiveDeviceValidations: jest.fn(),
       setActiveRoomName: jest.fn(),
       setRackLayout: jest.fn(),
-      setValidations: jest.fn(),
     };
     getters = { activeDeviceId: jest.fn() };
     state = { activeDevice };

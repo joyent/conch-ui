@@ -31,7 +31,6 @@ export const initialState = () => {
     userAuthTokens: [],
     userOrganizations: [],
     users: [],
-    validations: [],
   };
 };
 
@@ -67,7 +66,6 @@ export const state = {
   userAuthTokens: [],
   userOrganizations: [],
   users: [],
-  validations: [],
 };
 
 export default {
