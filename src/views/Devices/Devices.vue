@@ -10,12 +10,21 @@
         ></button>
       </div>
     </article>
+    <div
+      class="page-heading"
+      style="display: flex; align-items: center; margin-bottom: 20px"
+    >
+      <span class="icon material-icons">dns</span>
+      <h1 class="title is-4 has-text-weight-bold" style="margin-left: 8px;">
+        Devices
+      </h1>
+    </div>
     <div class="field has-addons">
       <div class="control has-icons-left device-search">
         <input
           type="text"
-          class="input search"
-          placeholder="Enter Device Serial Number..."
+          class="input search is-medium"
+          placeholder="Search by serial number or ID..."
           v-model.trim="serialNumber"
           @keyup.enter="searchDevice()"
         />
@@ -25,7 +34,7 @@
       </div>
       <div class="control">
         <a
-          class="button is-info search"
+          class="button is-info is-medium search"
           :class="{ 'is-loading': isLoading }"
           @click="searchDevice()"
         >
@@ -42,10 +51,6 @@
             </div>
           </div>
           <DeviceInspector />
-        </div>
-        <div class="empty-state" v-else>
-          <p class="empty-state-heading">Search for a Device</p>
-          <img src="../../assets/artificial-intelligence.svg" width="500" />
         </div>
       </div>
     </div>
