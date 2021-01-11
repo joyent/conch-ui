@@ -8,8 +8,7 @@
           <th>Status</th>
           <th>Name</th>
           <th>Description</th>
-          <th>Version</th>
-          <th></th>
+          <th class="has-text-centered">Version</th>
         </tr>
       </thead>
       <tbody>
@@ -32,7 +31,7 @@
                 <i class="fas fa-caret-right" v-else></i>
               </div>
             </td>
-            <td class="has-text-centered">
+            <td>
               <template
                 v-for="(result, resultIndex) in resultCount(validation.results)"
               >
@@ -57,22 +56,6 @@
             </td>
             <td class="has-text-centered">
               {{ validation.version }}
-            </td>
-            <td>
-              <span
-                class="icon is-medium has-text-success tooltip is-tooltip-left is-tooltip-success"
-                v-if="validation.deactivated == null"
-                data-tooltip="Active Validation"
-              >
-                <i class="fas fa-lg fa-check-circle"></i>
-              </span>
-              <span
-                class="icon is-medium has-text-warning tooltip is-tooltip-left is-tooltip-warning"
-                v-else
-                data-tooltip="Inactive Validation"
-              >
-                <i class="fas fa-lg fa-exclamation-triangle"></i>
-              </span>
             </td>
           </tr>
           <tr
@@ -125,8 +108,7 @@
           <th>Status</th>
           <th>Name</th>
           <th>Description</th>
-          <th>Version</th>
-          <th></th>
+          <th class="has-text-centered">Version</th>
         </tr>
       </tfoot>
     </table>
