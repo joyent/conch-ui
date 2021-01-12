@@ -125,8 +125,9 @@ import moment from 'moment';
 import TimeToBurnin from './TimeToBurnin.vue';
 import PhaseUpdateModal from '@src/views/components/PhaseUpdateModal.vue';
 import { EventBus } from '@src/eventBus.js';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { getHardwareProducts } from '@api/hardwareProduct.js';
+import { getDeviceSettings } from '@api/devices.js';
 
 export default {
   components: {
@@ -136,18 +137,52 @@ export default {
   data() {
     return {
       errorMessage: '',
-      hardwareProducts: [],
       updatingPhase: false,
     };
   },
   methods: {
     ...mapActions([
+      'setActiveDeviceSettings',
       'setActiveRoomName',
+      'setHardwareProducts',
       'setHighlightDeviceId',
       'setShowDeviceInRack',
     ]),
     closeModal() {
       this.updatingPhase = false;
+    },
+    async fetchData() {
+      let deviceSettingsResponse;
+      const deviceId =
+        (this.activeDeviceDetails && this.activeDeviceDetails.id) ||
+        this.$route.params.deviceId;
+
+      if (this.hardwareProducts && this.hardwareProducts.length) {
+        try {
+          deviceSettingsResponse = await getDeviceSettings(deviceId);
+          this.setActiveDeviceSettings(deviceSettingsResponse.data);
+        } catch (error) {
+          this.setError(error);
+        }
+      } else {
+        let hardwareProductsResponse;
+
+        try {
+          [
+            deviceSettingsResponse,
+            hardwareProductsResponse,
+          ] = await Promise.all([
+            getDeviceSettings(deviceId),
+            getHardwareProducts(),
+          ]);
+
+          const hardwareProducts = hardwareProductsResponse.data;
+          this.setHardwareProducts(hardwareProducts);
+          this.setActiveDeviceSettings(deviceSettingsResponse.data);
+        } catch (error) {
+          this.setError(error);
+        }
+      }
     },
     getHardwareProductName(id) {
       const product = this.hardwareProducts.find(product => product.id === id);
@@ -184,8 +219,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['activeDeviceId']),
-    ...mapState(['activeDeviceDetails', 'activeDeviceSettings']),
+    ...mapState([
+      'activeDeviceDetails',
+      'activeDeviceSettings',
+      'hardwareProducts',
+    ]),
     deviceTags() {
       const tags = [];
       let health;
@@ -210,6 +248,11 @@ export default {
           tags.push({
             style: 'is-warning health-unknown',
             title: 'No Report',
+          });
+        } else if (health === 'error') {
+          tags.push({
+            style: 'is-danger health-error',
+            title: 'Error',
           });
         }
       }
@@ -258,14 +301,7 @@ export default {
     },
   },
   async mounted() {
-    let response;
-
-    try {
-      response = await getHardwareProducts();
-      this.hardwareProducts = response.data;
-    } catch (error) {
-      this.setError(error);
-    }
+    this.fetchData();
 
     EventBus.$on('closeModal:baseModal', () => {
       this.closeModal();

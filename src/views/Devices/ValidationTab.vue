@@ -1,6 +1,6 @@
 <template>
   <div class="validation-tab">
-    <Spinner v-if="isEmpty(activeDeviceValidations)" />
+    <Spinner v-if="isEmpty(deviceValidationState)" />
     <table class="table is-narrow is-marginless is-fullwidth" v-else>
       <thead>
         <tr>
@@ -121,7 +121,7 @@ import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
 import sortBy from 'lodash/sortBy';
 import Spinner from '@views/components/Spinner.vue';
-import { mapState } from 'vuex';
+import { getDeviceValidations } from '@api/devices.js';
 
 export default {
   components: {
@@ -129,10 +129,23 @@ export default {
   },
   data() {
     return {
+      deviceValidationState: {},
       validationDetailsRows: [],
     };
   },
   methods: {
+    async fetchData() {
+      let validationsResponse;
+
+      try {
+        validationsResponse = await getDeviceValidations(
+          this.$route.params.deviceId
+        );
+        this.deviceValidationState = validationsResponse.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
     isEmpty,
     isRowSelected(index) {
       return this.validationDetailsRows.indexOf(index) >= 0;
@@ -162,7 +175,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(['activeDeviceValidations']),
     deviceValidations() {
       const validations = [];
       const validationStateResultsById = this.validationStateResultsById;
@@ -182,8 +194,11 @@ export default {
       return sortBy(validations, validation => validation.name);
     },
     validationStateResultsById() {
-      return groupBy(this.activeDeviceValidations.results, 'validation_id');
+      return groupBy(this.deviceValidationState.results, 'validation_id');
     },
+  },
+  mounted() {
+    this.fetchData();
   },
 };
 </script>

@@ -35,4 +35,42 @@
       background-color: $dark;
     }
   }
+
+  .card {
+    cursor: pointer;
+
+    &.is-parent {
+      background-color: #1a2531;
+      transition: all 0.1s ease;
+
+      &:hover {
+        background-color: #1f2a36;
+        border: 1px solid #5a6977;
+        // transform: scale(1.02);
+        transition: all 0.1s ease;
+      }
+    }
+
+    .card-content {
+      padding: 20px;
+
+      .content {
+        .card {
+          align-items: center;
+          display: flex;
+          justify-content: space-between;
+          padding: 10px;
+
+          &:not(:last-of-type) {
+            margin-bottom: 12px;
+          }
+
+          p.is-title {
+            font-weight: bold;
+            margin-bottom: 0.2em;
+          }
+        }
+      }
+    }
+  }
 }
