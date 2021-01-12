@@ -143,7 +143,30 @@ export default {
         );
         this.deviceValidationState = validationsResponse.data;
       } catch (error) {
-        console.log(error);
+        let errorMessage;
+
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
+          errorMessage = `Error: ${error.response.data.error}`;
+        } else {
+          errorMessage = 'An error occurred';
+        }
+
+        this.$toasted.error(errorMessage, {
+          action: [
+            {
+              icon: 'close',
+              onClick: (e, toastObject) => {
+                toastObject.goAway(0);
+              },
+            },
+          ],
+          duration: 6000,
+          icon: 'error',
+        });
       }
     },
     isEmpty,
