@@ -1,0 +1,19 @@
+.card {
+  &.is-rounded-1 {
+    border-radius: 3px;
+
+    .card-footer {
+      border-bottom-right-radius: 3px;
+      border-bottom-left-radius: 3px;
+    }
+  }
+
+  &.is-rounded-2 {
+    border-radius: 4px;
+
+    .card-footer {
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Devices from './views/Devices/Devices.vue';
+import Device from './views/Devices/Device.vue';
 import DataCenters from './views/DataCenterBrowser/DataCenters.vue';
 import SignIn from './views/SignIn/SignIn.vue';
 import UserManagement from './views/UserManagement/UserManagement.vue';
@@ -47,7 +48,7 @@ export default new Router({
           // when /device/:deviceId is matched
           path: ':deviceId',
           name: 'device',
-          component: Devices,
+          component: Device,
         },
       ],
     },

@@ -1,6 +1,6 @@
 <template>
   <div class="validation-tab">
-    <Spinner v-if="!activeDeviceValidations.length && !validations.length" />
+    <Spinner v-if="isEmpty(deviceValidationState)" />
     <table class="table is-narrow is-marginless is-fullwidth" v-else>
       <thead>
         <tr>
@@ -8,8 +8,7 @@
           <th>Status</th>
           <th>Name</th>
           <th>Description</th>
-          <th>Version</th>
-          <th></th>
+          <th class="has-text-centered">Version</th>
         </tr>
       </thead>
       <tbody>
@@ -32,7 +31,7 @@
                 <i class="fas fa-caret-right" v-else></i>
               </div>
             </td>
-            <td class="has-text-centered">
+            <td>
               <template
                 v-for="(result, resultIndex) in resultCount(validation.results)"
               >
@@ -58,34 +57,21 @@
             <td class="has-text-centered">
               {{ validation.version }}
             </td>
-            <td>
-              <span
-                class="icon is-medium has-text-success tooltip is-tooltip-left is-tooltip-success"
-                v-if="validation.deactivated == null"
-                data-tooltip="Active Validation"
-              >
-                <i class="fas fa-lg fa-check-circle"></i>
-              </span>
-              <span
-                class="icon is-medium has-text-warning tooltip is-tooltip-left is-tooltip-warning"
-                v-else
-                data-tooltip="Inactive Validation"
-              >
-                <i class="fas fa-lg fa-exclamation-triangle"></i>
-              </span>
-            </td>
           </tr>
           <tr
             v-if="isRowSelected(validationIndex)"
             :key="`${validationIndex}a`"
           >
-            <td></td>
-            <td colspan="3">
+            <td colspan="6">
               <div class="content">
-                <table class="table is-narrow is-marginless is-fullwidth">
+                <table
+                  class="table is-narrow is-marginless is-fullwidth"
+                  style="background-color: #1a2531"
+                >
                   <thead>
                     <tr>
-                      <th>Component / Category</th>
+                      <th>Component</th>
+                      <th>Category</th>
                       <th>Results</th>
                       <th>Message</th>
                       <th>Hint</th>
@@ -100,9 +86,8 @@
                       v-for="(result, index) in validation.results"
                       :key="index"
                     >
-                      <td>{{
-                        result.component ? result.component : result.category
-                      }}</td>
+                      <td>{{ `${result.component || 'N/A'}` }}</td>
+                      <td>{{ `${result.category || 'N/A'}` }}</td>
                       <td>{{ result.status }}</td>
                       <td>{{ result.message }}</td>
                       <td v-if="result.hint">{{ result.hint }}</td>
@@ -123,8 +108,7 @@
           <th>Status</th>
           <th>Name</th>
           <th>Description</th>
-          <th>Version</th>
-          <th></th>
+          <th class="has-text-centered">Version</th>
         </tr>
       </tfoot>
     </table>
@@ -132,11 +116,12 @@
 </template>
 
 <script>
-import sortBy from 'lodash/sortBy';
 import countBy from 'lodash/countBy';
 import groupBy from 'lodash/groupBy';
+import isEmpty from 'lodash/isEmpty';
+import sortBy from 'lodash/sortBy';
 import Spinner from '@views/components/Spinner.vue';
-import { mapState } from 'vuex';
+import { getDeviceValidations } from '@api/devices.js';
 
 export default {
   components: {
@@ -144,15 +129,47 @@ export default {
   },
   data() {
     return {
+      deviceValidationState: {},
       validationDetailsRows: [],
     };
   },
   methods: {
-    getValidation(validationId) {
-      return this.validations.find(validation => {
-        return validation.id === validationId;
-      });
+    async fetchData() {
+      let validationsResponse;
+
+      try {
+        validationsResponse = await getDeviceValidations(
+          this.$route.params.deviceId
+        );
+        this.deviceValidationState = validationsResponse.data;
+      } catch (error) {
+        let errorMessage;
+
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
+          errorMessage = `Error: ${error.response.data.error}`;
+        } else {
+          errorMessage = 'An error occurred';
+        }
+
+        this.$toasted.error(errorMessage, {
+          action: [
+            {
+              icon: 'close',
+              onClick: (e, toastObject) => {
+                toastObject.goAway(0);
+              },
+            },
+          ],
+          duration: 6000,
+          icon: 'error',
+        });
+      }
     },
+    isEmpty,
     isRowSelected(index) {
       return this.validationDetailsRows.indexOf(index) >= 0;
     },
@@ -181,30 +198,18 @@ export default {
     },
   },
   computed: {
-    ...mapState(['activeDeviceValidations', 'validations']),
     deviceValidations() {
       const validations = [];
       const validationStateResultsById = this.validationStateResultsById;
 
       Object.keys(validationStateResultsById).map(validationId => {
-        let {
-          created,
-          deactivated,
-          description,
-          id,
-          name,
-          updated,
-          version,
-        } = this.getValidation(validationId);
+        const results = validationStateResultsById[validationId];
+        const { name, description, version } = results[0];
 
         validations.push({
-          results: validationStateResultsById[validationId],
-          created,
-          deactivated,
+          results,
           description,
-          id,
           name,
-          updated,
           version,
         });
       });
@@ -212,8 +217,11 @@ export default {
       return sortBy(validations, validation => validation.name);
     },
     validationStateResultsById() {
-      return groupBy(this.activeDeviceValidations.results, 'validation_id');
+      return groupBy(this.deviceValidationState.results, 'validation_id');
     },
+  },
+  mounted() {
+    this.fetchData();
   },
 };
 </script>

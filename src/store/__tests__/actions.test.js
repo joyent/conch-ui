@@ -149,11 +149,4 @@ describe('actions', () => {
       expect(commit).toHaveBeenCalledWith('setUsers', []);
     });
   });
-
-  describe('setValidations', () => {
-    test('it sets the validations', () => {
-      actions.setValidations({ commit }, {});
-      expect(commit).toHaveBeenCalledWith('setValidations', {});
-    });
-  });
 });

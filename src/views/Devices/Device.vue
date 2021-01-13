@@ -1,9 +1,6 @@
 <template>
-  <div class="device-inspector">
-    <section class="section" v-if="!hasActiveDevice">
-      <Spinner />
-    </section>
-    <div class="tabs-container" v-else>
+  <div class="device">
+    <div class="tabs-container">
       <div class="tabs is-toggle is-centered">
         <ul>
           <li
@@ -31,14 +28,7 @@ import SettingsTab from './SettingsTab.vue';
 import Spinner from '@views/components/Spinner.vue';
 import StorageTab from './StorageTab.vue';
 import ValidationTab from './ValidationTab.vue';
-import isEmpty from 'lodash/isEmpty';
-import { mapActions, mapGetters, mapState } from 'vuex';
-import {
-  getDeviceDetails,
-  getDeviceSettings,
-  getDeviceValidations,
-} from '@api/devices.js';
-import { getValidations } from '@api/validations.js';
+import { mapActions, mapState } from 'vuex';
 
 export default {
   components: {
@@ -87,63 +77,21 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
-      'clearShowDeviceInRack',
-      'setActiveDeviceDetails',
-      'setActiveDeviceSettings',
-      'setActiveDeviceValidations',
-      'setActiveRoomName',
-      'setRackLayout',
-      'setValidations',
-    ]),
-    setActiveDeviceData() {
-      getDeviceSettings(this.activeDeviceId).then(response => {
-        this.setActiveDeviceSettings(response.data);
-      });
-
-      getDeviceDetails(this.activeDeviceId).then(response => {
-        const deviceDetails = response.data;
-        this.setActiveDeviceDetails(deviceDetails);
-
-        if (deviceDetails.location) {
-          const { datacenter_room } = deviceDetails.location;
-
-          if (datacenter_room && datacenter_room.az) {
-            this.setActiveRoomName(datacenter_room.az);
-          }
-        }
-      });
-
-      getDeviceValidations(this.activeDeviceId).then(response => {
-        this.setActiveDeviceValidations(response.data);
-      });
-
-      if (isEmpty(this.validations)) {
-        getValidations().then(response => {
-          this.setValidations(response.data);
-        });
-      }
-    },
+    ...mapActions(['clearShowDeviceInRack', 'setActiveDeviceDetails']),
     setActiveTab(tab) {
       this.activeTab = tab;
     },
   },
   computed: {
-    ...mapGetters(['activeDeviceId']),
-    ...mapState(['activeDevice', 'showDeviceInRack', 'validations']),
-    hasActiveDevice() {
-      return !isEmpty(this.activeDevice);
-    },
+    ...mapState(['showDeviceInRack']),
   },
   mounted() {
-    if (!this.showDeviceInRack && this.activeDeviceId) {
-      this.setActiveDeviceData();
-    } else if (this.showDeviceInRack) {
+    if (this.showDeviceInRack) {
       this.clearShowDeviceInRack();
     }
   },
-  updated() {
-    this.setActiveDeviceData();
+  destroyed() {
+    this.setActiveDeviceDetails({});
   },
 };
 </script>

@@ -151,10 +151,6 @@ export const setUsers = (state, users) => {
   state.users = users;
 };
 
-export const setValidations = (state, validations) => {
-  state.validations = validations;
-};
-
 export default {
   clearActiveDevice,
   clearActiveRoomName,
@@ -193,5 +189,4 @@ export default {
   setShowDeviceInRack,
   setUserAuthTokens,
   setUsers,
-  setValidations,
 };
