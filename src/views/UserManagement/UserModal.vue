@@ -215,7 +215,12 @@ import isEmpty from 'lodash/isEmpty';
 import ItemsPanel from './ItemsPanel.vue';
 import { mapActions, mapState } from 'vuex';
 import { EventBus } from '@src/eventBus.js';
-import { createUser, editUser, getUsers } from '@api/users.js';
+import {
+  createUser,
+  getUsers,
+  updateCurrentUser,
+  updateUser,
+} from '@api/users.js';
 import { addUserToBuild, getBuilds, removeUserFromBuild } from '@api/builds.js';
 import {
   addUserToOrganization,
@@ -271,7 +276,12 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['setBuilds', 'setOrganizations', 'setUsers']),
+    ...mapActions([
+      'setBuilds',
+      'setCurrentUser',
+      'setOrganizations',
+      'setUsers',
+    ]),
     async advanceStep() {
       if (this.step === 1 && this.validateForm()) {
         if (this.validateForm()) {
@@ -360,26 +370,46 @@ export default {
         this.isLoading = true;
 
         if (this.validateForm()) {
-          const editedUser = {
-            id: this.editingUser.id,
-            email: this.email,
-            is_admin: this.isAdmin,
-            name: this.name,
-          };
-
-          editUser(editedUser)
-            .then(response => {
-              this.user = response.data;
-              this.reloadUserList = true;
-              this.isLoading = false;
-              this.step = 2;
-            })
-            .catch(error => {
-              if (error.status === 500) {
-                this.errors.duplicateEmail = true;
+          if (
+            this.currentUser &&
+            this.currentUser.id &&
+            this.currentUser.id === this.editingUser.id
+          ) {
+            updateCurrentUser(
+              this.editingUser.id,
+              this.email,
+              this.isAdmin,
+              this.name
+            )
+              .then(response => {
+                const user = response.data;
+                this.user = user;
+                this.setCurrentUser(user);
+                this.reloadUserList = true;
                 this.isLoading = false;
-              }
-            });
+                this.step = 2;
+              })
+              .catch(error => {
+                if (error.status === 500) {
+                  this.errors.duplicateEmail = true;
+                  this.isLoading = false;
+                }
+              });
+          } else {
+            updateUser(this.editingUser.id, this.email, this.isAdmin, this.name)
+              .then(response => {
+                this.user = response.data;
+                this.reloadUserList = true;
+                this.isLoading = false;
+                this.step = 2;
+              })
+              .catch(error => {
+                if (error.status === 500) {
+                  this.errors.duplicateEmail = true;
+                  this.isLoading = false;
+                }
+              });
+          }
         } else {
           this.isLoading = false;
         }
@@ -488,7 +518,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['builds', 'organizations']),
+    ...mapState(['builds', 'currentUser', 'organizations']),
     hasErrors() {
       return Object.values(this.errors).some(error => error === true)
         ? true

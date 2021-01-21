@@ -86,7 +86,7 @@ describe('users API', () => {
     });
   });
 
-  describe('editUser', () => {
+  describe('updateUser', () => {
     let data;
 
     beforeEach(() => {
@@ -105,7 +105,8 @@ describe('users API', () => {
 
     test('should return a status of 200', async () => {
       expect.assertions(1);
-      response = await Users.editUser(user);
+      const { email, is_admin: isAdmin, name } = user;
+      response = await Users.updateUser(userId, email, isAdmin, name);
       expect(response.status).toEqual(200);
     });
   });

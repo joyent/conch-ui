@@ -101,7 +101,7 @@
                 :disabled="!isUserModified || !hasRequiredFields"
                 @click="
                   isUserModified && hasRequiredFields && !isLoading
-                    ? editUser()
+                    ? updateUser()
                     : null
                 "
                 >Save Changes</a
@@ -122,7 +122,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import ResetPassword from '../UserManagement/ResetPassword.vue';
 import { mapActions, mapState } from 'vuex';
-import { updateUser } from '@api/users.js';
+import { updateCurrentUser, updateUser } from '@api/users.js';
 
 export default {
   components: {
@@ -163,14 +163,37 @@ export default {
   },
   methods: {
     ...mapActions(['setCurrentUser']),
-    async editUser() {
+    async updateUser() {
+      let user;
+
       this.isLoading = true;
 
       try {
-        const response = await updateUser(this.email, this.isAdmin, this.name);
-        const user = response.data;
-        this.setCurrentUser(user);
-        this.$emit('set-user', { user });
+        const currentUserId = this.currentUser && this.currentUser.id;
+        const routeParamUserId =
+          this.$route && this.$route.params && this.$route.params.id;
+
+        if (
+          currentUserId &&
+          routeParamUserId &&
+          currentUserId === routeParamUserId
+        ) {
+          const response = await updateCurrentUser(
+            this.email,
+            this.isAdmin,
+            this.name
+          );
+          user = response.data;
+          this.setCurrentUser(user);
+        } else {
+          const response = await updateUser(
+            routeParamUserId,
+            this.email,
+            this.isAdmin,
+            this.name
+          );
+          user = response.data;
+        }
 
         this.email = user.email;
         this.name = user.name;

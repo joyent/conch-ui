@@ -57,28 +57,6 @@ export const deleteUserTokens = (userId, params) => {
   });
 };
 
-export const editUser = user => {
-  const data = {};
-
-  data.is_admin = user.is_admin;
-
-  if (user.email) {
-    data.email = user.email;
-  }
-
-  if (user.name) {
-    data.name = user.name;
-  }
-
-  return requestWithToken({
-    method: 'POST',
-    url: `/user/${user.id}`,
-    data,
-  }).catch(error => {
-    return Promise.reject(error);
-  });
-};
-
 export const forcePasswordChange = userId => {
   return requestWithToken({
     method: 'DELETE',
@@ -137,16 +115,7 @@ export const promoteUser = userId => {
   });
 };
 
-export const updatePassword = (password, params) => {
-  return requestWithToken({
-    method: 'POST',
-    url: '/user/me/password',
-    data: { password },
-    params,
-  });
-};
-
-export const updateUser = (email, isAdmin, name) => {
+export const updateCurrentUser = (email, isAdmin, name) => {
   return requestWithToken({
     method: 'POST',
     url: '/user/me',
@@ -161,6 +130,32 @@ export const updateUser = (email, isAdmin, name) => {
   });
 };
 
+export const updatePassword = (password, params) => {
+  return requestWithToken({
+    method: 'POST',
+    url: '/user/me/password',
+    data: { password },
+    params,
+  });
+};
+
+export const updateUser = (userId, email, isAdmin, name) => {
+  return requestWithToken({
+    method: 'POST',
+    url: `/user/${userId}`,
+    data: {
+      email,
+      is_admin: isAdmin,
+      name,
+    },
+    params: {
+      send_mail: 1,
+    },
+  }).catch(error => {
+    return Promise.reject(error);
+  });
+};
+
 export default {
   createToken,
   createUser,
@@ -169,7 +164,6 @@ export default {
   deleteUserToken,
   deleteUserTokens,
   demoteUser,
-  editUser,
   forcePasswordChange,
   getCurrentUser,
   getToken,
@@ -178,5 +172,6 @@ export default {
   getUsers,
   promoteUser,
   updatePassword,
+  updateCurrentUser,
   updateUser,
 };
